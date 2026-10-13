@@ -1,0 +1,123 @@
+@reference "tailwindcss/theme.css";
+
+.as-management {
+  --as-mgmt-panel: var(--as-bg, #fff);
+  --as-mgmt-soft: color-mix(in srgb, var(--as-bg-layout, #f5f5f5) 72%, white);
+  --as-mgmt-line: var(--as-border-secondary, #eaecf0);
+  --as-mgmt-text: var(--as-text, #172033);
+  --as-mgmt-muted: var(--as-text-secondary, #667085);
+  @apply min-h-full p-5;
+  color: var(--as-mgmt-text);
+}
+
+.as-management-toolbar { @apply mb-4 flex items-center justify-between gap-3; }
+.as-management-toolbar__actions { @apply ml-auto flex min-w-0 items-center gap-2; }
+.as-management-search { width: min(360px, 42vw); }
+
+.as-management-segments {
+  @apply flex gap-[3px] rounded-[9px] p-[3px];
+  background: var(--as-mgmt-soft);
+}
+.as-management-segments button {
+  @apply cursor-pointer rounded-md border-0 bg-transparent px-[11px] py-1.5 text-xs font-[inherit];
+  color: var(--as-mgmt-muted);
+}
+.as-management-segments button.active {
+  @apply shadow-[0_1px_3px_rgb(16_24_40/10%)];
+  background: var(--as-mgmt-panel);
+  color: var(--as-primary);
+}
+.as-management-segments small { @apply ml-1 text-[#98a2b3]; }
+
+.as-management-grid {
+  @apply grid gap-3;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+}
+.as-management-card {
+  --as-mgmt-panel: var(--as-card-bg, #ffffff);
+  --as-mgmt-soft: color-mix(in srgb, var(--as-bg-layout, #f5f5f5) 72%, white);
+  --as-mgmt-line: var(--as-card-border, var(--as-border-secondary, #eaecf0));
+  --as-mgmt-text: var(--as-text, #172033);
+  --as-mgmt-muted: var(--as-text-secondary, #667085);
+  @apply flex min-h-[190px] min-w-0 flex-col border p-4 transition-[border-color,box-shadow,transform] duration-200;
+  border-radius: var(--as-card-radius, 12px);
+  border-color: var(--as-mgmt-line);
+  background: var(--as-mgmt-panel);
+  box-shadow: var(--as-card-shadow, 0 1px 2px rgb(15 23 42 / 4%));
+}
+.as-management-card--interactive { cursor: pointer; }
+.as-management-card--interactive:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--as-primary) 60%, transparent);
+  outline-offset: 2px;
+}
+.as-management-card--interactive:hover {
+  @apply -translate-y-px;
+  border-color: color-mix(in srgb, var(--as-primary) 45%, var(--as-mgmt-line));
+  box-shadow: var(--as-card-shadow-hover, 0 8px 24px rgb(16 24 40 / 7%));
+}
+.as-management-card--borderless { @apply border-0; }
+.as-management-card--disabled { @apply cursor-not-allowed opacity-60; }
+.as-management-card--disabled:hover { transform: none; box-shadow: var(--as-card-shadow, 0 1px 2px rgb(15 23 42 / 4%)); }
+.as-management-card__head,
+.as-management-card__footer { @apply flex items-center justify-between gap-2.5; }
+.as-management-card__icon {
+  @apply grid size-9 shrink-0 place-items-center rounded-[9px] font-bold;
+  color: var(--as-primary);
+  background: color-mix(in srgb, var(--as-primary) 10%, white);
+}
+.as-management-card__title { @apply min-w-0 flex-1; }
+.as-management-card__title h3 { @apply m-0 truncate text-sm leading-5; }
+.as-management-card__title code,
+.as-management-card__title small { @apply mt-0.5 block truncate text-[10px]; color: var(--as-mgmt-muted); }
+.as-management-card__description {
+  @apply my-3 min-h-[38px] overflow-hidden text-xs leading-[19px];
+  display: -webkit-box;
+  color: var(--as-mgmt-muted);
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+.as-management-card__content { @apply min-w-0; }
+.as-management-card__badge { @apply ml-auto shrink-0; }
+.as-management-card__meta { @apply flex min-w-0 flex-wrap items-center gap-[5px]; }
+.as-management-card__footer {
+  @apply mt-auto border-t pt-2;
+  border-color: var(--as-card-divider, var(--as-mgmt-line));
+}
+.as-management-card--footer-plain .as-management-card__footer {
+  @apply border-t-0 pt-0;
+}
+.as-management-card__actions { @apply flex flex-wrap items-center gap-2; }
+.as-management-card--compact { @apply min-h-0 p-3.5; }
+.as-management-card--compact .as-management-card__description { @apply mb-0 min-h-0; }
+
+/* A create entry is ordinary Card content; only its presentation is shared. */
+.as-create-card,
+.kh-create-card {
+  border-style: dashed;
+  border-color: color-mix(in srgb, var(--as-primary, #6366f1) 65%, var(--as-card-border));
+  background: var(--as-card-bg, #ffffff);
+}
+.as-create-card:hover,
+.kh-create-card:hover {
+  background: var(--as-card-bg, #ffffff);
+}
+.as-create-card .as-management-card__content,
+.kh-create-card .as-management-card__content { @apply my-auto; }
+.as-create-card__inner { @apply text-center; color: var(--as-primary, #6366f1); }
+.as-create-card__plus { @apply text-4xl font-extralight leading-none; }
+.as-create-card__title { @apply mt-1 text-sm font-medium; }
+.as-create-card__subtitle { @apply mt-1 text-xs; color: var(--as-text-placeholder, #9ca3af); }
+.as-management-empty {
+  @apply grid min-h-[280px] place-items-center rounded-xl border border-dashed;
+  border-color: var(--as-mgmt-line);
+  background: var(--as-mgmt-soft);
+}
+.as-management-error { @apply mb-4; }
+
+@media (max-width: 760px) {
+  .as-management { @apply p-3.5; }
+  .as-management-toolbar { @apply flex-col items-stretch; }
+  .as-management-toolbar__actions { @apply ml-0 w-full; }
+  .as-management-search { @apply w-full flex-1; }
+  .as-management-grid { grid-template-columns: 1fr; }
+}

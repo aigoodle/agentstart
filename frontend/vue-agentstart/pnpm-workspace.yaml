@@ -1,0 +1,19 @@
+# pnpm build-script policy (pnpm >= 10 blocks postinstall scripts unless
+# listed here).
+#
+#   esbuild   — verifies the platform binary vite uses; safe, well-known.
+#   vue-demi  — picks the Vue 2/3 build of itself; needed so
+#               vue-draggable-next resolves against Vue 3.
+#   core-js   — only prints funding; no build needed.
+allowBuilds:
+  core-js: false
+  esbuild: true
+  vue-demi: true
+
+# vite-plugin-dts pins @vue/language-core 2.2.0, whose codegen always emits
+# `__typeRefs` for component template refs; that type chain trips TS4082
+# ("private name 'Props'") and drops the affected component's .d.ts.
+# 2.2.12 gates __typeRefs behind the opt-in inferComponentDollarRefs flag
+# (default false) — aligning both copies on it keeps declaration emit intact.
+overrides:
+  '@vue/language-core': 2.2.12

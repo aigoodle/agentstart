@@ -1,0 +1,6 @@
+/* Public stylesheet entry for subpath consumers.
+ * Tailwind @apply rules are compiled by this package's Vite pipeline.
+ */
+@import './knowledge-hub/styles/index.css';
+@import './ui/style.css';
+@import './ui/management.css';

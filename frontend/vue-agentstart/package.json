@@ -1,0 +1,153 @@
+{
+  "name": "vue-agent-start",
+  "version": "0.2.0",
+  "description": "Unified spring-agent-start UI kit — provider hub, knowledge hub, agent studio, and workflow designer combined behind a single entry point, plus one framework-neutral SDK (createAgentStartClient) every component talks to the backend through. Replaces the previous four packages (@agent-start/provider-hub, @agent-start/knowledge-hub, @agent-start/agent-studio, @agent-start/agent-flow).",
+  "keywords": [
+    "vue",
+    "vue3",
+    "component-library",
+    "agent",
+    "workflow",
+    "knowledge-base",
+    "llm",
+    "spring-agent-start"
+  ],
+  "type": "module",
+  "packageManager": "pnpm@11.0.9",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./client": {
+      "types": "./dist/client/index.d.ts",
+      "import": "./dist/client/index.js",
+      "require": "./dist/client/index.cjs"
+    },
+    "./aigoodle": {
+      "types": "./dist/aigoodle.d.ts",
+      "import": "./dist/aigoodle.js",
+      "require": "./dist/aigoodle.cjs"
+    },
+    "./provider-hub": {
+      "types": "./dist/provider-hub/index.d.ts",
+      "import": "./dist/provider-hub/index.js",
+      "require": "./dist/provider-hub/index.cjs"
+    },
+    "./knowledge-hub": {
+      "types": "./dist/knowledge-hub/index.d.ts",
+      "import": "./dist/knowledge-hub/index.js",
+      "require": "./dist/knowledge-hub/index.cjs"
+    },
+    "./agent-studio": {
+      "types": "./dist/agent-studio/index.d.ts",
+      "import": "./dist/agent-studio/index.js",
+      "require": "./dist/agent-studio/index.cjs"
+    },
+    "./agent-flow": {
+      "types": "./dist/agent-flow/index.d.ts",
+      "import": "./dist/agent-flow/index.js",
+      "require": "./dist/agent-flow/index.cjs"
+    },
+    "./connector-hub": {
+      "types": "./dist/connector-hub/index.d.ts",
+      "import": "./dist/connector-hub/index.js",
+      "require": "./dist/connector-hub/index.cjs"
+    },
+    "./channel-hub": {
+      "types": "./dist/channel-hub/index.d.ts",
+      "import": "./dist/channel-hub/index.js",
+      "require": "./dist/channel-hub/index.cjs"
+    },
+    "./plugin-hub": {
+      "types": "./dist/plugin-hub/index.d.ts",
+      "import": "./dist/plugin-hub/index.js",
+      "require": "./dist/plugin-hub/index.cjs"
+    },
+    "./mcp-hub": {
+      "types": "./dist/mcp-hub/index.d.ts",
+      "import": "./dist/mcp-hub/index.js",
+      "require": "./dist/mcp-hub/index.cjs"
+    },
+    "./skill-hub": {
+      "types": "./dist/skill-hub/index.d.ts",
+      "import": "./dist/skill-hub/index.js",
+      "require": "./dist/skill-hub/index.cjs"
+    },
+    "./tool-hub": {
+      "types": "./dist/tool-hub/index.d.ts",
+      "import": "./dist/tool-hub/index.js",
+      "require": "./dist/tool-hub/index.cjs"
+    },
+    "./trigger-hub": {
+      "types": "./dist/trigger-hub/index.d.ts",
+      "import": "./dist/trigger-hub/index.js",
+      "require": "./dist/trigger-hub/index.cjs"
+    },
+    "./style.css": "./dist/style.css",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md",
+    "CONNECTOR-HUB.md",
+    "CHANNEL-HUB.md"
+  ],
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "scripts": {
+    "build": "vite build",
+    "typecheck": "vue-tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "release": "pnpm run typecheck && pnpm run test && pnpm run build && changeset publish",
+    "prepublishOnly": "pnpm run typecheck && pnpm run test && pnpm run build"
+  },
+  "peerDependencies": {
+    "@ant-design/icons-vue": "^7.0.0",
+    "pinia": "^2.1.0 || ^3.0.0",
+    "vue": "^3.4.0 || ^3.5.0",
+    "vue-router": "^4.2.0"
+  },
+  "peerDependenciesMeta": {
+    "vue-router": {
+      "optional": true
+    }
+  },
+  "dependencies": {
+    "@vue-flow/background": "^1.3.0",
+    "@vue-flow/controls": "^1.1.2",
+    "@vue-flow/core": "^1.41.0",
+    "@vue-flow/minimap": "^1.5.0",
+    "@vue-flow/node-resizer": "^1.4.0",
+    "vue-draggable-next": "^2.2.1"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "@ant-design/icons-vue": "^7.0.1",
+    "@changesets/cli": "^2.31.1",
+    "@tailwindcss/vite": "^4.3.3",
+    "@vitejs/plugin-vue": "^5.2.4",
+    "@vue/test-utils": "^2.4.11",
+    "happy-dom": "^17.6.3",
+    "pinia": "^3.0.3",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^5.9.3",
+    "vite": "^6.4.3",
+    "vite-plugin-dts": "^4.5.4",
+    "vitest": "^3.2.7",
+    "vue": "^3.5.13",
+    "vue-router": "^4.6.4",
+    "vue-tsc": "^2.2.12"
+  }
+}

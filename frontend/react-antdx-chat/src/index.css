@@ -1,0 +1,68 @@
+@import "tailwindcss";
+@import "./theme-colors.css";
+
+/* Tailwind v4 默认按 prefers-color-scheme 启用 dark:。
+ * 这里改成跟随 <html class="dark">，由宿主下发的 theme 触发（见 main.tsx）。 */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* 未指定颜色的边框也采用中性灰，避免继承文字颜色后显示为黑线。
+ * 放在 base 层，组件的 border-* 工具类仍可覆盖默认值。 */
+@layer base {
+  *, ::before, ::after, ::backdrop {
+    border-color: var(--color-slate-200);
+  }
+
+  :where(.dark, .dark *),
+  :where(.dark, .dark *)::before,
+  :where(.dark, .dark *)::after,
+  :where(.dark, .dark *)::backdrop {
+    border-color: var(--color-zinc-800);
+  }
+}
+
+/* 主题统一由宿主控制，避免系统深色与 Vben 浅色同时生效。 */
+html { background: #ffffff; color-scheme: light; }
+html.dark { color-scheme: dark; }
+html.dark, html.dark body { background: #141414; }
+
+/* Copilot 滚动区域：细窄、圆润，并在悬停时提高可见度。 */
+.copilot-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.55) transparent;
+}
+
+.copilot-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.copilot-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.copilot-scrollbar::-webkit-scrollbar-thumb {
+  min-height: 36px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.45);
+  background-clip: padding-box;
+}
+
+.copilot-scrollbar:hover::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.65);
+  background-clip: padding-box;
+}
+
+.dark .copilot-scrollbar {
+  scrollbar-color: rgba(113, 113, 122, 0.7) transparent;
+}
+
+.dark .copilot-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(113, 113, 122, 0.55);
+  background-clip: padding-box;
+}
+
+.dark .copilot-scrollbar:hover::-webkit-scrollbar-thumb {
+  background: rgba(161, 161, 170, 0.7);
+  background-clip: padding-box;
+}

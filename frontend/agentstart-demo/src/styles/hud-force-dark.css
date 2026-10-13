@@ -1,0 +1,1711 @@
+/* 由 scripts/gen-force-dark.mjs 自动生成 —— 请勿手改。
+ * 强制暗色层：把组件库 scoped 样式里写死的浅色 hex 重映射为 HUD 暗色变量。
+ * 共处理 1258 条规则。生成时间：2026-09-28T09:05:01.463Z */
+
+html.dark[data-theme='dark'] .ph-mp-popover > .as-popover__panel,
+html.dark[data-theme='dark'] .ph-mp,
+html.dark[data-theme='dark'] .ph-mp-dropdown,
+html.dark[data-theme='dark'] .wf-tag-panel-body,
+html.dark[data-theme='dark'] .flow-node-handle.flow-node-handle-right.hovered::before,
+html.dark[data-theme='dark'] .flow-node-handle.flow-node-handle-right.hovered::after,
+html.dark[data-theme='dark'] .node-item,
+html.dark[data-theme='dark'] .wf-tool-row,
+html.dark[data-theme='dark'] .mcp-list button,
+html.dark[data-theme='dark'] .human-options,
+html.dark[data-theme='dark'] .wf-out-row:hover,
+html.dark[data-theme='dark'] .message-route-card,
+html.dark[data-theme='dark'] .wf-schedule-preview,
+html.dark[data-theme='dark'] .wf-connector-note,
+html.dark[data-theme='dark'] .start-var-item-readonly,
+html.dark[data-theme='dark'] .wf-config-section,
+html.dark[data-theme='dark'] .bg-white,
+html.dark[data-theme='dark'] .cip-iframe,
+html.dark[data-theme='dark'] .wdp-head,
+html.dark[data-theme='dark'] .wdp-stop,
+html.dark[data-theme='dark'] .log-annot,
+html.dark[data-theme='dark'] .monitor-tile,
+html.dark[data-theme='dark'] .monitor-call-card,
+html.dark[data-theme='dark'] .vem-switch-slider::before,
+html.dark[data-theme='dark'] .dr-mask,
+html.dark[data-theme='dark'] .dr-bp-switch-track::after,
+html.dark[data-theme='dark'] .dr-api-slot,
+html.dark[data-theme='dark'] .dr-switch-slider::before,
+html.dark[data-theme='dark'] .dr-history-panel,
+html.dark[data-theme='dark'] .as-emoji-btn:hover,
+html.dark[data-theme='dark'] .logs-table-wrap,
+html.dark[data-theme='dark'] .orch-switch-slider::before,
+html.dark[data-theme='dark'] .mpd-drawer,
+html.dark[data-theme='dark'] .mpd-switch-slider:before,
+html.dark[data-theme='dark'] .phs-row,
+html.dark[data-theme='dark'] .phs-switch-slider:before,
+html.dark[data-theme='dark'] .phs-mini-modal,
+html.dark[data-theme='dark'] .kh-wizard-shell,
+html.dark[data-theme='dark'] .kh-switch-slider::before,
+html.dark[data-theme='dark'] .kh-kg-filter-active,
+html.dark[data-theme='dark'] .kh-kg-workspace,
+html.dark[data-theme='dark'] .kh-ragops button,
+html.dark[data-theme='dark'] .kh-drawer-shell,
+html.dark[data-theme='dark'] .kh-drawer-main,
+html.dark[data-theme='dark'] .kh-drawer-editor,
+html.dark[data-theme='dark'] .kh-parsed-panel,
+html.dark[data-theme='dark'] .cad-form-dialog,
+html.dark[data-theme='dark'] .cmd-dialog,
+html.dark[data-theme='dark'] .catd-drawer,
+html.dark[data-theme='dark'] .cdd-drawer,
+html.dark[data-theme='dark'] .mcp-empty,
+html.dark[data-theme='dark'] .th-switch i {
+  background: var(--hud-surface);
+}
+
+html.dark[data-theme='dark'] .ph-mp-title,
+html.dark[data-theme='dark'] .ph-mp-model-card-name,
+html.dark[data-theme='dark'] .ph-mp-search-input,
+html.dark[data-theme='dark'] .ph-mp-group-name,
+html.dark[data-theme='dark'] .ph-mp-item-name,
+html.dark[data-theme='dark'] .ph-mp-params-title,
+html.dark[data-theme='dark'] .ph-mp-trigger-name,
+html.dark[data-theme='dark'] .wf-vi-input,
+html.dark[data-theme='dark'] .kh-dpm-title,
+html.dark[data-theme='dark'] .kh-dpm-item-name,
+html.dark[data-theme='dark'] .code-preview-body,
+html.dark[data-theme='dark'] .condition-case-summary,
+html.dark[data-theme='dark'] .http-url,
+html.dark[data-theme='dark'] .http-meta-value,
+html.dark[data-theme='dark'] .knowledge-query-value,
+html.dark[data-theme='dark'] .knowledge-dataset-name,
+html.dark[data-theme='dark'] .param-name,
+html.dark[data-theme='dark'] .start-var-name,
+html.dark[data-theme='dark'] .assigner-source,
+html.dark[data-theme='dark'] .wf-node-title,
+html.dark[data-theme='dark'] .wf-node-preview-value,
+html.dark[data-theme='dark'] .wf-node-preview-list,
+html.dark[data-theme='dark'] .app-title,
+html.dark[data-theme='dark'] .panel-header h3,
+html.dark[data-theme='dark'] .wf-context-menu-item,
+html.dark[data-theme='dark'] .wf-selector-node-label,
+html.dark[data-theme='dark'] .wf-selector-preview-title,
+html.dark[data-theme='dark'] .preview-title,
+html.dark[data-theme='dark'] .wf-pe-input,
+html.dark[data-theme='dark'] .wf-tools-item-name,
+html.dark[data-theme='dark'] .wf-field-title,
+html.dark[data-theme='dark'] .agent-output-name,
+html.dark[data-theme='dark'] .answer-output-name,
+html.dark[data-theme='dark'] .wf-http-timeout-input .ant-input-number-input,
+html.dark[data-theme='dark'] .wf-http-body-tab:hover,
+html.dark[data-theme='dark'] .wf-ds-item-name,
+html.dark[data-theme='dark'] .output-card-title,
+html.dark[data-theme='dark'] .output-tree-root-name,
+html.dark[data-theme='dark'] .output-plain-name,
+html.dark[data-theme='dark'] .wf-out-row-name,
+html.dark[data-theme='dark'] .connector-kind-card strong,
+html.dark[data-theme='dark'] .message-route-card strong,
+html.dark[data-theme='dark'] .start-var-label,
+html.dark[data-theme='dark'] .wf-config-header-title-input,
+html.dark[data-theme='dark'] .wf-config-section-title,
+html.dark[data-theme='dark'] .wf-config-menu-item,
+html.dark[data-theme='dark'] .text-gray-800,
+html.dark[data-theme='dark'] .wf-config-header-title-input .ant-input,
+html.dark[data-theme='dark'] .log-annot-msg-body,
+html.dark[data-theme='dark'] .monitor-title,
+html.dark[data-theme='dark'] .monitor-tile-value,
+html.dark[data-theme='dark'] .akm-token-mono,
+html.dark[data-theme='dark'] .api-top-title,
+html.dark[data-theme='dark'] .api-h1,
+html.dark[data-theme='dark'] .api-h3,
+html.dark[data-theme='dark'] .api-code,
+html.dark[data-theme='dark'] .vem-title,
+html.dark[data-theme='dark'] .dr-title,
+html.dark[data-theme='dark'] .dr-bp-title,
+html.dark[data-theme='dark'] .dr-bp-section-title,
+html.dark[data-theme='dark'] .dr-bp-url,
+html.dark[data-theme='dark'] .dr-btn-ghost:hover .dr-btn-icon-x,
+html.dark[data-theme='dark'] .dr-info-name,
+html.dark[data-theme='dark'] .dr-var-label,
+html.dark[data-theme='dark'] .dr-ds-row-name,
+html.dark[data-theme='dark'] .dr-plain-title,
+html.dark[data-theme='dark'] .as-modal-title,
+html.dark[data-theme='dark'] .as-tile-title,
+html.dark[data-theme='dark'] .as-preview-heading,
+html.dark[data-theme='dark'] .aa-title,
+html.dark[data-theme='dark'] .aa-pub-tab:hover,
+html.dark[data-theme='dark'] .agent-start-chat-page__title,
+html.dark[data-theme='dark'] .as-title,
+html.dark[data-theme='dark'] .dbg-input,
+html.dark[data-theme='dark'] .logs-top-title,
+html.dark[data-theme='dark'] .logs-title-cell,
+html.dark[data-theme='dark'] .mon-top-title,
+html.dark[data-theme='dark'] .mon-card-num,
+html.dark[data-theme='dark'] .prompt-textarea,
+html.dark[data-theme='dark'] .tool-pop-item-name,
+html.dark[data-theme='dark'] .orch-top-title,
+html.dark[data-theme='dark'] .orch-know-name,
+html.dark[data-theme='dark'] .studio-brand-name,
+html.dark[data-theme='dark'] .agent-run-timeline,
+html.dark[data-theme='dark'] .gms-trigger-name,
+html.dark[data-theme='dark'] .gms-search-input,
+html.dark[data-theme='dark'] .gms-group-name,
+html.dark[data-theme='dark'] .gms-item-name,
+html.dark[data-theme='dark'] .ph-group-name,
+html.dark[data-theme='dark'] .ph-title,
+html.dark[data-theme='dark'] .mpd-title,
+html.dark[data-theme='dark'] .pcm-title,
+html.dark[data-theme='dark'] .phs-compact-title,
+html.dark[data-theme='dark'] .phs-installable-name,
+html.dark[data-theme='dark'] .phs-popover-title,
+html.dark[data-theme='dark'] .phs-row-name,
+html.dark[data-theme='dark'] .phs-pill-name,
+html.dark[data-theme='dark'] .phs-mini-title,
+html.dark[data-theme='dark'] .rmp-title,
+html.dark[data-theme='dark'] .kh-source-label,
+html.dark[data-theme='dark'] .kh-panel-title,
+html.dark[data-theme='dark'] .kh-index-head,
+html.dark[data-theme='dark'] .kh-retrieve-title,
+html.dark[data-theme='dark'] .kh-pm-title,
+html.dark[data-theme='dark'] .kh-done-title,
+html.dark[data-theme='dark'] .kh-topbar-title,
+html.dark[data-theme='dark'] .kh-readonly-title,
+html.dark[data-theme='dark'] .kh-settings-title,
+html.dark[data-theme='dark'] .kh-mode-card-head,
+html.dark[data-theme='dark'] .kh-mode-card-title,
+html.dark[data-theme='dark'] .kh-retrieve-card-head,
+html.dark[data-theme='dark'] .kh-side-name,
+html.dark[data-theme='dark'] .kh-ip-title,
+html.dark[data-theme='dark'] .kh-ip-section-title,
+html.dark[data-theme='dark'] .kh-ip-stat-val,
+html.dark[data-theme='dark'] .kh-ip-url,
+html.dark[data-theme='dark'] .kh-side-count-val,
+html.dark[data-theme='dark'] .kh-meta-title,
+html.dark[data-theme='dark'] .rcp-title,
+html.dark[data-theme='dark'] .kh-ragops,
+html.dark[data-theme='dark'] .kh-drawer-doc-name,
+html.dark[data-theme='dark'] .kh-drawer-title-name,
+html.dark[data-theme='dark'] .kh-drawer-editor-title,
+html.dark[data-theme='dark'] .kh-parsed-blocks pre,
+html.dark[data-theme='dark'] .cad-header-text b,
+html.dark[data-theme='dark'] .cad-row-main b,
+html.dark[data-theme='dark'] .cad-form-dialog h3,
+html.dark[data-theme='dark'] .cmd-header-text b,
+html.dark[data-theme='dark'] .cmd-msg > header b,
+html.dark[data-theme='dark'] .cmd-dialog h3,
+html.dark[data-theme='dark'] .cc-intro h3,
+html.dark[data-theme='dark'] .cc-group-head h3,
+html.dark[data-theme='dark'] .cc-stat b,
+html.dark[data-theme='dark'] .cc-adapter b,
+html.dark[data-theme='dark'] .channel-hub-app,
+html.dark[data-theme='dark'] .rfm-title,
+html.dark[data-theme='dark'] .mr-root,
+html.dark[data-theme='dark'] .catd-header-text b,
+html.dark[data-theme='dark'] .ccm-title,
+html.dark[data-theme='dark'] .cdd-header-text b,
+html.dark[data-theme='dark'] .cdd-row-main b,
+html.dark[data-theme='dark'] .ch-root,
+html.dark[data-theme='dark'] .ch-toolbar-title,
+html.dark[data-theme='dark'] .ch-tab:hover,
+html.dark[data-theme='dark'] .mcp-modal-title,
+html.dark[data-theme='dark'] .ph-name {
+  color: var(--hud-text-strong);
+}
+
+html.dark[data-theme='dark'] .ph-mp-close:hover,
+html.dark[data-theme='dark'] .ph-mp-item:hover,
+html.dark[data-theme='dark'] .kh-dpm-tag-muted,
+html.dark[data-theme='dark'] .knowledge-dataset-tag,
+html.dark[data-theme='dark'] .wf-top-toolbar-divider,
+html.dark[data-theme='dark'] .wf-context-menu-item:hover,
+html.dark[data-theme='dark'] .wf-context-menu-divider,
+html.dark[data-theme='dark'] .selector-content::-webkit-scrollbar-track,
+html.dark[data-theme='dark'] .cond-ghost,
+html.dark[data-theme='dark'] .wf-http-body-tabs,
+html.dark[data-theme='dark'] .start-var-item:hover,
+html.dark[data-theme='dark'] .wf-config-header-title-input:hover,
+html.dark[data-theme='dark'] .wf-config-menu-divider,
+html.dark[data-theme='dark'] .wf-config-header-divider,
+html.dark[data-theme='dark'] .bg-gray-100,
+html.dark[data-theme='dark'] .cip-var-type,
+html.dark[data-theme='dark'] .cet-type,
+html.dark[data-theme='dark'] .api-p code,
+html.dark[data-theme='dark'] .dr-bp-status,
+html.dark[data-theme='dark'] .dr-publish-divider,
+html.dark[data-theme='dark'] .dr-nav-item:hover,
+html.dark[data-theme='dark'] .dr-link-muted:hover,
+html.dark[data-theme='dark'] .dr-ds-tag-muted,
+html.dark[data-theme='dark'] .aa-pub-tabs,
+html.dark[data-theme='dark'] .logs-page-btn:hover:not(:disabled),
+html.dark[data-theme='dark'] .mon-btn:hover,
+html.dark[data-theme='dark'] .prompt-var-item:hover,
+html.dark[data-theme='dark'] .tool-pop-close:hover,
+html.dark[data-theme='dark'] .tool-pop-item:hover,
+html.dark[data-theme='dark'] .var-empty code,
+html.dark[data-theme='dark'] .orch-btn:hover:not(:disabled),
+html.dark[data-theme='dark'] .orch-inline-ghost:hover,
+html.dark[data-theme='dark'] .gms-group-count,
+html.dark[data-theme='dark'] .gms-item:hover,
+html.dark[data-theme='dark'] .mpd-close:hover,
+html.dark[data-theme='dark'] .pcm-close:hover,
+html.dark[data-theme='dark'] .pcm-btn:hover,
+html.dark[data-theme='dark'] .phs-card-menu-item:hover,
+html.dark[data-theme='dark'] .phs-card-menu-sep,
+html.dark[data-theme='dark'] .phs-filter-tab:hover,
+html.dark[data-theme='dark'] .phs-row-cap--ctx,
+html.dark[data-theme='dark'] .phs-pill:hover,
+html.dark[data-theme='dark'] .phs-mini-close:hover,
+html.dark[data-theme='dark'] .kh-mode-card-lock,
+html.dark[data-theme='dark'] .kh-ip-chip-muted,
+html.dark[data-theme='dark'] .kh-chunk-keyword,
+html.dark[data-theme='dark'] .kh-pager-btn:hover:not(:disabled),
+html.dark[data-theme='dark'] .kh-drawer-back:hover,
+html.dark[data-theme='dark'] .cad-count,
+html.dark[data-theme='dark'] .cad-btn:hover,
+html.dark[data-theme='dark'] .cmd-msg > header em,
+html.dark[data-theme='dark'] .cmd-bubble.is-inbound,
+html.dark[data-theme='dark'] .cmd-btn:hover,
+html.dark[data-theme='dark'] .cmd-conversation > header em.status-closed,
+html.dark[data-theme='dark'] .cc-group-head > span,
+html.dark[data-theme='dark'] .cc-btn:hover,
+html.dark[data-theme='dark'] .rfm-input:disabled,
+html.dark[data-theme='dark'] .ccm-btn:hover,
+html.dark[data-theme='dark'] .cdd-btn:hover,
+html.dark[data-theme='dark'] .ch-btn:hover,
+html.dark[data-theme='dark'] .ch-pill.is-off,
+html.dark[data-theme='dark'] .ch-pill.is-neutral,
+html.dark[data-theme='dark'] .add-btn:hover {
+  background: var(--hud-fill);
+}
+
+html.dark[data-theme='dark'] .ph-mp-model-card,
+html.dark[data-theme='dark'] .ph-mp-trigger,
+html.dark[data-theme='dark'] .wf-vi,
+html.dark[data-theme='dark'] .kh-dpm-item,
+html.dark[data-theme='dark'] .kh-dpm-btn-ghost,
+html.dark[data-theme='dark'] .wf-hover-toolbar,
+html.dark[data-theme='dark'] .knowledge-dataset-row,
+html.dark[data-theme='dark'] .wf-context-menu,
+html.dark[data-theme='dark'] .wf-selector-panel,
+html.dark[data-theme='dark'] .wf-selector-preview,
+html.dark[data-theme='dark'] .node-preview-card,
+html.dark[data-theme='dark'] .wf-tools-item,
+html.dark[data-theme='dark'] .wf-var-selector-trigger,
+html.dark[data-theme='dark'] .wf-vsf,
+html.dark[data-theme='dark'] .wf-http-url,
+html.dark[data-theme='dark'] .human-mode-button,
+html.dark[data-theme='dark'] .wf-ds-item,
+html.dark[data-theme='dark'] .wf-triggers-type,
+html.dark[data-theme='dark'] .cip-root,
+html.dark[data-theme='dark'] .cip-var-panel,
+html.dark[data-theme='dark'] .vem-type-chip,
+html.dark[data-theme='dark'] .dr-bp-url-row,
+html.dark[data-theme='dark'] .dr-publish-menu,
+html.dark[data-theme='dark'] .dr-preview-col,
+html.dark[data-theme='dark'] .dr-card,
+html.dark[data-theme='dark'] .dr-var-item,
+html.dark[data-theme='dark'] .dr-ds-row,
+html.dark[data-theme='dark'] .as-tile,
+html.dark[data-theme='dark'] .as-card,
+html.dark[data-theme='dark'] .dbg-card,
+html.dark[data-theme='dark'] .mon-card,
+html.dark[data-theme='dark'] .prompt-var-pop,
+html.dark[data-theme='dark'] .agent-tool-card,
+html.dark[data-theme='dark'] .tool-pop,
+html.dark[data-theme='dark'] .var-card,
+html.dark[data-theme='dark'] .orch-card,
+html.dark[data-theme='dark'] .orch-inline-card,
+html.dark[data-theme='dark'] .gms-panel,
+html.dark[data-theme='dark'] .dmp-row,
+html.dark[data-theme='dark'] .phs-card-menu,
+html.dark[data-theme='dark'] .rmp-card,
+html.dark[data-theme='dark'] .kh-source,
+html.dark[data-theme='dark'] .kh-panel,
+html.dark[data-theme='dark'] .kh-index-card,
+html.dark[data-theme='dark'] .kh-retrieve-card,
+html.dark[data-theme='dark'] .kh-parent-mode-card,
+html.dark[data-theme='dark'] .kh-ip-stat,
+html.dark[data-theme='dark'] .kh-ip-url-row,
+html.dark[data-theme='dark'] .kh-chunk-card,
+html.dark[data-theme='dark'] .rcp,
+html.dark[data-theme='dark'] .cad-row,
+html.dark[data-theme='dark'] .cmd-msg,
+html.dark[data-theme='dark'] .cmd-conversation,
+html.dark[data-theme='dark'] .cc-intro,
+html.dark[data-theme='dark'] .mr-toolbar,
+html.dark[data-theme='dark'] .cdd-row,
+html.dark[data-theme='dark'] .ch-toolbar,
+html.dark[data-theme='dark'] .ch-audit,
+html.dark[data-theme='dark'] .ph-card {
+  background: var(--hud-surface);
+  border: 1px solid var(--hud-border);
+}
+
+html.dark[data-theme='dark'] .ph-mp-model-card:hover,
+html.dark[data-theme='dark'] .ph-mp-model-card.is-active,
+html.dark[data-theme='dark'] .ph-mp-trigger:hover,
+html.dark[data-theme='dark'] .ph-mp-trigger.is-active,
+html.dark[data-theme='dark'] .wf-vi:focus-within,
+html.dark[data-theme='dark'] .jsf-field input:not([type='checkbox']):focus,
+html.dark[data-theme='dark'] .jsf-field select:focus,
+html.dark[data-theme='dark'] .jsf-field textarea:focus,
+html.dark[data-theme='dark'] .jsf-json:focus,
+html.dark[data-theme='dark'] .wf-pe:focus-within,
+html.dark[data-theme='dark'] .wf-tools-item:hover,
+html.dark[data-theme='dark'] .wf-var-selector-trigger:hover:not(.is-disabled),
+html.dark[data-theme='dark'] .wf-vsf:hover,
+html.dark[data-theme='dark'] .wf-http-url:focus-within,
+html.dark[data-theme='dark'] .wf-http-binary-trigger:hover,
+html.dark[data-theme='dark'] .wf-ds-item:hover,
+html.dark[data-theme='dark'] .llm-varselect:hover,
+html.dark[data-theme='dark'] .connector-kind-card:hover,
+html.dark[data-theme='dark'] .message-route-card:hover,
+html.dark[data-theme='dark'] .wdp-field input:focus,
+html.dark[data-theme='dark'] .wdp-field select:focus,
+html.dark[data-theme='dark'] .wdp-field textarea:focus,
+html.dark[data-theme='dark'] .wdp-step-pending,
+html.dark[data-theme='dark'] .vem-input:focus,
+html.dark[data-theme='dark'] .vem-textarea:focus,
+html.dark[data-theme='dark'] .dr-bp-url-row:hover,
+html.dark[data-theme='dark'] .dr-input:focus,
+html.dark[data-theme='dark'] .dr-ds-row:hover,
+html.dark[data-theme='dark'] .as-input:focus,
+html.dark[data-theme='dark'] .as-textarea:focus,
+html.dark[data-theme='dark'] .aa-emoji-btn:hover,
+html.dark[data-theme='dark'] .aa-emoji-btn--on,
+html.dark[data-theme='dark'] .aa-bg-btn--on,
+html.dark[data-theme='dark'] .as-card-new:hover,
+html.dark[data-theme='dark'] .logs-input:focus,
+html.dark[data-theme='dark'] .mon-select:focus,
+html.dark[data-theme='dark'] .prompt-chip-primary,
+html.dark[data-theme='dark'] .tool-search:focus,
+html.dark[data-theme='dark'] .var-input:focus,
+html.dark[data-theme='dark'] .gms-trigger:hover:not(:disabled),
+html.dark[data-theme='dark'] .gms-trigger.is-active,
+html.dark[data-theme='dark'] .mpd-num:focus,
+html.dark[data-theme='dark'] .mpd-text:focus,
+html.dark[data-theme='dark'] .pcm-input:focus,
+html.dark[data-theme='dark'] .phs-search:focus,
+html.dark[data-theme='dark'] .phs-mini-input:focus,
+html.dark[data-theme='dark'] .rmp-radio-on,
+html.dark[data-theme='dark'] .rmp-select:focus,
+html.dark[data-theme='dark'] .kh-panel-radio-on,
+html.dark[data-theme='dark'] .kh-input:focus,
+html.dark[data-theme='dark'] .kh-ip-url-row:hover,
+html.dark[data-theme='dark'] .kh-doctab-select:focus,
+html.dark[data-theme='dark'] .kh-doctab-search-input:focus,
+html.dark[data-theme='dark'] .kh-drawer-editor-textarea:focus,
+html.dark[data-theme='dark'] .cad-fields input:focus,
+html.dark[data-theme='dark'] .cad-fields select:focus,
+html.dark[data-theme='dark'] .cmd-form-field textarea:focus,
+html.dark[data-theme='dark'] .rfm-input:focus,
+html.dark[data-theme='dark'] .ccm-input:focus,
+html.dark[data-theme='dark'] .ch-input:focus,
+html.dark[data-theme='dark'] .ph-input:focus,
+html.dark[data-theme='dark'] .form-input:focus,
+html.dark[data-theme='dark'] .form-select:focus,
+html.dark[data-theme='dark'] .form-textarea:focus {
+  border-color: var(--hud-border-strong);
+}
+
+html.dark[data-theme='dark'] .ph-mp-model-card-icon,
+html.dark[data-theme='dark'] .ph-mp-model-card.is-active .ph-mp-model-card-arrow,
+html.dark[data-theme='dark'] .ph-mp-item.is-active .ph-mp-item-name,
+html.dark[data-theme='dark'] .ph-mp-item-check,
+html.dark[data-theme='dark'] .ph-mp-trigger-icon,
+html.dark[data-theme='dark'] .ph-mp-trigger.is-active .ph-mp-trigger-arrow,
+html.dark[data-theme='dark'] .wf-tag-item.is-active,
+html.dark[data-theme='dark'] .wf-tag-expand:hover,
+html.dark[data-theme='dark'] .wf-vi-pill-label,
+html.dark[data-theme='dark'] .wf-vi-pill-close,
+html.dark[data-theme='dark'] .jsf-mode,
+html.dark[data-theme='dark'] .jsf-mode:hover,
+html.dark[data-theme='dark'] .icon-USER_INPUT,
+html.dark[data-theme='dark'] .icon-LLM,
+html.dark[data-theme='dark'] .wf-pe-pill-label,
+html.dark[data-theme='dark'] .wf-pe-pill-close,
+html.dark[data-theme='dark'] .wf-var-selector-icon,
+html.dark[data-theme='dark'] .wf-var-selector-value,
+html.dark[data-theme='dark'] .wf-var-selector-clear,
+html.dark[data-theme='dark'] .wf-vsf:hover .wf-vsf-selector-icon,
+html.dark[data-theme='dark'] .wf-vsf-pill-label,
+html.dark[data-theme='dark'] .wf-vsf-pill-close,
+html.dark[data-theme='dark'] .wf-ds-link,
+html.dark[data-theme='dark'] .wf-ds-link:hover,
+html.dark[data-theme='dark'] .connector-kind-card.active strong,
+html.dark[data-theme='dark'] .output-contract code,
+html.dark[data-theme='dark'] .start-var-icon,
+html.dark[data-theme='dark'] .text-primary,
+html.dark[data-theme='dark'] .cip-var-btn-icon,
+html.dark[data-theme='dark'] .cip-link-btn,
+html.dark[data-theme='dark'] .wdp-running-chip,
+html.dark[data-theme='dark'] .cet-running,
+html.dark[data-theme='dark'] .log-annot-link,
+html.dark[data-theme='dark'] .api-copy:hover,
+html.dark[data-theme='dark'] .vem-type-chip.on .vem-type-name,
+html.dark[data-theme='dark'] .dr-bp-section-icon-web,
+html.dark[data-theme='dark'] .dr-tag-ver,
+html.dark[data-theme='dark'] .dr-link-btn,
+html.dark[data-theme='dark'] .as-new-inner,
+html.dark[data-theme='dark'] .as-action,
+html.dark[data-theme='dark'] .dbg-hint-link,
+html.dark[data-theme='dark'] .tool-add,
+html.dark[data-theme='dark'] .tool-pop-tab-active,
+html.dark[data-theme='dark'] .tool-pop-item-active::after,
+html.dark[data-theme='dark'] .var-add,
+html.dark[data-theme='dark'] .orch-card-btn,
+html.dark[data-theme='dark'] .gms-trigger-icon,
+html.dark[data-theme='dark'] .gms-item.is-active .gms-item-name,
+html.dark[data-theme='dark'] .gms-item-check,
+html.dark[data-theme='dark'] .ph-btn,
+html.dark[data-theme='dark'] .dmp-saving,
+html.dark[data-theme='dark'] .mpd-reset,
+html.dark[data-theme='dark'] .rmp-slider-val,
+html.dark[data-theme='dark'] .kh-step-active,
+html.dark[data-theme='dark'] .kh-source-icon,
+html.dark[data-theme='dark'] .kh-dz-link,
+html.dark[data-theme='dark'] .kh-file-icon,
+html.dark[data-theme='dark'] .kh-empty-link,
+html.dark[data-theme='dark'] .kh-slider-val,
+html.dark[data-theme='dark'] .kh-ip-section-icon-stat,
+html.dark[data-theme='dark'] .kh-chunk-expand-inline,
+html.dark[data-theme='dark'] .kh-chunks-link,
+html.dark[data-theme='dark'] .native-guide span,
+html.dark[data-theme='dark'] .cad-links a,
+html.dark[data-theme='dark'] .cad-link,
+html.dark[data-theme='dark'] .cmd-op,
+html.dark[data-theme='dark'] .cc-stat.is-link:hover b,
+html.dark[data-theme='dark'] .cc-act:hover,
+html.dark[data-theme='dark'] .cc-act-link:hover,
+html.dark[data-theme='dark'] .cc-act.is-primary {
+  color: var(--hud-primary);
+}
+
+html.dark[data-theme='dark'] .ph-mp-search,
+html.dark[data-theme='dark'] .gms-search {
+  border-bottom: 1px solid var(--hud-border);
+  background: var(--hud-sunken);
+}
+
+html.dark[data-theme='dark'] .ph-mp-group-header:hover,
+html.dark[data-theme='dark'] .kh-dpm-btn-ghost:hover,
+html.dark[data-theme='dark'] .center-canvas,
+html.dark[data-theme='dark'] .dify-flow,
+html.dark[data-theme='dark'] .wf-var-selector-trigger.is-disabled,
+html.dark[data-theme='dark'] .cond-condition,
+html.dark[data-theme='dark'] .wf-vsf-filled,
+html.dark[data-theme='dark'] .wf-param-table-row:hover,
+html.dark[data-theme='dark'] .human-field-card,
+html.dark[data-theme='dark'] .wf-ds-option-row,
+html.dark[data-theme='dark'] .wf-ds-cond-list,
+html.dark[data-theme='dark'] .output-tree-root,
+html.dark[data-theme='dark'] .output-plain-row,
+html.dark[data-theme='dark'] .wf-triggers-toggle,
+html.dark[data-theme='dark'] .assigner-item,
+html.dark[data-theme='dark'] .bg-gray-50,
+html.dark[data-theme='dark'] .cip-body,
+html.dark[data-theme='dark'] .cip-loading,
+html.dark[data-theme='dark'] .wdp-running,
+html.dark[data-theme='dark'] .wdp-placeholder,
+html.dark[data-theme='dark'] .wdp-step-head,
+html.dark[data-theme='dark'] .cet-empty,
+html.dark[data-theme='dark'] .cet-running,
+html.dark[data-theme='dark'] .cet-step-head,
+html.dark[data-theme='dark'] .log-annot-msg,
+html.dark[data-theme='dark'] .monitor,
+html.dark[data-theme='dark'] .dr-panel,
+html.dark[data-theme='dark'] .dr-btn-secondary:disabled,
+html.dark[data-theme='dark'] .dr-publish-item:hover,
+html.dark[data-theme='dark'] .dr-main,
+html.dark[data-theme='dark'] .logs-row:hover,
+html.dark[data-theme='dark'] .mon-body,
+html.dark[data-theme='dark'] .orch-know-row,
+html.dark[data-theme='dark'] .studio-shell,
+html.dark[data-theme='dark'] .gms-group-head:hover,
+html.dark[data-theme='dark'] .mpd-btn:hover:not(:disabled),
+html.dark[data-theme='dark'] .phs-btn:hover,
+html.dark[data-theme='dark'] .phs-pill,
+html.dark[data-theme='dark'] .kh-btn-mini:hover,
+html.dark[data-theme='dark'] .kh-done-name-input .kh-input,
+html.dark[data-theme='dark'] .kh-settings-cards-locked .kh-mode-card-active,
+html.dark[data-theme='dark'] .kh-side-nav-item:hover,
+html.dark[data-theme='dark'] .kh-side-api:hover,
+html.dark[data-theme='dark'] .kh-btn-secondary:hover,
+html.dark[data-theme='dark'] .kh-metrics div,
+html.dark[data-theme='dark'] .cmd-drawer,
+html.dark[data-theme='dark'] .cc-stat,
+html.dark[data-theme='dark'] .rfm-btn:hover,
+html.dark[data-theme='dark'] .mr-btn:hover,
+html.dark[data-theme='dark'] .ch-audit tbody tr:hover td,
+html.dark[data-theme='dark'] .mcp-tool-list,
+html.dark[data-theme='dark'] .mcp-parameter-table th,
+html.dark[data-theme='dark'] .parameter-table th {
+  background: var(--hud-sunken);
+}
+
+html.dark[data-theme='dark'] .ph-mp-item.is-active,
+html.dark[data-theme='dark'] .ph-mp-dropdown-footer:hover,
+html.dark[data-theme='dark'] .ph-mp-footer:hover,
+html.dark[data-theme='dark'] .wf-tag-item:hover,
+html.dark[data-theme='dark'] .wf-tag-item.is-active,
+html.dark[data-theme='dark'] .wf-selector-node:hover,
+html.dark[data-theme='dark'] .icon-CODE,
+html.dark[data-theme='dark'] .mcp-list button.selected,
+html.dark[data-theme='dark'] .cond-chosen,
+html.dark[data-theme='dark'] .wf-ds-dynamic-slot,
+html.dark[data-theme='dark'] .output-contract,
+html.dark[data-theme='dark'] .wf-config-menu-item:hover,
+html.dark[data-theme='dark'] .hover\:bg-primary-light:hover,
+html.dark[data-theme='dark'] .cip-link-btn:hover,
+html.dark[data-theme='dark'] .wdp-dot-pending,
+html.dark[data-theme='dark'] .log-annot-msg-assistant,
+html.dark[data-theme='dark'] .dr-btn-secondary:active:not(:disabled),
+html.dark[data-theme='dark'] .dr-chatflow-expand:hover,
+html.dark[data-theme='dark'] .dr-publish-restore:hover,
+html.dark[data-theme='dark'] .dr-link-btn:hover,
+html.dark[data-theme='dark'] .aa-more .aa-card-menu-item:hover,
+html.dark[data-theme='dark'] .aa-more .aa-card-menu-item:focus-visible,
+html.dark[data-theme='dark'] .as-action:hover,
+html.dark[data-theme='dark'] .dbg-avatar,
+html.dark[data-theme='dark'] .prompt-chip:hover,
+html.dark[data-theme='dark'] .tool-add:hover,
+html.dark[data-theme='dark'] .tool-pop-item-active,
+html.dark[data-theme='dark'] .var-add:hover,
+html.dark[data-theme='dark'] .orch-card-btn:hover,
+html.dark[data-theme='dark'] li.selected,
+html.dark[data-theme='dark'] li:focus-visible,
+html.dark[data-theme='dark'] .gms-item.is-active,
+html.dark[data-theme='dark'] .ph-btn:hover,
+html.dark[data-theme='dark'] .mpd-reset:hover,
+html.dark[data-theme='dark'] .rmp-tabs,
+html.dark[data-theme='dark'] .kh-hybrid-tabs,
+html.dark[data-theme='dark'] .kh-chunk-expand-inline:hover,
+html.dark[data-theme='dark'] .kh-chunks-link:hover,
+html.dark[data-theme='dark'] .catd-result,
+html.dark[data-theme='dark'] .cdd-icon {
+  background: var(--hud-accent-soft);
+}
+
+html.dark[data-theme='dark'] .ph-mp-item-tag,
+html.dark[data-theme='dark'] .kh-dpm-item-icon,
+html.dark[data-theme='dark'] .http-body-type,
+html.dark[data-theme='dark'] .wf-pe-btn:hover,
+html.dark[data-theme='dark'] .cip-var-btn-badge,
+html.dark[data-theme='dark'] .cet-detail b em,
+html.dark[data-theme='dark'] .monitor-sub code,
+html.dark[data-theme='dark'] .api-toc-item-active,
+html.dark[data-theme='dark'] .dr-bp-action-icon,
+html.dark[data-theme='dark'] .dr-bp-section-icon-api,
+html.dark[data-theme='dark'] .dr-bp-icon-btn:hover,
+html.dark[data-theme='dark'] .dr-info-trigger:hover,
+html.dark[data-theme='dark'] .dr-info-avatar,
+html.dark[data-theme='dark'] .dr-var-empty code,
+html.dark[data-theme='dark'] .dr-var-icon,
+html.dark[data-theme='dark'] .dr-ds-row-icon,
+html.dark[data-theme='dark'] .aa-pub-tab--on .aa-pub-count,
+html.dark[data-theme='dark'] .as-strategy,
+html.dark[data-theme='dark'] .prompt-var-item code,
+html.dark[data-theme='dark'] .tool-chip,
+html.dark[data-theme='dark'] .studio-nav-item-active,
+html.dark[data-theme='dark'] .ph-group-count,
+html.dark[data-theme='dark'] .ph-type-tag,
+html.dark[data-theme='dark'] .dmp-cap,
+html.dark[data-theme='dark'] .mpd-badge,
+html.dark[data-theme='dark'] .phs-cap,
+html.dark[data-theme='dark'] .phs-row-icon,
+html.dark[data-theme='dark'] .phs-row-cap,
+html.dark[data-theme='dark'] .phs-row-gear:hover,
+html.dark[data-theme='dark'] .phs-pill-gear:hover,
+html.dark[data-theme='dark'] .kh-chunk-tag,
+html.dark[data-theme='dark'] .kh-hint-block,
+html.dark[data-theme='dark'] .kh-side-trigger:hover,
+html.dark[data-theme='dark'] .kh-ip-action-icon,
+html.dark[data-theme='dark'] .kh-ip-section-icon-api,
+html.dark[data-theme='dark'] .kh-ip-icon-btn:hover,
+html.dark[data-theme='dark'] .kh-side-nav-active,
+html.dark[data-theme='dark'] .ph-cap {
+  background: var(--hud-accent-soft);
+  color: var(--hud-primary);
+}
+
+html.dark[data-theme='dark'] .ph-mp-dropdown-footer,
+html.dark[data-theme='dark'] .ph-mp-footer {
+  border-top: 1px solid var(--hud-border);
+  color: var(--hud-primary);
+}
+
+html.dark[data-theme='dark'] .ph-mp-param-name,
+html.dark[data-theme='dark'] .jsf-field,
+html.dark[data-theme='dark'] .wf-node-config-value,
+html.dark[data-theme='dark'] .wf-node-metric-value,
+html.dark[data-theme='dark'] .node-item span,
+html.dark[data-theme='dark'] .cip-head-title,
+html.dark[data-theme='dark'] .cip-var-panel-title,
+html.dark[data-theme='dark'] .log-annot-userid,
+html.dark[data-theme='dark'] .monitor-section-title,
+html.dark[data-theme='dark'] .vem-label,
+html.dark[data-theme='dark'] .vem-type-name,
+html.dark[data-theme='dark'] .vem-switch-title,
+html.dark[data-theme='dark'] .dr-publish-head-time,
+html.dark[data-theme='dark'] .dr-publish-item,
+html.dark[data-theme='dark'] .dr-card-title,
+html.dark[data-theme='dark'] .dr-inline-label,
+html.dark[data-theme='dark'] .as-section-label,
+html.dark[data-theme='dark'] .as-label,
+html.dark[data-theme='dark'] .aa-more .aa-card-menu-item,
+html.dark[data-theme='dark'] .dbg-head-title,
+html.dark[data-theme='dark'] .mon-card-title,
+html.dark[data-theme='dark'] .prompt-title,
+html.dark[data-theme='dark'] .tool-title,
+html.dark[data-theme='dark'] .var-title,
+html.dark[data-theme='dark'] .orch-card-title,
+html.dark[data-theme='dark'] .orch-inline-label,
+html.dark[data-theme='dark'] .dmp-title,
+html.dark[data-theme='dark'] .mpd-label,
+html.dark[data-theme='dark'] .pcm-label,
+html.dark[data-theme='dark'] .phs-section-title,
+html.dark[data-theme='dark'] .phs-card-menu-item,
+html.dark[data-theme='dark'] .phs-mini-field label,
+html.dark[data-theme='dark'] .rmp-check,
+html.dark[data-theme='dark'] .kh-section-label,
+html.dark[data-theme='dark'] .kh-preview-title,
+html.dark[data-theme='dark'] .kh-preview-chunk-body,
+html.dark[data-theme='dark'] .kh-done-progress-file,
+html.dark[data-theme='dark'] .kh-fact-val,
+html.dark[data-theme='dark'] .kh-settings-label,
+html.dark[data-theme='dark'] .kh-check,
+html.dark[data-theme='dark'] .kh-ip-desc-text,
+html.dark[data-theme='dark'] .kh-chunk-body,
+html.dark[data-theme='dark'] .kh-meta-val,
+html.dark[data-theme='dark'] .native-guide,
+html.dark[data-theme='dark'] .cad-section h3,
+html.dark[data-theme='dark'] .cad-section-title,
+html.dark[data-theme='dark'] .cad-fields label,
+html.dark[data-theme='dark'] .cad-enable,
+html.dark[data-theme='dark'] .cmd-form-field,
+html.dark[data-theme='dark'] .cmd-conversation > p,
+html.dark[data-theme='dark'] .rfm-enable,
+html.dark[data-theme='dark'] .rfm-field,
+html.dark[data-theme='dark'] .rfm-group legend,
+html.dark[data-theme='dark'] .ccm-field,
+html.dark[data-theme='dark'] .ccm-group h4,
+html.dark[data-theme='dark'] .cdd-section h3,
+html.dark[data-theme='dark'] .cdd-section-title,
+html.dark[data-theme='dark'] .ch-audit td,
+html.dark[data-theme='dark'] .ph-label,
+html.dark[data-theme='dark'] .section-title,
+html.dark[data-theme='dark'] .form-group label {
+  color: var(--hud-text);
+}
+
+html.dark[data-theme='dark'] .wf-tag-panel,
+html.dark[data-theme='dark'] .cet-root,
+html.dark[data-theme='dark'] .dbg-bubble {
+  background: var(--hud-surface);
+  border: 1px solid var(--hud-border);
+  color: var(--hud-text-strong);
+}
+
+html.dark[data-theme='dark'] .wf-tag-panel-header,
+html.dark[data-theme='dark'] .wf-selector-header,
+html.dark[data-theme='dark'] .wf-pe-toolbar,
+html.dark[data-theme='dark'] .wf-param-table-header,
+html.dark[data-theme='dark'] .ch-audit th {
+  background: var(--hud-sunken);
+  border-bottom: 1px solid var(--hud-border);
+}
+
+html.dark[data-theme='dark'] .wf-tag-panel-close:hover,
+html.dark[data-theme='dark'] .wf-top-btn:hover:not(:disabled),
+html.dark[data-theme='dark'] .wf-selector-close-btn:hover,
+html.dark[data-theme='dark'] .wf-zoom-btn:hover,
+html.dark[data-theme='dark'] .api-toc-item:hover,
+html.dark[data-theme='dark'] .vem-btn-ghost:hover,
+html.dark[data-theme='dark'] .dr-btn-ghost:hover,
+html.dark[data-theme='dark'] .dr-rail-collapse:hover,
+html.dark[data-theme='dark'] .dr-msg-assistant .dr-msg-body,
+html.dark[data-theme='dark'] .studio-nav-item:hover,
+html.dark[data-theme='dark'] .cmd-close:hover,
+html.dark[data-theme='dark'] .rfm-close:hover,
+html.dark[data-theme='dark'] .catd-close:hover,
+html.dark[data-theme='dark'] .ccm-close:hover,
+html.dark[data-theme='dark'] .cdd-close:hover {
+  background: var(--hud-fill);
+  color: var(--hud-text-strong);
+}
+
+html.dark[data-theme='dark'] .wf-tag-icon,
+html.dark[data-theme='dark'] .wf-vi-pill-icon,
+html.dark[data-theme='dark'] .btn-publish,
+html.dark[data-theme='dark'] .btn-publish:hover,
+html.dark[data-theme='dark'] .wf-pe-pill-icon,
+html.dark[data-theme='dark'] .cond-case-badge,
+html.dark[data-theme='dark'] .wf-vsf-pill-icon,
+html.dark[data-theme='dark'] .message-route-card.active .message-route-check,
+html.dark[data-theme='dark'] .cet-running i,
+html.dark[data-theme='dark'] .monitor-section-dot,
+html.dark[data-theme='dark'] .vem-switch-row input:checked + .vem-switch-slider,
+html.dark[data-theme='dark'] .dr-card-title-dot,
+html.dark[data-theme='dark'] .dr-switch input:checked + .dr-switch-slider,
+html.dark[data-theme='dark'] .dr-msg-user .dr-msg-body,
+html.dark[data-theme='dark'] .orch-vision-icon,
+html.dark[data-theme='dark'] .orch-switch input:checked + .orch-switch-slider,
+html.dark[data-theme='dark'] .mpd-switch input:checked + .mpd-switch-slider,
+html.dark[data-theme='dark'] .mpd-btn--primary:hover:not(:disabled),
+html.dark[data-theme='dark'] .pcm-btn-primary:hover,
+html.dark[data-theme='dark'] .phs-btn-primary:hover,
+html.dark[data-theme='dark'] .phs-switch input:checked + .phs-switch-slider,
+html.dark[data-theme='dark'] .rmp-badge,
+html.dark[data-theme='dark'] .kh-step-num-badge,
+html.dark[data-theme='dark'] .kh-retrieve-icon,
+html.dark[data-theme='dark'] .kh-switch input:checked + .kh-switch-slider,
+html.dark[data-theme='dark'] .kh-pager-size-active,
+html.dark[data-theme='dark'] .cad-btn-primary:hover,
+html.dark[data-theme='dark'] .cc-btn-primary:hover,
+html.dark[data-theme='dark'] .cc-mini.is-primary:hover,
+html.dark[data-theme='dark'] .catd-run,
+html.dark[data-theme='dark'] .catd-run:hover,
+html.dark[data-theme='dark'] .ccm-btn-primary:hover,
+html.dark[data-theme='dark'] .cdd-btn-primary:hover,
+html.dark[data-theme='dark'] .ch-btn-primary:hover {
+  background: var(--hud-primary);
+}
+
+html.dark[data-theme='dark'] .wf-vi-insert-btn:hover,
+html.dark[data-theme='dark'] .kh-dpm-tag,
+html.dark[data-theme='dark'] .wf-param-add:hover,
+html.dark[data-theme='dark'] .wf-http-badge,
+html.dark[data-theme='dark'] .wf-ds-item-icon,
+html.dark[data-theme='dark'] .wf-config-hint code,
+html.dark[data-theme='dark'] .dr-mode-badge,
+html.dark[data-theme='dark'] .dr-bp-mode,
+html.dark[data-theme='dark'] .dr-info-card-active .dr-info-trigger,
+html.dark[data-theme='dark'] .dr-var-tag,
+html.dark[data-theme='dark'] .dr-ds-tag,
+html.dark[data-theme='dark'] .kh-side-head-active .kh-side-trigger,
+html.dark[data-theme='dark'] .kh-ip-chip,
+html.dark[data-theme='dark'] .cmd-attachments a,
+html.dark[data-theme='dark'] .cmd-attachments span,
+html.dark[data-theme='dark'] .cmd-view-tabs button.active,
+html.dark[data-theme='dark'] .cmd-conversation > header em,
+html.dark[data-theme='dark'] .cmd-clear-filter,
+html.dark[data-theme='dark'] .mcp-summary span {
+  color: var(--hud-primary);
+  background: var(--hud-accent-soft);
+}
+
+html.dark[data-theme='dark'] .wf-vi-pill,
+html.dark[data-theme='dark'] .wf-pe-pill,
+html.dark[data-theme='dark'] .wf-vsf-pill {
+  color: var(--hud-text-strong);
+  background: var(--hud-accent-soft);
+  border: 1px solid var(--hud-border-strong);
+}
+
+html.dark[data-theme='dark'] .wf-vi-pill:hover,
+html.dark[data-theme='dark'] .wf-pe-pill:hover,
+html.dark[data-theme='dark'] .wf-var-selector-trigger.has-value,
+html.dark[data-theme='dark'] .cond-logical-op:hover,
+html.dark[data-theme='dark'] .api-key-btn:hover,
+html.dark[data-theme='dark'] .vem-type-chip.on,
+html.dark[data-theme='dark'] .dr-info-card-active,
+html.dark[data-theme='dark'] .phs-pill--on,
+html.dark[data-theme='dark'] .kh-side-head-active,
+html.dark[data-theme='dark'] .cc-mini:hover {
+  background: var(--hud-accent-soft);
+  border-color: var(--hud-border-strong);
+}
+
+html.dark[data-theme='dark'] .jsf-field input:not([type='checkbox']),
+html.dark[data-theme='dark'] .jsf-field select,
+html.dark[data-theme='dark'] .jsf-field textarea,
+html.dark[data-theme='dark'] .jsf-json,
+html.dark[data-theme='dark'] .vem-input,
+html.dark[data-theme='dark'] .vem-textarea,
+html.dark[data-theme='dark'] .rmp-select,
+html.dark[data-theme='dark'] .cmd-form-field textarea,
+html.dark[data-theme='dark'] .cmd-form-field input,
+html.dark[data-theme='dark'] .cmd-form-field select {
+  color: var(--hud-text-strong);
+  background: var(--hud-surface);
+  border: 1px solid var(--hud-border);
+}
+
+html.dark[data-theme='dark'] .jsf-empty,
+html.dark[data-theme='dark'] .wf-tools-empty,
+html.dark[data-theme='dark'] .classifier-empty,
+html.dark[data-theme='dark'] .code-empty,
+html.dark[data-theme='dark'] .cond-empty,
+html.dark[data-theme='dark'] .end-empty,
+html.dark[data-theme='dark'] .wf-http-body-empty,
+html.dark[data-theme='dark'] .wf-http-binary-trigger,
+html.dark[data-theme='dark'] .human-empty,
+html.dark[data-theme='dark'] .wf-ds-empty,
+html.dark[data-theme='dark'] .list-op-empty,
+html.dark[data-theme='dark'] .llm-varselect,
+html.dark[data-theme='dark'] .param-empty,
+html.dark[data-theme='dark'] .start-empty,
+html.dark[data-theme='dark'] .assigner-empty,
+html.dark[data-theme='dark'] .var-empty,
+html.dark[data-theme='dark'] .dr-var-empty {
+  background: var(--hud-sunken);
+  border: 1px dashed var(--hud-border);
+}
+
+html.dark[data-theme='dark'] .skill-select select,
+html.dark[data-theme='dark'] .vue-flow__minimap.wf-minimap,
+html.dark[data-theme='dark'] .wf-pe,
+html.dark[data-theme='dark'] .wf-tool-tabs button,
+html.dark[data-theme='dark'] .wf-param-table,
+html.dark[data-theme='dark'] .cnc select,
+html.dark[data-theme='dark'] .cnc input,
+html.dark[data-theme='dark'] .dr-mini-select,
+html.dark[data-theme='dark'] .event-inspector,
+html.dark[data-theme='dark'] .run-details,
+html.dark[data-theme='dark'] .gms-trigger,
+html.dark[data-theme='dark'] .pcm-btn,
+html.dark[data-theme='dark'] .kh-preview-chunk,
+html.dark[data-theme='dark'] .kh-mode-card,
+html.dark[data-theme='dark'] .kh-doctab-search-input,
+html.dark[data-theme='dark'] .kh-meta-toggle,
+html.dark[data-theme='dark'] .kh-pager-btn,
+html.dark[data-theme='dark'] .kh-ragops section,
+html.dark[data-theme='dark'] .kh-drawer-back {
+  border: 1px solid var(--hud-border);
+  background: var(--hud-surface);
+}
+
+html.dark[data-theme='dark'] .kh-dpm-header,
+html.dark[data-theme='dark'] .top-toolbar,
+html.dark[data-theme='dark'] .panel-header,
+html.dark[data-theme='dark'] .border-b,
+html.dark[data-theme='dark'] .cip-var-panel-head,
+html.dark[data-theme='dark'] .vem-header,
+html.dark[data-theme='dark'] .dr-bp-head,
+html.dark[data-theme='dark'] .dr-preview-head,
+html.dark[data-theme='dark'] .as-modal-header,
+html.dark[data-theme='dark'] .dbg-head,
+html.dark[data-theme='dark'] .tool-pop-tabs,
+html.dark[data-theme='dark'] .studio-brand,
+html.dark[data-theme='dark'] .mpd-head,
+html.dark[data-theme='dark'] .pcm-header,
+html.dark[data-theme='dark'] .phs-filter-bar,
+html.dark[data-theme='dark'] .phs-popover-head,
+html.dark[data-theme='dark'] .phs-popover-actions,
+html.dark[data-theme='dark'] .phs-popover-inner .phs-popover-head,
+html.dark[data-theme='dark'] .phs-popover-inner .phs-popover-actions,
+html.dark[data-theme='dark'] .phs-mini-header,
+html.dark[data-theme='dark'] .kh-stepper,
+html.dark[data-theme='dark'] .kh-ip-head,
+html.dark[data-theme='dark'] .kh-meta-header,
+html.dark[data-theme='dark'] .rcp-head,
+html.dark[data-theme='dark'] .kh-drawer-topbar,
+html.dark[data-theme='dark'] .kh-parsed-panel header,
+html.dark[data-theme='dark'] .cad-form-header,
+html.dark[data-theme='dark'] .cmd-dialog > header,
+html.dark[data-theme='dark'] .rfm-header,
+html.dark[data-theme='dark'] .catd-header,
+html.dark[data-theme='dark'] .ccm-header,
+html.dark[data-theme='dark'] .cdd-header,
+html.dark[data-theme='dark'] .ch-tabs,
+html.dark[data-theme='dark'] .ch-audit-toolbar {
+  border-bottom: 1px solid var(--hud-border);
+}
+
+html.dark[data-theme='dark'] .kh-dpm-close:hover,
+html.dark[data-theme='dark'] .cip-icon-btn:hover,
+html.dark[data-theme='dark'] .vem-close:hover,
+html.dark[data-theme='dark'] .dr-icon-btn:hover,
+html.dark[data-theme='dark'] .as-close:hover,
+html.dark[data-theme='dark'] .dbg-head-btn:hover,
+html.dark[data-theme='dark'] .kh-btn-secondary,
+html.dark[data-theme='dark'] .kh-close:hover,
+html.dark[data-theme='dark'] .kh-pager-size:hover,
+html.dark[data-theme='dark'] .rcp-close:hover,
+html.dark[data-theme='dark'] .rcp-btn-secondary,
+html.dark[data-theme='dark'] .kh-drawer-close:hover {
+  background: var(--hud-fill);
+  color: var(--hud-text-muted);
+}
+
+html.dark[data-theme='dark'] .kh-dpm-search-input,
+html.dark[data-theme='dark'] .ch-action {
+  color: var(--hud-text-strong);
+  background: var(--hud-sunken);
+  border: 1px solid var(--hud-border);
+}
+
+html.dark[data-theme='dark'] .kh-dpm-search-input:focus,
+html.dark[data-theme='dark'] .as-emoji-active {
+  background: var(--hud-surface);
+  border-color: var(--hud-border-strong);
+}
+
+html.dark[data-theme='dark'] .kh-dpm-item:hover,
+html.dark[data-theme='dark'] .node-item:hover,
+html.dark[data-theme='dark'] .vem-type-chip:hover,
+html.dark[data-theme='dark'] .cdd-row:hover {
+  border-color: var(--hud-border-strong);
+  background: var(--hud-sunken);
+}
+
+html.dark[data-theme='dark'] .kh-dpm-item-on,
+html.dark[data-theme='dark'] .connector-kind-card.active,
+html.dark[data-theme='dark'] .message-route-card.active,
+html.dark[data-theme='dark'] .phs-count-btn:hover,
+html.dark[data-theme='dark'] .kh-dropzone:hover,
+html.dark[data-theme='dark'] .kh-dropzone-over,
+html.dark[data-theme='dark'] .cc-adapter:hover,
+html.dark[data-theme='dark'] .ch-action:hover {
+  border-color: var(--hud-border-strong);
+  background: var(--hud-accent-soft);
+}
+
+html.dark[data-theme='dark'] .kh-dpm-check {
+  border: 1.5px solid var(--hud-border);
+}
+
+html.dark[data-theme='dark'] .kh-dpm-item-on .kh-dpm-check,
+html.dark[data-theme='dark'] .wdp-run {
+  border-color: var(--hud-border-strong);
+  background: var(--hud-primary);
+}
+
+html.dark[data-theme='dark'] .kh-dpm-footer,
+html.dark[data-theme='dark'] .dbg-input-wrap {
+  border-top: 1px solid var(--hud-border);
+  background: var(--hud-surface);
+}
+
+html.dark[data-theme='dark'] .wf-hover-btn:hover,
+html.dark[data-theme='dark'] .wf-config-header-btn:hover {
+  color: var(--hud-text-strong);
+  background: var(--hud-fill);
+}
+
+html.dark[data-theme='dark'] .wf-hover-btn.is-danger:hover,
+html.dark[data-theme='dark'] .wf-context-menu-item-danger:hover,
+html.dark[data-theme='dark'] .icon-TEMPLATE_TRANSFORM,
+html.dark[data-theme='dark'] .icon-END,
+html.dark[data-theme='dark'] .wf-param-del:hover,
+html.dark[data-theme='dark'] .wf-out-row-action-danger:hover,
+html.dark[data-theme='dark'] .wf-config-menu-item-danger:hover,
+html.dark[data-theme='dark'] .cip-var-btn-warn,
+html.dark[data-theme='dark'] .cip-var-btn-badge-warn,
+html.dark[data-theme='dark'] .cip-var-warn,
+html.dark[data-theme='dark'] .wdp-error,
+html.dark[data-theme='dark'] .failed .wdp-dot,
+html.dark[data-theme='dark'] .cet-result.failed,
+html.dark[data-theme='dark'] .dr-icon-btn-danger:hover,
+html.dark[data-theme='dark'] .dr-msg-failed,
+html.dark[data-theme='dark'] .aa-more .aa-card-menu-item--danger:hover,
+html.dark[data-theme='dark'] .aa-more .aa-card-menu-item--danger:focus-visible,
+html.dark[data-theme='dark'] .as-action-danger:hover,
+html.dark[data-theme='dark'] .dbg-bubble-failed,
+html.dark[data-theme='dark'] .logs-status-failed,
+html.dark[data-theme='dark'] .var-remove:hover,
+html.dark[data-theme='dark'] .status[data-status="FAILED"],
+html.dark[data-theme='dark'] .status[data-status="TIMED_OUT"],
+html.dark[data-theme='dark'] .ph-btn-danger:hover,
+html.dark[data-theme='dark'] .mpd-error,
+html.dark[data-theme='dark'] .mpd-test-result--fail,
+html.dark[data-theme='dark'] .mpd-btn--danger:hover:not(:disabled),
+html.dark[data-theme='dark'] .pcm-error,
+html.dark[data-theme='dark'] .phs-card-menu-item--danger:hover,
+html.dark[data-theme='dark'] .phs-btn-danger:hover,
+html.dark[data-theme='dark'] .phs-mini-error,
+html.dark[data-theme='dark'] .kh-ip-action-danger .kh-ip-action-icon,
+html.dark[data-theme='dark'] .kh-ip-action-danger:hover,
+html.dark[data-theme='dark'] .kh-chunk-badge-off,
+html.dark[data-theme='dark'] .cad-alert,
+html.dark[data-theme='dark'] .cc-alert,
+html.dark[data-theme='dark'] .cc-btn.is-danger:hover,
+html.dark[data-theme='dark'] .mr-alert,
+html.dark[data-theme='dark'] .mr-btn-danger:hover,
+html.dark[data-theme='dark'] .catd-result.is-bad,
+html.dark[data-theme='dark'] .ccm-note.is-danger,
+html.dark[data-theme='dark'] .ccm-btn-danger:hover,
+html.dark[data-theme='dark'] .ch-alert,
+html.dark[data-theme='dark'] .ch-pill.is-danger,
+html.dark[data-theme='dark'] .required-badge.required,
+html.dark[data-theme='dark'] .btn-danger {
+  background: var(--hud-danger-soft);
+}
+
+html.dark[data-theme='dark'] .start-var-required,
+html.dark[data-theme='dark'] .icon-QUESTION_CLASSIFIER,
+html.dark[data-theme='dark'] .icon-IF_ELSE,
+html.dark[data-theme='dark'] .icon-PARAMETER_EXTRACTOR,
+html.dark[data-theme='dark'] .icon-HUMAN_INPUT,
+html.dark[data-theme='dark'] .icon-SCHEDULE_TRIGGER,
+html.dark[data-theme='dark'] .cond-logical-op-or,
+html.dark[data-theme='dark'] .cond-logical-op-or:hover,
+html.dark[data-theme='dark'] .wf-out-type-number,
+html.dark[data-theme='dark'] .wf-schedule-note,
+html.dark[data-theme='dark'] .wf-triggers-hint,
+html.dark[data-theme='dark'] .dr-var-tag-warn,
+html.dark[data-theme='dark'] .logs-status-pending,
+html.dark[data-theme='dark'] .status[data-status="WAITING_APPROVAL"],
+html.dark[data-theme='dark'] .pcm-secret,
+html.dark[data-theme='dark'] .phs-compact-pending:hover,
+html.dark[data-theme='dark'] .phs-row-cap--custom,
+html.dark[data-theme='dark'] .phs-pill-badge--custom,
+html.dark[data-theme='dark'] .rmp-econ-note,
+html.dark[data-theme='dark'] .kh-tip,
+html.dark[data-theme='dark'] .kh-preview-warning,
+html.dark[data-theme='dark'] .kh-ip-section-icon-desc,
+html.dark[data-theme='dark'] .ph-secret {
+  background: var(--hud-warning-soft);
+}
+
+html.dark[data-theme='dark'] .wf-node.wf-node-dimmed,
+html.dark[data-theme='dark'] .monitor-tile:hover,
+html.dark[data-theme='dark'] .as-tile:hover,
+html.dark[data-theme='dark'] .rmp-card:hover,
+html.dark[data-theme='dark'] .kh-source:hover:not(.kh-source-disabled),
+html.dark[data-theme='dark'] .kh-panel:hover,
+html.dark[data-theme='dark'] .kh-index-card:hover,
+html.dark[data-theme='dark'] .kh-retrieve-card:hover,
+html.dark[data-theme='dark'] .kh-parent-mode-card:hover,
+html.dark[data-theme='dark'] .kh-mode-card:hover,
+html.dark[data-theme='dark'] .kh-mode-card-disabled:hover,
+html.dark[data-theme='dark'] .kh-chunk-card:hover,
+html.dark[data-theme='dark'] .as-btn:disabled {
+  border-color: var(--hud-border);
+}
+
+html.dark[data-theme='dark'] .wf-node-config-preview,
+html.dark[data-theme='dark'] .agent-output-item,
+html.dark[data-theme='dark'] .answer-output,
+html.dark[data-theme='dark'] .classifier-item,
+html.dark[data-theme='dark'] .end-output-item,
+html.dark[data-theme='dark'] .param-item,
+html.dark[data-theme='dark'] .start-var-item,
+html.dark[data-theme='dark'] .var-item,
+html.dark[data-theme='dark'] .api-codeblock,
+html.dark[data-theme='dark'] .vem-switch-row,
+html.dark[data-theme='dark'] .kh-done-progress-row,
+html.dark[data-theme='dark'] .kh-chunks-meta,
+html.dark[data-theme='dark'] .cc-adapter {
+  background: var(--hud-sunken);
+  border: 1px solid var(--hud-border);
+}
+
+html.dark[data-theme='dark'] .wf-node-metrics,
+html.dark[data-theme='dark'] .wf-ds-options,
+html.dark[data-theme='dark'] .border-t,
+html.dark[data-theme='dark'] .vem-footer,
+html.dark[data-theme='dark'] .dr-inline-row,
+html.dark[data-theme='dark'] .dr-preview-composer,
+html.dark[data-theme='dark'] .prompt-footer,
+html.dark[data-theme='dark'] .mpd-foot,
+html.dark[data-theme='dark'] .pcm-footer,
+html.dark[data-theme='dark'] .phs-popover-foot,
+html.dark[data-theme='dark'] .phs-mini-footer,
+html.dark[data-theme='dark'] .kh-settings-sticky,
+html.dark[data-theme='dark'] .kh-side-nav,
+html.dark[data-theme='dark'] .kh-side-foot,
+html.dark[data-theme='dark'] .kh-chunks-foot,
+html.dark[data-theme='dark'] .cad-footer,
+html.dark[data-theme='dark'] .cmd-dialog > footer,
+html.dark[data-theme='dark'] .rfm-footer,
+html.dark[data-theme='dark'] .ccm-footer,
+html.dark[data-theme='dark'] .cdd-footer {
+  border-top: 1px solid var(--hud-border);
+}
+
+html.dark[data-theme='dark'] .wf-node-empty,
+html.dark[data-theme='dark'] .agent-mcp-empty,
+html.dark[data-theme='dark'] .agent-flow-stub,
+html.dark[data-theme='dark'] .as-preview-hint,
+html.dark[data-theme='dark'] .phs-count-btn,
+html.dark[data-theme='dark'] .cad-install,
+html.dark[data-theme='dark'] .cad-empty,
+html.dark[data-theme='dark'] .cdd-empty {
+  border: 1px dashed var(--hud-border);
+}
+
+html.dark[data-theme='dark'] .btn-save,
+html.dark[data-theme='dark'] .dr-chip,
+html.dark[data-theme='dark'] .phs-card-menu-btn:hover,
+html.dark[data-theme='dark'] .phs-filter-tab,
+html.dark[data-theme='dark'] .ch-badges span {
+  background: var(--hud-fill);
+  color: var(--hud-text);
+}
+
+html.dark[data-theme='dark'] .left-panel,
+html.dark[data-theme='dark'] .dr-rail,
+html.dark[data-theme='dark'] .studio-rail,
+html.dark[data-theme='dark'] .kh-side {
+  background: var(--hud-surface);
+  border-right: 1px solid var(--hud-border);
+}
+
+html.dark[data-theme='dark'] .wf-top-toolbar,
+html.dark[data-theme='dark'] .wf-bottom-status,
+html.dark[data-theme='dark'] .wf-zoom-cluster,
+html.dark[data-theme='dark'] .wf-tool-list,
+html.dark[data-theme='dark'] .mcp-list,
+html.dark[data-theme='dark'] .agent-mcp-list>div,
+html.dark[data-theme='dark'] .border,
+html.dark[data-theme='dark'] .wdp-step,
+html.dark[data-theme='dark'] .cet-step,
+html.dark[data-theme='dark'] .dr-brand-panel,
+html.dark[data-theme='dark'] .dr-bp-section,
+html.dark[data-theme='dark'] .dr-history-item,
+html.dark[data-theme='dark'] .as-icon-btn,
+html.dark[data-theme='dark'] .as-preview-canvas,
+html.dark[data-theme='dark'] .aa-more .as-popover__panel,
+html.dark[data-theme='dark'] .tool-search,
+html.dark[data-theme='dark'] .kh-settings-icon-btn,
+html.dark[data-theme='dark'] .kh-info-panel,
+html.dark[data-theme='dark'] .kh-ip-section,
+html.dark[data-theme='dark'] .kh-parsed-blocks article,
+html.dark[data-theme='dark'] .rfm-group,
+html.dark[data-theme='dark'] .ph-input,
+html.dark[data-theme='dark'] .form-input,
+html.dark[data-theme='dark'] .form-select,
+html.dark[data-theme='dark'] .form-textarea,
+html.dark[data-theme='dark'] .header-key,
+html.dark[data-theme='dark'] .header-value {
+  border: 1px solid var(--hud-border);
+}
+
+html.dark[data-theme='dark'] .icon-START,
+html.dark[data-theme='dark'] .wdp-dot,
+html.dark[data-theme='dark'] .cet-result,
+html.dark[data-theme='dark'] .dr-bp-status.on,
+html.dark[data-theme='dark'] .dr-tag-live,
+html.dark[data-theme='dark'] .logs-status-success,
+html.dark[data-theme='dark'] .status[data-status="COMPLETED"],
+html.dark[data-theme='dark'] .phs-row-cap--remote,
+html.dark[data-theme='dark'] .phs-pill-badge--remote,
+html.dark[data-theme='dark'] .kh-chunk-badge-on {
+  background: var(--hud-success-soft);
+}
+
+html.dark[data-theme='dark'] .wf-pe-footer,
+html.dark[data-theme='dark'] .dr-rail-collapse {
+  background: var(--hud-sunken);
+  border-top: 1px solid var(--hud-border);
+}
+
+html.dark[data-theme='dark'] .wf-tool-tabs button.active,
+html.dark[data-theme='dark'] .dr-bp-action:hover,
+html.dark[data-theme='dark'] .kh-ip-action:hover {
+  border-color: var(--hud-border-strong);
+  background: var(--hud-accent-soft);
+  color: var(--hud-primary);
+}
+
+html.dark[data-theme='dark'] .cond-case {
+  background: var(--hud-surface);
+  border: 1px solid var(--hud-border);
+  border-left: 3px solid var(--hud-border);
+}
+
+html.dark[data-theme='dark'] .cond-logical-op {
+  color: var(--hud-primary);
+  background: var(--hud-accent-soft);
+  border: 1px solid var(--hud-border-strong);
+}
+
+html.dark[data-theme='dark'] .wf-param-cell-type {
+  border-left: 1px solid var(--hud-border);
+  border-right: 1px solid var(--hud-border);
+}
+
+html.dark[data-theme='dark'] .wf-param-cell-value,
+html.dark[data-theme='dark'] .wf-param-cell-action,
+html.dark[data-theme='dark'] .kh-split-right {
+  border-left: 1px solid var(--hud-border);
+}
+
+html.dark[data-theme='dark'] .wf-http-method,
+html.dark[data-theme='dark'] .as-left {
+  border-right: 1px solid var(--hud-border);
+}
+
+html.dark[data-theme='dark'] .wf-http-timeout {
+  background: var(--hud-sunken);
+  border-left: 1px solid var(--hud-border);
+}
+
+html.dark[data-theme='dark'] .wf-http-body-tab.is-active,
+html.dark[data-theme='dark'] .cc-mini {
+  color: var(--hud-primary);
+  background: var(--hud-surface);
+}
+
+html.dark[data-theme='dark'] .output-tree-root-title,
+html.dark[data-theme='dark'] .cip-var-row {
+  border-bottom: 1px dashed var(--hud-border);
+}
+
+html.dark[data-theme='dark'] .output-empty {
+  background: var(--hud-surface);
+  border: 1px dashed var(--hud-border);
+}
+
+html.dark[data-theme='dark'] .wf-out-type-object {
+  color: var(--hud-primary);
+  border-color: var(--hud-border-strong);
+}
+
+html.dark[data-theme='dark'] .wf-out-type-file {
+  color: var(--hud-text-muted);
+  background: var(--hud-fill);
+  border-color: var(--hud-border);
+}
+
+html.dark[data-theme='dark'] .param-item:hover {
+  background: var(--hud-fill);
+  border-color: var(--hud-border);
+}
+
+html.dark[data-theme='dark'] .connector-kind-section,
+html.dark[data-theme='dark'] .api-key-hint,
+html.dark[data-theme='dark'] .as-icon-picker,
+html.dark[data-theme='dark'] .dbg-input-row,
+html.dark[data-theme='dark'] .kh-readonly-card,
+html.dark[data-theme='dark'] .headers-editor,
+html.dark[data-theme='dark'] .conditions-editor {
+  border: 1px solid var(--hud-border);
+  background: var(--hud-sunken);
+}
+
+html.dark[data-theme='dark'] .connector-kind-card {
+  color: var(--hud-text-muted);
+  background: var(--hud-surface);
+}
+
+html.dark[data-theme='dark'] .connector-tip {
+  color: var(--hud-text-muted);
+  background: var(--hud-fill);
+}
+
+html.dark[data-theme='dark'] .wf-config-panel,
+html.dark[data-theme='dark'] .wdp-field input:not([type=checkbox]),
+html.dark[data-theme='dark'] .wdp-field select,
+html.dark[data-theme='dark'] .wdp-field textarea,
+html.dark[data-theme='dark'] .aa-pub-tab--on {
+  background: var(--hud-surface);
+  color: var(--hud-text-strong);
+}
+
+html.dark[data-theme='dark'] .wf-config-header,
+html.dark[data-theme='dark'] .wf-config-desc,
+html.dark[data-theme='dark'] .dr-header,
+html.dark[data-theme='dark'] .logs-top,
+html.dark[data-theme='dark'] .logs-filters,
+html.dark[data-theme='dark'] .cmd-header,
+html.dark[data-theme='dark'] .cmd-view-tabs {
+  background: var(--hud-surface);
+  border-bottom: 1px solid var(--hud-border);
+}
+
+html.dark[data-theme='dark'] .cip-head,
+html.dark[data-theme='dark'] .api-top,
+html.dark[data-theme='dark'] .logs-table th,
+html.dark[data-theme='dark'] .mon-top,
+html.dark[data-theme='dark'] .orch-top,
+html.dark[data-theme='dark'] .kh-topbar {
+  border-bottom: 1px solid var(--hud-border);
+  background: var(--hud-surface);
+}
+
+html.dark[data-theme='dark'] .cip-var-btn {
+  border: 1px solid var(--hud-border);
+  background: var(--hud-sunken);
+  color: var(--hud-text-muted);
+}
+
+html.dark[data-theme='dark'] .cip-var-btn:hover,
+html.dark[data-theme='dark'] .cip-var-btn-open,
+html.dark[data-theme='dark'] .dr-bp-link:hover,
+html.dark[data-theme='dark'] .dr-btn-secondary:hover:not(:disabled),
+html.dark[data-theme='dark'] .dr-btn-active,
+html.dark[data-theme='dark'] .dr-chip.on,
+html.dark[data-theme='dark'] .phs-filter-tab--on,
+html.dark[data-theme='dark'] .kh-ip-link:hover {
+  background: var(--hud-accent-soft);
+  border-color: var(--hud-border-strong);
+  color: var(--hud-primary);
+}
+
+html.dark[data-theme='dark'] .cip-var-label,
+html.dark[data-theme='dark'] .cip-switch,
+html.dark[data-theme='dark'] .wdp-field,
+html.dark[data-theme='dark'] .log-annot-nowrap,
+html.dark[data-theme='dark'] .monitor-time,
+html.dark[data-theme='dark'] .api-p,
+html.dark[data-theme='dark'] .api-path,
+html.dark[data-theme='dark'] .dr-nav-item,
+html.dark[data-theme='dark'] .prompt-var-item-label,
+html.dark[data-theme='dark'] .studio-nav-item,
+html.dark[data-theme='dark'] .kh-dz-row,
+html.dark[data-theme='dark'] .kh-check,
+html.dark[data-theme='dark'] .kh-switch-row,
+html.dark[data-theme='dark'] .kh-side-nav-item,
+html.dark[data-theme='dark'] .kh-meta-group-title,
+html.dark[data-theme='dark'] .rcp-section-label,
+html.dark[data-theme='dark'] .kh-drawer-topbar-title {
+  color: var(--hud-text-muted);
+}
+
+html.dark[data-theme='dark'] .cip-input,
+html.dark[data-theme='dark'] .cip-textarea {
+  border: 1px solid var(--hud-border);
+  background: var(--hud-sunken);
+  color: var(--hud-text-strong);
+}
+
+html.dark[data-theme='dark'] .cip-input:focus,
+html.dark[data-theme='dark'] .cip-textarea:focus,
+html.dark[data-theme='dark'] .dbg-input-row:focus-within {
+  border-color: var(--hud-border-strong);
+  background: var(--hud-surface);
+}
+
+html.dark[data-theme='dark'] .cip-var-panel-foot,
+html.dark[data-theme='dark'] .rcp-actions {
+  border-top: 1px solid var(--hud-border);
+  background: var(--hud-sunken);
+}
+
+html.dark[data-theme='dark'] .cip-spinner span {
+  border-top-color: var(--hud-border-strong);
+}
+
+html.dark[data-theme='dark'] .wdp-shell,
+html.dark[data-theme='dark'] .dr-input,
+html.dark[data-theme='dark'] .as-input,
+html.dark[data-theme='dark'] .as-textarea,
+html.dark[data-theme='dark'] .logs-input,
+html.dark[data-theme='dark'] .mon-select,
+html.dark[data-theme='dark'] .var-input,
+html.dark[data-theme='dark'] .orch-inline-select,
+html.dark[data-theme='dark'] .mpd-num,
+html.dark[data-theme='dark'] .mpd-text,
+html.dark[data-theme='dark'] .pcm-input,
+html.dark[data-theme='dark'] .phs-search,
+html.dark[data-theme='dark'] .phs-mini-input,
+html.dark[data-theme='dark'] .kh-input,
+html.dark[data-theme='dark'] .kh-select,
+html.dark[data-theme='dark'] .kh-select-inline,
+html.dark[data-theme='dark'] .cad-fields input,
+html.dark[data-theme='dark'] .cad-fields select,
+html.dark[data-theme='dark'] .cmd-select,
+html.dark[data-theme='dark'] .rfm-input,
+html.dark[data-theme='dark'] .ccm-input,
+html.dark[data-theme='dark'] .ch-input {
+  border: 1px solid var(--hud-border);
+  background: var(--hud-surface);
+  color: var(--hud-text-strong);
+}
+
+html.dark[data-theme='dark'] .wdp-reset,
+html.dark[data-theme='dark'] .cet-stream-preview {
+  background: var(--hud-surface);
+  color: var(--hud-text-muted);
+}
+
+html.dark[data-theme='dark'] .wdp-spinner {
+  border: 2px solid var(--hud-border-strong);
+  border-top-color: var(--hud-border-strong);
+}
+
+html.dark[data-theme='dark'] .drawer-flow-panel,
+html.dark[data-theme='dark'] .api-toc {
+  border-left: 1px solid var(--hud-border);
+  background: var(--hud-surface);
+}
+
+html.dark[data-theme='dark'] .log-annot-hint {
+  background: var(--hud-sunken);
+  border-left: 3px solid var(--hud-border-strong);
+}
+
+html.dark[data-theme='dark'] .monitor-table .ant-table-thead > tr > th,
+html.dark[data-theme='dark'] .dbg-step {
+  background: var(--hud-sunken);
+  color: var(--hud-text-muted);
+}
+
+html.dark[data-theme='dark'] .akm-icon-btn:hover,
+html.dark[data-theme='dark'] .vem-hint code,
+html.dark[data-theme='dark'] .dr-card-empty code,
+html.dark[data-theme='dark'] .dr-plain-hint code,
+html.dark[data-theme='dark'] .dr-empty-hint code {
+  background: var(--hud-fill);
+  color: var(--hud-primary);
+}
+
+html.dark[data-theme='dark'] .api-key-btn,
+html.dark[data-theme='dark'] .kh-meta-btn {
+  border: 1px solid var(--hud-border-strong);
+  background: var(--hud-accent-soft);
+  color: var(--hud-primary);
+}
+
+html.dark[data-theme='dark'] .dr-bp-action,
+html.dark[data-theme='dark'] .kh-ip-action {
+  border: 1px solid var(--hud-border);
+  color: var(--hud-text-muted);
+}
+
+html.dark[data-theme='dark'] .dr-bp-section:hover,
+html.dark[data-theme='dark'] .dr-info-card:hover,
+html.dark[data-theme='dark'] .phs-row:hover,
+html.dark[data-theme='dark'] .kh-side-head:hover,
+html.dark[data-theme='dark'] .kh-ip-section:hover {
+  background: var(--hud-sunken);
+  border-color: var(--hud-border);
+}
+
+html.dark[data-theme='dark'] .dr-bp-link,
+html.dark[data-theme='dark'] .logs-page-btn,
+html.dark[data-theme='dark'] .mon-btn,
+html.dark[data-theme='dark'] .orch-btn,
+html.dark[data-theme='dark'] .kh-btn-mini,
+html.dark[data-theme='dark'] .kh-ip-link,
+html.dark[data-theme='dark'] .kh-side-api,
+html.dark[data-theme='dark'] .kh-btn,
+html.dark[data-theme='dark'] .kh-doctab-select {
+  border: 1px solid var(--hud-border);
+  background: var(--hud-surface);
+  color: var(--hud-text-muted);
+}
+
+html.dark[data-theme='dark'] .dr-btn-secondary {
+  background: var(--hud-surface);
+  color: var(--hud-text);
+  border-color: var(--hud-border);
+}
+
+html.dark[data-theme='dark'] .dr-chatflow-expand {
+  border: 1px solid var(--hud-border-strong);
+  background: var(--hud-surface);
+  color: var(--hud-primary);
+}
+
+html.dark[data-theme='dark'] .dr-publish-restore {
+  color: var(--hud-primary);
+  background: var(--hud-surface);
+  border: 1px solid var(--hud-border-strong);
+}
+
+html.dark[data-theme='dark'] .dr-nav-item.on {
+  background: var(--hud-accent-soft);
+  color: var(--hud-primary);
+  border: 1px solid var(--hud-border-strong);
+}
+
+html.dark[data-theme='dark'] .dr-prompt-textarea {
+  border: 1.5px solid var(--hud-border-strong);
+  background: var(--hud-surface);
+  color: var(--hud-text-strong);
+}
+
+html.dark[data-theme='dark'] .dr-var-item:hover {
+  background: var(--hud-sunken);
+  border-color: var(--hud-border-strong);
+}
+
+html.dark[data-theme='dark'] .as-tile-active,
+html.dark[data-theme='dark'] .rmp-card-active {
+  outline: 1.5px solid var(--hud-border-strong);
+}
+
+html.dark[data-theme='dark'] .as-swatch-active {
+  outline: 2px solid var(--hud-border-strong);
+}
+
+html.dark[data-theme='dark'] .aa-more-btn:hover,
+html.dark[data-theme='dark'] .aa-more-btn:focus-visible,
+html.dark[data-theme='dark'] .cad-tag,
+html.dark[data-theme='dark'] .cdd-meta span {
+  color: var(--hud-text);
+  background: var(--hud-fill);
+}
+
+html.dark[data-theme='dark'] .as-card-new {
+  border: 1.5px dashed var(--hud-border-strong);
+}
+
+html.dark[data-theme='dark'] .dbg-msg-user .dbg-bubble,
+html.dark[data-theme='dark'] .mpd-btn--primary,
+html.dark[data-theme='dark'] .pcm-btn-primary,
+html.dark[data-theme='dark'] .phs-btn-primary,
+html.dark[data-theme='dark'] .cad-btn-primary,
+html.dark[data-theme='dark'] .cmd-btn.is-primary,
+html.dark[data-theme='dark'] .cc-btn-primary,
+html.dark[data-theme='dark'] .cc-mini.is-primary,
+html.dark[data-theme='dark'] .rfm-btn-primary,
+html.dark[data-theme='dark'] .mr-btn-primary,
+html.dark[data-theme='dark'] .ccm-btn-primary,
+html.dark[data-theme='dark'] .cdd-btn-primary,
+html.dark[data-theme='dark'] .ch-btn-primary {
+  background: var(--hud-primary);
+  border-color: var(--hud-border-strong);
+}
+
+html.dark[data-theme='dark'] .logs-table td {
+  border-bottom: 1px solid var(--hud-border);
+  color: var(--hud-text);
+}
+
+html.dark[data-theme='dark'] .logs-foot {
+  background: var(--hud-surface);
+  border-top: 1px solid var(--hud-border);
+}
+
+html.dark[data-theme='dark'] .prompt-card {
+  background: var(--hud-surface);
+  border: 1.5px solid var(--hud-border-strong);
+}
+
+html.dark[data-theme='dark'] .prompt-chip {
+  border: 1px solid var(--hud-border);
+  background: var(--hud-surface);
+  color: var(--hud-primary);
+}
+
+html.dark[data-theme='dark'] .mpd-btn,
+html.dark[data-theme='dark'] .phs-btn,
+html.dark[data-theme='dark'] .kh-keyword-val,
+html.dark[data-theme='dark'] .rfm-btn,
+html.dark[data-theme='dark'] .mr-btn {
+  border: 1px solid var(--hud-border);
+  background: var(--hud-surface);
+  color: var(--hud-text);
+}
+
+html.dark[data-theme='dark'] .phs-filter-tab--on .phs-filter-count,
+html.dark[data-theme='dark'] .rmp-tab-active,
+html.dark[data-theme='dark'] .kh-hybrid-tab-active {
+  background: var(--hud-surface);
+  color: var(--hud-primary);
+}
+
+html.dark[data-theme='dark'] .rmp-radio,
+html.dark[data-theme='dark'] .kh-panel-radio {
+  border: 1.5px solid var(--hud-border);
+  background: var(--hud-surface);
+}
+
+html.dark[data-theme='dark'] .kh-source-active {
+  outline: 1.5px solid var(--hud-border-strong);
+  background: var(--hud-accent-soft);
+}
+
+html.dark[data-theme='dark'] .kh-dropzone,
+html.dark[data-theme='dark'] .kh-preview-empty {
+  border: 1px dashed var(--hud-border);
+  background: var(--hud-sunken);
+}
+
+html.dark[data-theme='dark'] .kh-file-row {
+  background: var(--hud-surface);
+  border: 1px solid var(--hud-border);
+  color: var(--hud-text);
+}
+
+html.dark[data-theme='dark'] .kh-btn-mini-primary,
+html.dark[data-theme='dark'] .cc-stat.is-link:hover {
+  color: var(--hud-primary);
+  border-color: var(--hud-border-strong);
+  background: var(--hud-accent-soft);
+}
+
+html.dark[data-theme='dark'] .kh-panel-active,
+html.dark[data-theme='dark'] .kh-index-card-active,
+html.dark[data-theme='dark'] .kh-retrieve-card-active,
+html.dark[data-theme='dark'] .kh-parent-mode-active,
+html.dark[data-theme='dark'] .kh-mode-card-active {
+  outline: 1.5px solid var(--hud-border-strong);
+  background: var(--hud-fill);
+}
+
+html.dark[data-theme='dark'] .kh-panel-body,
+html.dark[data-theme='dark'] .kh-retrieve-body {
+  border-top: 1px dashed var(--hud-border);
+}
+
+html.dark[data-theme='dark'] .kh-done-file-row {
+  background: var(--hud-sunken);
+  border: 1px solid var(--hud-border);
+  color: var(--hud-text);
+}
+
+html.dark[data-theme='dark'] .kh-retrieve-select-card {
+  background: var(--hud-fill);
+  border: 1.5px solid var(--hud-border-strong);
+}
+
+html.dark[data-theme='dark'] .kh-drawer-editor-textarea {
+  border: 1px solid var(--hud-border);
+  color: var(--hud-text-strong);
+}
+
+html.dark[data-theme='dark'] .cad-callback {
+  color: var(--hud-text-muted);
+  background: var(--hud-sunken);
+}
+
+html.dark[data-theme='dark'] .cad-btn,
+html.dark[data-theme='dark'] .cmd-btn,
+html.dark[data-theme='dark'] .cc-btn,
+html.dark[data-theme='dark'] .ccm-btn,
+html.dark[data-theme='dark'] .cdd-btn,
+html.dark[data-theme='dark'] .ch-btn {
+  color: var(--hud-text);
+  background: var(--hud-surface);
+  border: 1px solid var(--hud-border);
+}
+
+html.dark[data-theme='dark'] .cmd-original-message {
+  color: var(--hud-text);
+  background: var(--hud-sunken);
+  border: 1px solid var(--hud-border);
+}
+
+html.dark[data-theme='dark'] .mr-welcome {
+  color: var(--hud-text);
+  background: var(--hud-sunken);
+}
+
+html.dark[data-theme='dark'] .ch-tab.is-active {
+  color: var(--hud-primary);
+  border-bottom-color: var(--hud-border-strong);
+}
+
+html.dark[data-theme='dark'] .detail-facts,
+html.dark[data-theme='dark'] .as-table th {
+  background-color: var(--hud-sunken);
+}
+
+html.dark[data-theme='dark'] .add-btn {
+  background: var(--hud-fill);
+  color: var(--hud-text);
+  border: 1px dashed var(--hud-border);
+}
+
+html.dark[data-theme='dark'] .as-tag--green,
+html.dark[data-theme='dark'] .as-tag--success,
+html.dark[data-theme='dark'] .as-alert--success {
+  background-color: var(--hud-success-soft);
+}
+
+html.dark[data-theme='dark'] .as-tag--red,
+html.dark[data-theme='dark'] .as-tag--error,
+html.dark[data-theme='dark'] .as-alert--error {
+  background-color: var(--hud-danger-soft);
+}
+
+html.dark[data-theme='dark'] .as-tag--blue,
+html.dark[data-theme='dark'] .as-tag--processing,
+html.dark[data-theme='dark'] .as-alert {
+  background-color: var(--hud-accent-soft);
+}
+
+html.dark[data-theme='dark'] .as-tag--orange,
+html.dark[data-theme='dark'] .as-tag--warning,
+html.dark[data-theme='dark'] .as-alert--warning {
+  background-color: var(--hud-warning-soft);
+}

@@ -1,0 +1,2 @@
+export interface McpServerConfig { id: string; name: string; transport: 'STDIO' | 'HTTP' | 'SSE'; enabled: boolean; url?: string; command?: string; args?: string[]; envConfigured?: boolean; headersConfigured?: boolean; status?: string; toolCount?: number; lastError?: string }
+export interface SaveMcpServerConfig { id?: string; name: string; transport: 'STDIO' | 'HTTP' | 'SSE'; enabled: boolean; url?: string; command?: string; args?: string[]; env?: Record<string,string> }

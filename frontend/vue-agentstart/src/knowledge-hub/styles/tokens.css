@@ -1,0 +1,158 @@
+/**
+ * Design tokens for @agent-start/knowledge-hub.
+ *
+ * These are the ONLY colors, radii and shadows the components should reference.
+ * A host that wants to rebrand overrides them at the root:
+ *
+ *   :root {
+ *     --kh-color-primary: #ff6600;
+ *     --kh-color-primary-strong: #cc4d00;
+ *   }
+ *
+ * A dark ruleset ships out of the box — flip it by setting `data-theme="dark"`
+ * on any ancestor of the components.
+ */
+
+:root {
+  /* ------- Color: brand */
+  --kh-color-primary: #6366f1;
+  --kh-color-primary-strong: #4f46e5;
+  --kh-color-primary-soft: #eef2ff;
+  --kh-color-primary-contrast: #ffffff;
+  --kh-color-primary-outline: rgba(99, 102, 241, 0.15);
+
+  /* ------- Color: neutrals (text + surface) */
+  --kh-color-text-primary: #0f172a;
+  --kh-color-text-secondary: #334155;
+  --kh-color-text-tertiary: #64748b;
+  --kh-color-text-muted: #94a3b8;
+  --kh-color-text-inverse: #ffffff;
+
+  --kh-color-surface: #ffffff;
+  --kh-color-surface-raised: #ffffff;
+  --kh-color-surface-sunken: #f8fafc;
+  --kh-color-surface-hover: #f1f5f9;
+
+  --kh-color-border: #e2e8f0;
+  --kh-color-border-hover: #cbd5e1;
+  --kh-color-border-strong: #94a3b8;
+  --kh-color-divider: #f1f5f9;
+
+  /* ------- Color: semantic */
+  --kh-color-success: #059669;
+  --kh-color-success-soft: #dcfce7;
+  --kh-color-warning: #b45309;
+  --kh-color-warning-soft: #fef3c7;
+  --kh-color-danger: #dc2626;
+  --kh-color-danger-soft: #fef2f2;
+  --kh-color-info: #4338ca;
+  --kh-color-info-soft: #eef4ff;
+
+  /* ------- Radius */
+  --kh-radius-xs: 4px;
+  --kh-radius-sm: 6px;
+  --kh-radius-md: 8px;
+  --kh-radius-lg: 12px;
+  --kh-radius-xl: 16px;
+  --kh-radius-round: 50%;
+
+  /* ------- Spacing */
+  --kh-space-1: 4px;
+  --kh-space-2: 8px;
+  --kh-space-3: 12px;
+  --kh-space-4: 16px;
+  --kh-space-5: 20px;
+  --kh-space-6: 24px;
+
+  /* ------- Font sizes */
+  --kh-fs-xs: 10px;
+  --kh-fs-sm: 11px;
+  --kh-fs-md: 12px;
+  --kh-fs-lg: 13px;
+  --kh-fs-xl: 14px;
+  --kh-fs-2xl: 15px;
+  --kh-fs-3xl: 18px;
+
+  /* ------- Shadows */
+  --kh-shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --kh-shadow-md: 0 3px 12px rgba(15, 23, 42, 0.06);
+  --kh-shadow-lg: 0 4px 14px rgba(15, 23, 42, 0.08);
+  --kh-shadow-drawer: -6px 0 22px rgba(15, 23, 42, 0.14);
+  --kh-shadow-modal: 0 20px 60px rgba(15, 23, 42, 0.25);
+
+  /* ------- Transition */
+  --kh-tx-fast: 0.15s ease;
+
+  /* ------- z-index (mostly for drawer/modal stacking) */
+  --kh-z-drawer: 1040;
+  --kh-z-modal: 1050;
+
+  /* ------- Focus ring */
+  --kh-focus-ring: 0 0 0 3px var(--kh-color-primary-outline);
+
+  /* ------- Component-level (composed from primitives) */
+  --kh-card-bg: var(--kh-color-surface);
+  --kh-card-border: var(--kh-color-border);
+  --kh-card-radius: var(--kh-radius-lg);
+  --kh-card-shadow-hover: var(--kh-shadow-lg);
+
+  --kh-input-bg: var(--kh-color-surface);
+  --kh-input-border: #d1d5db;
+  --kh-input-radius: var(--kh-radius-md);
+
+  /* Card icon backgrounds - light mode (pastel colors) */
+  --kh-card-icon-bg-1: #FFF4ED;
+  --kh-card-icon-bg-2: #EEF4FF;
+  --kh-card-icon-bg-3: #EFFDF4;
+  --kh-card-icon-bg-4: #FEF3F2;
+  --kh-card-icon-bg-5: #FFF8E6;
+  --kh-card-icon-bg-6: #FDF2FA;
+  --kh-card-icon-bg-7: #F0F9FF;
+  --kh-card-icon-bg-8: #F0FDF9;
+}
+
+/* Dark mode overrides — flipped by setting class="dark" on any ancestor. */
+.dark {
+  --kh-color-primary: #818cf8;
+  --kh-color-primary-strong: #6366f1;
+  --kh-color-primary-soft: rgba(129, 140, 248, 0.15);
+  --kh-color-primary-contrast: #ffffff;
+  --kh-color-primary-outline: rgba(129, 140, 248, 0.3);
+
+  --kh-color-text-primary: #f3f4f6;
+  --kh-color-text-secondary: #d1d5db;
+  --kh-color-text-tertiary: #9ca3af;
+  --kh-color-text-muted: #6b7280;
+  --kh-color-text-inverse: #0f172a;
+
+  --kh-color-surface: #1f2937;
+  --kh-color-surface-raised: #262f3d;
+  --kh-color-surface-sunken: #171e2b;
+  --kh-color-surface-hover: #2d3748;
+
+  --kh-color-border: #374151;
+  --kh-color-border-hover: #4b5563;
+  --kh-color-border-strong: #6b7280;
+  --kh-color-divider: #2d3748;
+
+  --kh-color-success-soft: rgba(16, 185, 129, 0.15);
+  --kh-color-warning-soft: rgba(217, 119, 6, 0.15);
+  --kh-color-danger-soft: rgba(220, 38, 38, 0.15);
+  --kh-color-info-soft: rgba(99, 102, 241, 0.15);
+
+  --kh-input-border: #4b5563;
+
+  --kh-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --kh-shadow-md: 0 3px 12px rgba(0, 0, 0, 0.4);
+  --kh-shadow-lg: 0 4px 14px rgba(0, 0, 0, 0.5);
+
+  /* Card icon backgrounds - dark mode (muted dark colors) */
+  --kh-card-icon-bg-1: rgba(255, 244, 237, 0.15);
+  --kh-card-icon-bg-2: rgba(238, 244, 255, 0.15);
+  --kh-card-icon-bg-3: rgba(239, 253, 244, 0.15);
+  --kh-card-icon-bg-4: rgba(254, 243, 242, 0.15);
+  --kh-card-icon-bg-5: rgba(255, 248, 230, 0.15);
+  --kh-card-icon-bg-6: rgba(253, 242, 250, 0.15);
+  --kh-card-icon-bg-7: rgba(240, 249, 255, 0.15);
+  --kh-card-icon-bg-8: rgba(240, 253, 249, 0.15);
+}

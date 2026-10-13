@@ -1,0 +1,547 @@
+/* =========================================================
+ * agent-flow · 配置面板通用样式
+ * 由 NodeConfigCard.vue 顶部一次性引入，各 nodeCard/*.vue
+ * 直接用这里定义的 class 名（wf-config-*）+ 兼容层 utility。
+ *
+ * 兼容层：src/components/* 里遗留了 Tailwind 类（flex / gap-2 /
+ * mb-4 / p-2 ...），本文件在无 Tailwind 时兜底提供最低限度的样式，
+ * 避免面板视觉塌陷。nodeCards 已经全部去 Tailwind 化。
+ * ========================================================= */
+
+/* -------- 配置面板结构 -------- */
+.wf-config-panel {
+  --wf-config-bg: #ffffff;
+  --wf-config-body-bg: #f6f7f9;
+  --wf-config-surface: #ffffff;
+  --wf-config-surface-hover: #f3f4f6;
+  --wf-config-border: #e5e7eb;
+  --wf-config-text: #1f2937;
+  --wf-config-text-secondary: #4b5563;
+  --wf-config-text-muted: #9ca3af;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--wf-config-bg);
+  overflow: hidden;
+  font-size: 13px;
+  color: var(--wf-config-text);
+}
+
+.wf-config-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--wf-config-bg);
+  border-bottom: 1px solid var(--wf-config-border);
+}
+
+.wf-config-header-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 28px;
+  height: 28px;
+  color: #ffffff;
+  background: var(--wf-accent, #6b7280);
+  border-radius: 6px;
+}
+
+.wf-config-header-icon svg,
+.wf-config-header-icon :deep(.icon) {
+  width: 16px;
+  height: 16px;
+}
+
+.wf-config-header-title-input {
+  flex: 1;
+  min-width: 0;
+  padding: 2px 4px !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  color: var(--wf-config-text);
+  background: transparent !important;
+  border-radius: 4px !important;
+}
+
+.wf-config-header-title-input:hover {
+  background: var(--wf-config-surface-hover) !important;
+}
+
+.wf-config-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--wf-config-text-secondary);
+}
+
+.wf-config-desc {
+  padding: 8px 16px;
+  background: var(--wf-config-bg);
+  border-bottom: 1px solid var(--wf-config-border);
+}
+
+.wf-config-desc :deep(.ant-input) {
+  font-size: 12px !important;
+  color: var(--wf-config-text-secondary) !important;
+}
+
+.wf-config-body {
+  flex: 1;
+  min-height: 0;
+  padding: 8px 10px 12px;
+  overflow-y: auto;
+  background: var(--wf-config-body-bg);
+}
+
+/* 配置面板体内的滚动条 */
+.wf-config-body::-webkit-scrollbar {
+  width: 6px;
+}
+.wf-config-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+.wf-config-body::-webkit-scrollbar-thumb {
+  background: var(--wf-config-border);
+  border-radius: 3px;
+}
+.wf-config-body::-webkit-scrollbar-thumb:hover {
+  background: var(--wf-config-text-muted);
+}
+
+/* -------- 表单节段（各 nodeCard 内部划分） -------- */
+.wf-config-section {
+  padding: 12px 14px;
+  margin-bottom: 10px;
+  background: var(--wf-config-surface);
+  border: 1px solid var(--wf-config-border);
+  border-radius: 8px;
+}
+
+.wf-config-section:last-child {
+  margin-bottom: 0;
+}
+
+/* 独立的 PromptEditor 作为单个 section（不用 wf-config-section 包一层）；
+ * PromptEditor 自带 toolbar 和边框，外层再包 section 会视觉重叠 */
+.wf-config-prompt {
+  margin-bottom: 10px;
+}
+.wf-config-prompt:last-child {
+  margin-bottom: 0;
+}
+
+.wf-config-section-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--wf-config-text);
+  letter-spacing: 0.2px;
+}
+
+.wf-config-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.wf-config-field + .wf-config-field {
+  margin-top: 10px;
+}
+
+.wf-config-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--wf-config-text-secondary);
+  line-height: 1.4;
+}
+
+.wf-config-hint {
+  margin-top: 3px;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--wf-config-text-muted);
+}
+
+.wf-config-hint code {
+  padding: 0 4px;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 10px;
+  color: #4338ca;
+  background: #eef2ff;
+  border-radius: 3px;
+}
+
+/* -------- 配置面板内的 antd 组件视觉统一 -------- */
+.wf-config-body :deep(.ant-input),
+.wf-config-body :deep(.ant-input-number),
+.wf-config-body :deep(.ant-input-affix-wrapper),
+.wf-config-body :deep(.ant-select .ant-select-selector),
+.wf-config-body :deep(.ant-picker) {
+  border-radius: 6px !important;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.wf-config-body :deep(.ant-input:hover),
+.wf-config-body :deep(.ant-input-number:hover),
+.wf-config-body :deep(.ant-input-affix-wrapper:hover),
+.wf-config-body :deep(.ant-select:hover .ant-select-selector),
+.wf-config-body :deep(.ant-picker:hover) {
+  border-color: var(--wf-accent, #6366f1) !important;
+}
+
+.wf-config-body :deep(.ant-input:focus),
+.wf-config-body :deep(.ant-input-focused),
+.wf-config-body :deep(.ant-input-affix-wrapper-focused),
+.wf-config-body :deep(.ant-select-focused .ant-select-selector),
+.wf-config-body :deep(.ant-picker-focused) {
+  border-color: var(--wf-accent, #6366f1) !important;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--wf-accent, #6366f1) 15%, transparent) !important;
+}
+
+/* 更紧凑的默认高度：接近 Dify 的紧凑表单感 */
+.wf-config-body :deep(.ant-input:not(.ant-input-sm):not(.ant-input-lg)),
+.wf-config-body :deep(.ant-input-number:not(.ant-input-number-sm)) {
+  padding: 3px 8px;
+  font-size: 12px;
+}
+
+.wf-config-body :deep(.ant-input-affix-wrapper:not(.ant-input-affix-wrapper-sm)) {
+  padding: 3px 8px;
+}
+
+.wf-config-body :deep(.ant-input-affix-wrapper .ant-input) {
+  padding: 0;
+}
+
+.wf-config-body :deep(.ant-select:not(.ant-select-sm) .ant-select-selector) {
+  height: 28px;
+  padding: 0 8px;
+  font-size: 12px;
+}
+
+.wf-config-body :deep(.ant-select-single .ant-select-selector .ant-select-selection-item),
+.wf-config-body :deep(.ant-select-single .ant-select-selector .ant-select-selection-placeholder) {
+  line-height: 26px;
+}
+
+.wf-config-body :deep(.ant-input-number-input) {
+  height: 26px;
+}
+
+.wf-config-body :deep(.ant-btn) {
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+.wf-config-body :deep(.ant-btn:not(.ant-btn-sm):not(.ant-btn-lg)) {
+  height: 28px;
+  padding: 0 10px;
+}
+
+.wf-config-body :deep(.ant-btn-primary) {
+  background: var(--wf-accent, #6366f1);
+  border-color: var(--wf-accent, #6366f1);
+}
+
+.wf-config-body :deep(.ant-btn-primary:hover) {
+  background: var(--wf-accent-hover, #4f46e5) !important;
+  border-color: var(--wf-accent-hover, #4f46e5) !important;
+}
+
+.wf-config-body :deep(.ant-btn-link) {
+  padding: 0 6px;
+  height: auto;
+  color: var(--wf-accent, #6366f1);
+}
+
+.wf-config-body :deep(.ant-collapse-ghost > .ant-collapse-item) {
+  border-bottom: 0;
+}
+
+.wf-config-body :deep(.ant-collapse-ghost > .ant-collapse-item > .ant-collapse-header) {
+  padding: 6px 0 !important;
+  font-size: 12px;
+  color: #4b5563;
+}
+
+.wf-config-body :deep(.ant-collapse-ghost > .ant-collapse-item > .ant-collapse-content > .ant-collapse-content-box) {
+  padding: 4px 0 8px !important;
+}
+
+.wf-config-body :deep(.ant-tag) {
+  margin: 0;
+  border-radius: 4px;
+  font-size: 11px;
+  line-height: 18px;
+}
+
+/* Popover 里的模型选择器 */
+.wf-config-body :deep(.ant-switch) {
+  min-width: 32px;
+  height: 18px;
+  line-height: 18px;
+}
+
+.wf-config-body :deep(.ant-switch-small) {
+  min-width: 28px;
+  height: 16px;
+  line-height: 16px;
+}
+
+.wf-config-body :deep(.ant-slider) {
+  margin: 6px 6px;
+}
+
+/* Popover / 上下文菜单 —— NodeConfigCard header 的 ellipsis 菜单 */
+.wf-config-menu-overlay .ant-popover-inner-content {
+  padding: 4px !important;
+}
+
+.wf-config-menu {
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+}
+
+.wf-config-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  font-size: 12px;
+  color: #1f2937;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.wf-config-menu-item:hover {
+  background: #eef2ff;
+}
+
+.wf-config-menu-item-danger {
+  color: #dc2626;
+}
+
+.wf-config-menu-item-danger:hover {
+  background: #fef2f2;
+}
+
+.wf-config-menu-icon {
+  font-size: 13px;
+  color: #6b7280;
+  flex: none;
+}
+
+.wf-config-menu-item-danger .wf-config-menu-icon {
+  color: #dc2626;
+}
+
+.wf-config-menu-item .wf-config-menu-shortcut {
+  margin-left: auto;
+  color: #9ca3af;
+  font-size: 11px;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+}
+
+.wf-config-menu-divider {
+  height: 1px;
+  margin: 2px 0;
+  background: #f3f4f6;
+}
+
+/* Header 右上角小按钮：与菜单/关闭统一样式 */
+.wf-config-header-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  color: #6b7280;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.15s, color 0.15s;
+}
+
+.wf-config-header-btn:hover {
+  color: #1f2937;
+  background: #f3f4f6;
+}
+
+.wf-config-header-divider {
+  width: 1px;
+  height: 16px;
+  margin: 0 2px;
+  background: #e5e7eb;
+}
+
+/* Dark workflow configuration panel. Both host theme conventions are supported. */
+.dark .wf-config-panel,
+[data-theme='dark'] .wf-config-panel {
+  --wf-config-bg: #081e36;
+  --wf-config-body-bg: #061629;
+  --wf-config-surface: #0b2947;
+  --wf-config-surface-hover: #103555;
+  --wf-config-border: #29445f;
+  --wf-config-text: #e7eef7;
+  --wf-config-text-secondary: #a9bad0;
+  --wf-config-text-muted: #7890aa;
+}
+
+.dark .wf-config-panel :is(input, textarea, select),
+.dark .wf-config-panel :deep(.ant-input),
+.dark .wf-config-panel :deep(.ant-input-number),
+.dark .wf-config-panel :deep(.ant-input-affix-wrapper),
+.dark .wf-config-panel :deep(.ant-select-selector),
+.dark .wf-config-panel :deep(.ant-picker),
+[data-theme='dark'] .wf-config-panel :is(input, textarea, select),
+[data-theme='dark'] .wf-config-panel :deep(.ant-input),
+[data-theme='dark'] .wf-config-panel :deep(.ant-input-number),
+[data-theme='dark'] .wf-config-panel :deep(.ant-input-affix-wrapper),
+[data-theme='dark'] .wf-config-panel :deep(.ant-select-selector),
+[data-theme='dark'] .wf-config-panel :deep(.ant-picker) {
+  color: var(--wf-config-text) !important;
+  background: var(--wf-config-bg) !important;
+  border-color: var(--wf-config-border) !important;
+}
+
+.dark .wf-config-panel :deep(.ant-select-selection-placeholder),
+.dark .wf-config-panel :deep(.ant-input::placeholder),
+[data-theme='dark'] .wf-config-panel :deep(.ant-select-selection-placeholder),
+[data-theme='dark'] .wf-config-panel :deep(.ant-input::placeholder) {
+  color: var(--wf-config-text-muted) !important;
+}
+
+.dark .wf-config-hint code,
+[data-theme='dark'] .wf-config-hint code {
+  color: #aeb7ff;
+  background: #162d54;
+}
+
+.dark .wf-config-header-btn:hover,
+[data-theme='dark'] .wf-config-header-btn:hover {
+  color: var(--wf-config-text);
+  background: var(--wf-config-surface-hover);
+}
+
+.dark .wf-config-header-divider,
+.dark .wf-config-menu-divider,
+[data-theme='dark'] .wf-config-header-divider,
+[data-theme='dark'] .wf-config-menu-divider {
+  background: var(--wf-config-border);
+}
+
+.dark .wf-config-panel .bg-white,
+[data-theme='dark'] .wf-config-panel .bg-white { background: var(--wf-config-surface); }
+.dark .wf-config-panel .bg-gray-50,
+.dark .wf-config-panel .bg-gray-100,
+[data-theme='dark'] .wf-config-panel .bg-gray-50,
+[data-theme='dark'] .wf-config-panel .bg-gray-100 { background: var(--wf-config-surface-hover); }
+.dark .wf-config-panel :is(.text-gray-400, .text-gray-500, .text-gray-600),
+[data-theme='dark'] .wf-config-panel :is(.text-gray-400, .text-gray-500, .text-gray-600) { color: var(--wf-config-text-secondary); }
+.dark .wf-config-panel .text-gray-800,
+[data-theme='dark'] .wf-config-panel .text-gray-800 { color: var(--wf-config-text); }
+.dark .wf-config-panel :is(.border, .border-t, .border-b),
+[data-theme='dark'] .wf-config-panel :is(.border, .border-t, .border-b) { border-color: var(--wf-config-border); }
+
+/* =========================================================
+ * 兼容层：Tailwind 类 lookalike（临时）
+ * 供 src/components/*.vue 里还没重构的模板兜底
+ * ========================================================= */
+
+/* flex 布局 */
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.flex-row { flex-direction: row; }
+.flex-1 { flex: 1 1 0%; min-width: 0; }
+.flex-none { flex: none; }
+.flex-auto { flex: 1 1 auto; }
+.flex-wrap { flex-wrap: wrap; }
+.items-start { align-items: flex-start; }
+.items-center { align-items: center; }
+.items-end { align-items: flex-end; }
+.justify-start { justify-content: flex-start; }
+.justify-center { justify-content: center; }
+.justify-end { justify-content: flex-end; }
+.justify-between { justify-content: space-between; }
+.justify-around { justify-content: space-around; }
+
+/* gap */
+.gap-1 { gap: 4px; }
+.gap-2 { gap: 8px; }
+.gap-3 { gap: 12px; }
+.gap-4 { gap: 16px; }
+
+/* margin / padding */
+.m-1 { margin: 4px; }
+.m-2 { margin: 8px; }
+.mt-1 { margin-top: 4px; }
+.mt-2 { margin-top: 8px; }
+.mt-3 { margin-top: 12px; }
+.mt-4 { margin-top: 16px; }
+.mb-1 { margin-bottom: 4px; }
+.mb-2 { margin-bottom: 8px; }
+.mb-3 { margin-bottom: 12px; }
+.mb-4 { margin-bottom: 16px; }
+.p-1 { padding: 4px; }
+.p-2 { padding: 8px; }
+.p-3 { padding: 12px; }
+.p-4 { padding: 16px; }
+.px-2 { padding-left: 8px; padding-right: 8px; }
+.px-3 { padding-left: 12px; padding-right: 12px; }
+.py-1 { padding-top: 4px; padding-bottom: 4px; }
+.py-2 { padding-top: 8px; padding-bottom: 8px; }
+.pb-2 { padding-bottom: 8px; }
+.pb-4 { padding-bottom: 16px; }
+.pt-2 { padding-top: 8px; }
+
+/* 尺寸 */
+.w-full { width: 100%; }
+.w-4 { width: 16px; }
+.w-20 { width: 80px; }
+.h-full { height: 100%; }
+.h-4 { height: 16px; }
+.min-h-0 { min-height: 0; }
+
+/* 文本 */
+.text-xs { font-size: 12px; }
+.text-sm { font-size: 13px; }
+.text-base { font-size: 14px; }
+.text-gray-400 { color: #9ca3af; }
+.text-gray-500 { color: #6b7280; }
+.text-gray-600 { color: #4b5563; }
+.text-gray-800 { color: #1f2937; }
+.text-orange-800 { color: #9a3412; }
+.text-primary { color: #6366f1; }
+.font-medium { font-weight: 500; }
+.font-semibold { font-weight: 600; }
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 背景 / 边框 */
+.bg-white { background: #ffffff; }
+.bg-gray-50 { background: #f9fafb; }
+.bg-gray-100 { background: #f3f4f6; }
+.bg-green-300 { background: #86efac; }
+.border { border: 1px solid #e5e7eb; }
+.border-t { border-top: 1px solid #e5e7eb; }
+.border-b { border-bottom: 1px solid #e5e7eb; }
+.rounded { border-radius: 4px; }
+.rounded-md { border-radius: 6px; }
+.rounded-lg { border-radius: 8px; }
+
+.hover\:bg-primary-light:hover {
+  background: #eef2ff;
+}

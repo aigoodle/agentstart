@@ -1,0 +1,367 @@
+/* =========================================================
+ * agent-flow · 节点通用基础样式
+ * 所有节点视觉的共享部分（卡片外观、header、icon、toolbar、
+ * status、content 排版、metrics/config 预览、utility 行）。
+ * 各节点的 <style scoped> 只负责设置 --wf-accent / --wf-accent-hover
+ * 两个 CSS 变量来切换颜色，其余一律走这里。
+ * 命名空间：wf- 前缀，避免污染宿主项目样式。
+ * ========================================================= */
+
+/* -------- 卡片外观 -------- */
+.wf-node {
+  --wf-accent: #6b7280;
+  --wf-accent-hover: #4b5563;
+  --wf-node-bg: var(--as-card-bg, #ffffff);
+  --wf-node-border: #e5e7eb;
+  --wf-node-surface: #f8fafc;
+  --wf-node-surface-strong: #eef2f7;
+  --wf-node-text: #1f2937;
+  --wf-node-text-secondary: #6b7280;
+  --wf-node-text-muted: #94a3b8;
+  --wf-node-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --wf-node-shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.15);
+
+  position: relative;
+  width: 300px;
+  padding: 16px;
+  background: var(--wf-node-bg);
+  border: 2px solid var(--wf-accent, var(--wf-node-border));
+  border-radius: 12px;
+  box-shadow: var(--wf-node-shadow);
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+
+.wf-node:hover {
+  border-color: var(--wf-accent-hover, #6366f1);
+  box-shadow: var(--wf-node-shadow-hover);
+}
+
+/* 选中态：走 VueFlow 的 .selected 类（<VueFlow> 会在被选中节点根元素加上）
+ * 我们的 .wf-node 加在内部 div 上，所以用父选择器 .selected .wf-node
+ *
+ * 更强的视觉反馈——之前的 2px @25% halo 在原本已经带 accent 边框的卡片上
+ * 几乎看不出来。加厚成 3px @45% halo，叠一层淡 accent 背景 + 更浓的投影，
+ * 用户一眼就能看出"这是当前正在配置的节点"。纯 CSS，没有 JS reactivity 开销。 */
+.selected .wf-node,
+.wf-node.wf-node-selected {
+  background: color-mix(in srgb, var(--wf-accent, #6366f1) 12%, var(--wf-node-bg));
+  border-color: var(--wf-accent, #6366f1) !important;
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--wf-accent, #6366f1) 45%, transparent),
+    0 6px 16px rgba(15, 23, 42, 0.12) !important;
+}
+
+.wf-node.wf-node-dimmed {
+  opacity: 0.6;
+  border-color: #d1d5db !important;
+}
+
+/* 节点右上角状态徽章 */
+.wf-node-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px;
+  font-size: 10px;
+  font-weight: 600;
+  color: #ffffff;
+  background: #6b7280;
+  border: 2px solid #ffffff;
+  border-radius: 999px;
+  box-shadow: 0 2px 4px rgba(15, 23, 42, 0.1);
+}
+
+.wf-node-badge-running {
+  background: #f59e0b;
+  animation: wf-node-pulse 1.6s infinite;
+}
+
+.wf-node-badge-success {
+  background: #10b981;
+}
+
+.wf-node-badge-failed {
+  background: #ef4444;
+}
+
+/* -------- Header：icon + 标题 + 副标题 -------- */
+.wf-node-header {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.wf-node-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 32px;
+  height: 32px;
+  color: #ffffff;
+  background: var(--wf-accent);
+  border-radius: 8px;
+}
+
+.wf-node-icon :deep(.icon),
+.wf-node-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.wf-node-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.wf-node-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--wf-node-text);
+  margin-bottom: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wf-node-subtitle {
+  display: flex;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--wf-accent);
+  font-weight: 500;
+}
+
+.wf-node-description {
+  font-size: 12px;
+  color: var(--wf-node-text-secondary);
+  line-height: 1.4;
+}
+
+/* 节点悬浮工具栏样式已移到 NodeHoverToolbar.vue 的 scoped style。
+ * 这里只保留 readonly 状态下的隐藏规则（选择器已同时匹配新旧两版）。 */
+
+/* -------- 状态指示灯 -------- */
+.wf-node-status {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+}
+
+.wf-node-status-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #d1d5db;
+}
+
+.wf-node-status-indicator.wf-is-running {
+  background: var(--wf-accent);
+  animation: wf-node-pulse 2s infinite;
+}
+
+.wf-node-status-indicator.wf-is-completed {
+  background: #10b981;
+}
+
+/* -------- Content 区 -------- */
+.wf-node-content {
+  margin-bottom: 8px;
+}
+
+/* Start 节点的 trigger 预览行 */
+.wf-node-triggers {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  background: #d1fae5;
+  border-radius: 8px;
+}
+
+.wf-node-triggers-icon {
+  width: 16px;
+  height: 16px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.wf-node-triggers-scope {
+  width: 80px;
+  overflow: hidden;
+  color: #6b7280;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* LLM / Agent 提示词预览：中性灰底，适合代码/长文本 */
+.wf-node-config-preview {
+  padding: 8px;
+  background: var(--wf-node-surface);
+  border: 1px solid var(--wf-node-border);
+  border-radius: 6px;
+}
+
+.wf-node-config-label {
+  margin-bottom: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--wf-node-text-secondary);
+}
+
+.wf-node-config-value {
+  font-size: 12px;
+  color: var(--wf-node-text);
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  word-break: break-all;
+}
+
+/* 通用带 accent 淡色的配置预览：适合"输入变量/所选知识库/HTTP URL"等短文本摘要
+ * 用 color-mix 依据 --wf-accent 生成淡底色，减少每节点手写颜色 */
+.wf-node-preview {
+  padding: 10px;
+  background: color-mix(in srgb, var(--wf-accent) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--wf-accent) 30%, transparent);
+  border-radius: 6px;
+}
+
+.wf-node-preview-label {
+  margin-bottom: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  color: color-mix(in srgb, var(--wf-accent) 85%, #000);
+}
+
+.wf-node-preview-value {
+  font-size: 12px;
+  color: var(--wf-node-text);
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  word-break: break-all;
+}
+
+.wf-node-preview-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--wf-node-text);
+}
+
+/* LLM 参数指标行 */
+.wf-node-metrics {
+  display: flex;
+  gap: 12px;
+  padding-top: 8px;
+  border-top: 1px solid var(--wf-node-border);
+}
+
+.wf-node-metric {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.wf-node-metric-label {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--wf-node-text-muted);
+}
+
+.wf-node-metric-value {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--wf-node-text);
+}
+
+/* Shared dark surface for every workflow node, including LLM. */
+.dark .wf-node,
+[data-theme='dark'] .wf-node {
+  --wf-node-bg: #081e36;
+  --wf-node-border: #29445f;
+  --wf-node-surface: #0b2947;
+  --wf-node-surface-strong: #103555;
+  --wf-node-text: #e7eef7;
+  --wf-node-text-secondary: #a9bad0;
+  --wf-node-text-muted: #7890aa;
+  --wf-node-shadow: 0 4px 14px rgb(0 0 0 / 28%);
+  --wf-node-shadow-hover: 0 8px 24px rgb(0 0 0 / 38%);
+}
+
+.dark .selected .wf-node,
+.dark .wf-node.wf-node-selected,
+[data-theme='dark'] .selected .wf-node,
+[data-theme='dark'] .wf-node.wf-node-selected {
+  background: color-mix(in srgb, var(--wf-accent, #6366f1) 18%, var(--wf-node-bg));
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--wf-accent, #6366f1) 55%, transparent),
+    0 8px 24px rgb(0 0 0 / 38%) !important;
+}
+
+.dark .wf-node-badge,
+[data-theme='dark'] .wf-node-badge {
+  border-color: var(--wf-node-bg);
+}
+
+/* End 节点回复预览 */
+.wf-node-answer-preview {
+  padding: 10px;
+  border: 1px solid #fed7aa;
+  border-radius: 6px;
+}
+
+.wf-node-answer-text {
+  font-size: 12px;
+  color: #9a3412;
+  font-style: italic;
+  line-height: 1.4;
+}
+
+.wf-node-answer-row {
+  display: flex;
+  gap: 8px;
+}
+
+.wf-node-empty {
+  padding: 12px;
+  text-align: center;
+  border: 1px dashed #d1d5db;
+  border-radius: 6px;
+}
+
+.wf-node-empty-text {
+  font-size: 12px;
+  font-style: italic;
+  color: #9ca3af;
+}
+
+/* -------- 只读模式：隐藏所有节点悬浮操作 -------- */
+.wf-readonly .wf-node-toolbar,
+.wf-readonly .wf-hover-toolbar {
+  display: none !important;
+}
+
+/* -------- utility -------- */
+.wf-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.wf-row-gap-sm {
+  display: flex;
+  gap: 8px;
+}
+
+@keyframes wf-node-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}

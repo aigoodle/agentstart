@@ -1,0 +1,2219 @@
+/**
+ * ============================================================================
+ * AGENT-START 演示中枢 · 暗黑科幻 HUD 全息主题
+ * ============================================================================
+ * 加载顺序（见 main.ts）：库 dist/style.css → hud-force-dark.css（生成的
+ * 强制暗色层）→ 本文件。本文件负责：
+ *   1. --hud-* 调色板变量（生成层引用这些变量）
+ *   2. --as-* / --kh-* / --color-as-* 设计令牌覆写
+ *   3. 组件局部变量覆写（.ph / .th / .wf-node / .as-management）
+ *   4. as-* 基础组件强制覆写（库样式在 @layer 内，本文件无层即胜出）
+ *   5. 全局底色 / 滚动条 / 选区 / .hud-panel 全息面板工具类
+ *
+ * 色板规范：
+ *   主色 #00ccff · 亮青 #00e0ff · 深底 #040c1a · 面板 rgba(0,30,60,.45)
+ *   正文 #b8e8ff · 次要 #78a8d0 · 标题发光 #00e0ff · 告警 #ff4444
+ */
+
+/* ==========================================================================
+ * 1. HUD 调色板
+ * ========================================================================== */
+:root {
+  --hud-primary: #00ccff;
+  --hud-primary-bright: #00e0ff;
+  --hud-primary-deep: #00a3cc;
+
+  /* 表面：弹层/抽屉/向导等浮层用实色，避免透出下层内容 */
+  --hud-surface: #081e36;
+  --hud-surface-raised: #0a2540;
+  --hud-sunken: #04101e;
+  --hud-fill: rgba(0, 150, 220, 0.09);
+  --hud-fill-strong: rgba(0, 160, 230, 0.16);
+  --hud-accent-soft: rgba(0, 204, 255, 0.1);
+  --hud-warning-soft: rgba(250, 204, 21, 0.12);
+  --hud-danger-soft: rgba(255, 68, 68, 0.12);
+  --hud-success-soft: rgba(34, 197, 94, 0.12);
+
+  --hud-border: rgba(0, 204, 255, 0.22);
+  --hud-border-strong: rgba(0, 204, 255, 0.45);
+  --hud-border-faint: rgba(0, 204, 255, 0.1);
+
+  --hud-text-strong: #dcf4ff;
+  --hud-text: #b8e8ff;
+  --hud-text-muted: #78a8d0;
+  --hud-text-faint: #5580a6;
+
+  --hud-danger: #ff4444;
+  --hud-success: #22c55e;
+  --hud-warning: #facc15;
+
+  --hud-glow: 0 0 18px rgba(0, 204, 255, 0.14);
+  --hud-glow-strong: 0 0 26px rgba(0, 204, 255, 0.28);
+  --hud-panel-bg: rgba(0, 30, 60, 0.45);
+
+  --hud-font-mono:
+    'JetBrains Mono', 'Cascadia Code', ui-monospace, SFMono-Regular, Menlo,
+    Consolas, monospace;
+
+  /* 结构线规范：hairline 构轮廓，accent 标记关键节点，cut 统一切角。 */
+  --hud-line-hairline: 1px;
+  --hud-line-accent: 2px;
+  --hud-cut-sm: 5px;
+  --hud-cut-md: 9px;
+  --hud-structure-line: color-mix(in srgb, var(--hud-primary) 42%, transparent);
+  --hud-structure-hot: color-mix(in srgb, var(--hud-primary) 78%, white);
+  --hud-structure-soft: color-mix(in srgb, var(--hud-primary) 12%, transparent);
+}
+
+/* ==========================================================================
+ * 2. 组件库设计令牌覆写（与库 :root 同特异性，靠加载顺序取胜）
+ * ========================================================================== */
+:root {
+  /* --- as-* 基座（--as-primary 等派生自 --color-as-*，改基即可） --- */
+  --color-as-primary: #00ccff;
+  --color-as-primary-hover: #35d9ff;
+  --color-as-primary-active: #00a8d6;
+  --color-as-success: #22c55e;
+  --color-as-warning: #facc15;
+  --color-as-danger: #ff4444;
+  --radius-as: 8px;
+  --shadow-as:
+    0 0 0 1px rgba(0, 204, 255, 0.08), 0 8px 28px rgba(0, 0, 0, 0.55);
+
+  --as-text: #b8e8ff;
+  --as-text-secondary: #78a8d0;
+  --as-text-placeholder: #5580a6;
+  --as-text-disabled: #3f6488;
+  --as-border: rgba(0, 204, 255, 0.28);
+  --as-border-secondary: rgba(0, 204, 255, 0.14);
+  --as-bg: rgba(4, 22, 42, 0.72);
+  --as-bg-layout: #040c1a;
+  /* 库样式引用但从未定义的令牌，这里补齐 */
+  --as-bg-elevated: #0a2540;
+  --as-fill-secondary: rgba(0, 150, 220, 0.1);
+  --as-fill-disabled: rgba(120, 168, 208, 0.06);
+  --as-shadow: var(--shadow-as);
+
+  /* --- kh-*（knowledge-hub），压过库的 [data-theme=dark] 灰蓝方案 --- */
+  --kh-color-primary: #00ccff;
+  --kh-color-primary-strong: #00a3cc;
+  --kh-color-primary-soft: rgba(0, 204, 255, 0.12);
+  --kh-color-primary-contrast: #04121f;
+  --kh-color-primary-outline: rgba(0, 204, 255, 0.35);
+  --kh-color-text-primary: #dcf4ff;
+  --kh-color-text-secondary: #b8e8ff;
+  --kh-color-text-tertiary: #78a8d0;
+  --kh-color-text-muted: #5580a6;
+  --kh-color-text-inverse: #04121f;
+  --kh-color-surface: #081e36;
+  --kh-color-surface-raised: #0a2540;
+  --kh-color-surface-sunken: #04101e;
+  --kh-color-surface-hover: rgba(0, 150, 220, 0.12);
+  --kh-color-border: rgba(0, 204, 255, 0.2);
+  --kh-color-border-hover: rgba(0, 204, 255, 0.45);
+  --kh-color-border-strong: rgba(0, 204, 255, 0.6);
+  --kh-color-divider: rgba(0, 204, 255, 0.1);
+  --kh-color-success: #22c55e;
+  --kh-color-success-soft: rgba(34, 197, 94, 0.14);
+  --kh-color-warning: #facc15;
+  --kh-color-warning-soft: rgba(250, 204, 21, 0.14);
+  --kh-color-danger: #ff4444;
+  --kh-color-danger-soft: rgba(255, 68, 68, 0.14);
+  --kh-color-info: #00ccff;
+  --kh-color-info-soft: rgba(0, 204, 255, 0.12);
+  --kh-input-border: rgba(0, 204, 255, 0.25);
+  --kh-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --kh-shadow-md: 0 3px 14px rgba(0, 0, 0, 0.55), 0 0 12px rgba(0, 204, 255, 0.06);
+  --kh-shadow-lg: 0 6px 24px rgba(0, 0, 0, 0.6), 0 0 20px rgba(0, 204, 255, 0.1);
+  --kh-shadow-drawer: -6px 0 30px rgba(0, 0, 0, 0.6), -1px 0 0 rgba(0, 204, 255, 0.2);
+  --kh-shadow-modal: 0 24px 70px rgba(0, 0, 0, 0.7), 0 0 30px rgba(0, 204, 255, 0.12);
+}
+
+/* ==========================================================================
+ * 3. 组件局部变量覆写
+ * ========================================================================== */
+
+/* PluginHub / TriggerHub 根部的本地令牌（库 .dark 方案是中性 zinc，改海军蓝） */
+html.dark .ph,
+html.dark .th {
+  --panel: #081e36;
+  --soft: #04101e;
+  --line: rgba(0, 204, 255, 0.18);
+  --text: #b8e8ff;
+  --muted: #78a8d0;
+  --primary: #00ccff;
+}
+
+/* 工作流节点卡片 */
+html.dark .wf-node {
+  --wf-node-bg: rgba(6, 26, 48, 0.94);
+  --wf-node-border: rgba(0, 204, 255, 0.25);
+  --wf-node-shadow:
+    0 0 16px rgba(0, 204, 255, 0.1), 0 4px 14px rgba(0, 0, 0, 0.55);
+  --wf-node-shadow-hover:
+    0 0 26px rgba(0, 204, 255, 0.24), 0 6px 20px rgba(0, 0, 0, 0.6);
+}
+
+/* 工作流输出变量：组件库只提供语义类和结构，暗色配色由宿主 HUD 统一接管。 */
+html.dark[data-theme='dark'] .wf-output-field > .wf-field-body {
+  padding: 0;
+  background: transparent !important;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+html.dark[data-theme='dark'] .output-card {
+  --wf-out-panel-bg: #061a30;
+  --wf-out-surface: #0a2540;
+  --wf-out-surface-soft: #082039;
+  --wf-out-surface-hover: #0d3152;
+  --wf-out-border: rgba(0, 204, 255, 0.32);
+  --wf-out-border-soft: rgba(0, 204, 255, 0.2);
+  --wf-out-text: var(--hud-text-strong);
+  --wf-out-text-secondary: var(--hud-text-muted);
+  --wf-out-text-muted: var(--hud-text-faint);
+}
+
+html.dark[data-theme='dark'] .output-card :is(.output-tree-root, .output-plain-row, .output-empty) {
+  background: var(--wf-out-surface) !important;
+  border-color: var(--wf-out-border-soft) !important;
+}
+
+html.dark[data-theme='dark'] .output-card .wf-out-row:hover {
+  background: var(--wf-out-surface-hover) !important;
+  box-shadow: inset 0 0 0 1px var(--wf-out-border) !important;
+}
+
+html.dark[data-theme='dark'] .output-card .wf-out-type-string {
+  color: #7dd3b0;
+  background: #103c3a;
+  border-color: #247064;
+}
+html.dark[data-theme='dark'] .output-card .wf-out-type-number {
+  color: #f6c76b;
+  background: #3b2b16;
+  border-color: #76552a;
+}
+html.dark[data-theme='dark'] .output-card .wf-out-type-boolean {
+  color: #c4b5fd;
+  background: #29234b;
+  border-color: #51478a;
+}
+html.dark[data-theme='dark'] .output-card .wf-out-type-object {
+  color: #93c5fd;
+  background: #15345b;
+  border-color: #2f6092;
+}
+html.dark[data-theme='dark'] .output-card .wf-out-type-array {
+  color: #f9a8d4;
+  background: #48213b;
+  border-color: #7d3b67;
+}
+html.dark[data-theme='dark'] .output-card .wf-out-type-file {
+  color: #b7c9de;
+  background: #1b3049;
+  border-color: #365675;
+}
+
+html.dark[data-theme='dark'] .output-card .wf-out-row-action-danger:hover {
+  color: #fca5a5;
+  background: #48232d;
+}
+
+/* PromptEditor 的标题在组件库中使用浅色主题深灰；暗色 HUD 下由宿主改为蓝白。 */
+html.dark[data-theme='dark'] .wf-pe-title {
+  color: var(--hud-text-strong);
+  text-shadow: 0 0 10px rgba(0, 204, 255, 0.12);
+}
+
+html.dark[data-theme='dark'] .wf-pe-toolbar {
+  background: color-mix(
+    in srgb,
+    var(--hud-surface) 88%,
+    var(--hud-primary) 12%
+  ) !important;
+  border-bottom-color: color-mix(
+    in srgb,
+    var(--hud-primary) 34%,
+    transparent
+  ) !important;
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.18);
+}
+
+html.dark[data-theme='dark'] .wf-pe-toolbar .wf-pe-btn {
+  color: var(--hud-text-muted);
+}
+
+html.dark[data-theme='dark'] .wf-pe-toolbar .wf-pe-btn:hover {
+  color: var(--hud-primary-bright);
+  background: color-mix(
+    in srgb,
+    var(--hud-primary) 14%,
+    transparent
+  );
+}
+
+/* management 容器：库用 color-mix(…, white) 提亮 soft 面板，暗色下改为提暗 */
+html.dark .as-management {
+  --as-mgmt-panel: rgba(6, 26, 48, 0.6);
+  --as-mgmt-soft: rgba(0, 140, 210, 0.07);
+  --as-mgmt-line: rgba(0, 204, 255, 0.14);
+  --as-mgmt-text: #b8e8ff;
+  --as-mgmt-muted: #78a8d0;
+}
+
+/* 各大组件根容器：背景透明，让星点网格底透出来，卡片各自成面板 */
+html.dark[data-theme='dark'] .ph,
+html.dark[data-theme='dark'] .th,
+html.dark[data-theme='dark'] .as-management,
+html.dark[data-theme='dark'] .ch-root,
+html.dark[data-theme='dark'] .cet-root,
+html.dark[data-theme='dark'] .mr-root,
+html.dark[data-theme='dark'] .kh-app,
+html.dark[data-theme='dark'] .agent-apps-page,
+html.dark[data-theme='dark'] .dify-flow-designer {
+  background: transparent;
+}
+
+/* ==========================================================================
+ * 4. as-* 基础组件强制覆写（库样式在 @layer 内，无层规则天然胜出）
+ * ========================================================================== */
+
+/* --- 状态标签：绿=正常 / 黄=待处理 / 红=告警 --- */
+.as-tag {
+  color: var(--hud-text);
+  background: rgba(0, 150, 220, 0.08);
+  border-color: var(--hud-border);
+}
+.as-tag--green,
+.as-tag--success {
+  color: #4ade80;
+  background: rgba(34, 197, 94, 0.12);
+  border-color: rgba(34, 197, 94, 0.4);
+}
+.as-tag--red,
+.as-tag--error {
+  color: #ff6b6b;
+  background: rgba(255, 68, 68, 0.12);
+  border-color: rgba(255, 68, 68, 0.45);
+}
+.as-tag--blue,
+.as-tag--processing {
+  color: #35d9ff;
+  background: rgba(0, 204, 255, 0.12);
+  border-color: rgba(0, 204, 255, 0.4);
+}
+.as-tag--orange,
+.as-tag--warning {
+  color: #fbbf24;
+  background: rgba(250, 204, 21, 0.12);
+  border-color: rgba(250, 204, 21, 0.4);
+}
+
+/* --- 提示条：告警用红色发光边框 --- */
+.as-alert {
+  background: rgba(0, 204, 255, 0.07);
+  border: 1px solid rgba(0, 204, 255, 0.35);
+  color: var(--hud-text);
+}
+.as-alert--success {
+  background: rgba(34, 197, 94, 0.08);
+  border-color: rgba(34, 197, 94, 0.4);
+}
+.as-alert--warning {
+  background: rgba(250, 204, 21, 0.08);
+  border-color: rgba(250, 204, 21, 0.4);
+}
+.as-alert--error {
+  background: rgba(255, 68, 68, 0.08);
+  border-color: rgba(255, 68, 68, 0.55);
+  box-shadow: 0 0 14px rgba(255, 68, 68, 0.18);
+}
+
+/* --- 表格：表头半透深蓝 + 浅蓝细分割线 --- */
+.as-table th,
+.as-table thead td {
+  background: rgba(2, 16, 34, 0.85) !important;
+  color: #8fc7e8;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid rgba(0, 204, 255, 0.28) !important;
+}
+.as-table td {
+  border-bottom-color: rgba(0, 204, 255, 0.1);
+}
+.as-table tbody tr:hover td {
+  background: rgba(0, 150, 220, 0.07);
+}
+
+/* --- 开关 / 复选 --- */
+.as-switch {
+  background: rgba(120, 168, 208, 0.22);
+}
+.as-switch--checked {
+  background: var(--hud-primary);
+  box-shadow: 0 0 10px rgba(0, 204, 255, 0.5);
+}
+.as-check__box {
+  background: rgba(4, 20, 38, 0.9);
+  border-color: var(--hud-border-strong);
+}
+.as-radio__dot,
+.as-radio .as-radio__inner {
+  background: rgba(4, 20, 38, 0.9);
+}
+
+/* --- 全局提示消息（顶部浮层） --- */
+.as-message {
+  background: #0a2540;
+  border: 1px solid rgba(0, 204, 255, 0.3);
+  box-shadow:
+    0 0 20px rgba(0, 204, 255, 0.15), 0 8px 24px rgba(0, 0, 0, 0.55);
+  color: var(--hud-text);
+}
+
+/* --- 按钮：禁用态 & 主按钮发光 --- */
+.as-btn:disabled {
+  background: rgba(120, 168, 208, 0.06);
+  border-color: rgba(0, 204, 255, 0.12);
+  color: #3f6488;
+}
+.as-btn--primary:not(:disabled) {
+  box-shadow: 0 0 14px rgba(0, 204, 255, 0.35);
+}
+.as-btn--primary:not(:disabled):hover {
+  box-shadow: 0 0 20px rgba(0, 204, 255, 0.55);
+}
+.as-btn--danger:not(:disabled) {
+  box-shadow: 0 0 14px rgba(255, 68, 68, 0.3);
+}
+
+/* --- 弹层：下拉/气泡/模态/抽屉 --- */
+.as-modal__mask,
+.as-drawer__mask {
+  background:
+    radial-gradient(circle at 50% 18%, rgba(0, 174, 255, 0.045), transparent 44%),
+    rgba(1, 9, 20, 0.22);
+  -webkit-backdrop-filter: blur(6px) saturate(112%);
+  backdrop-filter: blur(6px) saturate(112%);
+  opacity: 1;
+  will-change: opacity, backdrop-filter;
+}
+
+/* 蒙板和面板分层过渡，避免 backdrop-filter 首帧建立合成层时慢一拍。 */
+.as-modal-fade-enter-active,
+.as-modal-fade-leave-active,
+.as-drawer-right-enter-active,
+.as-drawer-right-leave-active,
+.as-drawer-left-enter-active,
+.as-drawer-left-leave-active {
+  transition: none;
+}
+
+.as-modal-fade-enter-active .as-modal__mask,
+.as-modal-fade-leave-active .as-modal__mask,
+.as-drawer-right-enter-active .as-drawer__mask,
+.as-drawer-right-leave-active .as-drawer__mask,
+.as-drawer-left-enter-active .as-drawer__mask,
+.as-drawer-left-leave-active .as-drawer__mask {
+  transition: opacity .18s ease-out, backdrop-filter .22s ease-out, -webkit-backdrop-filter .22s ease-out;
+}
+
+.as-modal-fade-enter-active .as-modal,
+.as-modal-fade-leave-active .as-modal {
+  transition: opacity .18s ease-out, transform .2s cubic-bezier(.22, 1, .36, 1);
+}
+
+.as-modal-fade-enter-from .as-modal__mask,
+.as-modal-fade-leave-to .as-modal__mask,
+.as-drawer-right-enter-from .as-drawer__mask,
+.as-drawer-right-leave-to .as-drawer__mask,
+.as-drawer-left-enter-from .as-drawer__mask,
+.as-drawer-left-leave-to .as-drawer__mask {
+  opacity: 0;
+  -webkit-backdrop-filter: blur(0) saturate(100%);
+  backdrop-filter: blur(0) saturate(100%);
+}
+
+.as-modal-fade-enter-from .as-modal,
+.as-modal-fade-leave-to .as-modal {
+  opacity: 0;
+  transform: translateY(-8px) scale(.988);
+}
+
+.as-drawer-right-enter-active .as-drawer,
+.as-drawer-right-leave-active .as-drawer,
+.as-drawer-left-enter-active .as-drawer,
+.as-drawer-left-leave-active .as-drawer {
+  transition: opacity .18s ease-out, transform .22s cubic-bezier(.22, 1, .36, 1);
+}
+.as-drawer-right-enter-from .as-drawer,
+.as-drawer-right-leave-to .as-drawer,
+.as-drawer-left-enter-from .as-drawer,
+.as-drawer-left-leave-to .as-drawer {
+  opacity: 0;
+}
+
+.as-dropdown__panel,
+.as-popover__panel,
+.as-select__dropdown,
+.as-cascader__dropdown {
+  background: var(--hud-surface-raised);
+  border: 1px solid var(--hud-border);
+  box-shadow:
+    0 0 24px rgba(0, 204, 255, 0.12), 0 12px 32px rgba(0, 0, 0, 0.6);
+}
+.as-modal__content,
+.as-drawer__body,
+.as-drawer__panel {
+  background: var(--hud-surface);
+  box-shadow: 0 0 40px rgba(0, 204, 255, 0.1), 0 24px 70px rgba(0, 0, 0, 0.7);
+}
+
+/* --- 输入控件聚焦：全息增亮 --- */
+.as-input:hover,
+.as-input-affix-wrapper:hover,
+.as-select__selector:hover,
+.as-textarea:hover {
+  border-color: rgba(0, 204, 255, 0.55);
+}
+.as-input:focus,
+.as-input-focused,
+.as-input-affix-wrapper:focus-within,
+.as-select--open .as-select__selector,
+.as-textarea:focus {
+  border-color: var(--hud-primary);
+  box-shadow: 0 0 0 2px rgba(0, 204, 255, 0.18), 0 0 14px rgba(0, 204, 255, 0.2);
+}
+
+/* --- 空状态：简约线框低透明度 --- */
+.as-empty {
+  color: var(--hud-text-faint);
+  opacity: 0.75;
+}
+
+/* --- Tabs：激活项淡蓝填充 + 高亮 --- */
+.as-tabs__tab:hover {
+  color: var(--hud-primary-bright);
+}
+.as-tabs__tab--active,
+.as-tabs__tab.as-tabs__tab--active:hover {
+  color: var(--hud-primary-bright);
+  text-shadow: 0 0 10px rgba(0, 224, 255, 0.45);
+}
+.as-tabs__ink-bar {
+  background: var(--hud-primary);
+  box-shadow: 0 0 10px rgba(0, 204, 255, 0.7);
+}
+.as-segmented {
+  background: rgba(0, 140, 210, 0.08);
+}
+.as-segmented__item--selected {
+  background: rgba(0, 204, 255, 0.16);
+  color: var(--hud-primary-bright);
+  box-shadow: 0 0 10px rgba(0, 204, 255, 0.2);
+}
+
+/* --------------------------------------------------------------------------
+ * 统一结构线：卡片 / 数据容器 / 浮层
+ * 只在科技视觉模式显示；装饰层不参与点击和布局。
+ * -------------------------------------------------------------------------- */
+.as-card,
+.as-table-wrap,
+.as-dropdown__panel,
+.as-popover__panel,
+.as-select__dropdown,
+.as-cascader__dropdown {
+  position: relative;
+  isolation: isolate;
+}
+
+.as-card::before,
+.as-table-wrap::before,
+.as-dropdown__panel::before,
+.as-popover__panel::before,
+.as-select__dropdown::before,
+.as-cascader__dropdown::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  z-index: 3;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, var(--hud-structure-hot), transparent) 9px 0 / min(92px, 28%) var(--hud-line-accent) no-repeat,
+    linear-gradient(90deg, transparent, var(--hud-structure-line)) calc(100% - 76px) 100% / 68px var(--hud-line-hairline) no-repeat,
+    linear-gradient(var(--hud-structure-hot), var(--hud-structure-hot)) 0 9px / var(--hud-line-accent) 22px no-repeat,
+    linear-gradient(var(--hud-structure-line), var(--hud-structure-line)) 100% calc(100% - 31px) / var(--hud-line-hairline) 22px no-repeat,
+    repeating-linear-gradient(90deg, var(--hud-structure-line) 0 3px, transparent 3px 7px) calc(100% - 48px) 7px / 38px 3px no-repeat;
+  opacity: .82;
+  filter: drop-shadow(0 0 3px color-mix(in srgb, var(--hud-structure-hot) 38%, transparent));
+  transition: opacity .18s ease, filter .18s ease;
+}
+
+.as-card:hover::before,
+.as-table-wrap:focus-within::before,
+.as-dropdown__panel:hover::before,
+.as-popover__panel:hover::before {
+  opacity: 1;
+  filter: drop-shadow(0 0 5px color-mix(in srgb, var(--hud-structure-hot) 55%, transparent));
+}
+
+/* 标题/页脚分割线采用“短强线 + 长弱线”，降低整条亮线的压迫感。 */
+.as-card__head,
+.as-drawer__footer,
+.as-modal__footer {
+  background-image:
+    linear-gradient(90deg, var(--hud-structure-hot), transparent 110px),
+    linear-gradient(90deg, transparent, var(--hud-structure-soft) 18% 82%, transparent);
+  background-position: left bottom, center bottom;
+  background-size: 132px 1px, 100% 1px;
+  background-repeat: no-repeat;
+}
+
+/* 控件使用同一组小切角；hover/focus 只增强轮廓，不扩大光晕。 */
+.as-btn,
+.as-tag,
+.as-input,
+.as-input-wrap,
+.as-textarea,
+.as-select {
+  clip-path: polygon(
+    var(--hud-cut-sm) 0,
+    100% 0,
+    100% calc(100% - var(--hud-cut-sm)),
+    calc(100% - var(--hud-cut-sm)) 100%,
+    0 100%,
+    0 var(--hud-cut-sm)
+  );
+}
+
+.as-btn {
+  transition: color .16s ease, border-color .16s ease, background-color .16s ease, box-shadow .16s ease;
+}
+.as-btn:not(:disabled):focus-visible {
+  outline: 1px solid var(--hud-structure-hot);
+  outline-offset: 2px;
+}
+
+/* 数据表的列头和行尾加入轻量定位刻度。 */
+.as-table th:first-child,
+.as-table td:first-child { border-left: var(--hud-line-accent) solid transparent; }
+.as-table thead th:first-child { border-left-color: var(--hud-structure-hot); }
+.as-table tbody tr:hover td:first-child { border-left-color: var(--hud-structure-line); }
+
+/* Tabs 底轨由完整实线改为中段弱、激活段强。 */
+.as-tabs__nav {
+  border-bottom-color: transparent;
+  background: linear-gradient(90deg, transparent, var(--hud-structure-soft) 8% 92%, transparent) left bottom / 100% 1px no-repeat;
+}
+
+/* ==========================================================================
+ * 5. 全局基底
+ * ========================================================================== */
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: visible;
+  background: #040c1a;
+  color: var(--hud-text);
+  color-scheme: dark;
+}
+
+#app {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+::selection {
+  background: rgba(0, 204, 255, 0.32);
+  color: #eaf7ff;
+}
+
+/* 细全息滚动条 */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 204, 255, 0.25) transparent;
+}
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background: rgba(0, 204, 255, 0.22);
+  border-radius: 4px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 204, 255, 0.4);
+}
+*::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* 路由切换过渡（App.vue 的 <Transition name="hud-fade">） */
+.hud-fade-enter-active,
+.hud-fade-leave-active {
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease;
+}
+.hud-fade-enter-from {
+  opacity: 0;
+  transform: translateY(8px);
+}
+.hud-fade-leave-to {
+  opacity: 0;
+  transform: translateY(-6px);
+}
+
+/* ==========================================================================
+ * 6. HUD 工具类（视图层复用）
+ * ========================================================================== */
+
+/* --------------------------------------------------------------------------
+ * 台阶造型面板（无填充，纯线框 + 转角渐变加粗）
+ * 结构：
+ *   - 主体：14px 45° 切角的台阶折线边框，其他边线 1px 最细
+ *   - 转角加粗（::before）：每条边靠近转角处 3 段叠加，越长越细、越短越粗
+ *     Layer 1: 24px × 2px（最长最细）
+ *     Layer 2: 15px × 3px（中等）
+ *     Layer 3: 7px × 4px（最短最粗）
+ *   - 边角光晕 + 上下居中光带（::after）
+ *   - 主光色 #0cf0ff，边框 0.55 / 加粗 0.8~0.95 / 主光带 0.75
+ * -------------------------------------------------------------------------- */
+.hud-panel {
+  position: relative;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  isolation: isolate;
+}
+
+/* 主边框（1px 细线 + 4 斜角）+ 转角三段加粗 */
+.hud-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    /* ===== 主边线：1px 细线 ===== */
+    /* 上边 */
+    linear-gradient(to right, rgba(12, 240, 255, 0.55), rgba(12, 240, 255, 0.55))
+      top / calc(100% - 28px) 1px no-repeat,
+    /* 下边 */
+    linear-gradient(to right, rgba(12, 240, 255, 0.55), rgba(12, 240, 255, 0.55))
+      bottom / calc(100% - 28px) 1px no-repeat,
+    /* 左边 */
+    linear-gradient(to bottom, rgba(12, 240, 255, 0.55), rgba(12, 240, 255, 0.55))
+      left / 1px calc(100% - 28px) no-repeat,
+    /* 右边 */
+    linear-gradient(to bottom, rgba(12, 240, 255, 0.55), rgba(12, 240, 255, 0.55))
+      right / 1px calc(100% - 28px) no-repeat,
+
+    /* ===== 4 个斜角：1px 细线 ===== */
+    linear-gradient(-45deg, transparent 46%, rgba(12, 240, 255, 0.55) 46% 54%, transparent 54%)
+      top left / 14px 14px no-repeat,
+    linear-gradient(45deg, transparent 46%, rgba(12, 240, 255, 0.55) 46% 54%, transparent 54%)
+      top right / 14px 14px no-repeat,
+    linear-gradient(45deg, transparent 46%, rgba(12, 240, 255, 0.55) 46% 54%, transparent 54%)
+      bottom left / 14px 14px no-repeat,
+    linear-gradient(-45deg, transparent 46%, rgba(12, 240, 255, 0.55) 46% 54%, transparent 54%)
+      bottom right / 14px 14px no-repeat,
+
+    /* ===== 左上角：上边 3 段加粗（从 x=14 起向右）===== */
+    linear-gradient(to right, rgba(12, 240, 255, 0.8), rgba(12, 240, 255, 0.8))
+      14px 0 / 24px 2px no-repeat,
+    linear-gradient(to right, rgba(12, 240, 255, 0.9), rgba(12, 240, 255, 0.9))
+      14px 0 / 15px 3px no-repeat,
+    linear-gradient(to right, rgba(12, 240, 255, 1), rgba(12, 240, 255, 1))
+      14px 0 / 7px 4px no-repeat,
+    /* 左上角：左边 3 段加粗（从 y=14 起向下）*/
+    linear-gradient(to bottom, rgba(12, 240, 255, 0.8), rgba(12, 240, 255, 0.8))
+      0 14px / 2px 24px no-repeat,
+    linear-gradient(to bottom, rgba(12, 240, 255, 0.9), rgba(12, 240, 255, 0.9))
+      0 14px / 3px 15px no-repeat,
+    linear-gradient(to bottom, rgba(12, 240, 255, 1), rgba(12, 240, 255, 1))
+      0 14px / 4px 7px no-repeat,
+
+    /* ===== 右上角：上边 3 段加粗（从右向左）===== */
+    linear-gradient(to right, rgba(12, 240, 255, 0.8), rgba(12, 240, 255, 0.8))
+      calc(100% - 38px) 0 / 24px 2px no-repeat,
+    linear-gradient(to right, rgba(12, 240, 255, 0.9), rgba(12, 240, 255, 0.9))
+      calc(100% - 29px) 0 / 15px 3px no-repeat,
+    linear-gradient(to right, rgba(12, 240, 255, 1), rgba(12, 240, 255, 1))
+      calc(100% - 21px) 0 / 7px 4px no-repeat,
+    /* 右上角：右边 3 段加粗 */
+    linear-gradient(to bottom, rgba(12, 240, 255, 0.8), rgba(12, 240, 255, 0.8))
+      calc(100% - 2px) 14px / 2px 24px no-repeat,
+    linear-gradient(to bottom, rgba(12, 240, 255, 0.9), rgba(12, 240, 255, 0.9))
+      calc(100% - 3px) 14px / 3px 15px no-repeat,
+    linear-gradient(to bottom, rgba(12, 240, 255, 1), rgba(12, 240, 255, 1))
+      calc(100% - 4px) 14px / 4px 7px no-repeat,
+
+    /* ===== 左下角：下边 3 段加粗 ===== */
+    linear-gradient(to right, rgba(12, 240, 255, 0.8), rgba(12, 240, 255, 0.8))
+      14px 100% / 24px 2px no-repeat,
+    linear-gradient(to right, rgba(12, 240, 255, 0.9), rgba(12, 240, 255, 0.9))
+      14px 100% / 15px 3px no-repeat,
+    linear-gradient(to right, rgba(12, 240, 255, 1), rgba(12, 240, 255, 1))
+      14px 100% / 7px 4px no-repeat,
+    /* 左下角：左边 3 段加粗（从下向上）*/
+    linear-gradient(to bottom, rgba(12, 240, 255, 0.8), rgba(12, 240, 255, 0.8))
+      0 calc(100% - 38px) / 2px 24px no-repeat,
+    linear-gradient(to bottom, rgba(12, 240, 255, 0.9), rgba(12, 240, 255, 0.9))
+      0 calc(100% - 29px) / 3px 15px no-repeat,
+    linear-gradient(to bottom, rgba(12, 240, 255, 1), rgba(12, 240, 255, 1))
+      0 calc(100% - 21px) / 4px 7px no-repeat,
+
+    /* ===== 右下角：下边 3 段加粗 ===== */
+    linear-gradient(to right, rgba(12, 240, 255, 0.8), rgba(12, 240, 255, 0.8))
+      calc(100% - 38px) 100% / 24px 2px no-repeat,
+    linear-gradient(to right, rgba(12, 240, 255, 0.9), rgba(12, 240, 255, 0.9))
+      calc(100% - 29px) 100% / 15px 3px no-repeat,
+    linear-gradient(to right, rgba(12, 240, 255, 1), rgba(12, 240, 255, 1))
+      calc(100% - 21px) 100% / 7px 4px no-repeat,
+    /* 右下角：右边 3 段加粗 */
+    linear-gradient(to bottom, rgba(12, 240, 255, 0.8), rgba(12, 240, 255, 0.8))
+      calc(100% - 2px) calc(100% - 38px) / 2px 24px no-repeat,
+    linear-gradient(to bottom, rgba(12, 240, 255, 0.9), rgba(12, 240, 255, 0.9))
+      calc(100% - 3px) calc(100% - 29px) / 3px 15px no-repeat,
+    linear-gradient(to bottom, rgba(12, 240, 255, 1), rgba(12, 240, 255, 1))
+      calc(100% - 4px) calc(100% - 21px) / 4px 7px no-repeat;
+
+  filter: drop-shadow(0 0 2px rgba(12, 240, 255, 0.35));
+  animation: hud-panel-breathe 4.5s ease-in-out infinite;
+}
+
+/* 边角光晕 + 上下居中光带 */
+.hud-panel::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background:
+    /* 四角薄雾光晕 */
+    radial-gradient(18px 18px at 0 0, rgba(12, 240, 255, 0.4), transparent 70%),
+    radial-gradient(18px 18px at 100% 0, rgba(12, 240, 255, 0.4), transparent 70%),
+    radial-gradient(18px 18px at 0 100%, rgba(12, 240, 255, 0.4), transparent 70%),
+    radial-gradient(18px 18px at 100% 100%, rgba(12, 240, 255, 0.4), transparent 70%),
+    /* 上边中间光带：中心 0.75 */
+    linear-gradient(
+      90deg,
+      transparent 15%,
+      rgba(12, 240, 255, 0.25) 30%,
+      rgba(12, 240, 255, 0.75) 50%,
+      rgba(12, 240, 255, 0.25) 70%,
+      transparent 85%
+    ) top / 100% 1.5px no-repeat,
+    /* 下边中间光带 */
+    linear-gradient(
+      90deg,
+      transparent 15%,
+      rgba(12, 240, 255, 0.2) 30%,
+      rgba(12, 240, 255, 0.6) 50%,
+      rgba(12, 240, 255, 0.2) 70%,
+      transparent 85%
+    ) bottom / 100% 1.5px no-repeat;
+  filter: blur(0.5px);
+  animation: hud-panel-breathe-band 4.5s ease-in-out infinite;
+}
+
+/* 呼吸动画：轮廓外发光 */
+@keyframes hud-panel-breathe {
+  0%, 100% {
+    filter: drop-shadow(0 0 3px rgba(12, 240, 255, 0.35));
+  }
+  50% {
+    filter: drop-shadow(0 0 5px rgba(12, 240, 255, 0.55));
+  }
+}
+
+/* 呼吸动画：光带透明度 */
+@keyframes hud-panel-breathe-band {
+  0%, 100% {
+    opacity: 0.85;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* 无障碍：用户偏好减弱动态效果时，关闭呼吸动画 */
+@media (prefers-reduced-motion: reduce) {
+  .hud-panel::before,
+  .hud-panel::after {
+    animation: none !important;
+  }
+}
+
+/* 大标题：亮青 + 发光 */
+.hud-title {
+  color: var(--hud-primary-bright);
+  text-shadow: 0 0 14px rgba(0, 224, 255, 0.55);
+  letter-spacing: 0.06em;
+}
+
+/* 等宽数字/代号 */
+.hud-mono {
+  font-family: var(--hud-font-mono);
+}
+
+/* 小节标签：字母间距拉开的次要色小字 */
+.hud-label {
+  color: var(--hud-text-muted);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+/* 视图页面容器 */
+.view-page {
+  min-width: 0;
+  min-height: 100%;
+}
+
+/* 包裹第三方组件的通用容器：让组件区自身成为一块全息面板 */
+.hud-embed {
+  position: relative;
+  border-radius: 0;
+  overflow: hidden;
+}
+
+/* 常规嵌入页：组件面板至少撑满视口剩余高度（顶栏 54 + 内容区留白 30） */
+.view-embed {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0;
+  min-height: 100%;
+}
+.view-embed > * {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+}
+
+/* 满高页（对话调试 / 工作流画布）：锁定视口高度，内部自行滚动 */
+.view-fill {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* 应用页工具栏在真正的小内容宽度下改为两行，避免控件固有宽度撑出横向滚动。 */
+@media (max-width: 640px) {
+  .agent-apps-toolbar {
+    align-items: stretch;
+    flex-wrap: wrap !important;
+  }
+
+  .agent-apps-header,
+  .agent-apps-controls {
+    width: 100% !important;
+  }
+
+  .agent-apps-controls {
+    flex: 1 1 100% !important;
+    flex-wrap: wrap !important;
+  }
+
+  .agent-apps-search {
+    flex: 1 1 180px !important;
+    width: auto !important;
+  }
+}
+
+/* ==========================================================================
+ * 6. 明亮模式覆写
+ * --------------------------------------------------------------------------
+ * 当 `html[data-theme='light']` 时，把 HUD 暗色面板换成淡色玻璃；库自身的
+ * 浅色样式在 `.dark` 类移除后自动生效，这里只覆写宿主 HUD 壳与 --hud-* 令牌。
+ * `html[data-theme='light']` 特异性 (0,1,1) > `:root` (0,1,0)，可覆盖上方。
+ * ========================================================================== */
+html[data-theme='light'] {
+  --hud-primary: #0095cc;
+  --hud-primary-bright: #00a8e0;
+  --hud-primary-deep: #007aa8;
+
+  --hud-surface: #ffffff;
+  --hud-surface-raised: #f4f8fc;
+  --hud-sunken: #eaf1f8;
+  --hud-fill: rgba(0, 140, 200, 0.05);
+  --hud-fill-strong: rgba(0, 140, 200, 0.1);
+  --hud-accent-soft: rgba(0, 160, 220, 0.08);
+  --hud-warning-soft: rgba(234, 179, 8, 0.1);
+  --hud-danger-soft: rgba(220, 38, 38, 0.08);
+  --hud-success-soft: rgba(22, 163, 74, 0.08);
+
+  --hud-border: rgba(0, 100, 160, 0.16);
+  --hud-border-strong: rgba(0, 120, 180, 0.32);
+  --hud-border-faint: rgba(0, 100, 160, 0.08);
+
+  --hud-text-strong: #0f2a3d;
+  --hud-text: #24475c;
+  --hud-text-muted: #5a7b93;
+  --hud-text-faint: #849fb3;
+
+  --hud-danger: #dc2626;
+  --hud-success: #16a34a;
+  --hud-warning: #ca8a04;
+
+  --hud-glow: 0 0 12px rgba(0, 140, 200, 0.08);
+  --hud-glow-strong: 0 0 18px rgba(0, 140, 200, 0.16);
+  --hud-panel-bg: rgba(255, 255, 255, 0.75);
+
+  --color-as-primary: #0095cc;
+  --color-as-primary-hover: #00a8e0;
+  --color-as-primary-active: #007aa8;
+  --color-as-success: #16a34a;
+  --color-as-warning: #ca8a04;
+  --color-as-danger: #dc2626;
+
+  --as-text: #24475c;
+  --as-text-secondary: #5a7b93;
+  --as-text-placeholder: #849fb3;
+  --as-text-disabled: #b0c2d0;
+  --as-border: rgba(0, 100, 160, 0.22);
+  --as-border-secondary: rgba(0, 100, 160, 0.1);
+  --as-bg: rgba(244, 248, 252, 0.85);
+
+  /* Knowledge Hub uses its own --kh-* token family. The dark HUD values are
+     declared on :root above, so they must be reset explicitly in light mode
+     just like the shared --as-* tokens used by AgentAppsPage. */
+  --kh-color-primary: #0095cc;
+  --kh-color-primary-strong: #007aa8;
+  --kh-color-primary-soft: rgba(0, 160, 220, 0.08);
+  --kh-color-primary-contrast: #ffffff;
+  --kh-color-primary-outline: rgba(0, 120, 180, 0.22);
+  --kh-color-text-primary: #0f2a3d;
+  --kh-color-text-secondary: #24475c;
+  --kh-color-text-tertiary: #5a7b93;
+  --kh-color-text-muted: #849fb3;
+  --kh-color-text-inverse: #ffffff;
+  --kh-color-surface: rgba(244, 248, 252, 0.85);
+  --kh-color-surface-raised: #ffffff;
+  --kh-color-surface-sunken: #eaf1f8;
+  --kh-color-surface-hover: rgba(0, 140, 200, 0.06);
+  --kh-color-border: rgba(0, 100, 160, 0.16);
+  --kh-color-border-hover: rgba(0, 120, 180, 0.32);
+  --kh-color-border-strong: rgba(0, 120, 180, 0.45);
+  --kh-color-divider: rgba(0, 100, 160, 0.08);
+  --kh-color-success: #16a34a;
+  --kh-color-success-soft: rgba(22, 163, 74, 0.08);
+  --kh-color-warning: #ca8a04;
+  --kh-color-warning-soft: rgba(234, 179, 8, 0.1);
+  --kh-color-danger: #dc2626;
+  --kh-color-danger-soft: rgba(220, 38, 38, 0.08);
+  --kh-color-info: #007aa8;
+  --kh-color-info-soft: rgba(0, 160, 220, 0.08);
+  --kh-input-border: rgba(0, 100, 160, 0.22);
+  --kh-shadow-sm: 0 1px 2px rgba(15, 42, 61, 0.04);
+  --kh-shadow-md: 0 3px 12px rgba(15, 42, 61, 0.06);
+  --kh-shadow-lg: 0 4px 14px rgba(15, 42, 61, 0.08);
+  --kh-shadow-drawer: -6px 0 22px rgba(15, 42, 61, 0.14);
+  --kh-shadow-modal: 0 20px 60px rgba(15, 42, 61, 0.2);
+}
+
+/* HUD 壳：侧边栏 / 顶栏 —— 从深色不透明玻璃换成淡色玻璃 */
+html[data-theme='light'] .hud-sidebar {
+  border-right-color: rgba(0, 100, 160, 0.12);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(234, 241, 248, 0.96));
+  box-shadow: inset -12px 0 24px -18px rgba(0, 120, 180, 0.12);
+}
+
+html[data-theme='light'] .hud-logo {
+  border-bottom-color: rgba(0, 100, 160, 0.1);
+}
+
+html[data-theme='light'] .hud-logo-mark {
+  color: #ffffff;
+}
+
+html[data-theme='light'] .hud-logo-text b {
+  color: #007aa8;
+  text-shadow: none;
+}
+
+html[data-theme='light'] .hud-logo-text i {
+  color: #5a7b93;
+}
+
+html[data-theme='light'] .hud-nav-title {
+  color: #849fb3;
+}
+
+html[data-theme='light'] .hud-nav-item {
+  color: #24475c;
+}
+
+html[data-theme='light'] .hud-nav-item:hover {
+  color: #0f2a3d;
+  background: rgba(0, 140, 200, 0.06);
+  border-color: rgba(0, 140, 200, 0.22);
+}
+
+html[data-theme='light'] .hud-nav-item.active {
+  color: #00698f;
+  background: linear-gradient(90deg, rgba(0, 170, 230, 0.14), rgba(0, 120, 180, 0.05));
+  border-color: rgba(0, 160, 220, 0.55);
+  box-shadow: 0 0 10px rgba(0, 160, 220, 0.18);
+  text-shadow: none;
+}
+
+html[data-theme='light'] .hud-nav-icon {
+  color: #5a7b93;
+}
+
+html[data-theme='light'] .hud-nav-item.active .hud-nav-icon {
+  color: #0095cc;
+  filter: none;
+}
+
+html[data-theme='light'] .hud-sidebar-foot {
+  color: #5a7b93;
+  border-top-color: rgba(0, 100, 160, 0.1);
+}
+
+html[data-theme='light'] .hud-topbar {
+  border-bottom-color: rgba(0, 100, 160, 0.12);
+  background: rgba(255, 255, 255, 0.72);
+}
+
+html[data-theme='light'] .hud-crumb {
+  color: #5a7b93;
+}
+
+html[data-theme='light'] .hud-crumb-sys {
+  color: #849fb3;
+}
+
+html[data-theme='light'] .hud-crumb-sep {
+  color: #b0c2d0;
+}
+
+html[data-theme='light'] .hud-crumb-cur {
+  color: #0f2a3d;
+  text-shadow: none;
+}
+
+html[data-theme='light'] .hud-clock b {
+  color: #007aa8;
+  text-shadow: none;
+}
+
+html[data-theme='light'] .hud-clock i {
+  color: #849fb3;
+}
+
+/* 全局底色：让主内容区在明亮模式下不透明 */
+html[data-theme='light'] body {
+  background: #f4f8fc;
+  color: #24475c;
+}
+
+html[data-theme='light'] .hud-content {
+  color: #24475c;
+}
+
+/* 明亮模式下：保留台阶线框 + 转角加粗，但降低发光强度并关闭呼吸动画 */
+html[data-theme='light'] .hud-panel::before {
+  background:
+    /* 主边线：1px */
+    linear-gradient(to right, rgba(0, 140, 200, 0.35), rgba(0, 140, 200, 0.35))
+      top / calc(100% - 28px) 1px no-repeat,
+    linear-gradient(to right, rgba(0, 140, 200, 0.35), rgba(0, 140, 200, 0.35))
+      bottom / calc(100% - 28px) 1px no-repeat,
+    linear-gradient(to bottom, rgba(0, 140, 200, 0.35), rgba(0, 140, 200, 0.35))
+      left / 1px calc(100% - 28px) no-repeat,
+    linear-gradient(to bottom, rgba(0, 140, 200, 0.35), rgba(0, 140, 200, 0.35))
+      right / 1px calc(100% - 28px) no-repeat,
+    /* 4 斜角 */
+    linear-gradient(-45deg, transparent 46%, rgba(0, 140, 200, 0.35) 46% 54%, transparent 54%)
+      top left / 14px 14px no-repeat,
+    linear-gradient(45deg, transparent 46%, rgba(0, 140, 200, 0.35) 46% 54%, transparent 54%)
+      top right / 14px 14px no-repeat,
+    linear-gradient(45deg, transparent 46%, rgba(0, 140, 200, 0.35) 46% 54%, transparent 54%)
+      bottom left / 14px 14px no-repeat,
+    linear-gradient(-45deg, transparent 46%, rgba(0, 140, 200, 0.35) 46% 54%, transparent 54%)
+      bottom right / 14px 14px no-repeat,
+    /* 左上角加粗 */
+    linear-gradient(to right, rgba(0, 140, 200, 0.5), rgba(0, 140, 200, 0.5))
+      14px 0 / 24px 2px no-repeat,
+    linear-gradient(to right, rgba(0, 140, 200, 0.6), rgba(0, 140, 200, 0.6))
+      14px 0 / 15px 3px no-repeat,
+    linear-gradient(to right, rgba(0, 140, 200, 0.7), rgba(0, 140, 200, 0.7))
+      14px 0 / 7px 4px no-repeat,
+    linear-gradient(to bottom, rgba(0, 140, 200, 0.5), rgba(0, 140, 200, 0.5))
+      0 14px / 2px 24px no-repeat,
+    linear-gradient(to bottom, rgba(0, 140, 200, 0.6), rgba(0, 140, 200, 0.6))
+      0 14px / 3px 15px no-repeat,
+    linear-gradient(to bottom, rgba(0, 140, 200, 0.7), rgba(0, 140, 200, 0.7))
+      0 14px / 4px 7px no-repeat,
+    /* 右上角加粗 */
+    linear-gradient(to right, rgba(0, 140, 200, 0.5), rgba(0, 140, 200, 0.5))
+      calc(100% - 38px) 0 / 24px 2px no-repeat,
+    linear-gradient(to right, rgba(0, 140, 200, 0.6), rgba(0, 140, 200, 0.6))
+      calc(100% - 29px) 0 / 15px 3px no-repeat,
+    linear-gradient(to right, rgba(0, 140, 200, 0.7), rgba(0, 140, 200, 0.7))
+      calc(100% - 21px) 0 / 7px 4px no-repeat,
+    linear-gradient(to bottom, rgba(0, 140, 200, 0.5), rgba(0, 140, 200, 0.5))
+      calc(100% - 2px) 14px / 2px 24px no-repeat,
+    linear-gradient(to bottom, rgba(0, 140, 200, 0.6), rgba(0, 140, 200, 0.6))
+      calc(100% - 3px) 14px / 3px 15px no-repeat,
+    linear-gradient(to bottom, rgba(0, 140, 200, 0.7), rgba(0, 140, 200, 0.7))
+      calc(100% - 4px) 14px / 4px 7px no-repeat,
+    /* 左下角加粗 */
+    linear-gradient(to right, rgba(0, 140, 200, 0.5), rgba(0, 140, 200, 0.5))
+      14px 100% / 24px 2px no-repeat,
+    linear-gradient(to right, rgba(0, 140, 200, 0.6), rgba(0, 140, 200, 0.6))
+      14px 100% / 15px 3px no-repeat,
+    linear-gradient(to right, rgba(0, 140, 200, 0.7), rgba(0, 140, 200, 0.7))
+      14px 100% / 7px 4px no-repeat,
+    linear-gradient(to bottom, rgba(0, 140, 200, 0.5), rgba(0, 140, 200, 0.5))
+      0 calc(100% - 38px) / 2px 24px no-repeat,
+    linear-gradient(to bottom, rgba(0, 140, 200, 0.6), rgba(0, 140, 200, 0.6))
+      0 calc(100% - 29px) / 3px 15px no-repeat,
+    linear-gradient(to bottom, rgba(0, 140, 200, 0.7), rgba(0, 140, 200, 0.7))
+      0 calc(100% - 21px) / 4px 7px no-repeat,
+    /* 右下角加粗 */
+    linear-gradient(to right, rgba(0, 140, 200, 0.5), rgba(0, 140, 200, 0.5))
+      calc(100% - 38px) 100% / 24px 2px no-repeat,
+    linear-gradient(to right, rgba(0, 140, 200, 0.6), rgba(0, 140, 200, 0.6))
+      calc(100% - 29px) 100% / 15px 3px no-repeat,
+    linear-gradient(to right, rgba(0, 140, 200, 0.7), rgba(0, 140, 200, 0.7))
+      calc(100% - 21px) 100% / 7px 4px no-repeat,
+    linear-gradient(to bottom, rgba(0, 140, 200, 0.5), rgba(0, 140, 200, 0.5))
+      calc(100% - 2px) calc(100% - 38px) / 2px 24px no-repeat,
+    linear-gradient(to bottom, rgba(0, 140, 200, 0.6), rgba(0, 140, 200, 0.6))
+      calc(100% - 3px) calc(100% - 29px) / 3px 15px no-repeat,
+    linear-gradient(to bottom, rgba(0, 140, 200, 0.7), rgba(0, 140, 200, 0.7))
+      calc(100% - 4px) calc(100% - 21px) / 4px 7px no-repeat;
+  filter: drop-shadow(0 0 1.5px rgba(0, 140, 200, 0.1));
+  animation: none;
+}
+
+html[data-theme='light'] .hud-panel::after {
+  background:
+    radial-gradient(18px 18px at 0 0, rgba(0, 140, 200, 0.22), transparent 70%),
+    radial-gradient(18px 18px at 100% 0, rgba(0, 140, 200, 0.22), transparent 70%),
+    radial-gradient(18px 18px at 0 100%, rgba(0, 140, 200, 0.22), transparent 70%),
+    radial-gradient(18px 18px at 100% 100%, rgba(0, 140, 200, 0.22), transparent 70%),
+    linear-gradient(
+      90deg,
+      transparent 15%,
+      rgba(0, 140, 200, 0.12) 30%,
+      rgba(0, 140, 200, 0.35) 50%,
+      rgba(0, 140, 200, 0.12) 70%,
+      transparent 85%
+    ) top / 100% 1.5px no-repeat,
+    linear-gradient(
+      90deg,
+      transparent 15%,
+      rgba(0, 140, 200, 0.1) 30%,
+      rgba(0, 140, 200, 0.25) 50%,
+      rgba(0, 140, 200, 0.1) 70%,
+      transparent 85%
+    ) bottom / 100% 1.5px no-repeat;
+  filter: blur(0.4px);
+  animation: none;
+  opacity: 0.7;
+}
+
+/* ========================================================================
+ * 7. 精修切角边框
+ *
+ * 旧实现用多组 2/3/4px 线条叠出四角，在不同尺寸和 DPR 下容易形成
+ * “梳齿”和断口。这里改为一个连续的 10px 切角轮廓，再用独立光带强调
+ * 四角；轮廓负责几何，高光只负责质感，两者不再互相挤压。
+ * ======================================================================== */
+.hud-panel {
+  --hud-frame-color: rgba(12, 240, 255, 0.58);
+  --hud-frame-hot: rgba(72, 248, 255, 0.98);
+  --hud-frame-soft: rgba(12, 240, 255, 0.22);
+  --hud-frame-glow: rgba(12, 240, 255, 0.42);
+  --hud-frame-cut: 12px;
+}
+
+/* 外围装饰线需要越过面板盒子 2px；仅放开 HUD 面板，不影响普通容器。 */
+.hud-panel.hud-embed {
+  overflow: visible;
+}
+
+.hud-panel::before {
+  inset: 0;
+  z-index: 2;
+  padding: 1px;
+  background: linear-gradient(
+    110deg,
+    var(--hud-frame-hot) 0%,
+    var(--hud-frame-color) 8%,
+    var(--hud-frame-soft) 38%,
+    var(--hud-frame-color) 72%,
+    var(--hud-frame-color) 92%,
+    var(--hud-frame-hot) 100%
+  ) !important;
+  clip-path: polygon(
+    var(--hud-frame-cut) 0,
+    calc(100% - var(--hud-frame-cut)) 0,
+    100% var(--hud-frame-cut),
+    100% calc(100% - var(--hud-frame-cut)),
+    calc(100% - var(--hud-frame-cut)) 100%,
+    var(--hud-frame-cut) 100%,
+    0 calc(100% - var(--hud-frame-cut)),
+    0 var(--hud-frame-cut)
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  filter: drop-shadow(0 0 3px var(--hud-frame-glow));
+  animation: hud-panel-breathe 4.5s ease-in-out infinite;
+}
+
+.hud-panel::after {
+  /* 扩出 2px，给外围加粗线独立空间，不占用面板内容区 */
+  inset: -2px;
+  z-index: 3;
+  background:
+    /*
+     * 四条斜边：中心约 2px 实线，外侧只保留极窄柔光。
+     * 这几层必须放在横竖光带之前，才能让切角成为视觉最亮点。
+     */
+    linear-gradient(
+      -45deg,
+      transparent 36%,
+      var(--hud-frame-soft) 41%,
+      var(--hud-frame-hot) 44% 56%,
+      var(--hud-frame-soft) 59%,
+      transparent 64%
+    ) 0 0 / calc(var(--hud-frame-cut) + 4px) calc(var(--hud-frame-cut) + 4px) no-repeat,
+    linear-gradient(
+      45deg,
+      transparent 36%,
+      var(--hud-frame-soft) 41%,
+      var(--hud-frame-hot) 44% 56%,
+      var(--hud-frame-soft) 59%,
+      transparent 64%
+    ) 100% 0 / calc(var(--hud-frame-cut) + 4px) calc(var(--hud-frame-cut) + 4px) no-repeat,
+    linear-gradient(
+      45deg,
+      transparent 36%,
+      var(--hud-frame-soft) 41%,
+      var(--hud-frame-hot) 44% 56%,
+      var(--hud-frame-soft) 59%,
+      transparent 64%
+    ) 0 100% / calc(var(--hud-frame-cut) + 4px) calc(var(--hud-frame-cut) + 4px) no-repeat,
+    linear-gradient(
+      -45deg,
+      transparent 36%,
+      var(--hud-frame-soft) 41%,
+      var(--hud-frame-hot) 44% 56%,
+      var(--hud-frame-soft) 59%,
+      transparent 64%
+    ) 100% 100% / calc(var(--hud-frame-cut) + 4px) calc(var(--hud-frame-cut) + 4px) no-repeat,
+    /* 横向：上限 100/50px；窄面板自动收缩到边长的 20%/10% */
+    linear-gradient(var(--hud-frame-hot), var(--hud-frame-hot))
+      calc(var(--hud-frame-cut) + 2px) 2px / min(100px, 20%) 1px no-repeat,
+    linear-gradient(var(--hud-frame-hot), var(--hud-frame-hot))
+      calc(var(--hud-frame-cut) + 2px) 0 / min(50px, 10%) 2px no-repeat,
+    linear-gradient(var(--hud-frame-hot), var(--hud-frame-hot))
+      calc(100% - var(--hud-frame-cut) - 2px) 2px / min(100px, 20%) 1px no-repeat,
+    linear-gradient(var(--hud-frame-hot), var(--hud-frame-hot))
+      calc(100% - var(--hud-frame-cut) - 2px) 0 / min(50px, 10%) 2px no-repeat,
+    linear-gradient(var(--hud-frame-hot), var(--hud-frame-hot))
+      calc(var(--hud-frame-cut) + 2px) calc(100% - 2px) / min(100px, 20%) 1px no-repeat,
+    linear-gradient(var(--hud-frame-hot), var(--hud-frame-hot))
+      calc(var(--hud-frame-cut) + 2px) 100% / min(50px, 10%) 2px no-repeat,
+    linear-gradient(var(--hud-frame-hot), var(--hud-frame-hot))
+      calc(100% - var(--hud-frame-cut) - 2px) calc(100% - 2px) / min(100px, 20%) 1px no-repeat,
+    linear-gradient(var(--hud-frame-hot), var(--hud-frame-hot))
+      calc(100% - var(--hud-frame-cut) - 2px) 100% / min(50px, 10%) 2px no-repeat,
+    /* 纵向按面板高度使用相同的 20%/10% 自适应比例 */
+    linear-gradient(var(--hud-frame-hot), var(--hud-frame-hot))
+      2px calc(var(--hud-frame-cut) + 2px) / 1px min(100px, 20%) no-repeat,
+    linear-gradient(var(--hud-frame-hot), var(--hud-frame-hot))
+      0 calc(var(--hud-frame-cut) + 2px) / 2px min(50px, 10%) no-repeat,
+    linear-gradient(var(--hud-frame-hot), var(--hud-frame-hot))
+      calc(100% - 2px) calc(var(--hud-frame-cut) + 2px) / 1px min(100px, 20%) no-repeat,
+    linear-gradient(var(--hud-frame-hot), var(--hud-frame-hot))
+      100% calc(var(--hud-frame-cut) + 2px) / 2px min(50px, 10%) no-repeat,
+    linear-gradient(var(--hud-frame-hot), var(--hud-frame-hot))
+      2px calc(100% - var(--hud-frame-cut) - 2px) / 1px min(100px, 20%) no-repeat,
+    linear-gradient(var(--hud-frame-hot), var(--hud-frame-hot))
+      0 calc(100% - var(--hud-frame-cut) - 2px) / 2px min(50px, 10%) no-repeat,
+    linear-gradient(var(--hud-frame-hot), var(--hud-frame-hot))
+      calc(100% - 2px) calc(100% - var(--hud-frame-cut) - 2px) / 1px min(100px, 20%) no-repeat,
+    linear-gradient(var(--hud-frame-hot), var(--hud-frame-hot))
+      100% calc(100% - var(--hud-frame-cut) - 2px) / 2px min(50px, 10%) no-repeat !important;
+  /* 只给线条加外发光，不再绘制四角径向背景光斑 */
+  filter: drop-shadow(0 0 3px var(--hud-frame-glow));
+  animation: hud-panel-breathe-band 4.5s ease-in-out infinite;
+}
+
+html[data-theme='light'] .hud-panel {
+  --hud-frame-color: rgba(0, 140, 200, 0.38);
+  --hud-frame-hot: rgba(0, 140, 200, 0.68);
+  --hud-frame-soft: rgba(0, 140, 200, 0.2);
+  --hud-frame-glow: rgba(0, 140, 200, 0.2);
+}
+
+html[data-theme='light'] .hud-panel::before,
+html[data-theme='light'] .hud-panel::after {
+  animation: none;
+}
+
+html[data-theme='light'] .as-modal__mask,
+html[data-theme='light'] .as-drawer__mask {
+  background:
+    radial-gradient(circle at 50% 16%, rgba(0, 145, 210, 0.04), transparent 46%),
+    rgba(226, 240, 247, 0.24);
+  -webkit-backdrop-filter: blur(6px) saturate(106%);
+  backdrop-filter: blur(6px) saturate(106%);
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .as-modal__mask,
+  .as-drawer__mask {
+    background: rgba(1, 9, 20, 0.78);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  html[data-theme='light'] .as-modal__mask,
+  html[data-theme='light'] .as-drawer__mask {
+    background: rgba(226, 240, 247, 0.82);
+  }
+}
+
+/* ========================================================================
+ * 8. Component-library HUD hooks: Modal skin
+ *
+ * `vue-agent-start` only emits these class hooks and decorative nodes. The
+ * concrete visual skin belongs to the host application so themes can replace
+ * it without changing the component package.
+ * ======================================================================== */
+.as-modal.as-hud-frame--modal {
+  --as-hud-modal-cut: 18px;
+  --as-hud-modal-gap: 8px;
+  --as-hud-modal-arm: min(100px, 18vw);
+  --as-hud-modal-outer-cut: calc(var(--as-hud-modal-cut) + var(--as-hud-modal-gap));
+  --as-hud-modal-joint: calc(var(--as-hud-modal-outer-cut) + var(--as-hud-modal-arm));
+  --as-hud-modal-line: rgba(12, 218, 255, 0.72);
+  --as-hud-modal-hot: rgba(112, 246, 255, 0.98);
+  --as-hud-modal-glow: rgba(0, 211, 255, 0.48);
+  position: relative;
+  isolation: isolate;
+  /* The four diagonal ornaments intentionally sit 8px outside the panel. */
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  color: #d9f5ff;
+  background: transparent;
+  box-shadow: none;
+}
+
+.as-modal.as-hud-frame--modal::before,
+.as-modal.as-hud-frame--modal::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.as-modal.as-hud-frame--modal::before {
+  z-index: 0;
+  clip-path: polygon(
+    var(--as-hud-modal-cut) 0,
+    calc(100% - var(--as-hud-modal-cut)) 0,
+    100% var(--as-hud-modal-cut),
+    100% calc(100% - var(--as-hud-modal-cut)),
+    calc(100% - var(--as-hud-modal-cut)) 100%,
+    var(--as-hud-modal-cut) 100%,
+    0 calc(100% - var(--as-hud-modal-cut)),
+    0 var(--as-hud-modal-cut)
+  );
+  background:
+    linear-gradient(180deg, rgba(9, 55, 91, 0.24), transparent 28%),
+    radial-gradient(circle at 50% 0, rgba(0, 207, 255, 0.16), transparent 42%),
+    rgba(3, 25, 49, 0.96);
+  box-shadow: inset 0 0 42px rgba(0, 141, 213, 0.1);
+  filter: drop-shadow(0 0 18px rgba(0, 179, 255, 0.2));
+}
+
+/* Complete inner frame. The four diagonal layers restore the original cuts;
+   they are 8px away from the separate outer diagonals below. */
+.as-modal.as-hud-frame--modal::after {
+  z-index: 3;
+  background:
+    linear-gradient(-45deg, transparent 44%, var(--as-hud-modal-hot) 46% 54%, transparent 56%) 0 0 / 18px 18px no-repeat,
+    linear-gradient(45deg, transparent 44%, var(--as-hud-modal-hot) 46% 54%, transparent 56%) 100% 0 / 18px 18px no-repeat,
+    linear-gradient(45deg, transparent 44%, var(--as-hud-modal-hot) 46% 54%, transparent 56%) 0 100% / 18px 18px no-repeat,
+    linear-gradient(-45deg, transparent 44%, var(--as-hud-modal-hot) 46% 54%, transparent 56%) 100% 100% / 18px 18px no-repeat,
+    linear-gradient(var(--as-hud-modal-line), var(--as-hud-modal-line)) 18px 0 / calc(100% - 36px) 1px no-repeat,
+    linear-gradient(var(--as-hud-modal-line), var(--as-hud-modal-line)) 18px 100% / calc(100% - 36px) 1px no-repeat,
+    linear-gradient(var(--as-hud-modal-line), var(--as-hud-modal-line)) 0 18px / 1px calc(100% - 36px) no-repeat,
+    linear-gradient(var(--as-hud-modal-line), var(--as-hud-modal-line)) 100% 18px / 1px calc(100% - 36px) no-repeat,
+    linear-gradient(90deg, transparent, var(--as-hud-modal-hot), transparent) 50% 100% / min(360px, 42%) 3px no-repeat;
+  filter: drop-shadow(0 0 5px var(--as-hud-modal-glow));
+}
+
+.as-hud-frame--modal > * { position: relative; z-index: 1; }
+.as-hud-frame--modal > .as-hud-modal__chrome {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+}
+
+/* Outer corner master: gap=8px; the two 8×8 connector diagonals are
+   sqrt(8² + 8²) = 11.31px long and meet the inner horizontal/vertical frame. */
+.as-hud-modal__corner {
+  position: absolute;
+  width: calc(var(--as-hud-modal-joint) + var(--as-hud-modal-gap));
+  height: calc(var(--as-hud-modal-joint) + var(--as-hud-modal-gap));
+  filter: drop-shadow(0 0 5px var(--as-hud-modal-glow));
+}
+.as-hud-modal__corner::before,
+.as-hud-modal__corner::after {
+  content: '';
+  position: absolute;
+  display: block;
+}
+.as-hud-modal__corner::before {
+  inset: 0;
+  background:
+    linear-gradient(var(--as-hud-modal-line), var(--as-hud-modal-line))
+      var(--as-hud-modal-outer-cut) 0 / var(--as-hud-modal-arm) 2px no-repeat,
+    linear-gradient(var(--as-hud-modal-line), var(--as-hud-modal-line))
+      0 var(--as-hud-modal-outer-cut) / 2px var(--as-hud-modal-arm) no-repeat,
+    linear-gradient(-45deg, transparent 45%, var(--as-hud-modal-hot) 46% 54%, transparent 55%)
+      0 0 / var(--as-hud-modal-outer-cut) var(--as-hud-modal-outer-cut) no-repeat,
+    linear-gradient(45deg, transparent 43%, var(--as-hud-modal-hot) 45% 55%, transparent 57%)
+      var(--as-hud-modal-joint) 0 / var(--as-hud-modal-gap) var(--as-hud-modal-gap) no-repeat,
+    linear-gradient(45deg, transparent 43%, var(--as-hud-modal-hot) 45% 55%, transparent 57%)
+      0 var(--as-hud-modal-joint) / var(--as-hud-modal-gap) var(--as-hud-modal-gap) no-repeat;
+}
+/* 底角保留斜角下方的外侧水平边线，只去掉水平线末端额外向内折的
+   小斜尾；竖线和靠近主边框的连接斜线保持不变。 */
+.as-hud-modal__corner--bl::before,
+.as-hud-modal__corner--br::before {
+  background:
+    linear-gradient(var(--as-hud-modal-line), var(--as-hud-modal-line))
+      var(--as-hud-modal-outer-cut) 0 / var(--as-hud-modal-arm) 2px no-repeat,
+    linear-gradient(var(--as-hud-modal-line), var(--as-hud-modal-line))
+      0 var(--as-hud-modal-outer-cut) / 2px var(--as-hud-modal-arm) no-repeat,
+    linear-gradient(-45deg, transparent 45%, var(--as-hud-modal-hot) 46% 54%, transparent 55%)
+      0 0 / var(--as-hud-modal-outer-cut) var(--as-hud-modal-outer-cut) no-repeat,
+    /* 外凸水平边线末端连接回 Modal 底边的内侧斜线。 */
+    linear-gradient(45deg, transparent 43%, var(--as-hud-modal-hot) 45% 55%, transparent 57%)
+      var(--as-hud-modal-joint) 0 / var(--as-hud-modal-gap) var(--as-hud-modal-gap) no-repeat,
+    linear-gradient(45deg, transparent 43%, var(--as-hud-modal-hot) 45% 55%, transparent 57%)
+      0 var(--as-hud-modal-joint) / var(--as-hud-modal-gap) var(--as-hud-modal-gap) no-repeat;
+}
+.as-hud-modal__corner::after {
+  top: 0;
+  left: 0;
+  width: var(--as-hud-modal-outer-cut);
+  height: var(--as-hud-modal-outer-cut);
+  background: linear-gradient(-45deg, transparent 46%, var(--as-hud-modal-hot) 47% 53%, transparent 54%);
+  filter: drop-shadow(0 0 4px var(--as-hud-modal-glow));
+}
+.as-hud-modal__corner--tl { top: -8px; left: -8px; }
+.as-hud-modal__corner--tr { top: -8px; right: -8px; transform: scaleX(-1); }
+.as-hud-modal__corner--bl { bottom: -8px; left: -8px; transform: scaleY(-1); }
+.as-hud-modal__corner--br { right: -8px; bottom: -8px; transform: scale(-1); }
+
+/* Asymmetric edge instrumentation: segmented rails, calibration ticks and a
+   compact lower docking shape keep the modal frame from reading as one line. */
+.as-hud-modal__rail {
+  position: absolute;
+  display: block;
+  pointer-events: none;
+  filter: drop-shadow(0 0 4px var(--as-hud-modal-glow));
+}
+.as-hud-modal__rail--top,
+.as-hud-modal__rail--bottom {
+  left: 54px;
+  right: 54px;
+  height: 12px;
+  background:
+    linear-gradient(90deg, var(--as-hud-modal-hot), var(--as-hud-modal-hot)) 0 0 / 22% 2px no-repeat,
+    repeating-linear-gradient(90deg, var(--as-hud-modal-line) 0 3px, transparent 3px 8px) 27% 0 / 9% 3px no-repeat,
+    repeating-linear-gradient(90deg, var(--as-hud-modal-line) 0 3px, transparent 3px 8px) 64% 0 / 9% 3px no-repeat,
+    linear-gradient(90deg, var(--as-hud-modal-hot), var(--as-hud-modal-hot)) 78% 0 / 22% 2px no-repeat;
+}
+.as-hud-modal__rail--top { top: 0; }
+.as-hud-modal__rail--bottom { bottom: 0; transform: rotate(180deg); }
+.as-hud-modal__rail--bottom::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 37%;
+  width: 26%;
+  height: 10px;
+  border-top: 2px solid var(--as-hud-modal-hot);
+  border-right: 1px solid var(--as-hud-modal-line);
+  border-left: 1px solid var(--as-hud-modal-line);
+  clip-path: polygon(10px 0, calc(100% - 10px) 0, 100% 100%, 72% 100%, 66% 5px, 34% 5px, 28% 100%, 0 100%);
+}
+.as-hud-modal__rail--left,
+.as-hud-modal__rail--right {
+  top: 72px;
+  bottom: 58px;
+  width: 9px;
+  background:
+    linear-gradient(var(--as-hud-modal-hot), var(--as-hud-modal-hot)) 0 0 / 2px 18% no-repeat,
+    repeating-linear-gradient(0deg, var(--as-hud-modal-line) 0 3px, transparent 3px 7px) 0 27% / 4px 13% no-repeat,
+    linear-gradient(var(--as-hud-modal-line), var(--as-hud-modal-line)) 0 48% / 1px 26% no-repeat,
+    linear-gradient(var(--as-hud-modal-hot), var(--as-hud-modal-hot)) 0 84% / 3px 13% no-repeat;
+}
+.as-hud-modal__rail--left { left: 0; }
+.as-hud-modal__rail--right { right: 0; transform: rotate(180deg); }
+
+.as-hud-frame--modal .as-modal__body { padding: 24px; }
+.as-hud-frame--modal .as-modal__footer {
+  justify-content: center;
+  gap: clamp(28px, 7vw, 72px);
+  padding: 10px 16px;
+  border-color: rgba(38, 190, 230, 0.18);
+}
+.as-hud-frame--modal .as-modal__footer .as-btn {
+  min-width: 84px;
+  height: 30px;
+  border-color: rgba(63, 218, 249, 0.7);
+  border-radius: 0;
+  color: #d8f7ff;
+  background: linear-gradient(180deg, rgba(16, 69, 105, 0.82), rgba(3, 30, 56, 0.92));
+  clip-path: polygon(9px 0, calc(100% - 9px) 0, 100% 9px, 100% calc(100% - 9px), calc(100% - 9px) 100%, 9px 100%, 0 calc(100% - 9px), 0 9px);
+}
+.as-hud-frame--modal .as-modal__footer .as-btn:hover,
+.as-hud-frame--modal .as-modal__footer .as-btn--primary {
+  border-color: #54e6ff;
+  color: #edfdff;
+  background: linear-gradient(180deg, rgba(16, 104, 151, 0.88), rgba(4, 43, 76, 0.96));
+  box-shadow: 0 0 16px rgba(0, 207, 255, 0.38), inset 0 0 20px rgba(0, 207, 255, 0.16);
+}
+
+html[data-theme='light'] .as-modal.as-hud-frame--modal {
+  --as-hud-modal-line: rgba(0, 132, 190, 0.55);
+  --as-hud-modal-hot: rgba(0, 152, 210, 0.84);
+  --as-hud-modal-glow: rgba(0, 140, 200, 0.2);
+  color: #173b52;
+}
+html[data-theme='light'] .as-modal.as-hud-frame--modal::before {
+  background:
+    linear-gradient(180deg, rgba(216, 244, 255, 0.72), transparent 30%),
+    radial-gradient(circle at 50% 0, rgba(0, 166, 220, 0.12), transparent 42%),
+    rgba(250, 253, 255, 0.98);
+  box-shadow: inset 0 0 34px rgba(0, 117, 170, 0.06);
+  filter: drop-shadow(0 8px 24px rgba(13, 75, 103, 0.14));
+}
+html[data-theme='light'] .as-hud-frame--modal .as-modal__head {
+  border-color: rgba(0, 132, 190, 0.18);
+  background: linear-gradient(90deg, transparent, rgba(205, 241, 255, 0.52) 24% 76%, transparent);
+}
+html[data-theme='light'] .as-hud-frame--modal .as-modal__title {
+  color: #087ca8;
+  text-shadow: 0 0 12px rgba(0, 152, 210, 0.2);
+}
+html[data-theme='light'] .as-hud-frame--modal .as-modal__close { color: #39758f; }
+html[data-theme='light'] .as-hud-frame--modal .as-modal__footer .as-btn {
+  color: #15506c;
+  background: linear-gradient(180deg, #f8fdff, #e7f6fc);
+}
+html[data-theme='light'] .as-hud-frame--modal .as-modal__footer .as-btn--primary {
+  color: #fff;
+  background: linear-gradient(180deg, #19a9dc, #087fab);
+}
+
+/* Shared Drawer HUD frame.  Drawer.ts owns these hooks so every product
+   drawer (apps, knowledge, MCP, channels...) receives the same chrome. */
+.as-drawer.as-hud-frame--drawer {
+  --as-hud-drawer-line: var(--as-hud-modal-line, rgba(12, 218, 255, 0.72));
+  --as-hud-drawer-hot: var(--as-hud-modal-hot, rgba(112, 246, 255, 0.98));
+  --as-hud-drawer-glow: var(--as-hud-modal-glow, rgba(0, 211, 255, 0.48));
+  isolation: isolate;
+  background: var(--hud-surface);
+  border: 0;
+  border-radius: 0;
+  box-shadow: -10px 0 32px rgba(0, 179, 255, 0.16);
+}
+.as-drawer.as-hud-frame--drawer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  background:
+    linear-gradient(-45deg, transparent 44%, var(--as-hud-drawer-hot) 46% 54%, transparent 56%) 0 0 / 14px 14px no-repeat,
+    linear-gradient(45deg, transparent 44%, var(--as-hud-drawer-hot) 46% 54%, transparent 56%) 100% 0 / 14px 14px no-repeat,
+    linear-gradient(45deg, transparent 44%, var(--as-hud-drawer-hot) 46% 54%, transparent 56%) 0 100% / 14px 14px no-repeat,
+    linear-gradient(-45deg, transparent 44%, var(--as-hud-drawer-hot) 46% 54%, transparent 56%) 100% 100% / 14px 14px no-repeat,
+    linear-gradient(var(--as-hud-drawer-line), var(--as-hud-drawer-line)) 14px 0 / calc(100% - 28px) 1px no-repeat,
+    linear-gradient(var(--as-hud-drawer-line), var(--as-hud-drawer-line)) 14px 100% / calc(100% - 28px) 1px no-repeat,
+    linear-gradient(var(--as-hud-drawer-line), var(--as-hud-drawer-line)) 0 14px / 1px calc(100% - 28px) no-repeat,
+    linear-gradient(var(--as-hud-drawer-line), var(--as-hud-drawer-line)) 100% 14px / 1px calc(100% - 28px) no-repeat;
+  filter: drop-shadow(0 0 5px var(--as-hud-drawer-glow));
+}
+.as-hud-frame--drawer > * { position: relative; z-index: 1; }
+.as-hud-frame--drawer > .as-hud-drawer__chrome {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+}
+.as-hud-drawer__corner {
+  position: absolute;
+  width: 46px;
+  height: 46px;
+  border-color: var(--as-hud-drawer-hot);
+  filter: drop-shadow(0 0 4px var(--as-hud-drawer-glow));
+}
+.as-hud-drawer__corner--tl { top: 6px; left: 6px; border-top: 2px solid; border-left: 2px solid; }
+.as-hud-drawer__corner--tr { top: 6px; right: 6px; border-top: 2px solid; border-right: 2px solid; }
+.as-hud-drawer__corner--bl { bottom: 6px; left: 6px; border-bottom: 2px solid; border-left: 2px solid; }
+.as-hud-drawer__corner--br { right: 6px; bottom: 6px; border-right: 2px solid; border-bottom: 2px solid; }
+.as-hud-drawer__corner::before,
+.as-hud-drawer__corner::after {
+  content: '';
+  position: absolute;
+  background: var(--as-hud-drawer-hot);
+  box-shadow: 0 0 8px var(--as-hud-drawer-glow);
+}
+.as-hud-drawer__corner::before { width: 18px; height: 3px; }
+.as-hud-drawer__corner::after { width: 3px; height: 18px; }
+.as-hud-drawer__corner--tl::before { top: 7px; left: 11px; }
+.as-hud-drawer__corner--tl::after { top: 11px; left: 7px; }
+.as-hud-drawer__corner--tr::before { top: 7px; right: 11px; }
+.as-hud-drawer__corner--tr::after { top: 11px; right: 7px; }
+.as-hud-drawer__corner--bl::before { bottom: 7px; left: 11px; }
+.as-hud-drawer__corner--bl::after { bottom: 11px; left: 7px; }
+.as-hud-drawer__corner--br::before { right: 11px; bottom: 7px; }
+.as-hud-drawer__corner--br::after { right: 7px; bottom: 11px; }
+
+/* Broken edge rails borrow the reference's asymmetric instrument-panel
+   rhythm: long line, short hot segment, gap, then calibration ticks. */
+.as-hud-drawer__rail {
+  position: absolute;
+  display: block;
+  filter: drop-shadow(0 0 4px var(--as-hud-drawer-glow));
+}
+.as-hud-drawer__rail--top,
+.as-hud-drawer__rail--bottom {
+  left: 12px;
+  right: 12px;
+  height: 13px;
+  background:
+    linear-gradient(90deg, var(--as-hud-drawer-hot), var(--as-hud-drawer-hot)) 0 0 / 18% 2px no-repeat,
+    linear-gradient(90deg, var(--as-hud-drawer-line), var(--as-hud-drawer-line)) 24% 0 / 38% 1px no-repeat,
+    linear-gradient(90deg, var(--as-hud-drawer-hot), var(--as-hud-drawer-hot)) 69% 0 / 19% 2px no-repeat,
+    repeating-linear-gradient(90deg, var(--as-hud-drawer-line) 0 3px, transparent 3px 8px) 94% 0 / 6% 4px no-repeat;
+}
+.as-hud-drawer__rail--top { top: 0; }
+.as-hud-drawer__rail--bottom { bottom: 0; transform: rotate(180deg); }
+.as-hud-drawer__rail--top::before,
+.as-hud-drawer__rail--bottom::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 43%;
+  width: clamp(72px, 16%, 180px);
+  height: 10px;
+  border-top: 2px solid var(--as-hud-drawer-hot);
+  border-right: 2px solid var(--as-hud-drawer-hot);
+  border-left: 2px solid var(--as-hud-drawer-hot);
+  clip-path: polygon(9px 0, calc(100% - 9px) 0, 100% 100%, 68% 100%, 63% 5px, 37% 5px, 32% 100%, 0 100%);
+}
+.as-hud-drawer__rail--left,
+.as-hud-drawer__rail--right {
+  top: 12px;
+  bottom: 12px;
+  width: 10px;
+  background:
+    linear-gradient(var(--as-hud-drawer-hot), var(--as-hud-drawer-hot)) 0 0 / 2px 17% no-repeat,
+    repeating-linear-gradient(0deg, var(--as-hud-drawer-line) 0 3px, transparent 3px 7px) 0 23% / 4px 10% no-repeat,
+    linear-gradient(var(--as-hud-drawer-line), var(--as-hud-drawer-line)) 0 39% / 1px 34% no-repeat,
+    linear-gradient(var(--as-hud-drawer-hot), var(--as-hud-drawer-hot)) 0 82% / 3px 12% no-repeat;
+}
+.as-hud-drawer__rail--left { left: 0; }
+.as-hud-drawer__rail--right { right: 0; transform: rotate(180deg); }
+.as-hud-frame--drawer .as-drawer__header {
+  justify-content: flex-start;
+  min-height: 62px;
+  padding: 10px 20px;
+  border-color: rgba(38, 190, 230, 0.28);
+  background: var(--hud-surface);
+}
+.as-hud-frame--drawer .as-drawer__title {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  isolation: isolate;
+  flex: 0 1 auto;
+  width: fit-content;
+  height: 100%;
+  max-width: min(68%, 680px);
+  --as-hud-drawer-title-slope: 36px;
+  margin: 0;
+  padding: 0 20px;
+  color: #9eeeff;
+  letter-spacing: .06em;
+  text-shadow: 0 0 14px rgba(47, 218, 255, .42);
+}
+.as-hud-frame--drawer .as-drawer__title::before,
+.as-hud-frame--drawer .as-drawer__title::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  pointer-events: none;
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    calc(100% - var(--as-hud-drawer-title-slope)) 100%,
+    0 100%
+  );
+}
+.as-hud-frame--drawer .as-drawer__title::before {
+  inset: 0 calc(0px - var(--as-hud-drawer-title-slope)) 0 0;
+  z-index: -2;
+  background: var(--as-hud-drawer-hot);
+  filter: drop-shadow(0 0 5px var(--as-hud-drawer-glow));
+}
+.as-hud-frame--drawer .as-drawer__title::after {
+  inset: 1px calc(2px - var(--as-hud-drawer-title-slope)) 2px 0;
+  z-index: -1;
+  background: var(--hud-surface);
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    calc(100% - var(--as-hud-drawer-title-slope) + 2px) 100%,
+    0 100%
+  );
+}
+.as-hud-frame--drawer .as-drawer__title > * { position: relative; z-index: 1; }
+.as-hud-frame--drawer .as-drawer__extra { margin-left: auto; }
+
+html[data-theme='light'] .as-drawer.as-hud-frame--drawer {
+  --as-hud-drawer-line: var(--as-hud-modal-line, rgba(0, 132, 190, .55));
+  --as-hud-drawer-hot: var(--as-hud-modal-hot, rgba(0, 152, 210, .84));
+  --as-hud-drawer-glow: var(--as-hud-modal-glow, rgba(0, 140, 200, .2));
+  box-shadow: -8px 0 26px rgba(13, 75, 103, .14);
+}
+html[data-theme='light'] .as-hud-frame--drawer .as-drawer__header {
+  background: var(--hud-surface);
+}
+html[data-theme='light'] .as-hud-frame--drawer .as-drawer__title { color: #087ca8; text-shadow: none; }
+
+@media (max-width: 640px) {
+  .as-modal.as-hud-frame--modal {
+    --as-hud-modal-cut: 13px;
+    --as-hud-modal-arm: min(64px, 16vw);
+  }
+  .as-hud-modal__corner { transform: scale(0.82); transform-origin: top left; }
+  .as-hud-modal__corner--tr { transform: scale(-0.82, 0.82); transform-origin: top right; }
+  .as-hud-modal__corner--bl { transform: scale(0.82, -0.82); transform-origin: bottom left; }
+  .as-hud-modal__corner--br { transform: scale(-0.82); transform-origin: bottom right; }
+  .as-hud-frame--modal .as-modal__body { padding: 20px; }
+  .as-hud-frame--modal .as-modal__footer { gap: 12px; }
+  .as-hud-frame--modal .as-modal__footer .as-btn { min-width: 0; flex: 1; }
+}
+
+/* ========================================================================
+ * 9. 普通视觉模式
+ *
+ * 颜色主题（暗黑/明亮）与视觉模式（普通/科技）彼此独立。普通模式移除
+ * HUD 的网格、发光和切角语言，回到接近 Ant Design 的圆角与细灰边框。
+ * ======================================================================== */
+html[data-visual='normal'] {
+  --color-as-primary: #1677ff;
+  --color-as-primary-hover: #4096ff;
+  --color-as-primary-active: #0958d9;
+  --as-text: rgba(255, 255, 255, 0.85);
+  --as-text-secondary: rgba(255, 255, 255, 0.65);
+  --as-text-placeholder: rgba(255, 255, 255, 0.35);
+  --as-border: #424242;
+  --as-border-secondary: #303030;
+  --as-bg: #141414;
+  --as-bg-elevated: #1f1f1f;
+  --as-fill-secondary: rgba(255, 255, 255, 0.08);
+  --as-shadow: 0 6px 16px rgba(0, 0, 0, 0.32);
+  --hud-glow: none;
+  --hud-glow-strong: none;
+  --hud-panel-bg: #1f1f1f;
+}
+
+html[data-theme='light'][data-visual='normal'] {
+  --as-text: rgba(0, 0, 0, 0.88);
+  --as-text-secondary: rgba(0, 0, 0, 0.65);
+  --as-text-placeholder: rgba(0, 0, 0, 0.25);
+  --as-border: #d9d9d9;
+  --as-border-secondary: #f0f0f0;
+  --as-bg: #ffffff;
+  --as-bg-elevated: #ffffff;
+  --as-fill-secondary: rgba(0, 0, 0, 0.04);
+  --as-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  --hud-panel-bg: #ffffff;
+}
+
+html[data-visual='normal'] .hud-sidebar {
+  border-right-color: #303030;
+  background: #141414;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+html[data-theme='light'][data-visual='normal'] .hud-sidebar {
+  border-right-color: #e5e7eb;
+  background: #ffffff;
+}
+
+html[data-visual='normal'] .hud-topbar {
+  border-bottom-color: #303030;
+  background: #141414;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+html[data-theme='light'][data-visual='normal'] .hud-topbar {
+  border-bottom-color: #e5e7eb;
+  background: #ffffff;
+}
+
+html[data-visual='normal'] .hud-content {
+  background: #141414;
+}
+
+html[data-theme='light'][data-visual='normal'] .hud-content {
+  background: #f5f5f5;
+}
+
+/* 普通模式的应用壳使用明确色值，避免继承 HUD 发光色后与背景失去对比。 */
+html[data-visual='normal'] .hud-logo,
+html[data-visual='normal'] .hud-sidebar-foot {
+  border-color: #303030;
+}
+
+html[data-visual='normal'] .hud-logo-text b,
+html[data-visual='normal'] .hud-crumb-cur,
+html[data-visual='normal'] .hud-clock b {
+  color: rgba(255, 255, 255, 0.88);
+}
+
+html[data-visual='normal'] .hud-logo-text i,
+html[data-visual='normal'] .hud-crumb,
+html[data-visual='normal'] .hud-clock i,
+html[data-visual='normal'] .hud-sidebar-foot {
+  color: rgba(255, 255, 255, 0.58);
+}
+
+html[data-visual='normal'] .hud-nav-title,
+html[data-visual='normal'] .hud-crumb-sys,
+html[data-visual='normal'] .hud-crumb-sep {
+  color: rgba(255, 255, 255, 0.42);
+}
+
+html[data-visual='normal'] .hud-nav-item,
+html[data-visual='normal'] .hud-nav-icon {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+html[data-visual='normal'] .hud-search,
+html[data-visual='normal'] .hud-search-pop {
+  color: rgba(255, 255, 255, 0.58);
+  background: #1f1f1f;
+  border-color: #424242;
+}
+
+html[data-visual='normal'] .hud-search input,
+html[data-visual='normal'] .hud-search-item {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+html[data-visual='normal'] .hud-search input::placeholder,
+html[data-visual='normal'] .hud-search-item i {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+html[data-theme='light'][data-visual='normal'] .hud-logo,
+html[data-theme='light'][data-visual='normal'] .hud-sidebar-foot {
+  border-color: #f0f0f0;
+}
+
+html[data-theme='light'][data-visual='normal'] .hud-logo-text b,
+html[data-theme='light'][data-visual='normal'] .hud-crumb-cur,
+html[data-theme='light'][data-visual='normal'] .hud-clock b {
+  color: #262626;
+}
+
+html[data-theme='light'][data-visual='normal'] .hud-logo-text i,
+html[data-theme='light'][data-visual='normal'] .hud-crumb,
+html[data-theme='light'][data-visual='normal'] .hud-clock i,
+html[data-theme='light'][data-visual='normal'] .hud-sidebar-foot {
+  color: #595959;
+}
+
+html[data-theme='light'][data-visual='normal'] .hud-nav-title,
+html[data-theme='light'][data-visual='normal'] .hud-crumb-sys,
+html[data-theme='light'][data-visual='normal'] .hud-crumb-sep {
+  color: #8c8c8c;
+}
+
+html[data-theme='light'][data-visual='normal'] .hud-nav-item,
+html[data-theme='light'][data-visual='normal'] .hud-nav-icon {
+  color: #434343;
+}
+
+html[data-theme='light'][data-visual='normal'] .hud-search,
+html[data-theme='light'][data-visual='normal'] .hud-search-pop {
+  color: #8c8c8c;
+  background: #ffffff;
+  border-color: #d9d9d9;
+}
+
+html[data-theme='light'][data-visual='normal'] .hud-search input,
+html[data-theme='light'][data-visual='normal'] .hud-search-item {
+  color: #262626;
+}
+
+html[data-theme='light'][data-visual='normal'] .hud-search input::placeholder,
+html[data-theme='light'][data-visual='normal'] .hud-search-item i {
+  color: #bfbfbf;
+}
+
+html[data-visual='normal'] .hud-logo-mark {
+  color: #ffffff;
+  background: #1677ff;
+  clip-path: none;
+  border-radius: 8px;
+  box-shadow: none;
+}
+
+html[data-visual='normal'] .hud-title {
+  color: var(--as-text);
+  text-shadow: none;
+}
+
+html[data-visual='normal'] .hud-nav-item:hover {
+  color: var(--as-text);
+  background: var(--as-fill-secondary);
+  border-color: transparent;
+  box-shadow: none;
+}
+
+html[data-visual='normal'] .hud-nav-item.active {
+  color: #1677ff;
+  background: rgba(22, 119, 255, 0.12);
+  border-color: transparent;
+  box-shadow: none;
+  text-shadow: none;
+}
+
+html[data-visual='normal'] .hud-nav-item.active .hud-nav-icon {
+  color: #1677ff;
+  filter: none;
+}
+
+html[data-visual='normal'] .hud-search {
+  background: var(--as-bg-elevated);
+  border-color: var(--as-border);
+  box-shadow: none;
+}
+
+html[data-visual='normal'] .hud-search:hover,
+html[data-visual='normal'] .hud-search.focused {
+  border-color: #1677ff;
+  box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.1);
+}
+
+html[data-visual='normal'] .hud-panel {
+  isolation: auto;
+  overflow: hidden;
+  background: var(--hud-panel-bg);
+  border: 1px solid var(--as-border-secondary);
+  border-radius: 8px;
+  box-shadow: var(--as-shadow);
+}
+
+html[data-visual='normal'] .hud-panel.hud-embed {
+  overflow: hidden;
+}
+
+html[data-visual='normal'] .hud-panel::before,
+html[data-visual='normal'] .hud-panel::after {
+  display: none;
+}
+
+html[data-visual='normal'] .as-card::before,
+html[data-visual='normal'] .as-table-wrap::before,
+html[data-visual='normal'] .as-dropdown__panel::before,
+html[data-visual='normal'] .as-popover__panel::before,
+html[data-visual='normal'] .as-select__dropdown::before,
+html[data-visual='normal'] .as-cascader__dropdown::before {
+  display: none;
+}
+
+html[data-visual='normal'] .as-card__head,
+html[data-visual='normal'] .as-drawer__footer,
+html[data-visual='normal'] .as-modal__footer,
+html[data-visual='normal'] .as-tabs__nav {
+  background-image: none;
+}
+
+html[data-visual='normal'] :is(
+  .as-btn,
+  .as-tag,
+  .as-input,
+  .as-input-wrap,
+  .as-textarea,
+  .as-select
+) {
+  clip-path: none;
+}
+
+html[data-visual='normal'] .as-table th:first-child,
+html[data-visual='normal'] .as-table td:first-child {
+  border-left: 0;
+}
+
+html[data-visual='normal'] .as-modal.as-hud-frame--modal {
+  overflow: hidden;
+  color: var(--as-text);
+  background: var(--as-bg-elevated);
+  border: 1px solid var(--as-border-secondary);
+  border-radius: 8px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.28);
+}
+
+html[data-visual='normal'] .as-drawer.as-hud-frame--drawer {
+  isolation: auto;
+  border: 0;
+  border-radius: 0;
+  box-shadow: var(--as-shadow);
+}
+html[data-visual='normal'] .as-drawer.as-hud-frame--drawer::after,
+html[data-visual='normal'] .as-hud-drawer__chrome,
+html[data-visual='normal'] .as-hud-frame--drawer .as-drawer__title::before,
+html[data-visual='normal'] .as-hud-frame--drawer .as-drawer__title::after {
+  display: none;
+}
+html[data-visual='normal'] .as-hud-frame--drawer .as-drawer__header {
+  min-height: 56px;
+  padding: 12px 20px;
+  background: transparent;
+  border-color: var(--as-border-secondary);
+}
+html[data-visual='normal'] .as-hud-frame--drawer .as-drawer__title {
+  position: relative;
+  top: auto;
+  left: auto;
+  display: block;
+  flex: 1;
+  height: auto;
+  max-width: none;
+  margin-right: 0;
+  padding: 0;
+  border: 0;
+  color: var(--as-text);
+  letter-spacing: 0;
+  text-shadow: none;
+}
+
+html[data-visual='normal'] .as-modal.as-hud-frame--modal::before,
+html[data-visual='normal'] .as-modal.as-hud-frame--modal::after,
+html[data-visual='normal'] .as-hud-modal__chrome,
+html[data-visual='normal'] .as-hud-frame--modal .as-modal__title::before,
+html[data-visual='normal'] .as-hud-frame--modal .as-modal__title::after {
+  display: none;
+}
+
+html[data-visual='normal'] .as-hud-frame--modal .as-modal__head {
+  justify-content: flex-start;
+  min-height: 52px;
+  padding: 14px 20px;
+  overflow: visible;
+  background: transparent;
+  border-color: var(--as-border-secondary);
+}
+
+html[data-visual='normal'] .as-hud-frame--modal .as-modal__title {
+  position: relative;
+  top: auto;
+  left: auto;
+  transform: none;
+  width: auto;
+  height: auto;
+  max-width: none;
+  padding: 0;
+  color: var(--as-text);
+  font-size: 16px;
+  letter-spacing: 0;
+  text-align: left;
+  text-shadow: none;
+}
+html[data-visual='normal'] .as-hud-frame--modal .as-modal__title-text {
+  padding: 0;
+  overflow: visible;
+  line-height: inherit;
+  text-overflow: clip;
+  white-space: normal;
+}
+
+html[data-visual='normal'] .as-hud-frame--modal .as-modal__close {
+  color: var(--as-text-secondary);
+}
+
+html[data-visual='normal'] .as-hud-frame--modal .as-modal__body {
+  padding: 20px 24px;
+}
+
+html[data-visual='normal'] .as-hud-frame--modal .as-modal__footer {
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 10px 16px;
+  border-color: var(--as-border-secondary);
+}
+
+html[data-visual='normal'] .as-hud-frame--modal .as-modal__footer .as-btn {
+  min-width: 84px;
+  height: 30px;
+  color: var(--as-text);
+  background: var(--as-bg-elevated);
+  border-color: var(--as-border);
+  border-radius: 6px;
+  clip-path: none;
+  box-shadow: none;
+}
+
+html[data-visual='normal'] .as-hud-frame--modal .as-modal__footer .as-btn:hover,
+html[data-visual='normal'] .as-hud-frame--modal .as-modal__footer .as-btn--primary {
+  color: #ffffff;
+  background: #1677ff;
+  border-color: #1677ff;
+  box-shadow: none;
+}
+
+/* The generated dark layer changes this hover to a dark HUD fill. Keep the
+ * foreground bright instead of inheriting the dark-on-brand contrast token. */
+html.dark[data-theme='dark'] .kh-drawer-back:hover {
+  color: var(--hud-text-strong);
+}

@@ -1,0 +1,4 @@
+/* Entry stylesheet — hosts import this once at their app entry:
+     import '@agent-start/knowledge-hub/style.css'
+   Everything else is composed of design tokens declared in tokens.css. */
+@import './tokens.css';
