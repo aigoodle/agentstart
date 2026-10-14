@@ -286,9 +286,8 @@ public class ModelController {
     }
 
     /**
-     * "重新拉取": hit the vendor and return the raw list — transient, no DB writes.
-     * The UI merges these with the persisted predefined catalog for display; only
-     * models the user explicitly enables end up in {@code agent_provider_model_setting}.
+     * "重新拉取": persist newly discovered catalog entries for the current tenant.
+     * Models remain disabled until explicitly enabled by the user.
      */
     @PostMapping("/model-providers/{name}/refresh-catalog")
     public ApiResponse<List<RemoteModelView>> refreshCatalog(@PathVariable String name) {

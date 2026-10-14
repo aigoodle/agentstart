@@ -5,7 +5,9 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import io.aigoodle.common.context.UserContextHolder;
 import io.aigoodle.common.exception.PlatformException;
+import io.aigoodle.common.util.JsonUtils;
 import io.aigoodle.model.entity.ModelEntity;
+import io.aigoodle.model.entity.PredefinedModelEntity;
 import io.aigoodle.model.entity.ProviderCredentialEntity;
 import io.aigoodle.model.entity.TenantDefaultModelEntity;
 import io.aigoodle.model.enums.ModelType;
@@ -20,6 +22,7 @@ import io.aigoodle.model.runtime.ModelInstance;
 import io.aigoodle.model.runtime.ModelInstanceFactory;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
@@ -526,17 +529,36 @@ public class ModelService {
     }
 
     /**
-     * Hit the vendor's model listing endpoint and return the raw list — <em>no
-     * persistence whatsoever</em>. The UI merges these transient remote entries
-     * with the DB predefined catalog for display; only when the user explicitly
-     * enables one does a row get written (to {@code agent_provider_model_setting}).
-     * <p>
-     * This is the user's explicit design ("读取到的模型太多了 我只想存启用的，全部
-     * 就直接掉接口获取"). The seeded {@code agent_predefined_model} rows still
-     * ship the OOTB known-good catalog; refresh only adds transient options.
+     * Refresh the live catalog and persist newly discovered models for this tenant.
+     * Catalog discovery does not enable models or change existing model metadata,
+     * settings, defaults, or the shared system catalog.
      */
+    @Transactional
     public List<RemoteModel> refreshCatalog(String tenantId, String providerName) {
-        return providerCatalogClient.refresh(tenantId, providerName);
+        String tenant = normalizeTenantId(tenantId);
+        List<RemoteModel> remote = providerCatalogClient.refresh(tenant, providerName);
+        var known = new HashSet<String>();
+        for (PredefinedModelEntity row : definitionService.listPredefined(tenant, providerName)) {
+            known.add(row.getModel() + "::" + row.getModelType());
+        }
+        for (RemoteModel model : remote) {
+            if (model == null
+                    || model.getModelId() == null
+                    || model.getModelId().isBlank()
+                    || model.getModelType() == null) continue;
+            if (!known.add(model.getModelId() + "::" + model.getModelType())) continue;
+            PredefinedModelEntity row = new PredefinedModelEntity();
+            row.setTenantId(tenant);
+            row.setProviderName(providerName);
+            row.setModel(model.getModelId());
+            row.setLabel(model.getLabel() == null ? model.getModelId() : model.getLabel());
+            row.setModelType(model.getModelType());
+            row.setFeatures(JsonUtils.toJson(model.getFeatures()));
+            row.setContextLength(model.getContextLength());
+            row.setDimensions(model.getDimensions());
+            definitionService.upsertPredefined(row);
+        }
+        return remote;
     }
 
     /**

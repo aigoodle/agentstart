@@ -30,16 +30,14 @@ import { useRouter } from 'vue-router';
 import { SearchOutlined } from '@ant-design/icons-vue';
 import {
   Button,
-  Dropdown,
   Empty,
   Form,
   FormItem,
   Input,
   Card,
-  Menu,
-  MenuItem,
   message,
   Modal,
+  Popover,
   Select,
   Skeleton,
   Spin,
@@ -73,6 +71,20 @@ const permissionsOpen = ref(false);
 function openPermissions(app: AgentEntity) {
   permissionsApp.value = app;
   permissionsOpen.value = true;
+}
+
+// ---------------------------------------------------------------------------
+// Card ⋯ menu — the unified ui Popover "bubble card" (mirrors the
+// model-provider-hub ProviderHubShell pattern). A single shared open id keeps
+// only one card menu open at a time; the Popover panel teleports to <body>, so
+// it is never clipped by the card and flips inside the viewport on its own.
+// ---------------------------------------------------------------------------
+const openMenuFor = ref<string | null>(null);
+function toggleCardMenu(id: string) {
+  openMenuFor.value = openMenuFor.value === id ? null : id;
+}
+function closeCardMenu() {
+  openMenuFor.value = null;
 }
 
 // ---------------------------------------------------------------------------
@@ -1159,6 +1171,9 @@ function closeTransientUi() {
   showCreate.value = false;
   showShare.value = false;
   showTypePicker.value = false;
+  // The card ⋯ menu (ui Popover) also teleports to body — close it too so a
+  // floating menu never survives a route change / KeepAlive deactivation.
+  openMenuFor.value = null;
 }
 
 function disconnectThemeObserver() {
@@ -1332,43 +1347,175 @@ onBeforeUnmount(() => {
             </span>
           </template>
 
-          <template #actions>
-            <div class="aa-more" @click.stop>
-              <Dropdown :trigger="['click']" placement="bottomRight">
-                <Button type="text" size="small" class="aa-more-btn">
-                  ⋯
-                </Button>
-                <template #overlay>
-                  <Menu class="aa-card-menu">
-                    <MenuItem key="design" class="aa-card-menu-item" @click="openDesigner(a)">
-                      <span class="aa-card-menu-icon" aria-hidden="true">✦</span>
-                      <span>设计应用</span>
-                    </MenuItem>
-                    <MenuItem key="chat" class="aa-card-menu-item" @click="openChat(a)">
-                      <span class="aa-card-menu-icon" aria-hidden="true">▷</span>
-                      <span>独立对话</span>
-                    </MenuItem>
-                    <MenuItem key="edit" class="aa-card-menu-item" @click="openEdit(a)">
-                      <span class="aa-card-menu-icon" aria-hidden="true">✎</span>
-                      <span>编辑基本信息</span>
-                    </MenuItem>
-                    <MenuItem key="permissions" class="aa-card-menu-item" @click="openPermissions(a)">
-                      <span class="aa-card-menu-icon" aria-hidden="true">◇</span>
-                      <span>数据权限</span>
-                    </MenuItem>
-                    <MenuItem key="share" class="aa-card-menu-item" @click="openShare(a)">
-                      <span class="aa-card-menu-icon" aria-hidden="true">↗</span>
-                      <span>分享嵌入</span>
-                    </MenuItem>
-                    <div class="aa-card-menu-divider" />
-                    <MenuItem key="delete" danger class="aa-card-menu-item aa-card-menu-item--danger" @click="remove(a)">
-                      <span class="aa-card-menu-icon" aria-hidden="true">×</span>
-                      <span>删除</span>
-                    </MenuItem>
-                  </Menu>
-                </template>
-              </Dropdown>
-            </div>
+          <!-- ⋯ menu — unified ui Popover bubble card in the card's #badge
+               (top-right). Controlled by the shared `openMenuFor` id; each item
+               closes the menu itself because Popover panels don't auto-close. -->
+          <template #badge>
+            <Popover
+              :open="openMenuFor === a.id"
+              trigger="click"
+              placement="bottomRight"
+              overlay-class-name="aa-card-menu-overlay"
+              @update:open="
+                (v: boolean) => (v ? (openMenuFor = a.id) : closeCardMenu())
+              "
+            >
+              <button
+                type="button"
+                class="aa-card-menu-btn"
+                :class="{ 'aa-card-menu-btn--open': openMenuFor === a.id }"
+                title="更多操作"
+                :aria-label="`${a.name} 更多操作`"
+                :aria-expanded="openMenuFor === a.id"
+                @click.stop="toggleCardMenu(a.id)"
+              >
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <circle cx="5" cy="12" r="1.6" />
+                  <circle cx="12" cy="12" r="1.6" />
+                  <circle cx="19" cy="12" r="1.6" />
+                </svg>
+              </button>
+              <template #content>
+                <div class="aa-card-menu-content" role="menu">
+                  <button
+                    type="button"
+                    role="menuitem"
+                    class="aa-card-menu-item"
+                    @click="openDesigner(a); closeCardMenu()"
+                  >
+                    <svg
+                      class="aa-card-menu-icon"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9L12 3z" />
+                      <path d="M18 15l.9 2.1L21 18l-2.1.9L18 21l-.9-2.1L15 18l2.1-.9L18 15z" />
+                    </svg>
+                    <span>设计应用</span>
+                  </button>
+                  <button
+                    type="button"
+                    role="menuitem"
+                    class="aa-card-menu-item"
+                    @click="openChat(a); closeCardMenu()"
+                  >
+                    <svg
+                      class="aa-card-menu-icon"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                    </svg>
+                    <span>独立对话</span>
+                  </button>
+                  <button
+                    type="button"
+                    role="menuitem"
+                    class="aa-card-menu-item"
+                    @click="openEdit(a); closeCardMenu()"
+                  >
+                    <svg
+                      class="aa-card-menu-icon"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
+                    </svg>
+                    <span>编辑基本信息</span>
+                  </button>
+                  <button
+                    type="button"
+                    role="menuitem"
+                    class="aa-card-menu-item"
+                    @click="openPermissions(a); closeCardMenu()"
+                  >
+                    <svg
+                      class="aa-card-menu-icon"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                    </svg>
+                    <span>数据权限</span>
+                  </button>
+                  <button
+                    type="button"
+                    role="menuitem"
+                    class="aa-card-menu-item"
+                    @click="openShare(a); closeCardMenu()"
+                  >
+                    <svg
+                      class="aa-card-menu-icon"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <circle cx="18" cy="5" r="3" />
+                      <circle cx="6" cy="12" r="3" />
+                      <circle cx="18" cy="19" r="3" />
+                      <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                      <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+                    </svg>
+                    <span>分享嵌入</span>
+                  </button>
+                  <div class="aa-card-menu-sep" role="separator" />
+                  <button
+                    type="button"
+                    role="menuitem"
+                    class="aa-card-menu-item aa-card-menu-item--danger"
+                    @click="remove(a); closeCardMenu()"
+                  >
+                    <svg
+                      class="aa-card-menu-icon"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <path d="M3 6h18" />
+                      <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                      <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                      <path d="M10 11v6" />
+                      <path d="M14 11v6" />
+                    </svg>
+                    <span>删除</span>
+                  </button>
+                </div>
+              </template>
+            </Popover>
           </template>
         </Card>
       </div>
@@ -1488,7 +1635,8 @@ onBeforeUnmount(() => {
          left, big preview on the right. Chatflow is a first-class primary
          tile alongside workflow — same DAG canvas, but the runtime keeps
          per-conversation memory + streams via ANSWER nodes. -->
-    <AppPermissionsModal v-if="permissionsApp" v-model:open="permissionsOpen"
+    <AppPermissionsModal v-if="permissionsApp" v-model:open="permissionsOpen" presentation="drawer"
+      :tenant-id="permissionsApp.tenantId"
       :app-id="permissionsApp.id" :app-name="permissionsApp.name" :api="client().agents" @saved="refresh" />
     <CreateAppModal
       v-model:open="showTypePicker"
@@ -1517,6 +1665,8 @@ onBeforeUnmount(() => {
       "
       :tools="tools.map((t) => ({ ...t, category: t.category || (t.name.startsWith('connector__') ? 'Connector' : '插件'), label: t.label || (t.name.startsWith('connector__') ? t.name.split('__').slice(2).join(' / ') : t.name) }))"
       :knowledge-bases="datasets.map((d) => ({ id: d.id, name: d.name }))"
+      :permissions-api="client().agents"
+      @permissions-saved="refresh"
       @save="onDrawerSave"
       @preview="onDrawerPreview"
       @publish="onDrawerPublish"
@@ -1574,36 +1724,17 @@ onBeforeUnmount(() => {
 }
 .aa-card {
   position: relative;
-  /* right padding reserves space for the corner "⋯" menu overlay
-     so the title / subtitle truncate before running under it. */
-  padding-right: 36px;
   cursor: pointer;
-  /* The fallback Dropdown renders inside the card. It must be allowed to
-     escape the card boundary or its popup will be clipped. */
+  /* The ⋯ menu is a ui Popover whose panel teleports to <body>, so it
+     neither needs room inside the card nor can be clipped by it. */
   overflow: visible;
 }
-/* Card's footer (#meta + #actions) must sit at the bottom of the
-   fixed-height card, with the meta portion taking the role of the old
-   .aa-footer and the actions portion rendering as a corner overlay. */
+/* Card's footer (#meta) must sit at the bottom of the fixed-height card,
+   taking the role of the old .aa-footer. */
 .aa-card:deep(.as-management-card__footer) {
   font-size: 11px;
   overflow: hidden;
   white-space: nowrap;
-}
-/* #actions slot hosts the "⋯" corner menu. The wrapper is taken out of flow
-   (absolute against the card) so the footer keeps its full-width top
-   border, and sized so the Dropdown's popup has a non-empty anchor. */
-.aa-card:deep(.as-management-card__actions) {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  z-index: 3;
-  width: 30px;
-  height: 24px;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  flex: none;
 }
 .aa-card:hover {
   z-index: 20;
@@ -1690,112 +1821,118 @@ onBeforeUnmount(() => {
   text-overflow: ellipsis;
   max-width: 200px;
 }
-.aa-more {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  opacity: 1;
-  z-index: 3;
-}
-.aa-more-btn {
-  width: 30px;
-  min-width: 30px;
-  font-size: 20px;
-  font-weight: 600;
-  line-height: 1;
-  padding: 0;
-  height: 30px;
-  color: #64748b;
-  border-radius: 8px;
-}
-.aa-more-btn:hover,
-.aa-more-btn:focus-visible {
-  color: #334155;
-  background: #f1f5f9;
-}
-.aa-more :deep(.as-popover__panel) {
-  left: auto;
-  right: 0;
-  top: calc(100% + 6px);
-  width: 190px;
-  min-width: 190px;
-  padding: 6px;
-  overflow: hidden;
-  background: rgba(255, 255, 255, 0.98);
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.14), 0 3px 10px rgba(15, 23, 42, 0.08);
-  backdrop-filter: blur(12px);
-  transform-origin: top right;
-}
-.aa-more :deep(.aa-card-menu) {
-  min-width: 0;
-  padding: 0;
-}
-.aa-more :deep(.aa-card-menu-item) {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-height: 36px;
-  padding: 7px 10px;
-  color: #334155;
-  font-size: 13px;
-  line-height: 20px;
-  border-radius: 8px;
-  transition: color 0.12s ease, background 0.12s ease;
-}
-.aa-more :deep(.aa-card-menu-item:hover),
-.aa-more :deep(.aa-card-menu-item:focus-visible) {
-  color: #3730a3;
-  background: #eef2ff;
-  outline: none;
-}
-.aa-more :deep(.aa-card-menu-icon) {
+/* Card ⋯ menu — unified ui Popover bubble card, ported from the
+   model-provider-hub ProviderHubShell card menu (.phs-card-menu-*) so both
+   pages share one look. The overlay panel is rendered by AsPopover and
+   teleports to <body> without this component's scope attribute, so it is
+   styled through :global(.aa-card-menu-overlay); the #content elements are
+   compiled here and carry the data-v attribute even when teleported, so the
+   scoped rules below reach them. Dark mode is handled by the shared
+   .as-popover__panel chrome plus the global tokens in the local hub. */
+.aa-card-menu-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 18px;
-  height: 18px;
-  flex: 0 0 18px;
-  color: #64748b;
-  font-size: 15px;
+  background: transparent;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border-radius: 8px;
+  line-height: 1;
+  flex-shrink: 0;
+  transition: background 0.15s ease, color 0.15s ease;
 }
-.aa-more :deep(.aa-card-menu-divider) {
+.aa-card-menu-btn:hover {
+  background: var(--as-mgmt-soft, #f3f4f6);
+  color: var(--as-mgmt-text, #374151);
+}
+.aa-card-menu-btn--open {
+  background: color-mix(in srgb, var(--as-primary, #6366f1) 10%, transparent);
+  color: var(--as-primary, #6366f1);
+}
+.aa-card-menu-btn:focus-visible {
+  outline: 2px solid var(--as-primary, #6366f1);
+  outline-offset: 1px;
+}
+:global(.aa-card-menu-overlay) {
+  width: max-content;
+  min-width: 0;
+  max-width: calc(100vw - 16px);
+  padding: 6px;
+}
+.aa-card-menu-content {
+  /* 面板经 Teleport 挂在 body 下，继承不到 .as-management 容器上的
+     --as-mgmt-* 令牌；这里用可随暗色翻转的全局令牌自建局部变量中枢。 */
+  --aa-menu-text: var(--as-text, #374151);
+  --aa-menu-muted: var(--as-text-secondary, #98a2b3);
+  --aa-menu-line: var(--as-border-secondary, #e5e7eb);
+  min-width: 160px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 4px;
+}
+.aa-card-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 5px 10px;
+  font-size: 13px;
+  line-height: 20px;
+  text-align: left;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--aa-menu-text);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.aa-card-menu-icon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  color: var(--aa-menu-muted);
+  transition: color 0.15s ease;
+}
+.aa-card-menu-item:hover {
+  background: color-mix(in srgb, var(--as-primary, #6366f1) 8%, transparent);
+  color: var(--as-primary, #6366f1);
+}
+.aa-card-menu-item:hover .aa-card-menu-icon {
+  color: var(--as-primary, #6366f1);
+}
+.aa-card-menu-item:active {
+  background: color-mix(in srgb, var(--as-primary, #6366f1) 14%, transparent);
+}
+.aa-card-menu-item:focus-visible {
+  outline: 2px solid var(--as-primary, #6366f1);
+  outline-offset: -2px;
+}
+.aa-card-menu-item--danger,
+.aa-card-menu-item--danger .aa-card-menu-icon {
+  color: var(--as-danger, #dc2626);
+}
+.aa-card-menu-item--danger:hover {
+  background: color-mix(in srgb, var(--as-danger, #dc2626) 8%, transparent);
+  color: var(--as-danger, #dc2626);
+}
+.aa-card-menu-item--danger:hover .aa-card-menu-icon {
+  color: var(--as-danger, #dc2626);
+}
+.aa-card-menu-item--danger:active {
+  background: color-mix(in srgb, var(--as-danger, #dc2626) 14%, transparent);
+}
+.aa-card-menu-item--danger:focus-visible {
+  outline-color: var(--as-danger, #dc2626);
+}
+.aa-card-menu-sep {
   height: 1px;
-  margin: 5px 4px;
-  background: #e2e8f0;
-}
-.aa-more :deep(.aa-card-menu-item--danger) {
-  color: #dc2626;
-}
-.aa-more :deep(.aa-card-menu-item--danger .aa-card-menu-icon) {
-  color: #dc2626;
-}
-.aa-more :deep(.aa-card-menu-item--danger:hover),
-.aa-more :deep(.aa-card-menu-item--danger:focus-visible) {
-  color: #b91c1c;
-  background: #fef2f2;
-}
-:global(.dark) .aa-more-btn:hover,
-:global(.dark) .aa-more-btn:focus-visible {
-  color: #e2e8f0;
-  background: #334155;
-}
-:global(.dark) .aa-more :deep(.as-popover__panel) {
-  background: rgba(30, 41, 59, 0.98);
-  border-color: #475569;
-  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.42);
-}
-:global(.dark) .aa-more :deep(.aa-card-menu-item) {
-  color: #e2e8f0;
-}
-:global(.dark) .aa-more :deep(.aa-card-menu-item:hover),
-:global(.dark) .aa-more :deep(.aa-card-menu-item:focus-visible) {
-  color: #c7d2fe;
-  background: rgba(99, 102, 241, 0.18);
-}
-:global(.dark) .aa-more :deep(.aa-card-menu-divider) {
-  background: #475569;
+  background: var(--aa-menu-line);
+  margin: 4px 6px;
 }
 
 /* Emoji picker for the agent icon */

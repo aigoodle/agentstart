@@ -3,7 +3,6 @@ import { computed, ref } from 'vue';
 
 import Icon from '../Icon.vue';
 import NodeHandle from '../NodeHandle.vue';
-import NodeHoverToolbar from '../NodeHoverToolbar.vue';
 
 const props = defineProps({ id: String, data: { type: Object, default: () => ({}) } });
 const emit = defineEmits(['duplicate', 'delete', 'connection-plus-click']);
@@ -28,12 +27,6 @@ const scheduleLabel = computed(() => {
 
 <template>
   <div class="wf-node schedule-trigger-node" @mouseenter="isHovered = true" @mouseleave="isHovered = false">
-    <NodeHoverToolbar
-      v-if="isHovered"
-      node-type="schedule-trigger"
-      @duplicate="emit('duplicate', id)"
-      @delete="emit('delete', id)"
-    />
     <div class="wf-node-header">
       <div class="wf-node-icon"><Icon name="schedule" /></div>
       <div class="wf-node-info">

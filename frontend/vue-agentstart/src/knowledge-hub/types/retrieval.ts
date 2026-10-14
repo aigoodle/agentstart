@@ -61,7 +61,7 @@ export type RagFusionMethod = 'NONE' | 'RRF' | 'WEIGHTED_SCORE';
 
 export interface RagPolicy {
   queryPlanning: { strategy: RagQueryStrategy; modelId?: string; maxQueries: number; includeOriginal: boolean };
-  retrieval: { channels: RagRetrievalChannel[]; candidateLimitPerQuery: number; parallelism: number; metadataFilter?: Record<string, unknown> };
+  retrieval: { channels: RagRetrievalChannel[]; candidateLimitPerQuery: number; parallelism: number; scoreThreshold?: number; maxChunksPerDocument?: number; metadataFilter?: Record<string, unknown> };
   fusion: { method: RagFusionMethod; rrfK: number; channelWeights?: Partial<Record<RagRetrievalChannel, number>> };
   rerank: { enabled: boolean; provider?: string; model?: string; candidateLimit: number; topN: number; timeout?: string; failOpen: boolean };
   context: { parentExpansion: boolean; neighborWindow: number; deduplicate: boolean; compression: boolean; compressionProvider?: string; maxTokens: number };
@@ -85,11 +85,12 @@ export interface RagCapabilities {
   queryStrategies: RagQueryStrategy[];
   retrievalChannels: RagRetrievalChannel[];
   fusionMethods: RagFusionMethod[];
+  rerankers?: string[];
 }
 
 export const defaultRagPolicy = (): RagPolicy => ({
   queryPlanning: { strategy: 'DIRECT', maxQueries: 1, includeOriginal: true },
-  retrieval: { channels: ['VECTOR'], candidateLimitPerQuery: 30, parallelism: 4 },
+  retrieval: { channels: ['VECTOR'], candidateLimitPerQuery: 30, parallelism: 4, scoreThreshold: 0, maxChunksPerDocument: 0 },
   fusion: { method: 'NONE', rrfK: 60 },
   rerank: { enabled: false, provider: 'score', candidateLimit: 30, topN: 8, failOpen: true },
   context: { parentExpansion: true, neighborWindow: 0, deduplicate: true, compression: false, maxTokens: 6000 },

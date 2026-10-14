@@ -11,7 +11,7 @@
  *   │ ┌─────────┐ ┌─────────┐        │  │                     │    │
  *   │ │ chatflow│ │workflow │        │  │   应用类型缩略图      │    │
  *   │ └─────────┘ └─────────┘        │  │   (右侧随选中变化)   │    │
- *   │ 初学者场景 ▽                    │  │                     │    │
+ *   │ 应用类型                    │  │                     │    │
  *   │ ┌────┐┌────┐┌────┐             │  └─────────────────────┘    │
  *   │ │chat││agent││textg│           │                             │
  *   │ └────┘└────┘└────┘             │  标题                        │
@@ -63,24 +63,20 @@ const emit = defineEmits<{
 }>();
 
 // -------- state --------
-// Dify shows the "primary" pair (chatflow / workflow) as always-visible, and the
-// beginner set (chatbot / agent / text-gen) behind a collapsible section.
-const PRIMARY_TYPES: AppType[] = ['workflow', 'chatflow'];
-const BEGINNER_TYPES: AppType[] = ['chatbot', 'agent', 'text-generator'];
-
-const primaryCards = computed<AppTypeDescriptor[]>(() =>
-  APP_TYPES.filter(
-    (a) => PRIMARY_TYPES.includes(a.id) && props.allow.includes(a.id),
-  ),
-);
-const beginnerCards = computed<AppTypeDescriptor[]>(() =>
-  APP_TYPES.filter(
-    (a) => BEGINNER_TYPES.includes(a.id) && props.allow.includes(a.id),
+const APP_TYPE_ORDER: AppType[] = [
+  'chatflow',
+  'workflow',
+  'agent',
+  'chatbot',
+  'text-generator',
+];
+const appCards = computed<AppTypeDescriptor[]>(() =>
+  APP_TYPES.filter((a) => props.allow.includes(a.id)).sort(
+    (a, b) => APP_TYPE_ORDER.indexOf(a.id) - APP_TYPE_ORDER.indexOf(b.id),
   ),
 );
 
 const selectedType = ref<AppType>('chatbot');
-const isBeginnerExpanded = ref(true);
 
 const currentDesc = computed<AppTypeDescriptor | undefined>(() =>
   APP_TYPES.find((a) => a.id === selectedType.value),
@@ -113,7 +109,7 @@ watch(
       name.value = '';
       description.value = '';
       icon.value = { emoji: '🤖', background: '#FFEAD5' };
-      // Pre-select the first allowed type — beginners land on chatbot by default.
+      // Pre-select chatbot when allowed, otherwise the first allowed type.
       if (props.allow.includes('chatbot')) selectedType.value = 'chatbot';
       else if (props.allow[0]) selectedType.value = props.allow[0];
       showIconPicker.value = false;
@@ -168,41 +164,10 @@ function onKeydown(e: KeyboardEvent) {
           <div class="as-left">
             <div class="as-section-label">选择应用类型</div>
 
-            <!-- Primary tiles (workflow, potentially chatflow if we add it) -->
-            <div v-if="primaryCards.length > 0" class="as-tile-row">
+            <!-- Application type tiles -->
+            <div v-if="appCards.length > 0" class="as-tile-row">
               <button
-                v-for="a in primaryCards"
-                :key="a.id"
-                class="as-tile"
-                :class="{ 'as-tile-active': selectedType === a.id }"
-                @click="selectedType = a.id"
-              >
-                <div class="as-tile-icon" :style="{ background: a.iconBg }">
-                  {{ a.icon }}
-                </div>
-                <div class="as-tile-title">{{ a.title }}</div>
-                <div class="as-tile-desc">{{ a.description }}</div>
-              </button>
-            </div>
-
-            <!-- Beginner tiles: collapsible group -->
-            <button
-              v-if="beginnerCards.length > 0"
-              type="button"
-              class="as-expand-btn"
-              @click="isBeginnerExpanded = !isBeginnerExpanded"
-            >
-              <span>初学者常用</span>
-              <span class="as-caret" :class="{ 'as-caret-open': isBeginnerExpanded }">
-                ›
-              </span>
-            </button>
-            <div
-              v-if="isBeginnerExpanded && beginnerCards.length > 0"
-              class="as-tile-row as-tile-row-3"
-            >
-              <button
-                v-for="a in beginnerCards"
+                v-for="a in appCards"
                 :key="a.id"
                 class="as-tile"
                 :class="{ 'as-tile-active': selectedType === a.id }"
@@ -389,9 +354,7 @@ function onKeydown(e: KeyboardEvent) {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
 }
-.as-tile-row-3 {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
+
 .as-tile {
   position: relative;
   padding: 10px 12px 12px;
@@ -439,30 +402,6 @@ function onKeydown(e: KeyboardEvent) {
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-}
-
-/* Beginner expand toggle */
-.as-expand-btn {
-  align-self: flex-start;
-  padding: 0;
-  border: none;
-  background: transparent;
-  font-size: 11px;
-  font-weight: 500;
-  color: #64748b;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-}
-.as-caret {
-  font-size: 14px;
-  transition: transform 0.15s;
-}
-.as-caret-open {
-  transform: rotate(90deg);
 }
 
 /* Divider */
@@ -688,7 +627,6 @@ function onKeydown(e: KeyboardEvent) {
   border-color: var(--as-border);
 }
 :global(.dark .as-modal-panel .as-tile-desc),
-:global(.dark .as-modal-panel .as-expand-btn),
 :global(.dark .as-modal-panel .as-preview-desc),
 :global(.dark .as-modal-panel .as-preview-hint) {
   color: var(--as-text-secondary);

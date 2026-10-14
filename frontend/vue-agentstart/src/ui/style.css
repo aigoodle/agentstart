@@ -92,8 +92,11 @@
   .as-btn--text, .as-btn--link { @apply border-transparent bg-transparent shadow-none; }
   .as-btn--link { @apply px-1 text-[var(--as-primary)]; }
   .as-btn--danger { @apply text-[var(--as-danger)]; }
-  .as-btn--primary.as-btn--danger { @apply border-[var(--as-danger)] bg-[var(--as-danger)] text-white; }
-  .as-btn--small { @apply rounded px-[7px] py-0 text-sm; height: var(--as-control-height-sm); }
+  .as-btn--danger:not(:disabled):not(.as-btn--text):not(.as-btn--link) { border-color: var(--as-danger); }
+  .as-btn--danger:not(:disabled):hover { color: var(--as-danger); border-color: var(--as-danger); }
+  .as-btn--text.as-btn--danger:hover, .as-btn--link.as-btn--danger:hover { border-color: transparent; }
+  .as-btn--primary.as-btn--danger, .as-btn--primary.as-btn--danger:not(:disabled):hover { @apply border-[var(--as-danger)] bg-[var(--as-danger)] text-white; }
+  .as-btn--small { @apply rounded px-[7px] py-0 text-xs; height: var(--as-control-height-sm); }
   .as-btn--large { @apply px-[15px] py-1.5 text-base; height: var(--as-control-height-lg); border-radius: 8px; }
   .as-btn--block { @apply w-full; }
   .as-btn--icon-only { @apply p-0; width: var(--as-control-height); }
@@ -294,26 +297,41 @@
   .as-form--inline { @apply flex flex-wrap items-start gap-4; }
   .as-form--inline .as-form-item { @apply mb-0; }
 
-  .as-alert { @apply flex gap-2.5 rounded border border-[#91caff] bg-[#e6f4ff] px-3 py-2; }
-  .as-alert--success { @apply border-[#b7eb8f] bg-[#f6ffed]; }
-  .as-alert--warning { @apply border-[#ffe58f] bg-[#fffbe6]; }
-  .as-alert--error { @apply border-[#ffccc7] bg-[#fff2f0]; }
+  .as-alert {
+    @apply flex gap-2.5 rounded border px-3 py-2;
+    --as-alert-color: var(--as-primary);
+    background: color-mix(in srgb, var(--as-alert-color) 10%, var(--as-bg, #fff));
+    border-color: color-mix(in srgb, var(--as-alert-color) 35%, var(--as-border-secondary));
+    color: var(--as-text);
+  }
+  .as-alert--success { --as-alert-color: var(--as-success); }
+  .as-alert--warning { --as-alert-color: var(--as-warning); }
+  .as-alert--error { --as-alert-color: var(--as-danger); }
   .as-alert p { @apply mb-0 mt-1; color: var(--as-text-secondary); }
-  .as-alert__icon { @apply font-bold; }
+  .as-alert__icon { @apply font-bold; color: var(--as-alert-color); }
 
   .as-empty { @apply p-8 text-center; color: var(--as-text-secondary); }
   .as-empty__image { @apply text-5xl leading-none; color: var(--as-border); }
   .as-row { @apply box-border flex; }
   .as-col { @apply box-border; }
   .as-space { @apply inline-flex items-center; }
-  .as-spinner { @apply inline-block h-5 w-5 animate-spin rounded-full border-2 border-blue-200 border-t-[var(--as-primary)]; }
+  .as-spinner {
+    @apply inline-block h-5 w-5 animate-spin rounded-full border-2;
+    border-color: color-mix(in srgb, var(--as-primary) 24%, transparent);
+    border-top-color: var(--as-primary);
+  }
   .as-spinner--small { @apply h-3.5 w-3.5; }
   .as-spin-wrap { @apply relative; }
   .as-spin { @apply flex items-center justify-center gap-2 text-[var(--as-primary)]; }
-  .as-spin-wrap--nested > .as-spin { @apply absolute inset-0 z-[2] bg-white/65; }
+  .as-spin-wrap--nested > .as-spin {
+    @apply absolute inset-0 z-[2];
+    /* Resolve the surface on the component so scoped host themes work too.
+     * Hosts can override the mask without changing their container color. */
+    background: var(--as-loading-mask-bg, color-mix(in srgb, var(--as-bg) 65%, transparent));
+  }
 
   .as-tooltip { @apply relative inline-flex; }
-  .as-tooltip[data-tip]:hover::after { @apply pointer-events-none absolute bottom-[calc(100%+8px)] left-1/2 z-[1100] w-max max-w-[260px] -translate-x-1/2 rounded bg-black/85 px-2 py-1.5 text-xs text-white content-[attr(data-tip)]; }
+  .as-tooltip__panel { @apply pointer-events-none fixed z-[11000] w-max rounded bg-black/85 px-2 py-1.5 text-xs text-white; max-width: min(260px, calc(100vw - 16px)); max-height: calc(100vh - 16px); overflow-wrap: anywhere; }
   .as-popover { @apply relative inline-flex; }
   .as-popover__panel { @apply absolute left-0 top-[calc(100%+8px)] z-[1050] min-w-[180px] rounded-lg p-3 shadow-[var(--as-shadow)]; background: var(--as-bg); }
   .as-popover__panel--teleported { @apply fixed; }
@@ -370,11 +388,24 @@
   .as-radio-button + .as-radio-button { @apply -ms-px; }
 
   .as-message-root { @apply pointer-events-none fixed left-1/2 top-6 z-[12000] flex w-max max-w-[calc(100vw-32px)] -translate-x-1/2 flex-col items-center gap-2; isolation: isolate; }
-  .as-message { @apply relative z-[1] max-w-full rounded-lg border bg-white px-4 py-2.5 text-sm shadow-[0_6px_24px_rgba(15,23,42,.16)]; border-color: var(--as-border-secondary); color: var(--as-text); animation: as-message-in .2s ease-out; }
+  .as-message { @apply relative z-[1] max-w-full rounded-lg border px-4 py-2.5 text-sm shadow-[0_6px_24px_rgba(15,23,42,.16)]; background: var(--as-bg-elevated, var(--as-bg)); border-color: var(--as-border-secondary); color: var(--as-text); overflow-wrap: anywhere; animation: as-message-in .2s ease-out; }
   .as-message--leaving { animation: as-message-out .18s ease-in forwards; }
   .as-message--success::before { @apply me-2 text-[var(--as-success)] content-['✓']; }
   .as-message--error::before { @apply me-2 text-[var(--as-danger)] content-['×']; }
   .as-message--warning::before { @apply me-2 text-[var(--as-warning)] content-['!']; }
+  .as-message--info::before { @apply me-2 text-[var(--as-primary)] content-['i']; }
+  .as-message--loading::before {
+    content: '';
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-inline-end: 8px;
+    vertical-align: -1px;
+    border: 2px solid color-mix(in srgb, var(--as-primary) 20%, transparent);
+    border-top-color: var(--as-primary);
+    border-radius: 50%;
+    animation: as-message-spin .8s linear infinite;
+  }
 }
 
 @keyframes as-message-in { from { opacity: 0; transform: translateY(-8px); } }
@@ -580,11 +611,9 @@
 .as-modal.as-hud-frame--modal::before {
   z-index: 0;
   clip-path: polygon(18px 0, calc(100% - 18px) 0, 100% 18px, 100% calc(100% - 18px), calc(100% - 18px) 100%, 18px 100%, 0 calc(100% - 18px), 0 18px);
-  background:
-    linear-gradient(180deg, color-mix(in srgb, var(--as-theme-primary) 12%, transparent), transparent 28%),
-    radial-gradient(circle at 50% 0, color-mix(in srgb, var(--as-theme-primary) 16%, transparent), transparent 42%),
-    var(--as-hud-surface, var(--as-bg));
-  box-shadow: inset 0 0 42px color-mix(in srgb, var(--as-theme-primary) 10%, transparent);
+  /* Solid panel surface — no top-glow gradient; light mode resolves to pure
+     white, dark mode to the flat HUD panel color. */
+  background: var(--as-hud-surface, var(--as-bg));
   filter: drop-shadow(0 0 18px var(--as-hud-glow));
 }
 .as-modal.as-hud-frame--modal::after {
@@ -679,7 +708,8 @@
   padding: 0 56px;
   overflow: hidden;
   border-color: var(--as-hud-modal-line);
-  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--as-theme-primary) 12%, transparent) 24% 76%, transparent);
+  /* Solid head surface: pure white in light mode, flat panel color in dark. */
+  background: var(--as-hud-surface, var(--as-bg));
 }
 .as-hud-frame--modal .as-modal__title {
   position: absolute;
@@ -749,7 +779,6 @@
 }
 .as-hud-frame--modal .as-modal__footer .as-btn {
   min-width: 84px;
-  border-color: var(--as-hud-modal-line);
   border-radius: 0;
   clip-path: polygon(8px 0, calc(100% - 8px) 0, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0 calc(100% - 8px), 0 8px);
 }
@@ -809,6 +838,33 @@
   border-radius: var(--as-radius);
   clip-path: none;
 }
+
+/* Clipping a rectangular border does not draw the diagonal edges.
+   Paint the four cuts with the button's own border color. */
+.as-btn {
+  --as-btn-cut: var(--hud-cut-sm, 5px);
+  position: relative;
+  clip-path: polygon(var(--as-btn-cut) 0, calc(100% - var(--as-btn-cut)) 0, 100% var(--as-btn-cut), 100% calc(100% - var(--as-btn-cut)), calc(100% - var(--as-btn-cut)) 100%, var(--as-btn-cut) 100%, 0 calc(100% - var(--as-btn-cut)), 0 var(--as-btn-cut));
+}
+.as-btn::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  box-sizing: border-box;
+  border: var(--as-btn-cut) solid;
+  border-color: inherit;
+  pointer-events: none;
+  mask:
+    linear-gradient(135deg, transparent calc(50% - 1px), #000 0 calc(50% + 1px), transparent 0) top left,
+    linear-gradient(45deg, transparent calc(50% - 1px), #000 0 calc(50% + 1px), transparent 0) top right,
+    linear-gradient(45deg, transparent calc(50% - 1px), #000 0 calc(50% + 1px), transparent 0) bottom left,
+    linear-gradient(135deg, transparent calc(50% - 1px), #000 0 calc(50% + 1px), transparent 0) bottom right;
+  mask-size: var(--as-btn-cut) var(--as-btn-cut);
+  mask-repeat: no-repeat;
+}
+.as-hud-frame--modal .as-modal__footer .as-btn { --as-btn-cut: 8px; }
+[data-visual='normal'] .as-btn { clip-path: none; }
+[data-visual='normal'] .as-btn::after { display: none; }
 
 /* Drawer HUD chrome is part of the library, rather than a demo-host skin.
    `tech` is the compatibility default; data-visual="normal" disables it. */
@@ -923,3 +979,8 @@
 /* Auxiliary footer content stays before the shared modal actions. */
 .as-modal__footer { align-items: center; }
 .as-modal__footer > .as-modal__footer-leading { margin-right: auto; }
+
+@keyframes as-message-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .as-message, .as-message--leaving, .as-message--loading::before { animation: none; }
+}

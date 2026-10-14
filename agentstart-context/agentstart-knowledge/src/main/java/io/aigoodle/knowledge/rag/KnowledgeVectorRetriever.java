@@ -42,8 +42,16 @@ public final class KnowledgeVectorRetriever implements Retriever {
             RetrievalConfig config = datasetService.retrievalConfig(dataset);
             config.setTopK(limit);
             config.setRecallMultiplier(1);
+            if (request.policy().retrieval().scoreThreshold() != null) {
+                config.setScoreThreshold(request.policy().retrieval().scoreThreshold());
+            }
+            // Diversity is applied once, after fusion/reranking across all channels.
+            config.setMaxChunksPerDocument(0);
+            config.setNeighborWindow(request.policy().context().neighborWindow());
             config.setRerankEnabled(false);
-            config.setQueryExpansionEnabled(false);
+            if (request.policy().queryPlanning().strategy() != RagPolicy.QueryStrategy.DIRECT) {
+                config.setQueryExpansionEnabled(false);
+            }
             retriever
                     .retrieve(
                             dataset,
@@ -59,7 +67,8 @@ public final class KnowledgeVectorRetriever implements Retriever {
                             hit.getSegmentId(),
                             hit.getPosition(),
                             hit.getContent(),
-                            hit.contextText(),
+                            hit.getExpandedContext() != null ? hit.getExpandedContext()
+                                    : request.policy().context().parentExpansion() ? hit.getParentContent() : null,
                             hit.getScore(),
                             getChannel(),
                             query.id(),

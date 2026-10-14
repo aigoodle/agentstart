@@ -161,9 +161,9 @@ const variableFormSubmit = (data: any) => {
   padding: 12px;
   text-align: center;
   font-size: 12px;
-  color: #9ca3af;
+  color: var(--wf-config-text-muted, var(--as-text-secondary, #9ca3af));
   background: var(--wf-config-surface-hover, #f9fafb);
-  border: 1px dashed #e5e7eb;
+  border: 1px dashed var(--wf-config-border, var(--as-border-secondary, #e5e7eb));
   border-radius: 6px;
 }
 
@@ -179,7 +179,7 @@ const variableFormSubmit = (data: any) => {
   justify-content: space-between;
   padding: 6px 10px;
   background: var(--wf-config-surface-hover, #f9fafb);
-  border: 1px solid #f0f0f0;
+  border: 1px solid var(--wf-config-border, var(--as-border-secondary, #f0f0f0));
   border-radius: 6px;
   transition: background 0.15s;
 }
@@ -206,18 +206,18 @@ const variableFormSubmit = (data: any) => {
 
 .start-var-icon {
   font-size: 16px;
-  color: #6366f1;
+  color: var(--as-primary, #6366f1);
 }
 
 .start-var-label {
   font-size: 12px;
   font-weight: 500;
-  color: #1f2937;
+  color: var(--wf-config-text, var(--as-text, #1f2937));
 }
 
 .start-var-sub {
   font-size: 11px;
-  color: #9ca3af;
+  color: var(--wf-config-text-muted, var(--as-text-secondary, #9ca3af));
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
 }
 
@@ -229,8 +229,8 @@ const variableFormSubmit = (data: any) => {
   height: 20px;
   font-size: 10px;
   font-weight: 600;
-  color: #ffffff;
-  background: #6b7280;
+  color: var(--as-text-secondary, #6b7280);
+  background: var(--as-bg-layout, #f3f4f6);
   border-radius: 4px;
 }
 </style>

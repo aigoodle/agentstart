@@ -21,6 +21,8 @@ import io.aigoodle.knowledge.reader.model.ParsedDocument;
 import io.aigoodle.knowledge.retrieve.HybridRetriever;
 import io.aigoodle.knowledge.retrieve.RetrievalRequest;
 import io.aigoodle.knowledge.retrieve.RetrievedSegment;
+import io.aigoodle.rag.api.RagPolicy;
+import io.aigoodle.rag.api.RagResult;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Comparator;
@@ -389,11 +391,32 @@ public class KnowledgeService {
                 .last("limit " + boundedLimit));
     }
 
+    /** RAG tests share the same durable history as traditional recall tests. */
+    public void recordRagHitTest(DatasetEntity dataset, String query, RagPolicy policy, RagResult result) {
+        String method = policy.retrieval().channels().contains(RagPolicy.Channel.VECTOR)
+                ? (policy.retrieval().channels().contains(RagPolicy.Channel.SPARSE) ? "HYBRID" : "VECTOR")
+                : "FULL_TEXT";
+        List<RetrievedSegment> segments = result.evidence().stream().map(e -> RetrievedSegment.builder()
+                .datasetId(e.datasetId()).documentId(e.documentId()).segmentId(e.segmentId())
+                .position(e.position()).content(e.content()).parentContent(e.context())
+                .score(e.rerankScore() != null ? e.rerankScore() : e.fusionScore() != null ? e.fusionScore() : e.retrievalScore())
+                .vectorScore(e.retrievalScore()).metadata(e.metadata()).build()).toList();
+        int latency = (int) Math.min(Integer.MAX_VALUE, result.stageLatencyMillis().values().stream().mapToLong(Long::longValue).sum());
+        recordHitTest(dataset, RetrievalRequest.builder().query(query).topK(policy.rerank().topN()).build(), segments, latency, method);
+    }
+
     private void recordHitTest(
             DatasetEntity dataset,
             RetrievalRequest request,
             List<RetrievedSegment> retrievedSegments,
             int latencyMillis) {
+        recordHitTest(dataset, request, retrievedSegments, latencyMillis,
+                request.getMethod() == null ? null : String.valueOf(request.getMethod()));
+    }
+
+    private void recordHitTest(
+            DatasetEntity dataset, RetrievalRequest request, List<RetrievedSegment> retrievedSegments,
+            int latencyMillis, String method) {
         if (hitTestingLogMapper == null) {
             return;
         }
@@ -402,7 +425,7 @@ public class KnowledgeService {
             logEntry.setTenantId(dataset.getTenantId());
             logEntry.setDatasetId(dataset.getId());
             logEntry.setQuery(request.getQuery());
-            logEntry.setMethod(request.getMethod() == null ? null : String.valueOf(request.getMethod()));
+            logEntry.setMethod(method);
             logEntry.setTopK(request.getTopK());
             logEntry.setHitCount(retrievedSegments == null ? 0 : retrievedSegments.size());
             logEntry.setLatencyMs(latencyMillis);

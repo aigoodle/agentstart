@@ -5,7 +5,6 @@ import { useVueFlow } from '@vue-flow/core';
 
 import Icon from '../Icon.vue';
 import NodeHandle from '../NodeHandle.vue';
-import NodeHoverToolbar from '../NodeHoverToolbar.vue';
 
 const props = defineProps({
   id: String,
@@ -68,8 +67,6 @@ const isHovered = ref(false);
 
 const onMouseEnter = () => (isHovered.value = true);
 const onMouseLeave = () => (isHovered.value = false);
-const duplicateNode = () => emit('duplicate', props.id);
-const deleteNode = () => emit('delete', props.id);
 // NodeHandle 发的是 (event, nodeId, handleId) 三个参数——之前这里只声明了两个，
 // nodeId 被静默塞进了 handleId，结果新建的边 sourceHandle 变成了 nodeId，
 // VueFlow 找不到匹配的 handle，就退回到默认锚点（节点底部），看起来就是
@@ -85,13 +82,6 @@ const onConnectionPlusClick = (event, nodeId, handleId) => {
     @mouseenter="onMouseEnter"
     @mouseleave="onMouseLeave"
   >
-    <NodeHoverToolbar
-      v-if="isHovered"
-      node-type="classifier"
-      @duplicate="duplicateNode"
-      @delete="deleteNode"
-    />
-
     <div class="wf-node-header">
       <div class="wf-node-icon">
         <Icon name="classifier" />

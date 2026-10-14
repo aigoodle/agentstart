@@ -28,5 +28,5 @@ const needsCallback = computed(() => ['qqbot', 'feishu', 'webhook'].includes(pro
 </template>
 
 <style scoped>
-.native-guide{margin:0 0 16px;padding:12px 14px;border:1px solid #dbeafe;border-radius:10px;background:#f8fbff;color:#334155;font-size:13px}.native-guide>div{display:flex;justify-content:space-between;gap:12px}.native-guide span{color:#2563eb}.native-guide code{display:block;margin-top:9px;padding:7px 9px;border-radius:6px;background:#eaf2ff;overflow-wrap:anywhere}.native-guide ol{margin:9px 0 0;padding-left:20px}.native-guide li+li{margin-top:4px}
+.native-guide{margin:0 0 16px;padding:12px 14px;border:1px solid color-mix(in srgb, var(--as-primary) 35%, var(--as-border-secondary));border-radius:10px;background: color-mix(in srgb, var(--as-primary, #1677ff) 4%, var(--as-bg, #fff));color: var(--as-text, #334155);font-size:13px}.native-guide>div{display:flex;justify-content:space-between;gap:12px}.native-guide span{color: var(--as-primary, #2563eb)}.native-guide code{display:block;margin-top:9px;padding:7px 9px;border-radius:6px;background: color-mix(in srgb, var(--as-primary, #1677ff) 10%, var(--as-bg, #fff));overflow-wrap:anywhere}.native-guide ol{margin:9px 0 0;padding-left:20px}.native-guide li+li{margin-top:4px}
 </style>

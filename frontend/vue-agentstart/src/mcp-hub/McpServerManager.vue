@@ -479,7 +479,7 @@ h2, h3, p {
   margin-top: 24px;
   padding: 48px 16px;
   border-radius: 10px;
-  background: #fff;
+  background: var(--as-bg, #fff);
 }
 
 .mcp-list {
@@ -511,8 +511,8 @@ h2, h3, p {
   margin-top: 2px;
   padding: 1px 5px;
   border-radius: 4px;
-  background: #eef2ff;
-  color: #4338ca;
+  background: color-mix(in srgb, var(--as-primary, #1677ff) 10%, var(--as-bg, #fff));
+  color: var(--as-primary, #4338ca);
   font-size: 10px;
 }
 
@@ -525,7 +525,7 @@ h2, h3, p {
 }
 
 .mcp-status b {
-  color: #475467;
+  color: var(--as-text-secondary, #475467);
   font-size: 10px;
   font-weight: 600;
 }
@@ -632,7 +632,7 @@ h2, h3, p {
 }
 
 .mcp-test-bar {
-  @apply mb-3 flex items-center justify-between gap-4 rounded-[9px] border border-[#dbe5f5] bg-[#f7f9fc] px-3.5 py-3;
+  @apply mb-3 flex items-center justify-between gap-4 rounded-[9px] border border-[#dbe5f5] bg-[var(--as-bg-layout)] px-3.5 py-3;
 }
 
 .mcp-test-bar strong, .mcp-test-bar small {
@@ -646,7 +646,7 @@ h2, h3, p {
 
 .mcp-test-bar small {
   margin-top: 3px;
-  color: #667085;
+  color: var(--as-text-secondary, #667085);
   font-size: 11px;
 }
 
@@ -655,7 +655,7 @@ h2, h3, p {
 }
 
 .mcp-tool-browser {
-  @apply grid overflow-hidden rounded-[10px] border border-[#e4e7ec];
+  @apply grid overflow-hidden rounded-[10px] border border-[var(--as-border-secondary)];
   height: min(620px, calc(100vh - 250px));
   min-height: 420px;
   grid-template-columns:245px minmax(0, 1fr);
@@ -672,29 +672,29 @@ h2, h3, p {
   overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior: contain;
-  border-right: 1px solid #e4e7ec;
-  background: #f9fafb;
+  border-right: 1px solid var(--as-border-secondary, #e4e7ec);
+  background: var(--as-bg-layout, #f9fafb);
 }
 
 .mcp-tool-list-head {
-  @apply flex items-center justify-between px-3.5 py-[13px] text-xs text-[#344054];
+  @apply flex items-center justify-between px-3.5 py-[13px] text-xs text-[var(--as-text)];
 }
 
 .mcp-tool-list-head span {
   min-width: 22px;
   padding: 1px 6px;
   border-radius: 10px;
-  background: #e4e7ec;
+  background: var(--as-border-secondary, #e4e7ec);
   text-align: center;
 }
 
 .mcp-tool-list button {
-  @apply flex w-full cursor-pointer items-center gap-[9px] border-0 border-t border-[#eaecf0] bg-transparent px-3 py-2.5 text-left text-[#344054];
+  @apply flex w-full cursor-pointer items-center gap-[9px] border-0 border-t border-[var(--as-border-secondary)] bg-transparent px-3 py-2.5 text-left text-[var(--as-text)];
 }
 
 .mcp-tool-list button.active {
-  background: #eef4ff;
-  color: #175cd3;
+  background: color-mix(in srgb, var(--as-primary, #1677ff) 10%, var(--as-bg, #fff));
+  color: var(--as-primary, #175cd3);
 }
 
 .mcp-tool-copy {
@@ -719,7 +719,7 @@ h2, h3, p {
   display: -webkit-box;
   margin-top: 5px;
   overflow: hidden;
-  color: #667085;
+  color: var(--as-text-secondary, #667085);
   font-size: 10px;
   line-height: 15px;
   white-space: normal;
@@ -752,7 +752,7 @@ h2, h3, p {
 
 .mcp-tool-description {
   margin: 12px 0 18px;
-  color: #475467;
+  color: var(--as-text-secondary, #475467);
   line-height: 1.65;
 }
 
@@ -766,7 +766,7 @@ h2, h3, p {
 }
 
 .mcp-parameter-table-wrap {
-  @apply overflow-auto rounded-lg border border-[#eaecf0];
+  @apply overflow-auto rounded-lg border border-[var(--as-border-secondary)];
 }
 
 .mcp-parameter-table {
@@ -777,26 +777,26 @@ h2, h3, p {
 
 .mcp-parameter-table th {
   padding: 8px 10px;
-  background: #f9fafb;
-  color: #667085;
+  background: var(--as-bg-layout, #f9fafb);
+  color: var(--as-text-secondary, #667085);
   text-align: left;
   font-weight: 500;
 }
 
 .mcp-parameter-table td {
   padding: 9px 10px;
-  border-top: 1px solid #eaecf0;
-  color: #475467;
+  border-top: 1px solid var(--as-border-secondary, #eaecf0);
+  color: var(--as-text-secondary, #475467);
   vertical-align: top;
 }
 
 .mcp-parameter-table code {
-  color: #175cd3;
+  color: var(--as-primary, #175cd3);
   font-weight: 600;
 }
 
 .mcp-invoke-form {
-  @apply mt-[18px] border-t border-[#eaecf0] pt-4;
+  @apply mt-[18px] border-t border-[var(--as-border-secondary)] pt-4;
 }
 
 .mcp-invoke-action {
@@ -810,8 +810,8 @@ h2, h3, p {
   padding: 12px;
   overflow: auto;
   border-radius: 8px;
-  background: #101828;
-  color: #d0d5dd;
+  background: var(--as-bg-layout, #f9fafb);
+  color: var(--as-text, #172033);
   white-space: pre-wrap;
 }
 

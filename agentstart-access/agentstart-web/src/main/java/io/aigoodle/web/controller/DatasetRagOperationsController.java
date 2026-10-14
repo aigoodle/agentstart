@@ -9,7 +9,10 @@ import io.aigoodle.knowledge.eval.RetrievalEvaluationDataset;
 import io.aigoodle.knowledge.eval.RetrievalEvaluationReport;
 import io.aigoodle.knowledge.eval.RetrievalEvaluator;
 import io.aigoodle.knowledge.index.IndexVersionService;
-import io.aigoodle.knowledge.retrieve.RetrievalRequest;
+import io.aigoodle.rag.api.RagPolicy;
+import io.aigoodle.rag.api.RagRequest;
+import io.aigoodle.rag.spi.RagPipeline;
+import io.aigoodle.knowledge.service.DatasetService;
 import io.aigoodle.knowledge.service.KnowledgeService;
 import java.util.List;
 import java.util.Map;
@@ -25,12 +28,17 @@ public class DatasetRagOperationsController {
     private final KnowledgeService knowledgeService;
     private final IndexVersionService versions;
     private final RetrievalEvaluator evaluator;
+    private final RagPipeline pipeline;
+    private final DatasetService datasetService;
 
     public DatasetRagOperationsController(
-            KnowledgeService knowledgeService, IndexVersionService versions, RetrievalEvaluator evaluator) {
+            KnowledgeService knowledgeService, IndexVersionService versions, RetrievalEvaluator evaluator,
+            RagPipeline pipeline, DatasetService datasetService) {
         this.knowledgeService = knowledgeService;
         this.versions = versions;
         this.evaluator = evaluator;
+        this.pipeline = pipeline;
+        this.datasetService = datasetService;
     }
 
     @GetMapping("/index-versions")
@@ -62,7 +70,10 @@ public class DatasetRagOperationsController {
     public ApiResponse<RetrievalEvaluationReport> evaluate(
             @PathVariable String datasetId, @RequestBody EvaluationRequest request) {
         knowledgeService.requireDataset(currentTenantId(), datasetId);
-        int topK = request.topK() == null ? 5 : request.topK();
+        RagPolicy policy = request.policy() != null ? request.policy()
+                : datasetService.retrievalConfig(datasetService.require(currentTenantId(), datasetId)).getRagPolicy();
+        RagPolicy effective = policy == null ? RagPolicy.defaults() : policy;
+        int topK = request.topK() == null ? effective.rerank().topN() : request.topK();
         List<RetrievalEvaluationCase> cases = request.cases() == null
                 ? List.of()
                 : request.cases().stream()
@@ -75,17 +86,9 @@ public class DatasetRagOperationsController {
                         .toList();
         RetrievalEvaluationDataset dataset = new RetrievalEvaluationDataset(request.name(), request.version(), cases);
         RetrievalEvaluationReport report = evaluator.evaluate(
-                dataset, request.experimentName(), topK, request.configuration(), query -> knowledgeService
-                        .retrieve(
-                                currentTenantId(),
-                                datasetId,
-                                RetrievalRequest.builder()
-                                        .query(query)
-                                        .topK(topK)
-                                        .build())
-                        .stream()
-                        .map(hit -> hit.getSegmentId())
-                        .toList());
+                dataset, request.experimentName(), topK, request.configuration(), query -> pipeline
+                        .retrieve(new RagRequest(currentTenantId(), List.of(datasetId), query, null, effective, null))
+                        .evidence().stream().limit(topK).map(hit -> hit.segmentId()).toList());
         return ApiResponse.ok(report);
     }
 
@@ -105,5 +108,6 @@ public class DatasetRagOperationsController {
             String experimentName,
             Integer topK,
             List<EvaluationCaseRequest> cases,
-            Map<String, String> configuration) {}
+            Map<String, String> configuration,
+            RagPolicy policy) {}
 }

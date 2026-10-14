@@ -228,9 +228,6 @@ onBeforeUnmount(() => {
 }
 .kh-card {
   position: relative;
-  /* right padding reserves space for the corner "⋯" menu overlay
-     so the title / subtitle truncate before running under it. */
-  padding-right: 36px;
   cursor: pointer;
   /* menu opens upward from the footer; its top edge escapes the padding
      box but the card's 16px top padding keeps it inside the border box. */

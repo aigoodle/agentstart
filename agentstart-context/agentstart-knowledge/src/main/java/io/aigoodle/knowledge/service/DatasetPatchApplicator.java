@@ -2,6 +2,7 @@ package io.aigoodle.knowledge.service;
 
 import io.aigoodle.common.util.JsonUtils;
 import io.aigoodle.knowledge.entity.DatasetEntity;
+import io.aigoodle.knowledge.config.RetrievalConfig;
 import io.aigoodle.knowledge.enums.IndexingTechnique;
 
 /** Applies the fields supplied by a dataset settings patch. */
@@ -32,7 +33,14 @@ final class DatasetPatchApplicator {
             dataset.setProcessRuleJson(JsonUtils.toJson(patch.getProcessRule()));
         }
         if (patch.getRetrievalConfig() != null) {
-            dataset.setRetrievalConfigJson(JsonUtils.toJson(patch.getRetrievalConfig()));
+            RetrievalConfig incoming = patch.getRetrievalConfig();
+            // Older clients update the traditional recall settings without a RAG policy.
+            // Preserve the dataset policy rather than silently resetting it to defaults.
+            if (incoming.getRagPolicy() == null && dataset.getRetrievalConfigJson() != null) {
+                RetrievalConfig existing = JsonUtils.parse(dataset.getRetrievalConfigJson(), RetrievalConfig.class);
+                if (existing != null) incoming.setRagPolicy(existing.getRagPolicy());
+            }
+            dataset.setRetrievalConfigJson(JsonUtils.toJson(incoming));
         }
         if (patch.getVectorStore() != null) {
             dataset.setVectorStore(patch.getVectorStore());

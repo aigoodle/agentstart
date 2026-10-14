@@ -328,11 +328,15 @@ const nodeCategories = ref([
   },
 ]);
 
+// 默认三节点的位置。position 是卡片左上角，而三个节点的渲染高度不同
+// （START ≈95px 最矮，LLM/ANSWER ≈150px，END ≈135px），连接桩又位于各自
+// 50% 高度处——若顶边对齐（y 全相同），中线/连线会错位。这里按高度差把
+// 各节点的垂直中心对齐到同一条水平线（以 LLM 顶部 y=100 为基准）。
 const initialNodes = [
   {
     id: '1',
     type: 'START',
-    position: { x: 100, y: 100 },
+    position: { x: 100, y: 128 },
     data: {
       label: '开始',
       description: '工作流开始节点',
@@ -399,7 +403,8 @@ function initGraph() {
       const end = {
         id: '3',
         type: 'END',
-        position: { x: 900, y: 100 },
+        // END 卡片比 LLM 矮 ≈15px，下移 8px 让两者垂直中心对齐（见 initialNodes 注释）
+        position: { x: 900, y: 108 },
         data: {
           label: '结束',
           description: '工作流结束节点',
@@ -1858,7 +1863,8 @@ defineExpose({
           <!-- 小地图 -->
           <MiniMap
             :node-color="getNodeColor"
-            mask-color="rgba(15,23,42,0.06)"
+            mask-color="var(--wf-minimap-mask)"
+            mask-stroke-color="var(--as-primary, #1677ff)"
             class="wf-minimap"
             position="bottom-right"
           />
@@ -2034,6 +2040,7 @@ defineExpose({
 
 <style scoped>
 .dify-flow-designer {
+  --wf-minimap-mask: color-mix(in srgb, var(--as-text, #172033) 10%, transparent);
   width: 100%;
   height: 100%;
   min-height: 0;
@@ -2231,8 +2238,8 @@ defineExpose({
   align-items: center;
   gap: 6px;
   padding: 6px 8px;
-  background: rgba(255, 255, 255, 0.97);
-  border: 1px solid #e5e7eb;
+  background: var(--as-bg-elevated, var(--as-bg, #fff));
+  border: 1px solid var(--as-border-secondary, #e5e7eb);
   border-radius: 10px;
   box-shadow: 0 4px 16px rgba(15, 23, 42, 0.08);
   backdrop-filter: blur(8px);
@@ -2250,7 +2257,7 @@ defineExpose({
   justify-content: center;
   width: 28px;
   height: 28px;
-  color: #4b5563;
+  color: var(--as-text-secondary, #4b5563);
   background: transparent;
   border: none;
   border-radius: 6px;
@@ -2259,12 +2266,12 @@ defineExpose({
 }
 
 .wf-top-btn:hover:not(:disabled) {
-  background: #f3f4f6;
-  color: #1f2937;
+  background: var(--as-bg-layout, #f3f4f6);
+  color: var(--as-text, #1f2937);
 }
 
 .wf-top-btn:disabled {
-  color: #d1d5db;
+  color: var(--as-text-disabled, #d1d5db);
   cursor: not-allowed;
 }
 
@@ -2277,7 +2284,12 @@ defineExpose({
   width: 1px;
   height: 20px;
   margin: 0 2px;
-  background: #e5e7eb;
+  background: var(--as-border-secondary, #e5e7eb);
+}
+
+.wf-top-btn:focus-visible {
+  outline: 2px solid var(--as-primary, #1677ff);
+  outline-offset: 2px;
 }
 
 /* 底部状态栏 */
@@ -2823,7 +2835,7 @@ defineExpose({
   height: 100px !important;
   border: 1px solid #e5e7eb;
   border-radius: 10px;
-  background: #ffffff !important;
+  background: var(--as-bg-elevated, var(--as-bg, #fff)) !important;
   box-shadow: 0 4px 16px rgba(15, 23, 42, 0.08);
   overflow: hidden;
 }
@@ -2861,10 +2873,10 @@ defineExpose({
 :global(.dark) .dify-flow-designer,
 :global([data-theme='dark']) .dify-flow-designer {
   --wf-designer-bg: #061629;
-  --wf-designer-surface: #081e36;
-  --wf-designer-surface-hover: #0b2947;
-  --wf-designer-border: #29445f;
-  --wf-designer-text: #e7eef7;
+  --wf-designer-surface: var(--as-bg-elevated, var(--as-bg, #081e36));
+  --wf-designer-surface-hover: var(--as-bg-layout, #0b2947);
+  --wf-designer-border: var(--as-border-secondary, #29445f);
+  --wf-designer-text: var(--as-text, #e7eef7);
   --wf-designer-muted: #8da3bb;
 }
 
@@ -2911,7 +2923,14 @@ defineExpose({
 
 :global(.dark) .dify-flow-designer :deep(.vue-flow__minimap.wf-minimap),
 :global([data-theme='dark']) .dify-flow-designer :deep(.vue-flow__minimap.wf-minimap) {
-  background: #081e36 !important;
+  background: var(--wf-designer-surface) !important;
   border-color: var(--wf-designer-border);
+}
+.dify-flow-designer :deep(.vue-flow__minimap.wf-minimap) {
+  border-color: var(--as-border-secondary, #e5e7eb);
+}
+.dify-flow-designer .wf-top-btn:disabled {
+  color: var(--as-text-disabled, #9ca3af);
+  opacity: 0.55;
 }
 </style>

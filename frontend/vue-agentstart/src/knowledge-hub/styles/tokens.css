@@ -111,8 +111,10 @@
   --kh-card-icon-bg-8: #F0FDF9;
 }
 
-/* Dark mode overrides — flipped by setting class="dark" on any ancestor. */
-.dark {
+/* Dark mode overrides — support both host theme conventions. */
+.dark,
+[data-theme="dark"] {
+  color-scheme: dark;
   --kh-color-primary: #818cf8;
   --kh-color-primary-strong: #6366f1;
   --kh-color-primary-soft: rgba(129, 140, 248, 0.15);
@@ -122,7 +124,7 @@
   --kh-color-text-primary: #f3f4f6;
   --kh-color-text-secondary: #d1d5db;
   --kh-color-text-tertiary: #9ca3af;
-  --kh-color-text-muted: #6b7280;
+  --kh-color-text-muted: #9ca3af;
   --kh-color-text-inverse: #0f172a;
 
   --kh-color-surface: #1f2937;
@@ -141,6 +143,7 @@
   --kh-color-info-soft: rgba(99, 102, 241, 0.15);
 
   --kh-input-border: #4b5563;
+  --kh-input-bg: var(--kh-color-surface);
 
   --kh-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
   --kh-shadow-md: 0 3px 12px rgba(0, 0, 0, 0.4);

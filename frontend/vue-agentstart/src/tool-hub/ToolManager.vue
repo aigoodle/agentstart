@@ -388,7 +388,7 @@ onMounted(load);
 }
 
 .tool-tabs span {
-  @apply ml-[3px] text-[10px] text-[#98a2b3];
+  @apply ml-[3px] text-[10px] text-[var(--as-text-secondary)];
 }
 
 .tool-grid {
@@ -421,14 +421,14 @@ onMounted(load);
 }
 
 .tool-card code {
-  @apply block max-w-full truncate text-[10px] text-[#98a2b3];
+  @apply block max-w-full truncate text-[10px] text-[var(--as-text-secondary)];
 }
 
 .tool-card > p {
   display: -webkit-box;
   min-height: 36px;
   margin: 8px 0;
-  color: #667085;
+  color: var(--as-text-secondary, #667085);
   font-size: 12px;
   line-height: 18px;
   overflow: hidden;
@@ -481,12 +481,12 @@ onMounted(load);
 
 .detail-description {
   margin: 0 0 16px;
-  color: #475467;
+  color: var(--as-text-secondary, #475467);
   line-height: 1.7
 }
 
 .detail-facts {
-  @apply mb-5 grid gap-x-6 gap-y-3 rounded-[10px] border border-[#eaecf0] bg-[#f9fafb] px-4 py-3;
+  @apply mb-5 grid gap-x-6 gap-y-3 rounded-[10px] border border-[var(--as-border-secondary)] bg-[#f9fafb] px-4 py-3;
   grid-template-columns:repeat(2, minmax(0, 1fr));
 }
 
@@ -521,7 +521,7 @@ onMounted(load);
 }
 
 .parameter-table-wrap {
-  @apply overflow-auto rounded-[10px] border border-[#eaecf0];
+  @apply overflow-auto rounded-[10px] border border-[var(--as-border-secondary)];
 }
 
 .parameter-table {
@@ -532,8 +532,8 @@ onMounted(load);
 
 .parameter-table th {
   padding: 9px 10px;
-  background: #f9fafb;
-  color: #667085;
+  background: var(--as-bg-layout, #f9fafb);
+  color: var(--as-text-secondary, #667085);
   text-align: left;
   font-weight: 500;
   white-space: nowrap
@@ -541,13 +541,13 @@ onMounted(load);
 
 .parameter-table td {
   padding: 10px;
-  border-top: 1px solid #eaecf0;
-  color: #475467;
+  border-top: 1px solid var(--as-border-secondary, #eaecf0);
+  color: var(--as-text-secondary, #475467);
   vertical-align: top
 }
 
 .parameter-table td:first-child code {
-  color: #175cd3;
+  color: var(--as-primary, #175cd3);
   font-size: 12px;
   font-weight: 600
 }
@@ -556,8 +556,8 @@ onMounted(load);
   display: inline-block;
   padding: 1px 6px;
   border-radius: 5px;
-  background: #f2f4f7;
-  color: #475467;
+  background: var(--as-bg-layout, #f2f4f7);
+  color: var(--as-text-secondary, #475467);
   font-family: monospace;
   font-size: 10px;
   white-space: nowrap
@@ -578,8 +578,8 @@ onMounted(load);
   padding: 12px;
   overflow: auto;
   border-radius: 8px;
-  background: #101828;
-  color: #d0d5dd;
+  background: var(--as-bg-layout, #f9fafb);
+  color: var(--as-text, #172033);
   white-space: pre-wrap
 }
 

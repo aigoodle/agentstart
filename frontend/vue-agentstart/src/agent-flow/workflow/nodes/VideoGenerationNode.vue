@@ -2,14 +2,12 @@
 import { ref } from 'vue';
 import Icon from '../Icon.vue';
 import NodeHandle from '../NodeHandle.vue';
-import NodeHoverToolbar from '../NodeHoverToolbar.vue';
 defineProps({ id: String, data: { type: Object, default: () => ({}) } });
 const emit = defineEmits(['duplicate', 'delete', 'connection-plus-click']);
 const hover = ref(false);
 </script>
 <template>
   <div class="wf-node video-node" @mouseenter="hover = true" @mouseleave="hover = false">
-    <NodeHoverToolbar v-if="hover" node-type="VIDEO_GENERATION" @duplicate="emit('duplicate', id)" @delete="emit('delete', id)" />
     <div class="wf-node-header">
       <div class="wf-node-icon"><Icon name="llm" /></div>
       <div class="wf-node-info"><div class="wf-node-title">{{ data.label || '视频生成' }}</div><div class="wf-node-subtitle">{{ data.model?.providerName || '选择视频模型' }}</div></div>

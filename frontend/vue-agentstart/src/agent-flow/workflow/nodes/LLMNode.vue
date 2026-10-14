@@ -3,9 +3,8 @@ import { ref } from 'vue';
 
 import Icon from '../Icon.vue';
 import NodeHandle from '../NodeHandle.vue';
-import NodeHoverToolbar from '../NodeHoverToolbar.vue';
 
-const props = defineProps({
+defineProps({
   id: String,
   data: {
     type: Object,
@@ -33,15 +32,7 @@ const onMouseEnter = () => {
 };
 
 const onMouseLeave = () => {
-  // 保持 toolbar 常显，等悬停完再统一处理
-};
-
-const duplicateNode = () => {
-  emit('duplicate', props.id);
-};
-
-const deleteNode = () => {
-  emit('delete', props.id);
+  isHovered.value = false;
 };
 
 const onConnectionPlusClick = (event, nodeId, handleId) => {
@@ -62,13 +53,6 @@ const truncateText = (text, maxLength) => {
     @mouseenter="onMouseEnter"
     @mouseleave="onMouseLeave"
   >
-    <NodeHoverToolbar
-      v-if="isHovered"
-      node-type="llm"
-      @duplicate="duplicateNode"
-      @delete="deleteNode"
-    />
-
     <div class="wf-node-header">
       <div class="wf-node-icon">
         <Icon name="llm" />

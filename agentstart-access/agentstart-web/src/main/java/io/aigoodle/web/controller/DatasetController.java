@@ -111,13 +111,16 @@ public class DatasetController {
         RagPolicy policy = request.policy() != null
                 ? request.policy()
                 : datasetService.retrievalConfig(dataset).getRagPolicy();
-        return ApiResponse.ok(ragPipeline.retrieve(new RagRequest(
+        if (policy == null) policy = RagPolicy.defaults();
+        RagResult result = ragPipeline.retrieve(new RagRequest(
                 currentTenantId(),
                 List.of(id),
                 request.query(),
                 request.conversationId(),
                 policy,
-                request.metadataFilter())));
+                request.metadataFilter()));
+        knowledgeService.recordRagHitTest(dataset, request.query(), policy, result);
+        return ApiResponse.ok(result);
     }
 
     @GetMapping("/rag/capabilities")

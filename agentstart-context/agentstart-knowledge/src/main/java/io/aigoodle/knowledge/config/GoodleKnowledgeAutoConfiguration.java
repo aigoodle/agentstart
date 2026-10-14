@@ -24,6 +24,7 @@ import io.aigoodle.knowledge.mapper.KnowledgeDocumentMapper;
 import io.aigoodle.knowledge.mapper.SegmentMapper;
 import io.aigoodle.knowledge.rag.DefaultRagPipeline;
 import io.aigoodle.knowledge.rag.KnowledgeVectorRetriever;
+import io.aigoodle.knowledge.rag.KnowledgeModelRagReranker;
 import io.aigoodle.knowledge.rag.ReciprocalRankFusion;
 import io.aigoodle.knowledge.reader.CsvDocumentReader;
 import io.aigoodle.knowledge.reader.DocumentEnricher;
@@ -273,6 +274,12 @@ public class GoodleKnowledgeAutoConfiguration {
     public KnowledgeVectorRetriever knowledgeVectorRetriever(
             DatasetService datasetService, HybridRetriever hybridRetriever) {
         return new KnowledgeVectorRetriever(datasetService, hybridRetriever);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(KnowledgeModelRagReranker.class)
+    public KnowledgeModelRagReranker knowledgeModelRagReranker(ModelService modelService) {
+        return new KnowledgeModelRagReranker(modelService);
     }
 
     @Bean

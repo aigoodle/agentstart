@@ -94,21 +94,21 @@ const SOURCES = [
   {
     id: 'text' as const,
     icon: '📄',
-    iconBg: '#EEF4FF',
+    iconBg: 'var(--kh-color-primary-soft)',
     label: '导入已有文本',
     enabled: true,
   },
   {
     id: 'notion' as const,
     icon: 'N',
-    iconBg: '#F1F5F9',
+    iconBg: 'var(--kh-color-divider)',
     label: '同步自 Notion 内容',
     enabled: false,
   },
   {
     id: 'web' as const,
     icon: '🌐',
-    iconBg: '#EEF4FF',
+    iconBg: 'var(--kh-color-primary-soft)',
     label: '同步自 Web 站点',
     enabled: false,
   },
@@ -770,14 +770,14 @@ const backLabel = computed(() => props.datasetName || '知识库');
               </div>
               <div>
                 <span class="kh-fact-label">索引方式</span>
-                <span class="kh-fact-val" style="color: #b45309">
+                <span class="kh-fact-val" style="color: var(--kh-color-warning)">
                   ⭐
                   {{ indexingTechnique === 'HIGH_QUALITY' ? '高质量' : '经济' }}
                 </span>
               </div>
               <div>
                 <span class="kh-fact-label">检索设置</span>
-                <span class="kh-fact-val" style="color: #4338ca">
+                <span class="kh-fact-val" style="color: var(--kh-color-primary-strong)">
                   {{
                     retrievalMethodDisplay === 'VECTOR'
                       ? '◈ 向量检索'
@@ -816,7 +816,7 @@ const backLabel = computed(() => props.datasetName || '知识库');
   width: 100%;
   max-width: 1200px;
   height: min(920px, calc(100vh - 48px));
-  background: #fff;
+  background: var(--kh-color-surface);
   border-radius: 14px;
   display: flex;
   flex-direction: column;
@@ -840,13 +840,13 @@ const backLabel = computed(() => props.datasetName || '知识库');
   grid-template-columns: 260px 1fr 60px;
   align-items: center;
   padding: 14px 24px;
-  border-bottom: 1px solid #f1f5f9;
-  background: #fff;
+  border-bottom: 1px solid var(--kh-color-divider);
+  background: var(--kh-color-surface);
 }
 .kh-topbar-title {
   font-size: 14px;
   font-weight: 600;
-  color: #0f172a;
+  color: var(--kh-color-text-primary);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -859,14 +859,14 @@ const backLabel = computed(() => props.datasetName || '知识库');
   border: none;
   border-radius: 8px;
   background: transparent;
-  color: #94a3b8;
+  color: var(--kh-color-text-muted);
   font-size: 20px;
   line-height: 1;
   cursor: pointer;
 }
 .kh-close:hover {
-  background: #f1f5f9;
-  color: #475569;
+  background: var(--kh-color-surface-hover);
+  color: var(--kh-color-text-secondary);
 }
 .kh-stepper {
   display: flex;
@@ -879,7 +879,7 @@ const backLabel = computed(() => props.datasetName || '知识库');
   align-items: center;
   gap: 6px;
   font-size: 13px;
-  color: #94a3b8;
+  color: var(--kh-color-text-muted);
 }
 .kh-step-num {
   min-width: 20px;
@@ -889,24 +889,24 @@ const backLabel = computed(() => props.datasetName || '知识库');
   display: inline-block;
   padding: 2px 8px;
   border-radius: 10px;
-  background: #4f46e5;
-  color: #fff;
+  background: var(--kh-color-primary-strong);
+  color: var(--kh-color-primary-contrast);
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.05em;
 }
 .kh-step-active {
-  color: #4f46e5;
+  color: var(--kh-color-primary-strong);
   font-weight: 600;
 }
 .kh-step-done {
-  color: #10b981;
+  color: var(--kh-color-success);
 }
 .kh-step-dash {
   display: inline-block;
   width: 24px;
   height: 1px;
-  background: #cbd5e1;
+  background: var(--kh-color-border);
   margin: 0 4px;
 }
 .kh-body {
@@ -943,7 +943,7 @@ const backLabel = computed(() => props.datasetName || '知识库');
   margin-bottom: 10px;
   font-size: 13px;
   font-weight: 600;
-  color: #334155;
+  color: var(--kh-color-text-secondary);
 }
 
 .kh-source-row {
@@ -956,8 +956,8 @@ const backLabel = computed(() => props.datasetName || '知识库');
   align-items: center;
   gap: 10px;
   padding: 14px 16px;
-  background: #fff;
-  border: 1px solid #e2e8f0;
+  background: var(--kh-color-surface);
+  border: 1px solid var(--kh-color-border);
   border-radius: 10px;
   text-align: left;
   cursor: pointer;
@@ -966,12 +966,12 @@ const backLabel = computed(() => props.datasetName || '知识库');
     background 0.15s;
 }
 .kh-source:hover:not(.kh-source-disabled) {
-  border-color: #cbd5e1;
+  border-color: var(--kh-color-border-hover);
 }
 .kh-source-active {
   border-color: transparent !important;
-  outline: 1.5px solid #6366f1;
-  background: #eef2ff;
+  outline: 1.5px solid var(--kh-color-primary);
+  background: var(--kh-color-primary-soft);
 }
 .kh-source-disabled {
   opacity: 0.55;
@@ -986,18 +986,18 @@ const backLabel = computed(() => props.datasetName || '知识库');
   border-radius: 6px;
   font-size: 16px;
   font-weight: 600;
-  color: #4338ca;
+  color: var(--kh-color-primary-strong);
 }
 .kh-source-label {
   font-size: 14px;
-  color: #0f172a;
+  color: var(--kh-color-text-primary);
 }
 
 .kh-dropzone {
   padding: 20px 24px;
-  border: 1px dashed #cbd5e1;
+  border: 1px dashed var(--kh-color-border-hover);
   border-radius: 10px;
-  background: #f8fafc;
+  background: var(--kh-color-surface-sunken);
   cursor: pointer;
   transition:
     background 0.15s,
@@ -1005,8 +1005,8 @@ const backLabel = computed(() => props.datasetName || '知识库');
 }
 .kh-dropzone:hover,
 .kh-dropzone-over {
-  border-color: #6366f1;
-  background: #eef2ff;
+  border-color: var(--kh-color-primary);
+  background: var(--kh-color-primary-soft);
 }
 .kh-dz-row {
   display: flex;
@@ -1014,20 +1014,20 @@ const backLabel = computed(() => props.datasetName || '知识库');
   align-items: center;
   gap: 8px;
   font-size: 13px;
-  color: #475569;
+  color: var(--kh-color-text-secondary);
 }
 .kh-dz-icon {
   font-size: 18px;
-  color: #94a3b8;
+  color: var(--kh-color-text-muted);
 }
 .kh-dz-link {
-  color: #4338ca;
+  color: var(--kh-color-primary-strong);
   font-weight: 500;
 }
 .kh-dz-hint {
   margin-top: 8px;
   font-size: 11px;
-  color: #94a3b8;
+  color: var(--kh-color-text-muted);
   line-height: 1.6;
 }
 .kh-hidden-input {
@@ -1044,14 +1044,14 @@ const backLabel = computed(() => props.datasetName || '知识库');
   align-items: center;
   gap: 8px;
   padding: 6px 10px;
-  background: #fff;
-  border: 1px solid #e2e8f0;
+  background: var(--kh-color-surface);
+  border: 1px solid var(--kh-color-border);
   border-radius: 6px;
   font-size: 12px;
-  color: #334155;
+  color: var(--kh-color-text-secondary);
 }
 .kh-file-icon {
-  color: #4338ca;
+  color: var(--kh-color-primary-strong);
 }
 .kh-file-name {
   flex: 1;
@@ -1060,13 +1060,13 @@ const backLabel = computed(() => props.datasetName || '知识库');
   white-space: nowrap;
 }
 .kh-file-size {
-  color: #94a3b8;
+  color: var(--kh-color-text-muted);
 }
 .kh-file-x {
   padding: 0 6px;
   border: none;
   background: transparent;
-  color: #94a3b8;
+  color: var(--kh-color-text-muted);
   font-size: 16px;
   cursor: pointer;
 }
@@ -1086,45 +1086,45 @@ const backLabel = computed(() => props.datasetName || '知识库');
   cursor: pointer;
 }
 .kh-btn-primary {
-  background: linear-gradient(135deg, #6366f1, #4f46e5);
-  color: #fff;
-  box-shadow: 0 2px 6px rgba(79, 70, 229, 0.3);
+  background: var(--kh-color-primary);
+  color: var(--kh-color-primary-contrast);
+  box-shadow: 0 2px 6px color-mix(in srgb, var(--kh-color-primary-strong) 30%, transparent);
 }
 .kh-btn-primary:disabled {
-  background: #cbd5e1;
+  background: var(--kh-color-border);
   box-shadow: none;
   cursor: not-allowed;
 }
 .kh-btn-secondary {
-  background: #f1f5f9;
-  color: #475569;
+  background: var(--kh-color-surface-hover);
+  color: var(--kh-color-text-secondary);
 }
 .kh-btn-secondary:hover {
-  background: #e2e8f0;
+  background: var(--kh-color-surface-sunken);
 }
 .kh-btn-mini {
   padding: 4px 10px;
   font-size: 12px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--kh-color-border);
   border-radius: 6px;
-  background: #fff;
-  color: #475569;
+  background: var(--kh-color-surface);
+  color: var(--kh-color-text-secondary);
   cursor: pointer;
 }
 .kh-btn-mini:hover {
-  background: #f8fafc;
+  background: var(--kh-color-surface-sunken);
 }
 .kh-btn-mini-primary {
-  color: #4338ca;
-  border-color: #c7d2fe;
-  background: #eef2ff;
+  color: var(--kh-color-primary-strong);
+  border-color: color-mix(in srgb, var(--kh-color-primary) 38%, transparent);
+  background: var(--kh-color-primary-soft);
 }
 
 .kh-panel {
   padding: 14px 16px;
   margin-bottom: 12px;
-  background: #fff;
-  border: 1px solid #e2e8f0;
+  background: var(--kh-color-surface);
+  border: 1px solid var(--kh-color-border);
   border-radius: 10px;
   cursor: pointer;
   transition:
@@ -1132,12 +1132,12 @@ const backLabel = computed(() => props.datasetName || '知识库');
     background 0.15s;
 }
 .kh-panel:hover {
-  border-color: #cbd5e1;
+  border-color: var(--kh-color-border-hover);
 }
 .kh-panel-active {
   border-color: transparent;
-  outline: 1.5px solid #6366f1;
-  background: #f5f6ff;
+  outline: 1.5px solid var(--kh-color-primary);
+  background: var(--kh-color-primary-soft);
 }
 .kh-panel-header {
   display: flex;
@@ -1151,29 +1151,29 @@ const backLabel = computed(() => props.datasetName || '知识库');
   gap: 8px;
   font-size: 14px;
   font-weight: 600;
-  color: #0f172a;
+  color: var(--kh-color-text-primary);
 }
 .kh-panel-hint {
   font-size: 11px;
-  color: #94a3b8;
+  color: var(--kh-color-text-muted);
 }
 .kh-panel-radio {
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  border: 1.5px solid #cbd5e1;
-  background: #fff;
+  border: 1.5px solid var(--kh-color-border-hover);
+  background: var(--kh-color-surface);
   display: inline-block;
 }
 .kh-panel-radio-on {
-  border-color: #6366f1;
-  background: radial-gradient(circle, #6366f1 30%, transparent 32%) center /
+  border-color: var(--kh-color-primary);
+  background: radial-gradient(circle, var(--kh-color-primary) 30%, transparent 32%) center /
     cover;
 }
 .kh-panel-body {
   margin-top: 12px;
   padding-top: 12px;
-  border-top: 1px dashed #e2e8f0;
+  border-top: 1px dashed var(--kh-color-border);
 }
 
 .kh-grid-3 {
@@ -1193,21 +1193,21 @@ const backLabel = computed(() => props.datasetName || '知识库');
 }
 .kh-field label {
   font-size: 11px;
-  color: #64748b;
+  color: var(--kh-color-text-tertiary);
 }
 .kh-input {
   padding: 7px 10px;
   font-size: 13px;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--kh-color-border-hover);
   border-radius: 6px;
   outline: none;
-  background: #fff;
-  color: #0f172a;
+  background: var(--kh-color-surface);
+  color: var(--kh-color-text-primary);
   width: 100%;
 }
 .kh-input:focus {
-  border-color: #6366f1;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+  border-color: var(--kh-color-primary);
+  box-shadow: 0 0 0 3px var(--kh-color-primary-outline);
 }
 .kh-input-suffix {
   position: relative;
@@ -1221,14 +1221,14 @@ const backLabel = computed(() => props.datasetName || '知识库');
   top: 50%;
   transform: translateY(-50%);
   font-size: 11px;
-  color: #94a3b8;
+  color: var(--kh-color-text-muted);
 }
 
 .kh-sub-label {
   margin-top: 12px;
   margin-bottom: 6px;
   font-size: 12px;
-  color: #64748b;
+  color: var(--kh-color-text-tertiary);
 }
 .kh-check {
   display: inline-flex;
@@ -1236,11 +1236,11 @@ const backLabel = computed(() => props.datasetName || '知识库');
   gap: 6px;
   margin-right: 12px;
   font-size: 12px;
-  color: #475569;
+  color: var(--kh-color-text-secondary);
   cursor: pointer;
 }
 .kh-check input {
-  accent-color: #6366f1;
+  accent-color: var(--kh-color-primary);
 }
 .kh-inline-actions {
   display: flex;
@@ -1250,13 +1250,13 @@ const backLabel = computed(() => props.datasetName || '知识库');
 
 .kh-hint {
   font-size: 11px;
-  color: #94a3b8;
+  color: var(--kh-color-text-muted);
 }
 .kh-hint-block {
   padding: 10px 12px;
   border-radius: 8px;
-  background: #eef2ff;
-  color: #4338ca;
+  background: var(--kh-color-primary-soft);
+  color: var(--kh-color-primary-strong);
   margin-bottom: 14px;
   font-size: 12px;
   line-height: 1.5;
@@ -1267,9 +1267,9 @@ const backLabel = computed(() => props.datasetName || '知识库');
   align-items: flex-start;
   gap: 10px;
   padding: 12px 14px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--kh-color-border);
   border-radius: 10px;
-  background: #f8fafc;
+  background: var(--kh-color-surface-sunken);
   margin-bottom: 8px;
 }
 .kh-readonly-icon {
@@ -1278,12 +1278,12 @@ const backLabel = computed(() => props.datasetName || '知识库');
 .kh-readonly-title {
   font-size: 13px;
   font-weight: 600;
-  color: #0f172a;
+  color: var(--kh-color-text-primary);
 }
 .kh-readonly-desc {
   margin-top: 4px;
   font-size: 11px;
-  color: #64748b;
+  color: var(--kh-color-text-tertiary);
   line-height: 1.5;
 }
 
@@ -1294,8 +1294,8 @@ const backLabel = computed(() => props.datasetName || '知识库');
 }
 .kh-parent-mode-card {
   padding: 10px 12px;
-  background: #fff;
-  border: 1px solid #e2e8f0;
+  background: var(--kh-color-surface);
+  border: 1px solid var(--kh-color-border);
   border-radius: 8px;
   text-align: left;
   cursor: pointer;
@@ -1304,12 +1304,12 @@ const backLabel = computed(() => props.datasetName || '知识库');
     background 0.15s;
 }
 .kh-parent-mode-card:hover {
-  border-color: #cbd5e1;
+  border-color: var(--kh-color-border-hover);
 }
 .kh-parent-mode-active {
   border-color: transparent;
-  outline: 1.5px solid #6366f1;
-  background: #f5f6ff;
+  outline: 1.5px solid var(--kh-color-primary);
+  background: var(--kh-color-primary-soft);
 }
 .kh-pm-head {
   display: flex;
@@ -1319,12 +1319,12 @@ const backLabel = computed(() => props.datasetName || '知识库');
 }
 .kh-pm-title {
   font-weight: 600;
-  color: #0f172a;
+  color: var(--kh-color-text-primary);
 }
 .kh-pm-desc {
   margin-top: 6px;
   font-size: 11px;
-  color: #64748b;
+  color: var(--kh-color-text-tertiary);
   line-height: 1.5;
 }
 
@@ -1338,7 +1338,7 @@ const backLabel = computed(() => props.datasetName || '知识库');
   min-height: 0;
   overflow-y: auto;
   padding: 40px 40px 80px 24px;
-  border-left: 1px solid #f1f5f9;
+  border-left: 1px solid var(--kh-color-divider);
 }
 .kh-preview-title {
   display: flex;
@@ -1347,28 +1347,28 @@ const backLabel = computed(() => props.datasetName || '知识库');
   margin-bottom: 10px;
   font-size: 13px;
   font-weight: 600;
-  color: #334155;
+  color: var(--kh-color-text-secondary);
 }
 .kh-preview-file {
   font-size: 11px;
   font-weight: 400;
-  color: #94a3b8;
+  color: var(--kh-color-text-muted);
 }
 .kh-preview-empty {
   padding: 100px 20px;
   text-align: center;
-  border: 1px dashed #e2e8f0;
+  border: 1px dashed var(--kh-color-border);
   border-radius: 10px;
-  background: #f8fafc;
+  background: var(--kh-color-surface-sunken);
 }
 .kh-preview-empty-icon {
   font-size: 34px;
-  color: #cbd5e1;
+  color: var(--kh-color-border-hover);
 }
 .kh-preview-empty-text {
   margin-top: 12px;
   font-size: 12px;
-  color: #94a3b8;
+  color: var(--kh-color-text-muted);
 }
 .kh-preview-body {
   display: flex;
@@ -1378,17 +1378,17 @@ const backLabel = computed(() => props.datasetName || '知识库');
 .kh-preview-warning {
   padding: 8px 10px;
   font-size: 12px;
-  color: #92400e;
-  background: #fef3c7;
-  border: 1px solid #fde68a;
+  color: var(--kh-color-warning);
+  background: var(--kh-color-warning-soft);
+  border: 1px solid color-mix(in srgb, var(--kh-color-warning) 35%, transparent);
   border-radius: 6px;
   line-height: 1.5;
 }
 .kh-preview-chunk {
   padding: 10px 12px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--kh-color-border);
   border-radius: 8px;
-  background: #fff;
+  background: var(--kh-color-surface);
 }
 .kh-preview-chunk-head {
   display: flex;
@@ -1399,17 +1399,17 @@ const backLabel = computed(() => props.datasetName || '知识库');
 }
 .kh-chunk-tag {
   padding: 2px 6px;
-  background: #eef2ff;
-  color: #4338ca;
+  background: var(--kh-color-primary-soft);
+  color: var(--kh-color-primary-strong);
   border-radius: 4px;
   font-weight: 600;
 }
 .kh-chunk-tokens {
-  color: #94a3b8;
+  color: var(--kh-color-text-muted);
 }
 .kh-preview-chunk-body {
   font-size: 12px;
-  color: #334155;
+  color: var(--kh-color-text-secondary);
   line-height: 1.6;
 }
 
@@ -1425,12 +1425,12 @@ const backLabel = computed(() => props.datasetName || '知识库');
 .kh-done-title {
   font-size: 18px;
   font-weight: 600;
-  color: #0f172a;
+  color: var(--kh-color-text-primary);
 }
 .kh-done-sub {
   margin-top: 4px;
   font-size: 12px;
-  color: #94a3b8;
+  color: var(--kh-color-text-muted);
 }
 .kh-done-files {
   display: flex;
@@ -1443,11 +1443,11 @@ const backLabel = computed(() => props.datasetName || '知识库');
   align-items: center;
   gap: 8px;
   padding: 8px 12px;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background: var(--kh-color-surface-sunken);
+  border: 1px solid var(--kh-color-border);
   border-radius: 8px;
   font-size: 12px;
-  color: #334155;
+  color: var(--kh-color-text-secondary);
 }
 .kh-done-facts {
   display: grid;
@@ -1462,10 +1462,10 @@ const backLabel = computed(() => props.datasetName || '知识库');
   padding: 4px 0;
 }
 .kh-fact-label {
-  color: #94a3b8;
+  color: var(--kh-color-text-muted);
 }
 .kh-fact-val {
-  color: #334155;
+  color: var(--kh-color-text-secondary);
 }
 .kh-done-actions {
   display: flex;

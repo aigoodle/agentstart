@@ -8,7 +8,7 @@
  * single {@link RetrievalConfig} v-model, matching the shape the wizard and
  * the settings panel already speak.
  */
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 import type { RecallHit, RecentQuery } from '../types';
 import type {
@@ -45,10 +45,16 @@ const emit = defineEmits<{
     payload: { query: string; method: string; config: RetrievalConfig },
   ): void;
   (e: 'replay', h: RecentQuery): void;
+  (e: 'update:config', value: RetrievalConfig): void;
 }>();
 
 const query = ref('');
 const config = ref<RetrievalConfig>({ ...props.initialConfig });
+
+watch(() => props.initialConfig, value => { config.value = { ...value }; }, { deep: true });
+watch(config, value => {
+  if (JSON.stringify(value) !== JSON.stringify(props.initialConfig)) emit('update:config', { ...value });
+}, { deep: true });
 
 const methodLabel = computed(() => {
   if (config.value.method === 'HYBRID') return '混合检索';
@@ -372,11 +378,11 @@ function replay(h: RecentQuery) {
   cursor: pointer;
 }
 .kh-btn-primary {
-  background: linear-gradient(135deg, #6366f1, #4f46e5);
-  color: #fff;
+  background: var(--kh-color-primary);
+  color: var(--kh-color-primary-contrast);
 }
 .kh-btn-primary:disabled {
-  background: #cbd5e1;
+  opacity: 0.45;
   cursor: not-allowed;
 }
 
@@ -514,8 +520,8 @@ function replay(h: RecentQuery) {
 }
 .kh-recall-hit-tag {
   padding: 2px 8px;
-  background: #4338ca;
-  color: #fff;
+  background: var(--kh-color-primary);
+  color: var(--kh-color-primary-contrast);
   border-radius: 4px;
   font-weight: 600;
   font-size: 10px;
@@ -524,7 +530,7 @@ function replay(h: RecentQuery) {
   color: var(--kh-color-primary);
 }
 .kh-recall-hit-score {
-  color: #b45309;
+  color: var(--kh-color-primary);
   font-weight: 600;
 }
 .kh-recall-flex {
@@ -551,5 +557,14 @@ function replay(h: RecentQuery) {
   font-size: 11px;
   color: var(--kh-color-text-tertiary);
   margin-bottom: 4px;
+}
+.kh-recall { box-sizing: border-box; min-height: 420px; }
+.kh-recall-results { box-sizing: border-box; }
+.kh-recall-hit-body { white-space: pre-wrap; overflow-wrap: anywhere; }
+.kh-recall-hit-head { flex-wrap: wrap; }
+@media (max-width: 900px) {
+  .kh-recall { padding: 14px; height: auto; }
+  .kh-recall-body { grid-template-columns: minmax(0, 1fr); overflow: visible; }
+  .kh-recall-right { max-height: 600px; }
 }
 </style>

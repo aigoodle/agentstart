@@ -310,21 +310,22 @@ onMounted(loadMessageConnectors);
 
 <style scoped>
 .wf-triggers { display: flex; flex-direction: column; gap: 8px; }
-.wf-triggers-toggle { display:flex; align-items:center; justify-content:space-between; padding:6px 10px; background:#f9fafb; border-radius:6px; font-size:12px; color:#4b5563; }
+.wf-triggers-toggle { display:flex; align-items:center; justify-content:space-between; padding:6px 10px; background:var(--as-bg-layout, #f9fafb); border-radius:6px; font-size:12px; color:var(--as-text, #4b5563); }
 .wf-triggers-types { display:grid; grid-template-columns:repeat(2,1fr); gap:6px; }
-.wf-triggers-type { display:flex; flex-direction:column; align-items:center; gap:4px; padding:10px 6px; background:#fff; border:1px solid #e5e7eb; border-radius:6px; cursor:pointer; color:#4b5563; font-size:11px; }
+.wf-triggers-type { display:flex; flex-direction:column; align-items:center; gap:4px; padding:10px 6px; background:var(--as-bg, #fff); border:1px solid var(--as-border-secondary, #e5e7eb); border-radius:6px; cursor:pointer; color:var(--as-text, #4b5563); font-size:11px; }
 .wf-triggers-type:hover,.wf-triggers-type.is-active { border-color:var(--tc); color:var(--tc); }
-.wf-triggers-type.is-active { background:color-mix(in srgb,var(--tc) 10%,transparent); }
+.wf-triggers-type.is-active { background:color-mix(in srgb,var(--tc) 10%,var(--as-bg, #fff)); }
+.wf-triggers-type:focus-visible { outline:2px solid var(--tc); outline-offset:2px; }
 .wf-triggers-type-icon { font-size:18px; color:var(--tc); }
-.wf-schedule-form { display:grid; gap:9px; padding:10px; border:1px solid #fde68a; border-radius:7px; background:#fffbeb; }
-.wf-schedule-form label { display:grid; gap:4px; font-size:11px; color:#4b5563; }
-.wf-schedule-form :deep(.ant-select),.wf-schedule-form :deep(.ant-input-number) { width:100%; }
-.wf-schedule-preview { padding:7px 9px; border-radius:5px; background:#fff; color:#92400e; font:11px ui-monospace,monospace; overflow-wrap:anywhere; }
-.wf-schedule-note,.wf-triggers-hint { padding:6px 10px; font-size:11px; color:#92400e; background:#fef3c7; border-radius:4px; }
-.wf-connector-form { display:grid; gap:9px; padding:10px; border:1px solid #fbcfe8; border-radius:7px; background:#fdf2f8; }
-.wf-connector-form label { display:grid; gap:4px; font-size:11px; color:#4b5563; }
-.wf-connector-form :deep(.ant-select) { width:100%; }
-.wf-connector-status { color:#6b7280; font-size:11px; }
-.wf-connector-error,.wf-connector-warning { padding:7px 9px; border-radius:5px; background:#fff1f2; color:#be123c; font-size:11px; }
-.wf-connector-note { padding:7px 9px; border-radius:5px; background:#fff; color:#9d174d; font-size:11px; line-height:1.5; }
+.wf-schedule-form { display:grid; gap:9px; padding:10px; border:1px solid color-mix(in srgb, var(--as-warning, #f59e0b) 35%, var(--as-border-secondary, #e5e7eb)); border-radius:7px; background:color-mix(in srgb, var(--as-warning, #f59e0b) 6%, var(--as-bg, #fff)); }
+.wf-schedule-form label { display:grid; gap:4px; font-size:11px; color:var(--as-text, #4b5563); }
+.wf-schedule-form :deep(.as-select),.wf-schedule-form :deep(.as-input-number) { width:100%; }
+.wf-schedule-preview { padding:7px 9px; border-radius:5px; background:var(--as-bg, #fff); color:var(--as-text-secondary, #92400e); font:11px ui-monospace,monospace; overflow-wrap:anywhere; }
+.wf-schedule-note,.wf-triggers-hint { padding:6px 10px; font-size:11px; color:var(--as-text-secondary, #92400e); background:color-mix(in srgb, var(--as-warning, #f59e0b) 12%, var(--as-bg, #fff)); border-radius:4px; }
+.wf-connector-form { display:grid; gap:9px; padding:10px; border:1px solid color-mix(in srgb, #ec4899 30%, var(--as-border-secondary, #e5e7eb)); border-radius:7px; background:color-mix(in srgb, #ec4899 6%, var(--as-bg, #fff)); }
+.wf-connector-form label { display:grid; gap:4px; font-size:11px; color:var(--as-text, #4b5563); }
+.wf-connector-form :deep(.as-select) { width:100%; }
+.wf-connector-status { color:var(--as-text-secondary, #6b7280); font-size:11px; }
+.wf-connector-error,.wf-connector-warning { padding:7px 9px; border-radius:5px; background:color-mix(in srgb, var(--as-danger, #dc2626) 10%, var(--as-bg, #fff)); color:var(--as-danger, #be123c); font-size:11px; }
+.wf-connector-note { padding:7px 9px; border-radius:5px; background:var(--as-bg, #fff); color:var(--as-text-secondary, #9d174d); font-size:11px; line-height:1.5; }
 </style>

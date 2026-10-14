@@ -312,14 +312,10 @@ async function onRefreshCatalog(p: ProviderView) {
   next.add(p.name);
   refreshingCatalog.value = next;
   try {
-    // Two-step: (1) reload persisted catalog so any user changes propagate;
-    // (2) hit the vendor for the live list and merge transient entries in as
-    // source='remote'. Nothing is persisted at DB level from the refresh.
-    const [remoteList] = await Promise.all([
-      refreshCatalog(p.name, props.tenantId),
-      loadCatalog(p.name),
-    ]);
-    mergeRemoteIntoCatalog(p.name, remoteList);
+    // Refresh persists discovery before reading the authoritative catalog.
+    await refreshCatalog(p.name, props.tenantId);
+    await loadCatalog(p.name);
+    await refresh();
     emit('change');
   } finally {
     const after = new Set(refreshingCatalog.value);
@@ -328,41 +324,7 @@ async function onRefreshCatalog(p: ProviderView) {
   }
 }
 
-/**
- * Add live-fetched entries into the local catalog cache as source='remote' rows,
- * unless an existing persisted (predefined/custom) row already covers the same
- * (model, modelType). Remote rows default to disabled — user enables them via
- * the toggle, which triggers the settings-table INSERT.
- */
-function mergeRemoteIntoCatalog(providerName: string, remote: any[]) {
-  if (!remote || remote.length === 0) return;
-  const existing = catalogByProvider.value[providerName] ?? [];
-  const seen = new Set<string>();
-  for (const r of existing) seen.add(`${r.model}::${r.modelType}`);
-  const additions: CatalogRow[] = [];
-  for (const rm of remote) {
-    const key = `${rm.modelId}::${rm.modelType}`;
-    if (seen.has(key)) continue;
-    if (!rm.modelType) continue;
-    additions.push({
-      id: `remote::${providerName}::${rm.modelId}::${rm.modelType}`,
-      model: rm.modelId,
-      label: rm.label ?? rm.modelId,
-      modelType: rm.modelType,
-      contextLength: rm.contextLength,
-      dimensions: rm.dimensions,
-      features: rm.features ?? [],
-      source: 'remote',
-      enabled: false,
-      isDefault: false,
-    });
-    seen.add(key);
-  }
-  catalogByProvider.value = {
-    ...catalogByProvider.value,
-    [providerName]: [...existing, ...additions],
-  };
-}
+
 
 const togglingKey = ref<Set<string>>(new Set());
 function toggleKey(row: CatalogRow): string {
@@ -779,18 +741,117 @@ function capabilityTags(
               <button
                 type="button"
                 class="phs-card-menu-btn"
+                :class="{ 'phs-card-menu-btn--open': openMenuFor === p.name }"
                 title="更多操作"
                 :aria-label="`${p.label} 更多操作`"
                 :aria-expanded="openMenuFor === p.name"
                 @click.stop="toggleCardMenu(p.name)"
-              >⋯</button>
+              >
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <circle cx="5" cy="12" r="1.6" />
+                  <circle cx="12" cy="12" r="1.6" />
+                  <circle cx="19" cy="12" r="1.6" />
+                </svg>
+              </button>
               <template #content>
-                <div class="phs-card-menu-content">
-                  <button v-if="p.supportsRemoteModelListing" class="phs-card-menu-item" @click="onRefreshCatalog(p); closeCardMenu()">↻ 重新拉取模型</button>
-                  <button class="phs-card-menu-item" @click="openCredentialModal(p, true); closeCardMenu()">🔑 编辑凭证</button>
-                  <button class="phs-card-menu-item" @click="openManualAdd(p); closeCardMenu()">+ 手动添加模型</button>
-                  <div class="phs-card-menu-sep" />
-                  <button class="phs-card-menu-item phs-card-menu-item--danger" @click="clearCredential(p); closeCardMenu()">🗑 删除凭证</button>
+                <div class="phs-card-menu-content" role="menu">
+                  <button
+                    v-if="p.supportsRemoteModelListing"
+                    type="button"
+                    role="menuitem"
+                    class="phs-card-menu-item"
+                    @click="onRefreshCatalog(p); closeCardMenu()"
+                  >
+                    <svg
+                      class="phs-card-menu-icon"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8" />
+                      <path d="M21 3v5h-5" />
+                    </svg>
+                    重新拉取模型
+                  </button>
+                  <button
+                    type="button"
+                    role="menuitem"
+                    class="phs-card-menu-item"
+                    @click="openCredentialModal(p, true); closeCardMenu()"
+                  >
+                    <svg
+                      class="phs-card-menu-icon"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <circle cx="7.5" cy="15.5" r="4.5" />
+                      <path d="m20.5 3.5-9 9" />
+                      <path d="m15 7 3 3 3-3.5-3-3" />
+                    </svg>
+                    编辑凭证
+                  </button>
+                  <button
+                    type="button"
+                    role="menuitem"
+                    class="phs-card-menu-item"
+                    @click="openManualAdd(p); closeCardMenu()"
+                  >
+                    <svg
+                      class="phs-card-menu-icon"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <circle cx="12" cy="12" r="9" />
+                      <path d="M12 8v8" />
+                      <path d="M8 12h8" />
+                    </svg>
+                    手动添加模型
+                  </button>
+                  <div class="phs-card-menu-sep" role="separator" />
+                  <button
+                    type="button"
+                    role="menuitem"
+                    class="phs-card-menu-item phs-card-menu-item--danger"
+                    @click="clearCredential(p); closeCardMenu()"
+                  >
+                    <svg
+                      class="phs-card-menu-icon"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <path d="M3 6h18" />
+                      <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                      <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                      <path d="M10 11v6" />
+                      <path d="M14 11v6" />
+                    </svg>
+                    删除凭证
+                  </button>
                 </div>
               </template>
             </Popover>
@@ -1241,69 +1302,123 @@ function capabilityTags(
   padding: 5px 8px;
   border: 1px solid var(--as-mgmt-line, #eaecf0);
   border-radius: 6px;
-  background: var(--as-mgmt-soft, #f8fafc);
-  color: var(--as-mgmt-muted, #667085);
+  background: var(--as-bg-layout, #f8fafc);
+  color: var(--as-text-secondary, #667085);
   font-size: 11px;
   cursor: pointer;
   transition: border-color 0.15s, background 0.15s;
 }
-.phs-count-btn:hover { border-color: #6366f1; background: var(--as-primary-soft, #eef2ff); }
-.phs-count-btn:focus-visible { outline: 2px solid #6366f1; outline-offset: 2px; }
-.phs-count-enabled { font-weight: 600; color: #059669; font-size: 12px; }
+.phs-count-btn:hover {
+  border-color: var(--as-primary, #6366f1);
+  background: color-mix(in srgb, var(--as-primary, #6366f1) 10%, var(--as-bg, #fff));
+}
+.phs-count-btn:focus-visible { outline: 2px solid var(--as-primary, #6366f1); outline-offset: 2px; }
+.phs-count-enabled { font-weight: 600; color: var(--as-success, #059669); font-size: 12px; }
 .phs-count-total { margin-left: auto; }
 .phs-count-arrow { margin-left: 2px; }
-.phs-card-menu-content { min-width: 148px; display: flex; flex-direction: column; gap: 2px; }
+/* antd Dropdown 观感：容器 padding 4px、菜单项 5px 12px、行高 22px 的紧凑尺寸，
+   字号按本产品管理页的 12px 密度收敛。 */
+.phs-card-menu-content {
+  /* 面板经 Teleport 挂在 body 下，继承不到 .as-management 容器上的
+     --as-mgmt-* 令牌；这里用可随暗色翻转的全局令牌自建局部变量中枢。 */
+  --phs-menu-text: var(--as-text, #374151);
+  --phs-menu-muted: var(--as-text-secondary, #98a2b3);
+  --phs-menu-line: var(--as-border-secondary, #e5e7eb);
+  min-width: 160px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 4px;
+}
 
 /* ⋯ menu on each card */
 .phs-card-menu-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background: transparent;
   border: none;
   color: #9ca3af;
   cursor: pointer;
-  font-size: 20px;
   width: 28px;
   height: 28px;
   padding: 0;
-  border-radius: 6px;
+  border-radius: 8px;
   line-height: 1;
   flex-shrink: 0;
+  transition: background 0.15s ease, color 0.15s ease;
 }
 .phs-card-menu-btn:hover {
-  background: #f3f4f6;
-  color: #374151;
+  background: var(--as-mgmt-soft, #f3f4f6);
+  color: var(--as-mgmt-text, #374151);
 }
+.phs-card-menu-btn--open {
+  background: color-mix(in srgb, var(--as-primary, #6366f1) 10%, transparent);
+  color: var(--as-primary, #6366f1);
+}
+.phs-card-menu-btn:focus-visible {
+  outline: 2px solid var(--as-primary, #6366f1);
+  outline-offset: 1px;
+}
+
 .phs-card-menu-item {
-  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 5px 10px;
   font-size: 13px;
+  line-height: 20px;
   text-align: left;
   background: transparent;
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  color: #374151;
+  color: var(--phs-menu-text);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.phs-card-menu-icon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  color: var(--phs-menu-muted);
+  transition: color 0.15s ease;
 }
 .phs-card-menu-item:hover {
-  background: #f3f4f6;
+  background: color-mix(in srgb, var(--as-primary, #6366f1) 8%, transparent);
+  color: var(--as-primary, #6366f1);
 }
-:global(.dark) .phs-card-menu-item {
-  color: #d1d5db;
+.phs-card-menu-item:hover .phs-card-menu-icon {
+  color: var(--as-primary, #6366f1);
 }
-:global(.dark) .phs-card-menu-item:hover {
-  background: #2d2d2d;
+.phs-card-menu-item:active {
+  background: color-mix(in srgb, var(--as-primary, #6366f1) 14%, transparent);
 }
-.phs-card-menu-item--danger {
-  color: #dc2626;
+.phs-card-menu-item:focus-visible {
+  outline: 2px solid var(--as-primary, #6366f1);
+  outline-offset: -2px;
+}
+.phs-card-menu-item--danger,
+.phs-card-menu-item--danger .phs-card-menu-icon {
+  color: var(--as-danger, #dc2626);
 }
 .phs-card-menu-item--danger:hover {
-  background: #fef2f2;
+  background: color-mix(in srgb, var(--as-danger, #dc2626) 8%, transparent);
+  color: var(--as-danger, #dc2626);
+}
+.phs-card-menu-item--danger:hover .phs-card-menu-icon {
+  color: var(--as-danger, #dc2626);
+}
+.phs-card-menu-item--danger:active {
+  background: color-mix(in srgb, var(--as-danger, #dc2626) 14%, transparent);
+}
+.phs-card-menu-item--danger:focus-visible {
+  outline-color: var(--as-danger, #dc2626);
 }
 .phs-card-menu-sep {
   height: 1px;
-  background: #e5e7eb;
-  margin: 4px 0;
-}
-:global(.dark) .phs-card-menu-sep {
-  background: #2d2d2d;
+  background: var(--phs-menu-line);
+  margin: 4px 6px;
 }
 
 /* Popover filter tab bar */

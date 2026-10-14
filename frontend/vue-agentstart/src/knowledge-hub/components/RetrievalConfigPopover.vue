@@ -89,11 +89,20 @@ onBeforeUnmount(() => {
 
 // ---- positioning
 const popoverRef = ref<HTMLElement | null>(null);
+const themeStyle = ref<Record<string, string>>({});
 const pos = ref<{ top: number; left: number }>({ top: 0, left: 0 });
 
 function positionPopover() {
   // SSR guard: positioned via a nextTick from an immediate watch.
   if (typeof window === 'undefined' || !props.triggerEl) return;
+  // Teleport leaves the host theme subtree; carry its resolved tokens along.
+  const sourceStyle = window.getComputedStyle(props.triggerEl);
+  const tokens: Record<string, string> = {};
+  for (let i = 0; i < sourceStyle.length; i++) {
+    const name = sourceStyle.item(i);
+    if (name.startsWith('--kh-')) tokens[name] = sourceStyle.getPropertyValue(name);
+  }
+  themeStyle.value = tokens;
   const r = props.triggerEl.getBoundingClientRect();
   const w = props.width;
   const gap = 6;
@@ -140,6 +149,7 @@ function save() {
 }
 
 const style = computed(() => ({
+  ...themeStyle.value,
   top: `${pos.value.top}px`,
   left: `${pos.value.left}px`,
   width: `${props.width}px`,
@@ -191,8 +201,8 @@ const style = computed(() => ({
   max-height: 84vh;
   display: flex;
   flex-direction: column;
-  background: #fff;
-  border: 1px solid #e2e8f0;
+  background: var(--kh-color-surface);
+  border: 1px solid var(--kh-color-border);
   border-radius: 12px;
   box-shadow: 0 20px 40px rgba(15, 23, 42, 0.16);
   overflow: hidden;
@@ -202,17 +212,17 @@ const style = computed(() => ({
   justify-content: space-between;
   align-items: flex-start;
   padding: 12px 16px;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--kh-color-surface-hover);
 }
 .rcp-title {
   font-size: 14px;
   font-weight: 600;
-  color: #0f172a;
+  color: var(--kh-color-text-primary);
 }
 .rcp-sub {
   margin-top: 2px;
   font-size: 11px;
-  color: #94a3b8;
+  color: var(--kh-color-text-muted);
 }
 .rcp-close {
   width: 24px;
@@ -221,14 +231,14 @@ const style = computed(() => ({
   border: none;
   border-radius: 6px;
   background: transparent;
-  color: #94a3b8;
+  color: var(--kh-color-text-muted);
   font-size: 18px;
   line-height: 1;
   cursor: pointer;
 }
 .rcp-close:hover {
-  background: #f1f5f9;
-  color: #475569;
+  background: var(--kh-color-surface-hover);
+  color: var(--kh-color-text-secondary);
 }
 .rcp-body {
   padding: 12px 16px;
@@ -239,15 +249,15 @@ const style = computed(() => ({
   margin-bottom: 8px;
   font-size: 12px;
   font-weight: 600;
-  color: #475569;
+  color: var(--kh-color-text-secondary);
 }
 .rcp-actions {
   display: flex;
   justify-content: flex-end;
   gap: 8px;
   padding: 10px 16px;
-  border-top: 1px solid #f1f5f9;
-  background: #fafafa;
+  border-top: 1px solid var(--kh-color-surface-hover);
+  background: var(--kh-color-surface-sunken);
 }
 .rcp-btn {
   padding: 6px 14px;
@@ -259,16 +269,16 @@ const style = computed(() => ({
   transition: background 0.15s;
 }
 .rcp-btn-secondary {
-  background: #f1f5f9;
-  color: #475569;
+  background: var(--kh-color-surface-hover);
+  color: var(--kh-color-text-secondary);
 }
 .rcp-btn-secondary:hover {
-  background: #e2e8f0;
+  background: var(--kh-color-border);
 }
 .rcp-btn-primary {
-  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-  color: #fff;
-  box-shadow: 0 2px 6px rgba(79, 70, 229, 0.25);
+  background: linear-gradient(135deg, var(--kh-color-primary) 0%, var(--kh-color-primary-strong) 100%);
+  color: var(--kh-color-primary-contrast);
+  box-shadow: 0 2px 6px color-mix(in srgb, var(--kh-color-primary-strong) 25%, transparent);
 }
 .rcp-btn-primary:hover {
   filter: brightness(1.05);

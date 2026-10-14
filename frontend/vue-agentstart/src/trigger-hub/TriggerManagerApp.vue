@@ -331,22 +331,14 @@ onMounted(load);
 
 <style scoped>
 .th {
-  --panel: #fff;
-  --soft: #f8fafc;
-  --line: #e5e7eb;
-  --text: #172033;
-  --muted: #667085;
-  --primary: #7c3aed;
+  --panel: var(--as-bg, #fff);
+  --soft: var(--as-bg-layout, #f8fafc);
+  --line: var(--as-border-secondary, #e5e7eb);
+  --text: var(--as-text, #172033);
+  --muted: var(--as-text-secondary, #667085);
+  --primary: var(--as-primary, #7c3aed);
   padding: 24px;
   color: var(--text)
-}
-
-:global(.dark) .th {
-  --panel: #1f1f1f;
-  --soft: #262626;
-  --line: #353535;
-  --text: #f5f5f5;
-  --muted: #a3a3a3
 }
 
 .th button:not(.as-btn), .th input, .th select, .th textarea {
@@ -540,7 +532,7 @@ onMounted(load);
   place-items: center;
   border-radius: 10px;
   color: var(--primary);
-  background: #f3e8ff;
+  background: color-mix(in srgb, var(--primary) 10%, var(--panel));
   font-size: 20px
 }
 
@@ -882,14 +874,11 @@ onMounted(load);
   padding: 3px 7px;
   border-radius: 5px;
   color: var(--primary);
-  background: #f3e8ff;
+  background: color-mix(in srgb, var(--primary) 10%, var(--panel));
   font-size: 10px;
   font-weight: 650
 }
 
-:global(.dark) .th-tag {
-  background: #3b2851
-}
 
 .th-actions {
   display: flex;

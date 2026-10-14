@@ -18,6 +18,7 @@ import { Form, FormItem } from './components/Form';
 import { Input, InputNumber, Select, SelectOption, Textarea } from './components/FormControls';
 import { Modal } from './components/Modal';
 import { Table, TableColumn } from './components/Table';
+import { Tooltip } from './components/Tooltip';
 export type { TableColumn as TableColumnType } from './components/Table';
 
 type AnyRecord = Record<string, unknown>;
@@ -73,7 +74,6 @@ const Row = defineComponent({ name: 'AsRow', inheritAttrs: false, props: { gutte
 const Col = defineComponent({ name: 'AsCol', inheritAttrs: false, props: { span: { type: Number, default: 24 }, offset: Number, push: Number, pull: Number }, setup: (props, { attrs, slots }) => () => h('div', { ...attrs, class: ['as-col', attrs.class], style: [{ flex: `0 0 ${(props.span / 24) * 100}%`, maxWidth: `${(props.span / 24) * 100}%`, marginInlineStart: props.offset ? `${(props.offset / 24) * 100}%` : undefined, position: 'relative', insetInlineStart: props.push ? `${(props.push / 24) * 100}%` : props.pull ? `-${(props.pull / 24) * 100}%` : undefined }, attrs.style as never] }, slots.default?.()) });
 const Space = defineComponent({ name: 'AsSpace', inheritAttrs: false, props: { size: { type: [String, Number], default: 'small' }, direction: String, wrap: Boolean }, setup: (props, { attrs, slots }) => () => h('div', { ...attrs, class: ['as-space', attrs.class], style: [{ gap: typeof props.size === 'number' ? `${props.size}px` : ({ small: '8px', middle: '16px', large: '24px' } as AnyRecord)[props.size] as string, flexDirection: props.direction === 'vertical' ? 'column' : 'row', flexWrap: props.wrap ? 'wrap' : undefined }, attrs.style as never] }, slots.default?.()) });
 
-const Tooltip = defineComponent({ name: 'AsTooltip', props: { title: String, placement: String }, setup: (props, { slots }) => () => h('span', { class: 'as-tooltip', 'data-tip': props.title }, slots.default?.()) });
 const Popover = defineComponent({
   name: 'AsPopover',
   props: {

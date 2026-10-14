@@ -401,15 +401,13 @@ async function copyCallbackPath(row: ChannelConnection) {
 }
 .cad-header-text b {
   font-size: 15px;
-  color: #111827;
+  color: var(--as-text, #111827);
 }
 .cad-header-text small {
   font-size: 12px;
-  color: #9ca3af;
+  color: var(--as-text-secondary, #9ca3af);
 }
-:global(.dark) .cad-header-text b {
-  color: #f3f4f6;
-}
+
 
 /* -------- 主体 -------- */
 .cad-main {
@@ -422,40 +420,30 @@ async function copyCallbackPath(row: ChannelConnection) {
 .cad-desc {
   margin: 0;
   font-size: 13px;
-  color: #6b7280;
+  color: var(--as-text-secondary, #6b7280);
   line-height: 1.6;
 }
-:global(.dark) .cad-desc {
-  color: #9ca3af;
-}
+
 
 /* 提示条 */
 .cad-alert {
   padding: 10px 14px;
   font-size: 13px;
-  color: #b91c1c;
-  background: #fef2f2;
-  border: 1px solid #fecaca;
+  color: var(--as-danger, #b91c1c);
+  background: color-mix(in srgb, var(--as-danger, #dc2626) 10%, var(--as-bg, #fff));
+  border: 1px solid color-mix(in srgb, var(--as-danger) 35%, var(--as-border-secondary));
   border-radius: 8px;
 }
 .cad-note {
   padding: 10px 14px;
   font-size: 13px;
-  color: #047857;
-  background: #ecfdf5;
-  border: 1px solid #a7f3d0;
+  color: var(--as-success, #047857);
+  background: color-mix(in srgb, var(--as-success, #10b981) 10%, var(--as-bg, #fff));
+  border: 1px solid color-mix(in srgb, var(--as-success) 35%, var(--as-border-secondary));
   border-radius: 8px;
 }
-:global(.dark) .cad-alert {
-  color: #fca5a5;
-  background: rgba(220, 38, 38, 0.15);
-  border-color: rgba(220, 38, 38, 0.35);
-}
-:global(.dark) .cad-note {
-  color: #34d399;
-  background: rgba(16, 185, 129, 0.15);
-  border-color: rgba(16, 185, 129, 0.35);
-}
+
+
 
 /* 未安装引导 */
 .cad-install {
@@ -463,16 +451,16 @@ async function copyCallbackPath(row: ChannelConnection) {
   gap: 12px;
   justify-items: start;
   padding: 16px;
-  border: 1px dashed #d1d5db;
+  border: 1px dashed var(--as-border, #d1d5db);
   border-radius: 10px;
   font-size: 13px;
-  color: #6b7280;
+  color: var(--as-text-secondary, #6b7280);
 }
 .cad-install p {
   margin: 0;
 }
 .cad-hint {
-  color: #6b7280;
+  color: var(--as-text-secondary, #6b7280);
 }
 .cad-links {
   display: flex;
@@ -480,22 +468,15 @@ async function copyCallbackPath(row: ChannelConnection) {
 }
 .cad-links a {
   font-size: 13px;
-  color: #2563eb;
+  color: var(--as-primary, #2563eb);
   text-decoration: none;
 }
 .cad-links a:hover {
   text-decoration: underline;
 }
-:global(.dark) .cad-install {
-  border-color: #3d3d3d;
-  color: #9ca3af;
-}
-:global(.dark) .cad-hint {
-  color: #9ca3af;
-}
-:global(.dark) .cad-links a {
-  color: #818cf8;
-}
+
+
+
 
 /* -------- 区块 -------- */
 .cad-section {
@@ -514,31 +495,25 @@ async function copyCallbackPath(row: ChannelConnection) {
   margin: 0;
   font-size: 13px;
   font-weight: 600;
-  color: #374151;
+  color: var(--as-text, #374151);
 }
 .cad-count {
   padding: 1px 8px;
   font-size: 11px;
-  color: #6b7280;
-  background: #f3f4f6;
+  color: var(--as-text-secondary, #6b7280);
+  background: var(--as-bg-layout, #f3f4f6);
   border-radius: 10px;
 }
-:global(.dark) .cad-section h3,
-:global(.dark) .cad-section-title {
-  color: #d1d5db;
-}
-:global(.dark) .cad-count {
-  background: #2d2d2d;
-  color: #9ca3af;
-}
+
+
 
 /* 账号行 */
 .cad-empty {
   padding: 20px;
   text-align: center;
   font-size: 13px;
-  color: #9ca3af;
-  border: 1px dashed #e5e7eb;
+  color: var(--as-text-secondary, #9ca3af);
+  border: 1px dashed var(--as-border, #e5e7eb);
   border-radius: 8px;
 }
 .cad-row {
@@ -547,8 +522,8 @@ async function copyCallbackPath(row: ChannelConnection) {
   gap: 10px;
   flex-wrap: wrap;
   padding: 12px 14px;
-  background: #fff;
-  border: 1px solid #e5e7eb;
+  background: var(--as-bg, #fff);
+  border: 1px solid var(--as-border, #e5e7eb);
   border-radius: 8px;
 }
 .cad-row-main {
@@ -560,19 +535,19 @@ async function copyCallbackPath(row: ChannelConnection) {
 .cad-row-main b {
   font-size: 13px;
   font-weight: 600;
-  color: #111827;
+  color: var(--as-text, #111827);
 }
 .cad-row-main small {
   font-size: 12px;
-  color: #9ca3af;
+  color: var(--as-text-secondary, #9ca3af);
 }
 .cad-callback {
   flex-basis: 100%;
   padding: 5px 8px;
   overflow-wrap: anywhere;
   font-size: 11px;
-  color: #475569;
-  background: #f8fafc;
+  color: var(--as-text-secondary, #475569);
+  background: var(--as-bg-layout, #f8fafc);
   border-radius: 5px;
 }
 .cad-row-actions {
@@ -585,35 +560,21 @@ async function copyCallbackPath(row: ChannelConnection) {
   background: none;
   padding: 0;
   font-size: 12px;
-  color: #4f46e5;
+  color: var(--as-primary, #4f46e5);
   cursor: pointer;
 }
 .cad-link:hover {
   text-decoration: underline;
 }
 .cad-link.is-danger {
-  color: #dc2626;
+  color: var(--as-danger, #dc2626);
 }
-:global(.dark) .cad-empty {
-  border-color: #3d3d3d;
-}
-:global(.dark) .cad-row {
-  background: #2d2d2d;
-  border-color: #3d3d3d;
-}
-:global(.dark) .cad-row-main b {
-  color: #f3f4f6;
-}
-:global(.dark) .cad-callback {
-  color: #cbd5e1;
-  background: #242424;
-}
-:global(.dark) .cad-link {
-  color: #818cf8;
-}
-:global(.dark) .cad-link.is-danger {
-  color: #f87171;
-}
+
+
+
+
+
+
 
 /* 账号运行状态 */
 .cad-status {
@@ -622,11 +583,11 @@ async function copyCallbackPath(row: ChannelConnection) {
   gap: 6px;
   font-size: 12px;
   font-weight: 500;
-  color: #92400e;
+  color: var(--as-text, #92400e);
   white-space: nowrap;
 }
 .cad-status.is-online {
-  color: #047857;
+  color: var(--as-success, #047857);
 }
 .cad-dot {
   display: inline-block;
@@ -636,43 +597,31 @@ async function copyCallbackPath(row: ChannelConnection) {
   flex-shrink: 0;
 }
 .cad-dot.is-on {
-  background: #22c55e;
+  background: var(--as-success, #22c55e);
   box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.15);
 }
 .cad-dot.is-off {
-  background: #d1d5db;
+  background: var(--as-text-disabled, #d1d5db);
 }
 
 /* 账号标签：路由 / 凭证 / 回调积压 */
 .cad-tag {
   padding: 3px 9px;
   font-size: 11px;
-  color: #374151;
-  background: #f3f4f6;
+  color: var(--as-text, #374151);
+  background: var(--as-bg-layout, #f3f4f6);
   border-radius: 10px;
   white-space: nowrap;
 }
 .cad-tag.is-warn {
-  color: #b45309;
-  background: #fffbeb;
+  color: var(--as-text, #b45309);
+  background: color-mix(in srgb, var(--as-warning, #f59e0b) 10%, var(--as-bg, #fff));
 }
-:global(.dark) .cad-status {
-  color: #fbbf24;
-}
-:global(.dark) .cad-status.is-online {
-  color: #34d399;
-}
-:global(.dark) .cad-dot.is-off {
-  background: #4b5563;
-}
-:global(.dark) .cad-tag {
-  background: #2d2d2d;
-  color: #d1d5db;
-}
-:global(.dark) .cad-tag.is-warn {
-  color: #fbbf24;
-  background: rgba(180, 83, 9, 0.15);
-}
+
+
+
+
+
 
 /* -------- 表单 -------- */
 .cad-form-dialog {
@@ -681,7 +630,7 @@ async function copyCallbackPath(row: ChannelConnection) {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) auto;
   overflow: hidden;
-  background: #fff;
+  background: var(--as-bg, #fff);
   border-radius: 14px;
   box-shadow: 0 24px 70px rgba(15, 23, 42, 0.25);
 }
@@ -690,11 +639,11 @@ async function copyCallbackPath(row: ChannelConnection) {
   align-items: center;
   justify-content: space-between;
   padding: 18px 20px;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--as-border, #e5e7eb);
 }
 .cad-form-body { display: grid; gap: 18px; padding: 20px; overflow: auto; }
-:global(.dark) .cad-form-dialog { background: #1f1f1f; }
-:global(.dark) .cad-form-header { border-color: #2d2d2d; }
+
+
 .cad-fields {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -704,7 +653,7 @@ async function copyCallbackPath(row: ChannelConnection) {
   display: grid;
   gap: 6px;
   font-size: 13px;
-  color: #374151;
+  color: var(--as-text, #374151);
 }
 .cad-fields input,
 .cad-fields select {
@@ -712,10 +661,10 @@ async function copyCallbackPath(row: ChannelConnection) {
   width: 100%;
   padding: 9px 11px;
   font-size: 13px;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--as-border, #d1d5db);
   border-radius: 7px;
-  background: #fff;
-  color: #111827;
+  background: var(--as-bg, #fff);
+  color: var(--as-text, #111827);
   transition:
     border-color 0.15s ease,
     box-shadow 0.15s ease;
@@ -723,18 +672,19 @@ async function copyCallbackPath(row: ChannelConnection) {
 .cad-fields input:focus,
 .cad-fields select:focus {
   outline: none;
-  border-color: #6366f1;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+  border-color: var(--as-primary, #6366f1);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--as-primary) 15%, transparent);
 }
 fieldset {
   display: grid;
   gap: 12px;
   margin: 0;
   padding: 16px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--as-border, #e5e7eb);
   border-radius: 9px;
 }
 legend {
+  color: var(--as-text);
   padding: 0 7px;
   font-weight: 600;
   font-size: 13px;
@@ -742,23 +692,12 @@ legend {
 fieldset > p {
   margin: 0;
   font-size: 12px;
-  color: #6b7280;
+  color: var(--as-text-secondary, #6b7280);
 }
-:global(.dark) .cad-fields label {
-  color: #d1d5db;
-}
-:global(.dark) .cad-fields input,
-:global(.dark) .cad-fields select {
-  background: #2d2d2d;
-  border-color: #3d3d3d;
-  color: #f3f4f6;
-}
-:global(.dark) fieldset {
-  border-color: #3d3d3d;
-}
-:global(.dark) fieldset > p {
-  color: #9ca3af;
-}
+
+
+
+
 @media (max-width: 640px) {
   .cad-fields {
     grid-template-columns: 1fr;
@@ -771,23 +710,21 @@ fieldset > p {
   align-items: center;
   gap: 6px;
   font-size: 13px;
-  color: #374151;
+  color: var(--as-text, #374151);
 }
 .cad-enable input {
-  accent-color: #6366f1;
+  accent-color: var(--as-primary, #6366f1);
 }
-:global(.dark) .cad-enable {
-  color: #d1d5db;
-}
+
 
 /* -------- 按钮 -------- */
 .cad-btn {
   padding: 7px 14px;
   font-size: 13px;
   font-weight: 500;
-  color: #374151;
-  background: #fff;
-  border: 1px solid #d1d5db;
+  color: var(--as-text, #374151);
+  background: var(--as-bg, #fff);
+  border: 1px solid var(--as-border, #d1d5db);
   border-radius: 6px;
   cursor: pointer;
   transition:
@@ -795,7 +732,7 @@ fieldset > p {
     border-color 0.15s ease;
 }
 .cad-btn:hover {
-  background: #f3f4f6;
+  background: var(--as-bg-layout, #f3f4f6);
 }
 .cad-btn:disabled {
   opacity: 0.5;
@@ -803,25 +740,19 @@ fieldset > p {
 }
 .cad-btn-primary {
   color: #fff;
-  background: #6366f1;
-  border-color: #6366f1;
+  background: var(--as-primary, #6366f1);
+  border-color: var(--as-primary, #6366f1);
 }
 .cad-btn-primary:hover {
-  background: #4f46e5;
+  background: var(--as-primary, #4f46e5);
 }
-:global(.dark) .cad-btn {
-  background: #2d2d2d;
-  border-color: #3d3d3d;
-  color: #f3f4f6;
-}
-:global(.dark) .cad-btn:hover {
-  background: #3d3d3d;
-}
-:global(.dark) .cad-btn-primary {
-  background: #6366f1;
-  border-color: #6366f1;
-}
-:global(.dark) .cad-btn-primary:hover {
-  background: #818cf8;
+
+
+
+
+.cad-fields input::placeholder { color: var(--as-text-placeholder, #9ca3af); }
+.cad-link:focus-visible, .cad-btn:focus-visible {
+  outline: 2px solid var(--as-primary);
+  outline-offset: 2px;
 }
 </style>

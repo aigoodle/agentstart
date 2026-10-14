@@ -174,17 +174,17 @@ function formatTick(v: number): string {
   display: block;
 }
 .spark-grid line {
-  stroke: #eef2f7;
+  stroke: var(--as-border-secondary, #eef2f7);
   stroke-width: 1;
 }
 .spark-y-label {
-  fill: #94a3b8;
+  fill: var(--as-text-secondary, #94a3b8);
   font-size: 9px;
   font-family: ui-sans-serif, system-ui, sans-serif;
   text-anchor: end;
 }
 .spark-x-label {
-  fill: #94a3b8;
+  fill: var(--as-text-secondary, #94a3b8);
   font-size: 9px;
   font-family: ui-sans-serif, system-ui, sans-serif;
 }
@@ -194,7 +194,7 @@ function formatTick(v: number): string {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #cbd5e1;
+  color: var(--as-text-secondary, #94a3b8);
   font-size: 12px;
 }
 </style>

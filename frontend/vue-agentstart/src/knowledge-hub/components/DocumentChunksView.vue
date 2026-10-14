@@ -187,7 +187,7 @@ function changePageSize(s: number) {
             </label>
             <span
               class="kh-chunks-status"
-              :style="{ color: documentEnabled ? '#059669' : '#dc2626' }"
+              :style="{ color: documentEnabled ? 'var(--kh-color-success)' : 'var(--kh-color-danger)' }"
             >
               {{ documentEnabled ? '可用' : '已停用' }}
             </span>
@@ -383,21 +383,21 @@ function changePageSize(s: number) {
 
 .kh-btn {
   padding: 5px 12px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--kh-color-border);
   border-radius: 6px;
-  background: #fff;
+  background: var(--kh-color-surface);
   font-size: 12px;
-  color: #475569;
+  color: var(--kh-color-text-secondary);
   cursor: pointer;
 }
 .kh-btn-secondary:hover {
-  background: #f8fafc;
+  background: var(--kh-color-surface-sunken);
 }
 .kh-btn-primary {
   border-color: transparent;
-  background: linear-gradient(135deg, #6366f1, #4f46e5);
-  color: #fff;
-  box-shadow: 0 2px 4px rgba(79, 70, 229, 0.25);
+  background: var(--kh-color-primary);
+  color: var(--kh-color-primary-contrast);
+  box-shadow: 0 2px 4px color-mix(in srgb, var(--kh-color-primary-strong) 25%, transparent);
 }
 .kh-btn-primary:hover {
   transform: translateY(-1px);
@@ -417,7 +417,7 @@ function changePageSize(s: number) {
 .kh-switch-slider {
   position: absolute;
   inset: 0;
-  background: #cbd5e1;
+  background: var(--kh-color-border);
   border-radius: 9px;
   transition: background 0.15s;
 }
@@ -428,12 +428,12 @@ function changePageSize(s: number) {
   left: 2px;
   width: 14px;
   height: 14px;
-  background: #fff;
+  background: var(--kh-color-surface);
   border-radius: 50%;
   transition: transform 0.15s;
 }
 .kh-switch input:checked + .kh-switch-slider {
-  background: #4f46e5;
+  background: var(--kh-color-primary-strong);
 }
 .kh-switch input:checked + .kh-switch-slider::before {
   transform: translateX(14px);
@@ -465,7 +465,7 @@ function changePageSize(s: number) {
 }
 .kh-chunks-count {
   font-size: 12px;
-  color: #64748b;
+  color: var(--kh-color-text-tertiary);
 }
 .kh-chunks-toolbar-right {
   display: flex;
@@ -476,16 +476,16 @@ function changePageSize(s: number) {
 }
 .kh-doctab-select {
   padding: 5px 22px 5px 10px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--kh-color-border);
   border-radius: 6px;
-  background: #fff;
+  background: var(--kh-color-surface);
   font-size: 12px;
-  color: #475569;
+  color: var(--kh-color-text-secondary);
   outline: none;
   cursor: pointer;
 }
 .kh-doctab-select:focus {
-  border-color: #6366f1;
+  border-color: var(--kh-color-primary);
 }
 .kh-doctab-search {
   position: relative;
@@ -496,24 +496,24 @@ function changePageSize(s: number) {
   top: 50%;
   transform: translateY(-50%);
   font-size: 11px;
-  color: #94a3b8;
+  color: var(--kh-color-text-muted);
 }
 .kh-doctab-search-input {
   padding: 5px 10px 5px 26px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--kh-color-border);
   border-radius: 6px;
-  background: #fff;
+  background: var(--kh-color-surface);
   font-size: 12px;
   outline: none;
   width: 160px;
 }
 .kh-doctab-search-input:focus {
-  border-color: #6366f1;
+  border-color: var(--kh-color-primary);
 }
 .kh-chunks-empty {
   padding: 40px 20px;
   text-align: center;
-  color: #94a3b8;
+  color: var(--kh-color-text-muted);
   font-size: 12px;
 }
 
@@ -524,8 +524,8 @@ function changePageSize(s: number) {
 }
 .kh-chunk-card {
   padding: 12px 14px;
-  background: #fff;
-  border: 1px solid #e2e8f0;
+  background: var(--kh-color-surface);
+  border: 1px solid var(--kh-color-border);
   border-radius: 10px;
   cursor: pointer;
   transition:
@@ -533,7 +533,7 @@ function changePageSize(s: number) {
     box-shadow 0.15s;
 }
 .kh-chunk-card:hover {
-  border-color: #cbd5e1;
+  border-color: var(--kh-color-border-hover);
   box-shadow: 0 3px 10px rgba(15, 23, 42, 0.06);
 }
 .kh-chunk-head {
@@ -541,19 +541,19 @@ function changePageSize(s: number) {
   align-items: center;
   gap: 8px;
   font-size: 11px;
-  color: #64748b;
+  color: var(--kh-color-text-tertiary);
   margin-bottom: 8px;
 }
 .kh-chunk-tag {
   padding: 2px 6px;
-  background: #eef2ff;
-  color: #4338ca;
+  background: var(--kh-color-primary-soft);
+  color: var(--kh-color-primary-strong);
   border-radius: 4px;
   font-weight: 600;
   font-size: 10px;
 }
 .kh-chunk-meta {
-  color: #94a3b8;
+  color: var(--kh-color-text-muted);
   font-size: 10px;
 }
 .kh-chunk-flex {
@@ -565,16 +565,16 @@ function changePageSize(s: number) {
   font-size: 10px;
 }
 .kh-chunk-badge-on {
-  background: #dcfce7;
-  color: #059669;
+  background: var(--kh-color-success-soft);
+  color: var(--kh-color-success);
 }
 .kh-chunk-badge-off {
-  background: #fef2f2;
-  color: #dc2626;
+  background: var(--kh-color-danger-soft);
+  color: var(--kh-color-danger);
 }
 .kh-chunk-body {
   font-size: 12px;
-  color: #334155;
+  color: var(--kh-color-text-secondary);
   line-height: 1.6;
   white-space: pre-wrap;
   word-break: break-word;
@@ -588,8 +588,8 @@ function changePageSize(s: number) {
   right: 0;
   bottom: 0;
   padding-left: 12px;
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0), #fff 40%);
-  color: #94a3b8;
+  background: linear-gradient(90deg, transparent, var(--kh-color-surface) 40%);
+  color: var(--kh-color-text-muted);
 }
 .kh-chunk-body-open {
   max-height: none;
@@ -600,13 +600,13 @@ function changePageSize(s: number) {
   border: none;
   background: transparent;
   font-size: 10px;
-  color: #4338ca;
+  color: var(--kh-color-primary-strong);
   cursor: pointer;
   border-radius: 4px;
   line-height: 1.4;
 }
 .kh-chunk-expand-inline:hover {
-  background: #eef2ff;
+  background: var(--kh-color-primary-soft);
 }
 
 /* Text-style bulk actions in the toolbar row */
@@ -615,16 +615,16 @@ function changePageSize(s: number) {
   border: none;
   background: transparent;
   font-size: 12px;
-  color: #4338ca;
+  color: var(--kh-color-primary-strong);
   cursor: pointer;
   border-radius: 4px;
 }
 .kh-chunks-link:hover {
-  background: #eef2ff;
+  background: var(--kh-color-primary-soft);
   text-decoration: underline;
 }
 .kh-chunks-link-sep {
-  color: #cbd5e1;
+  color: var(--kh-color-border-hover);
   font-size: 12px;
   user-select: none;
 }
@@ -637,23 +637,23 @@ function changePageSize(s: number) {
 .kh-chunk-keyword {
   padding: 1px 6px;
   border-radius: 4px;
-  background: #f1f5f9;
-  color: #64748b;
+  background: var(--kh-color-surface-hover);
+  color: var(--kh-color-text-tertiary);
   font-size: 10px;
 }
 
 /* Meta pane */
 .kh-chunks-meta {
   padding: 12px 14px;
-  background: #f8fafc;
-  border: 1px solid #f1f5f9;
+  background: var(--kh-color-surface-sunken);
+  border: 1px solid var(--kh-color-divider);
   border-radius: 10px;
   overflow-y: auto;
   min-width: 0;
 }
 .kh-meta-header {
   padding-bottom: 10px;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--kh-color-divider);
   margin-bottom: 12px;
 }
 .kh-meta-title-row {
@@ -664,29 +664,29 @@ function changePageSize(s: number) {
 .kh-meta-title {
   font-size: 13px;
   font-weight: 600;
-  color: #0f172a;
+  color: var(--kh-color-text-primary);
 }
 .kh-meta-collapse {
   padding: 0 6px;
   border: none;
   background: transparent;
   font-size: 14px;
-  color: #94a3b8;
+  color: var(--kh-color-text-muted);
   cursor: pointer;
 }
 .kh-meta-sub {
   margin-top: 4px;
   font-size: 10px;
-  color: #94a3b8;
+  color: var(--kh-color-text-muted);
   line-height: 1.4;
 }
 .kh-meta-btn {
   margin-top: 6px;
   padding: 4px 10px;
-  border: 1px solid #6366f1;
+  border: 1px solid var(--kh-color-primary);
   border-radius: 6px;
-  background: #eef2ff;
-  color: #4338ca;
+  background: var(--kh-color-primary-soft);
+  color: var(--kh-color-primary-strong);
   font-size: 11px;
   cursor: pointer;
 }
@@ -698,7 +698,7 @@ function changePageSize(s: number) {
   margin-bottom: 6px;
   font-size: 11px;
   font-weight: 600;
-  color: #475569;
+  color: var(--kh-color-text-secondary);
 }
 .kh-meta-row {
   display: grid;
@@ -707,10 +707,10 @@ function changePageSize(s: number) {
   font-size: 11px;
 }
 .kh-meta-key {
-  color: #94a3b8;
+  color: var(--kh-color-text-muted);
 }
 .kh-meta-val {
-  color: #334155;
+  color: var(--kh-color-text-secondary);
   text-align: right;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -720,10 +720,10 @@ function changePageSize(s: number) {
 .kh-meta-toggle {
   align-self: flex-start;
   padding: 4px 6px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--kh-color-border);
   border-radius: 6px;
-  background: #fff;
-  color: #64748b;
+  background: var(--kh-color-surface);
+  color: var(--kh-color-text-tertiary);
   font-size: 11px;
   cursor: pointer;
   writing-mode: vertical-rl;
@@ -737,7 +737,7 @@ function changePageSize(s: number) {
   align-items: center;
   gap: 12px;
   padding: 10px 4px 0;
-  border-top: 1px solid #f1f5f9;
+  border-top: 1px solid var(--kh-color-divider);
   margin-top: 4px;
 }
 .kh-chunks-pager {
@@ -745,21 +745,21 @@ function changePageSize(s: number) {
   align-items: center;
   gap: 6px;
   font-size: 12px;
-  color: #64748b;
+  color: var(--kh-color-text-tertiary);
 }
 .kh-pager-btn {
   padding: 2px 10px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--kh-color-border);
   border-radius: 4px;
-  background: #fff;
+  background: var(--kh-color-surface);
   cursor: pointer;
-  color: #64748b;
+  color: var(--kh-color-text-tertiary);
 }
 .kh-pager-btn:hover:not(:disabled) {
-  background: #f1f5f9;
+  background: var(--kh-color-surface-hover);
 }
 .kh-pager-btn:disabled {
-  color: #cbd5e1;
+  color: var(--kh-color-border-hover);
   cursor: not-allowed;
 }
 .kh-pager-page {
@@ -769,7 +769,7 @@ function changePageSize(s: number) {
 .kh-pager-info {
   text-align: center;
   font-size: 12px;
-  color: #94a3b8;
+  color: var(--kh-color-text-muted);
 }
 .kh-pager-sizes {
   display: flex;
@@ -777,7 +777,7 @@ function changePageSize(s: number) {
   align-items: center;
   gap: 4px;
   font-size: 11px;
-  color: #94a3b8;
+  color: var(--kh-color-text-muted);
 }
 .kh-pager-sizes-label {
   margin-right: 4px;
@@ -787,16 +787,16 @@ function changePageSize(s: number) {
   border: none;
   background: transparent;
   font-size: 11px;
-  color: #94a3b8;
+  color: var(--kh-color-text-muted);
   cursor: pointer;
   border-radius: 4px;
 }
 .kh-pager-size:hover {
-  background: #f1f5f9;
-  color: #475569;
+  background: var(--kh-color-surface-hover);
+  color: var(--kh-color-text-secondary);
 }
 .kh-pager-size-active {
-  background: #4f46e5;
-  color: #fff;
+  background: var(--kh-color-primary-strong);
+  color: var(--kh-color-primary-contrast);
 }
 </style>

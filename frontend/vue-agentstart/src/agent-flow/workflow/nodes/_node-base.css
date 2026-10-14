@@ -143,9 +143,6 @@
   line-height: 1.4;
 }
 
-/* 节点悬浮工具栏样式已移到 NodeHoverToolbar.vue 的 scoped style。
- * 这里只保留 readonly 状态下的隐藏规则（选择器已同时匹配新旧两版）。 */
-
 /* -------- 状态指示灯 -------- */
 .wf-node-status {
   position: absolute;
@@ -337,12 +334,6 @@
   font-size: 12px;
   font-style: italic;
   color: #9ca3af;
-}
-
-/* -------- 只读模式：隐藏所有节点悬浮操作 -------- */
-.wf-readonly .wf-node-toolbar,
-.wf-readonly .wf-hover-toolbar {
-  display: none !important;
 }
 
 /* -------- utility -------- */

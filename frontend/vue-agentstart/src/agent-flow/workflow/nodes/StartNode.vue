@@ -3,7 +3,6 @@ import { computed, ref } from 'vue';
 
 import Icon from '../Icon.vue';
 import NodeHandle from '../NodeHandle.vue';
-import NodeHoverToolbar from '../NodeHoverToolbar.vue';
 
 const props = defineProps({
   id: String,
@@ -34,14 +33,6 @@ const onMouseLeave = () => {
   isHovered.value = false;
 };
 
-const duplicateNode = () => {
-  emit('duplicate', props.id);
-};
-
-const deleteNode = () => {
-  emit('delete', props.id);
-};
-
 const onConnectionPlusClick = (event, nodeId, handleId) => {
   emit('connection-plus-click', event, nodeId, handleId);
 };
@@ -53,13 +44,6 @@ const onConnectionPlusClick = (event, nodeId, handleId) => {
     @mouseenter="onMouseEnter"
     @mouseleave="onMouseLeave"
   >
-    <NodeHoverToolbar
-      v-if="isHovered"
-      node-type="start"
-      @duplicate="duplicateNode"
-      @delete="deleteNode"
-    />
-
     <div class="wf-node-header">
       <div class="wf-node-icon">
         <Icon name="start" />
@@ -114,7 +98,7 @@ const onConnectionPlusClick = (event, nodeId, handleId) => {
       class-name="flow-node-handle-right"
       :style="{
         background: '#10b981',
-        border: '2px solid #ffffff',
+        border: '2px solid var(--wf-node-bg, #ffffff)',
       }"
       @connection-plus-click="onConnectionPlusClick"
     />
@@ -151,7 +135,7 @@ const onConnectionPlusClick = (event, nodeId, handleId) => {
 }
 
 .start-var-name {
-  color: #1f2937;
+  color: var(--wf-node-text, #1f2937);
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -159,7 +143,7 @@ const onConnectionPlusClick = (event, nodeId, handleId) => {
 }
 
 .start-var-label {
-  color: #6b7280;
+  color: var(--wf-node-text-secondary, #6b7280);
   font-size: 10px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -174,15 +158,15 @@ const onConnectionPlusClick = (event, nodeId, handleId) => {
 }
 
 .start-var-type {
-  color: color-mix(in srgb, var(--wf-accent) 85%, #000);
+  color: color-mix(in srgb, var(--wf-accent) 65%, var(--wf-node-text, #1f2937));
   font-weight: 500;
 }
 
 .start-var-required {
   padding: 0 4px;
   font-size: 10px;
-  color: #b45309;
-  background: #fef3c7;
+  color: var(--as-text, #b45309);
+  background: color-mix(in srgb, var(--as-warning, #f59e0b) 18%, var(--wf-node-bg, #fff));
   border-radius: 3px;
 }
 
@@ -190,6 +174,11 @@ const onConnectionPlusClick = (event, nodeId, handleId) => {
   padding: 2px 6px;
   font-size: 10px;
   font-style: italic;
-  color: #9ca3af;
+  color: var(--wf-node-text-muted, #9ca3af);
 }
+.start-node .wf-node-triggers {
+  background: color-mix(in srgb, var(--wf-accent) 12%, var(--wf-node-bg, #fff));
+  color: var(--wf-node-text, #1f2937);
+}
+.start-node .wf-node-triggers-scope { color: var(--wf-node-text-secondary, #6b7280); }
 </style>

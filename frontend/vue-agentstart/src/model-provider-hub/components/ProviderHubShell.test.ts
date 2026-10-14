@@ -5,6 +5,7 @@ import ProviderCredentialModal from './ProviderCredentialModal.vue';
 
 const api = vi.hoisted(() => ({
   listProviders: vi.fn(), listModels: vi.fn().mockResolvedValue([]),
+  refreshCatalog: vi.fn(),
   getProviderCatalog: vi.fn().mockResolvedValue([]), saveProviderCredential: vi.fn().mockResolvedValue({}),
 }));
 vi.mock('../composables/useProviderHub', () => ({
@@ -84,6 +85,38 @@ describe('provider management interactions', () => {
     tags[2]!.click(); await flushPromises();
     expect(document.querySelectorAll('.phs-row')).toHaveLength(1);
     expect(document.querySelector('.phs-row-name')?.textContent).toContain('video-model');
+  });
+  it('reloads persisted discovery after refresh and retains it when reopened or remounted', async () => {
+    api.listProviders.mockResolvedValue([provider]);
+    let persisted: unknown[] = [];
+    api.getProviderCatalog.mockImplementation(async () => persisted);
+    api.refreshCatalog.mockImplementation(async () => {
+      persisted = [{ id: 'saved', source: 'predefined', model: 'discovered-model', modelType: 'LLM', enabled: false }];
+      return [];
+    });
+    const mountHub = () => mount(ProviderHubShell, {
+      attachTo: document.body,
+      global: { stubs: { DefaultModelsPanel: true, ProviderCredentialModal: true, ModelParameterDrawer: true } },
+    });
+    wrapper = mountHub();
+    await flushPromises();
+    await wrapper.get('.phs-count-btn').trigger('click');
+    await flushPromises();
+    const refresh = Array.from(document.querySelectorAll<HTMLButtonElement>('.phs-popover-actions button')).find(button => button.textContent?.includes('重新拉取'))!;
+    refresh.click(); await flushPromises();
+    expect(api.refreshCatalog).toHaveBeenCalledWith('example', undefined);
+    expect(document.querySelector('.phs-row-name')?.textContent).toContain('discovered-model');
+    (document.querySelector('.phs-model-modal .as-modal__close') as HTMLElement).click();
+    await flushPromises();
+    await wrapper.get('.phs-count-btn').trigger('click');
+    await flushPromises();
+    expect(document.querySelector('.phs-row-name')?.textContent).toContain('discovered-model');
+    wrapper.unmount(); wrapper = mountHub();
+    await flushPromises();
+    await wrapper.get('.phs-count-btn').trigger('click');
+    await flushPromises();
+    expect(document.querySelector('.phs-row-name')?.textContent).toContain('discovered-model');
+    api.getProviderCatalog.mockResolvedValue([]);
   });
   it('requires every configuration field and rejects whitespace before saving', async () => {
     wrapper = mount(ProviderCredentialModal, { props: { provider, open: true }, attachTo: document.body });

@@ -85,9 +85,9 @@ function fmtNum(n?: number): string {
   return String(n);
 }
 function statusColor(s: DocumentRow['status']): string {
-  if (s === 'AVAILABLE') return '#059669';
-  if (s === 'FAILED') return '#dc2626';
-  return '#0284c7';
+  if (s === 'AVAILABLE') return 'var(--kh-color-success)';
+  if (s === 'FAILED') return 'var(--kh-color-danger)';
+  return 'var(--kh-color-info)';
 }
 function statusLabel(s: DocumentRow['status'], enabled: boolean): string {
   if (s === 'FAILED') return '失败';
@@ -327,12 +327,14 @@ function statusLabel(s: DocumentRow['status'], enabled: boolean): string {
   cursor: pointer;
 }
 .kh-btn-primary {
-  background: linear-gradient(135deg, #6366f1, #4f46e5);
-  color: #fff;
+  background: var(--kh-color-primary);
+  color: var(--kh-color-primary-contrast);
   border-color: var(--kh-color-primary);
-  box-shadow: 0 2px 4px rgba(79, 70, 229, 0.25);
+  box-shadow: 0 2px 4px var(--kh-color-primary-outline);
 }
 .kh-btn-primary:hover {
+  background: var(--kh-color-primary-strong);
+  border-color: var(--kh-color-primary-strong);
   transform: translateY(-1px);
 }
 .kh-btn-secondary {
@@ -426,8 +428,9 @@ function statusLabel(s: DocumentRow['status'], enabled: boolean): string {
 }
 .kh-mode-chip {
   padding: 2px 8px;
-  background: var(--kh-color-primary-soft);
-  color: var(--kh-color-primary);
+  background: var(--kh-color-surface-sunken);
+  color: var(--kh-color-text-tertiary);
+  border: 1px solid var(--kh-color-border);
   border-radius: 4px;
   font-size: 11px;
 }
@@ -464,7 +467,7 @@ function statusLabel(s: DocumentRow['status'], enabled: boolean): string {
 .kh-switch-slider {
   position: absolute;
   inset: 0;
-  background: #cbd5e1;
+  background: var(--kh-color-border-hover);
   border-radius: 9px;
   transition: background 0.15s;
 }
@@ -475,12 +478,12 @@ function statusLabel(s: DocumentRow['status'], enabled: boolean): string {
   left: 2px;
   width: 14px;
   height: 14px;
-  background: #fff;
+  background: var(--kh-color-surface);
   border-radius: 50%;
   transition: transform 0.15s;
 }
 .kh-switch input:checked + .kh-switch-slider {
-  background: #4f46e5;
+  background: var(--kh-color-primary);
 }
 .kh-switch input:checked + .kh-switch-slider::before {
   transform: translateX(14px);
@@ -522,7 +525,7 @@ function statusLabel(s: DocumentRow['status'], enabled: boolean): string {
   background: var(--kh-color-surface-hover);
 }
 .kh-more-danger {
-  color: #dc2626;
+  color: var(--kh-color-danger);
 }
 
 .kh-doctab-empty {
@@ -586,7 +589,7 @@ function statusLabel(s: DocumentRow['status'], enabled: boolean): string {
   color: var(--kh-color-text-secondary);
 }
 .kh-pager-size-active {
-  background: #4f46e5;
-  color: #fff;
+  background: var(--kh-color-primary);
+  color: var(--kh-color-primary-contrast);
 }
 </style>

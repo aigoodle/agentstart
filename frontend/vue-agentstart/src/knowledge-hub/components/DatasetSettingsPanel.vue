@@ -53,6 +53,8 @@ interface DatasetForm {
 
 interface Props {
   dataset: DatasetForm;
+  /** Route retrieval settings to the unified RAG workbench when embedded in the drawer. */
+  retrievalManagedExternally?: boolean;
   embeddingModels?: EmbeddingModelOption[];
   rerankModels?: Array<{ id: string; label: string }>;
   /**
@@ -72,6 +74,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
+  retrievalManagedExternally: false,
   embeddingModels: () => [],
   rerankModels: () => [],
   documentCount: 0,
@@ -80,6 +83,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{
   (e: 'save', payload: Partial<DatasetForm>): void;
+  (e: 'open-rag'): void;
 }>();
 
 const form = ref<DatasetForm>({ ...props.dataset });
@@ -426,7 +430,7 @@ function save() {
             @click="!chunkModeLocked && (form.indexingTechnique = 'HIGH_QUALITY')"
           >
             <div class="kh-mode-card-head">
-              <span class="kh-mode-card-icon" style="color: #b45309">⭐</span>
+              <span class="kh-mode-card-icon" style="color: var(--kh-color-warning)">⭐</span>
               <span class="kh-mode-card-title">高质量</span>
               <span v-if="!chunkModeLocked" class="kh-mode-badge">推荐</span>
               <span
@@ -450,7 +454,7 @@ function save() {
             @click="!chunkModeLocked && (form.indexingTechnique = 'ECONOMY')"
           >
             <div class="kh-mode-card-head">
-              <span class="kh-mode-card-icon" style="color: #4338ca">💰</span>
+              <span class="kh-mode-card-icon" style="color: var(--kh-color-primary-strong)">💰</span>
               <span class="kh-mode-card-title">经济</span>
               <span
                 v-if="chunkModeLocked && form.indexingTechnique === 'ECONOMY'"
@@ -514,7 +518,7 @@ function save() {
 
       <!-- 检索设置 — shared RetrievalMethodPicker so wizard / settings /
            recall popover all use the same UI. -->
-      <div class="kh-settings-row">
+      <div v-if="!retrievalManagedExternally" class="kh-settings-row">
         <label class="kh-settings-label">
           检索设置
           <div class="kh-settings-sub-label">了解更多关于检索方法。</div>
@@ -524,6 +528,10 @@ function save() {
           :rerank-models="rerankModels"
           :indexing-technique="form.indexingTechnique"
         />
+      </div>
+      <div v-else class="kh-settings-row">
+        <label class="kh-settings-label">检索策略<div class="kh-settings-sub-label">策略设置、检索测试与结果查看已统一到 RAG 运行。</div></label>
+        <button class="kh-btn kh-btn-secondary" @click="emit('open-rag')">打开 RAG 运行</button>
       </div>
     </div>
 
@@ -557,12 +565,12 @@ function save() {
 .kh-settings-title {
   font-size: 15px;
   font-weight: 600;
-  color: #0f172a;
+  color: var(--kh-color-text-primary);
 }
 .kh-settings-sub {
   margin-top: 4px;
   font-size: 12px;
-  color: #94a3b8;
+  color: var(--kh-color-text-muted);
 }
 
 .kh-settings-body {
@@ -582,12 +590,12 @@ function save() {
   padding-top: 6px;
   font-size: 13px;
   font-weight: 500;
-  color: #334155;
+  color: var(--kh-color-text-secondary);
 }
 .kh-settings-sub-label {
   margin-top: 2px;
   font-size: 10px;
-  color: #94a3b8;
+  color: var(--kh-color-text-muted);
   font-weight: 400;
   line-height: 1.4;
 }
@@ -596,16 +604,16 @@ function save() {
   width: 100%;
   padding: 8px 12px;
   font-size: 13px;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--kh-color-border-hover);
   border-radius: 8px;
-  background: #fff;
-  color: #0f172a;
+  background: var(--kh-color-surface);
+  color: var(--kh-color-text-primary);
   outline: none;
   font-family: inherit;
 }
 .kh-input:focus {
-  border-color: #6366f1;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+  border-color: var(--kh-color-primary);
+  box-shadow: 0 0 0 3px var(--kh-color-primary-outline);
 }
 .kh-textarea {
   resize: vertical;
@@ -621,7 +629,7 @@ function save() {
   width: 44px;
   height: 44px;
   padding: 0;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--kh-color-border);
   border-radius: 10px;
   font-size: 22px;
   cursor: pointer;
@@ -654,7 +662,7 @@ function save() {
   position: absolute;
   right: 10px;
   font-size: 11px;
-  color: #94a3b8;
+  color: var(--kh-color-text-muted);
   pointer-events: none;
 }
 .kh-field {
@@ -664,20 +672,20 @@ function save() {
 }
 .kh-field label {
   font-size: 12px;
-  color: #64748b;
+  color: var(--kh-color-text-tertiary);
 }
 .kh-check {
   display: flex;
   align-items: center;
   gap: 6px;
   font-size: 13px;
-  color: #334155;
+  color: var(--kh-color-text-secondary);
   cursor: pointer;
 }
 .kh-check input {
   width: 15px;
   height: 15px;
-  accent-color: #6366f1;
+  accent-color: var(--kh-color-primary);
 }
 
 /* Mode cards */
@@ -688,39 +696,39 @@ function save() {
 }
 .kh-mode-card {
   padding: 12px 14px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--kh-color-border);
   border-radius: 10px;
-  background: #fff;
+  background: var(--kh-color-surface);
   cursor: pointer;
   transition:
     border-color 0.15s,
     background 0.15s;
 }
 .kh-mode-card:hover {
-  border-color: #cbd5e1;
+  border-color: var(--kh-color-border-hover);
 }
 .kh-mode-card-active {
   border-color: transparent;
-  outline: 1.5px solid #6366f1;
-  background: #f5f6ff;
+  outline: 1.5px solid var(--kh-color-primary);
+  background: var(--kh-color-primary-soft);
 }
 .kh-mode-card-disabled {
   cursor: not-allowed;
   opacity: 0.55;
 }
 .kh-mode-card-disabled:hover {
-  border-color: #e2e8f0;
+  border-color: var(--kh-color-border);
 }
 .kh-settings-cards-locked .kh-mode-card-active {
-  outline-color: #94a3b8;
-  background: #f8fafc;
+  outline-color: var(--kh-color-text-muted);
+  background: var(--kh-color-surface-sunken);
 }
 .kh-mode-card-lock {
   margin-left: auto;
   padding: 1px 6px;
   border-radius: 4px;
-  background: #f1f5f9;
-  color: #64748b;
+  background: var(--kh-color-surface-hover);
+  color: var(--kh-color-text-tertiary);
   font-size: 10px;
   font-weight: 500;
 }
@@ -730,25 +738,25 @@ function save() {
   gap: 8px;
   font-size: 13px;
   font-weight: 600;
-  color: #0f172a;
+  color: var(--kh-color-text-primary);
 }
 .kh-mode-card-icon {
   font-size: 16px;
 }
 .kh-mode-card-title {
-  color: #0f172a;
+  color: var(--kh-color-text-primary);
 }
 .kh-mode-badge {
   padding: 1px 6px;
   border-radius: 4px;
-  background: #b45309;
+  background: var(--kh-color-warning);
   color: #fff;
   font-size: 10px;
 }
 .kh-mode-card-desc {
   margin-top: 4px;
   font-size: 11px;
-  color: #64748b;
+  color: var(--kh-color-text-tertiary);
   line-height: 1.5;
 }
 
@@ -761,21 +769,21 @@ function save() {
 }
 .kh-keyword-lbl {
   font-size: 11px;
-  color: #64748b;
+  color: var(--kh-color-text-tertiary);
   width: 80px;
 }
 .kh-keyword-slider {
   flex: 1;
-  accent-color: #6366f1;
+  accent-color: var(--kh-color-primary);
 }
 .kh-keyword-val {
   min-width: 32px;
   padding: 2px 8px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--kh-color-border);
   border-radius: 6px;
-  background: #fff;
+  background: var(--kh-color-surface);
   font-size: 12px;
-  color: #334155;
+  color: var(--kh-color-text-secondary);
   text-align: center;
 }
 
@@ -793,7 +801,7 @@ function save() {
 .kh-switch-slider {
   position: absolute;
   inset: 0;
-  background: #cbd5e1;
+  background: var(--kh-color-border);
   border-radius: 9px;
   transition: background 0.15s;
 }
@@ -804,12 +812,12 @@ function save() {
   left: 2px;
   width: 14px;
   height: 14px;
-  background: #fff;
+  background: var(--kh-color-surface);
   border-radius: 50%;
   transition: transform 0.15s;
 }
 .kh-switch input:checked + .kh-switch-slider {
-  background: #4f46e5;
+  background: var(--kh-color-primary-strong);
 }
 .kh-switch input:checked + .kh-switch-slider::before {
   transform: translateX(14px);
@@ -817,27 +825,27 @@ function save() {
 .kh-switch-lbl {
   margin-left: 8px;
   font-size: 12px;
-  color: #64748b;
+  color: var(--kh-color-text-tertiary);
 }
 .kh-switch-row {
   display: inline-flex;
   align-items: center;
   gap: 8px;
   font-size: 12px;
-  color: #475569;
+  color: var(--kh-color-text-secondary);
   cursor: pointer;
   margin-top: 8px;
 }
 .kh-switch-row input {
-  accent-color: #6366f1;
+  accent-color: var(--kh-color-primary);
 }
 
 /* Retrieve card */
 .kh-retrieve-select-card {
   padding: 12px 14px;
   border-radius: 10px;
-  background: #f5f6ff;
-  border: 1.5px solid #6366f1;
+  background: var(--kh-color-primary-soft);
+  border: 1.5px solid var(--kh-color-primary);
 }
 .kh-retrieve-card-head {
   display: flex;
@@ -845,19 +853,19 @@ function save() {
   gap: 8px;
   font-size: 13px;
   font-weight: 600;
-  color: #0f172a;
+  color: var(--kh-color-text-primary);
 }
 .kh-retrieve-icon {
   padding: 3px 8px;
   border-radius: 4px;
-  background: #4f46e5;
-  color: #fff;
+  background: var(--kh-color-primary-strong);
+  color: var(--kh-color-primary-contrast);
   font-size: 11px;
 }
 .kh-retrieve-desc {
   margin-top: 6px;
   font-size: 11px;
-  color: #64748b;
+  color: var(--kh-color-text-tertiary);
   line-height: 1.5;
 }
 
@@ -871,7 +879,7 @@ function save() {
   padding: 12px 20px;
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(6px);
-  border-top: 1px solid #f1f5f9;
+  border-top: 1px solid var(--kh-color-divider);
   border-radius: 10px;
   display: flex;
   gap: 10px;
@@ -886,19 +894,19 @@ function save() {
   cursor: pointer;
 }
 .kh-btn-primary {
-  background: linear-gradient(135deg, #6366f1, #4f46e5);
-  color: #fff;
+  background: var(--kh-color-primary);
+  color: var(--kh-color-primary-contrast);
 }
 .kh-btn-primary:disabled {
-  background: #cbd5e1;
+  background: var(--kh-color-border);
   cursor: not-allowed;
 }
 .kh-btn-secondary {
-  background: #f1f5f9;
-  color: #475569;
+  background: var(--kh-color-surface-hover);
+  color: var(--kh-color-text-secondary);
 }
 .kh-btn-secondary:hover {
-  background: #e2e8f0;
+  background: var(--kh-color-surface-sunken);
 }
 
 /* Fix alignment of the remaining process-cleanup checkbox — the input's

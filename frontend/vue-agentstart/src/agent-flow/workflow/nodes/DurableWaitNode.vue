@@ -2,7 +2,6 @@
 import { computed, ref } from 'vue';
 import Icon from '../Icon.vue';
 import NodeHandle from '../NodeHandle.vue';
-import NodeHoverToolbar from '../NodeHoverToolbar.vue';
 
 const props = defineProps<{ id?: string; type?: string; data?: Record<string, any> }>();
 const emit = defineEmits(['duplicate', 'delete', 'connection-plus-click']);
@@ -17,7 +16,6 @@ const meta = computed(() => ({
 
 <template>
   <div class="wf-node durable-wait-node" @mouseenter="hovered = true" @mouseleave="hovered = false">
-    <NodeHoverToolbar v-if="hovered" :node-type="type" @duplicate="emit('duplicate', id)" @delete="emit('delete', id)" />
     <div class="wf-node-header">
       <div class="wf-node-icon"><Icon :name="type === 'SLEEP_UNTIL' ? 'schedule' : 'user'" /></div>
       <div class="wf-node-info"><div class="wf-node-title">{{ data?.label }}</div><div class="wf-node-subtitle">{{ meta?.subtitle }}</div></div>

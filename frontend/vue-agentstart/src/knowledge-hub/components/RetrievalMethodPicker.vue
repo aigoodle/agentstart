@@ -438,20 +438,20 @@ function pickMethod(m: RetrievalMethod) {
 
 .rmp-card {
   padding: 12px 14px;
-  background: #fff;
-  border: 1px solid #e2e8f0;
+  background: var(--kh-color-surface);
+  border: 1px solid var(--kh-color-border);
   border-radius: 10px;
   cursor: pointer;
   transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
 }
 .rmp-card:hover {
-  border-color: #cbd5e1;
+  border-color: var(--kh-color-border-hover);
 }
 .rmp-card-active {
   border-color: transparent;
-  outline: 1.5px solid #6366f1;
-  box-shadow: 0 3px 10px rgba(99, 102, 241, 0.14);
-  background: #fbfbff;
+  outline: 1.5px solid var(--kh-color-primary);
+  box-shadow: 0 3px 10px color-mix(in srgb, var(--kh-color-primary) 14%, transparent);
+  background: var(--kh-color-primary-soft);
 }
 .rmp-card-disabled {
   cursor: not-allowed;
@@ -471,32 +471,32 @@ function pickMethod(m: RetrievalMethod) {
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  border: 1.5px solid #cbd5e1;
-  background: #fff;
+  border: 1.5px solid var(--kh-color-border-hover);
+  background: var(--kh-color-surface);
   transition: all 0.15s;
 }
 .rmp-radio-on {
-  border-color: #6366f1;
-  box-shadow: inset 0 0 0 3.5px #6366f1;
+  border-color: var(--kh-color-primary);
+  box-shadow: inset 0 0 0 3.5px var(--kh-color-primary);
 }
 .rmp-title {
   font-size: 13px;
   font-weight: 600;
-  color: #0f172a;
+  color: var(--kh-color-text-primary);
 }
 .rmp-badge {
   padding: 1px 6px;
   font-size: 10px;
   font-weight: 600;
-  color: #fff;
-  background: #4f46e5;
+  color: var(--kh-color-primary-contrast);
+  background: var(--kh-color-primary-strong);
   border-radius: 4px;
 }
 .rmp-desc {
   margin-top: 4px;
   padding-left: 22px;
   font-size: 12px;
-  color: #64748b;
+  color: var(--kh-color-text-tertiary);
   line-height: 1.5;
 }
 .rmp-body {
@@ -511,13 +511,13 @@ function pickMethod(m: RetrievalMethod) {
   align-items: center;
   gap: 6px;
   font-size: 12px;
-  color: #334155;
+  color: var(--kh-color-text-secondary);
   cursor: pointer;
 }
 .rmp-check input[type='checkbox'] {
   width: 14px;
   height: 14px;
-  accent-color: #6366f1;
+  accent-color: var(--kh-color-primary);
 }
 .rmp-check-inline {
   display: inline-flex;
@@ -525,26 +525,26 @@ function pickMethod(m: RetrievalMethod) {
 .rmp-hint-inline {
   margin-left: 6px;
   font-size: 11px;
-  color: #94a3b8;
+  color: var(--kh-color-text-muted);
 }
 
 .rmp-select {
   width: 100%;
   padding: 6px 10px;
   font-size: 12px;
-  color: #0f172a;
-  background: #fff;
-  border: 1px solid #d1d5db;
+  color: var(--kh-color-text-primary);
+  background: var(--kh-color-surface);
+  border: 1px solid var(--kh-input-border);
   border-radius: 6px;
   outline: none;
 }
 .rmp-select:focus {
-  border-color: #6366f1;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+  border-color: var(--kh-color-primary);
+  box-shadow: 0 0 0 3px var(--kh-color-primary-outline);
 }
 .rmp-select-inline { width: auto; padding: 3px 8px; }
 .rmp-advanced-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.rmp-advanced-grid label { display: flex; flex-direction: column; gap: 4px; font-size: 11px; color: #64748b; }
+.rmp-advanced-grid label { display: flex; flex-direction: column; gap: 4px; font-size: 11px; color: var(--kh-color-text-tertiary); }
 
 .rmp-slider-row {
   display: flex;
@@ -556,16 +556,16 @@ function pickMethod(m: RetrievalMethod) {
   justify-content: space-between;
   align-items: center;
   font-size: 12px;
-  color: #64748b;
+  color: var(--kh-color-text-tertiary);
 }
 .rmp-slider-val {
   font-size: 12px;
-  color: #4338ca;
+  color: var(--kh-color-primary);
   font-weight: 500;
 }
 .rmp-range {
   width: 100%;
-  accent-color: #6366f1;
+  accent-color: var(--kh-color-primary);
 }
 .rmp-range:disabled {
   opacity: 0.5;
@@ -575,7 +575,7 @@ function pickMethod(m: RetrievalMethod) {
   display: inline-flex;
   padding: 2px;
   gap: 2px;
-  background: #eef2ff;
+  background: var(--kh-color-primary-soft);
   border-radius: 6px;
 }
 .rmp-tab {
@@ -584,12 +584,12 @@ function pickMethod(m: RetrievalMethod) {
   border: none;
   border-radius: 4px;
   font-size: 11px;
-  color: #64748b;
+  color: var(--kh-color-text-tertiary);
   cursor: pointer;
 }
 .rmp-tab-active {
-  background: #fff;
-  color: #4338ca;
+  background: var(--kh-color-surface);
+  color: var(--kh-color-primary);
   box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
 }
 
@@ -597,9 +597,9 @@ function pickMethod(m: RetrievalMethod) {
   margin: 0;
   padding: 6px 10px;
   font-size: 11px;
-  color: #92400e;
-  background: #fef3c7;
-  border: 1px solid #fde68a;
+  color: var(--kh-color-warning);
+  background: var(--kh-color-warning-soft);
+  border: 1px solid var(--kh-color-warning);
   border-radius: 6px;
 }
 </style>

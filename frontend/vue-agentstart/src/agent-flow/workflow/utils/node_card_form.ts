@@ -75,7 +75,7 @@ const nodeCardForm: any = {
     userPrompt: {
       id: 'user_prompt_template',
       role: 'user',
-      text: '用户查询：{{#var.query#}}',
+      text: '{{#1.query#}}',
     },
     tools: [],
     skillIds: [],
@@ -103,7 +103,7 @@ const nodeCardForm: any = {
     userPrompt: {
       id: 'user_prompt_template',
       role: 'user',
-      text: '用户查询：{{#var.query#}}',
+      text: '{{#1.query#}}',
     },
     memory: {
       query_prompt_template: '{{#sys.query#}}',

@@ -10,8 +10,8 @@ import lombok.Data;
 @Data
 public class RetrievalConfig {
 
-    /** Composable execution policy used by the new /rag/retrieve pipeline. */
-    private RagPolicy ragPolicy = RagPolicy.defaults();
+    /** Dataset execution policy; null inherits the pipeline defaults and preserves existing policy on update. */
+    private RagPolicy ragPolicy;
 
     private RetrievalMethod method = RetrievalMethod.VECTOR;
 

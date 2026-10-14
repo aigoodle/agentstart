@@ -805,7 +805,7 @@ defineExpose({
                   v-model:value="cfg.value as string"
                   :disabled="!cfg.enable"
                   :placeholder="cfg.placeholder"
-                  :auto-size="{ minRows: 2, maxRows: 6 }"
+                  :auto-size="{ minRows: 2 }"
                   class="ph-mp-param-textarea"
                   @change="onParamsChange"
                 />
@@ -948,16 +948,15 @@ defineExpose({
 /* 模型卡片（点击展开二级下拉） */
 .ph-mp-scroll {
   flex: 1;
+  min-width: 0;
   min-height: 0;
   padding: 0 18px 4px;
+  overflow-x: hidden;
   overflow-y: auto;
+  scrollbar-width: none;
 }
 .ph-mp-scroll::-webkit-scrollbar {
-  width: 6px;
-}
-.ph-mp-scroll::-webkit-scrollbar-thumb {
-  background: #d1d5db;
-  border-radius: 3px;
+  display: none;
 }
 .ph-mp-model-card {
   display: flex;
@@ -1046,6 +1045,7 @@ defineExpose({
 }
 .ph-mp-search-input {
   flex: 1;
+  min-width: 0;
   border: 0;
   outline: 0;
   background: transparent;
@@ -1056,15 +1056,13 @@ defineExpose({
   color: #9ca3af;
 }
 .ph-mp-body {
+  overflow-x: hidden;
   overflow-y: auto;
   padding: 6px 4px;
+  scrollbar-width: none;
 }
 .ph-mp-body::-webkit-scrollbar {
-  width: 6px;
-}
-.ph-mp-body::-webkit-scrollbar-thumb {
-  background: #d1d5db;
-  border-radius: 3px;
+  display: none;
 }
 .ph-mp-empty {
   display: flex;
@@ -1248,11 +1246,13 @@ defineExpose({
 }
 .ph-mp-param {
   display: flex;
+  min-width: 0;
   flex-direction: column;
   gap: 6px;
 }
 .ph-mp-param-row {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 8px;
   min-height: 24px;
@@ -1292,7 +1292,15 @@ defineExpose({
   min-height: unset;
 }
 .ph-mp-param-textarea {
+  box-sizing: border-box;
+  width: calc(100% - 32px);
+  min-width: 0;
+  max-width: calc(100% - 32px);
   margin-left: 32px;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  resize: none;
   font-size: 12px !important;
 }
 

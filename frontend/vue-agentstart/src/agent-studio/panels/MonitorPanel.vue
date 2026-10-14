@@ -406,7 +406,7 @@ const globalTiles = computed(() => {
           v-else
           :series="callChart.series"
           :labels="callChart.labels"
-          color="#6366f1"
+          color="var(--as-primary, #6366f1)"
           :height="230"
         />
       </div>
@@ -459,8 +459,9 @@ const globalTiles = computed(() => {
 
 <style scoped>
 .monitor {
+  color: var(--as-text);
   padding: 16px 24px 24px;
-  background: #f8fafc;
+  background: var(--as-bg-layout, #f8fafc);
   min-height: 100%;
 }
 .monitor-head {
@@ -472,17 +473,17 @@ const globalTiles = computed(() => {
 .monitor-title {
   font-size: 15px;
   font-weight: 600;
-  color: #0f172a;
+  color: var(--as-text, #0f172a);
 }
 .monitor-sub {
   margin-top: 4px;
   font-size: 12px;
-  color: #64748b;
+  color: var(--as-text-secondary, #64748b);
 }
 .monitor-sub code {
   padding: 1px 4px;
-  background: #eef2ff;
-  color: #4338ca;
+  background: color-mix(in srgb, var(--as-primary, #1677ff) 10%, var(--as-bg, #fff));
+  color: var(--as-primary, #4338ca);
   border-radius: 3px;
   font-size: 11px;
 }
@@ -495,13 +496,13 @@ const globalTiles = computed(() => {
   gap: 6px;
   font-size: 13px;
   font-weight: 600;
-  color: #334155;
+  color: var(--as-text, #334155);
   margin-bottom: 10px;
 }
 .monitor-section-dot {
   width: 4px;
   height: 14px;
-  background: #6366f1;
+  background: var(--as-primary, #6366f1);
   border-radius: 2px;
 }
 .monitor-tiles {
@@ -512,9 +513,9 @@ const globalTiles = computed(() => {
 .monitor-tile {
   position: relative;
   padding: 16px;
-  background: #fff;
+  background: var(--as-bg, #fff);
   border-radius: 12px;
-  border: 1px solid #eef1f5;
+  border: 1px solid var(--as-border, #d9d9d9);
   min-height: 96px;
   display: flex;
   align-items: flex-start;
@@ -537,16 +538,16 @@ const globalTiles = computed(() => {
   background: var(--tile-fg, #6366f1);
 }
 .monitor-tile:hover {
-  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+  box-shadow: var(--as-card-shadow-hover, 0 6px 18px rgba(15, 23, 42, 0.08));
   transform: translateY(-1px);
-  border-color: #e2e8f0;
+  border-color: color-mix(in srgb, var(--as-primary, #1677ff) 35%, var(--as-border, #d9d9d9));
 }
 .monitor-tile-icon {
   width: 38px;
   height: 38px;
   border-radius: 10px;
-  background: var(--tile-bg, #eef2ff);
-  color: var(--tile-fg, #4f46e5);
+  background: color-mix(in srgb, var(--tile-fg, #6366f1) 12%, var(--as-bg, #fff));
+  color: color-mix(in srgb, var(--tile-fg, #4f46e5) 75%, var(--as-text, #0f172a));
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -563,13 +564,13 @@ const globalTiles = computed(() => {
 .monitor-tile-label {
   font-size: 12px;
   font-weight: 500;
-  color: #64748b;
+  color: var(--as-text-secondary, #64748b);
   letter-spacing: 0.02em;
 }
 .monitor-tile-value {
   font-size: 22px;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--as-text, #0f172a);
   line-height: 1.2;
   min-height: 28px;
   font-variant-numeric: tabular-nums;
@@ -577,7 +578,7 @@ const globalTiles = computed(() => {
 }
 .monitor-tile-sub {
   font-size: 11px;
-  color: #94a3b8;
+  color: var(--as-text-secondary, #94a3b8);
   line-height: 1.5;
   white-space: nowrap;
   overflow: hidden;
@@ -597,8 +598,8 @@ const globalTiles = computed(() => {
 .monitor-call-card {
   min-width: 0;
   padding: 14px;
-  background: #fff;
-  border: 1px solid #eef1f5;
+  background: var(--as-bg, #fff);
+  border: 1px solid var(--as-border, #d9d9d9);
   border-radius: 12px;
 }
 .monitor-call-head {
@@ -613,7 +614,7 @@ const globalTiles = computed(() => {
 }
 .monitor-chart-note {
   margin: 6px 0 12px 10px;
-  color: #94a3b8;
+  color: var(--as-text-secondary, #94a3b8);
   font-size: 11px;
 }
 .monitor-call-table-card {
@@ -624,23 +625,23 @@ const globalTiles = computed(() => {
 }
 
 /* ── Recent calls table ─────────────────────────────────────────────── */
-.monitor-table :deep(.ant-table-thead > tr > th) {
-  background: #f8fafc;
-  color: #475569;
+.monitor-table :deep(.as-table thead > tr > th) {
+  background: var(--as-bg-layout, #f8fafc);
+  color: var(--as-text-secondary, #475569);
   font-weight: 600;
   white-space: nowrap;
 }
-.monitor-table :deep(.ant-table-tbody > tr > td) {
+.monitor-table :deep(.as-table tbody > tr > td) {
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
 }
-.monitor-table :deep(.ant-table-tbody > tr > td.ant-table-cell-ellipsis) {
+.monitor-table :deep(.as-table tbody > tr > td.as-table__ellipsis) {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 .monitor-time {
-  color: #475569;
+  color: var(--as-text-secondary, #475569);
   font-size: 12px;
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
@@ -655,5 +656,15 @@ const globalTiles = computed(() => {
   .monitor-call-grid {
     grid-template-columns: 1fr;
   }
+}
+.monitor-call-table-card :deep(.as-table-wrap) {
+  border-color: var(--as-border, #d9d9d9);
+}
+.monitor-table :deep(.as-table th),
+.monitor-table :deep(.as-table td) {
+  border-color: var(--as-border-secondary, #e5e7eb);
+}
+.monitor-table :deep(.as-table tbody > tr:hover > td) {
+  background: var(--as-bg-layout, #f8fafc);
 }
 </style>

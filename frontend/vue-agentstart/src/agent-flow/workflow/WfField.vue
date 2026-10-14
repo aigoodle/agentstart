@@ -144,7 +144,7 @@ const toggleFold = () => {
 
 .wf-field-fold-icon {
   font-size: 10px;
-  color: #9ca3af;
+  color: var(--wf-config-text-muted, var(--as-text-secondary, #9ca3af));
 }
 
 .wf-field-title {
@@ -154,18 +154,18 @@ const toggleFold = () => {
   font-size: 12px;
   font-weight: 600;
   line-height: 1.4;
-  color: #1f2937;
+  color: var(--wf-config-text, var(--as-text, #1f2937));
   text-transform: uppercase;
   letter-spacing: 0.3px;
 }
 
 .wf-field-title-sub {
   font-size: 11px;
-  color: #4b5563;
+  color: var(--wf-config-text-secondary, var(--as-text-secondary, #4b5563));
 }
 
 .wf-field-required {
-  color: #ef4444;
+  color: var(--as-danger, #ef4444);
   font-weight: 700;
 }
 
@@ -179,12 +179,12 @@ const toggleFold = () => {
 
 .wf-field-help-icon {
   font-size: 12px;
-  color: #9ca3af;
+  color: var(--wf-config-text-muted, var(--as-text-secondary, #9ca3af));
   cursor: help;
 }
 
 .wf-field-help-icon:hover {
-  color: #4b5563;
+  color: var(--wf-config-text-secondary, var(--as-text-secondary, #4b5563));
 }
 
 .wf-field-operations {
@@ -201,6 +201,6 @@ const toggleFold = () => {
   margin-top: 4px;
   font-size: 11px;
   line-height: 1.5;
-  color: #9ca3af;
+  color: var(--wf-config-text-muted, var(--as-text-secondary, #9ca3af));
 }
 </style>

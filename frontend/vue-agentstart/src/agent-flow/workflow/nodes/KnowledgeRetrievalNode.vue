@@ -5,7 +5,6 @@ import workflow_utils from '@/workflow/utils/workflow_utils';
 
 import Icon from '../Icon.vue';
 import NodeHandle from '../NodeHandle.vue';
-import NodeHoverToolbar from '../NodeHoverToolbar.vue';
 
 const props = defineProps({
   id: String,
@@ -27,8 +26,6 @@ const isHovered = ref(false);
 
 const onMouseEnter = () => (isHovered.value = true);
 const onMouseLeave = () => (isHovered.value = false);
-const duplicateNode = () => emit('duplicate', props.id);
-const deleteNode = () => emit('delete', props.id);
 const onConnectionPlusClick = (event) => {
   emit('connection-plus-click', event, props.id);
 };
@@ -55,13 +52,6 @@ const isDynamic = computed(() => props.data?.dataset?.dynamic === true);
     @mouseenter="onMouseEnter"
     @mouseleave="onMouseLeave"
   >
-    <NodeHoverToolbar
-      v-if="isHovered"
-      node-type="knowledge_retrieval"
-      @duplicate="duplicateNode"
-      @delete="deleteNode"
-    />
-
     <div class="wf-node-header">
       <div class="wf-node-icon">
         <Icon name="knowledge" />

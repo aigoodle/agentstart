@@ -41,6 +41,7 @@ import {
   PlayCircleOutlined,
   RocketOutlined,
   SaveOutlined,
+  SafetyCertificateOutlined,
   ShopOutlined,
 } from '@ant-design/icons-vue';
 
@@ -73,6 +74,8 @@ import DrawerFlowDesigner from '../panels/DrawerFlowDesigner.vue';
 import LogAnnotationPanel from '../panels/LogAnnotationPanel.vue';
 import MonitorPanel from '../panels/MonitorPanel.vue';
 import AgentApiDocs, { type ApiEndpoint } from './AgentApiDocs.vue';
+import AppPermissionsModal from './AppPermissionsModal.vue';
+import type { AgentsNamespace } from '../../client/agents';
 import VariableEditorModal from './VariableEditorModal.vue';
 
 interface Props {
@@ -112,6 +115,7 @@ interface Props {
    * / {@code #designer} slots, in which case {@code api} is ignored.
    */
   api?: AppStudioApi;
+  permissionsApi?: AgentsNamespace;
   /**
    * 聊天调试 iframe 配置。
    *   - 非 flow 模式（agent / chat / completion）：右侧「调试与预览」列直接
@@ -141,6 +145,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{
   (e: 'update:open', v: boolean): void;
+  (e: 'permissions-saved'): void;
   (
     e: 'save',
     payload: {
@@ -204,7 +209,7 @@ const emit = defineEmits<{
 // ---------------------------------------------------------------------------
 // Nav state — Dify's 4 canonical sections for an app's design page.
 // ---------------------------------------------------------------------------
-type NavKey = 'api' | 'logs' | 'monitor' | 'orchestrate';
+type NavKey = 'api' | 'logs' | 'monitor' | 'orchestrate' | 'permissions';
 const nav = ref<NavKey>('orchestrate');
 const collapsed = ref(false);
 
@@ -1421,6 +1426,7 @@ function variableTypeLabel(type: AgentVariable['type']): string {
                   { id: 'api', icon: ApiOutlined, label: '访问 API' },
                   { id: 'logs', icon: FileTextOutlined, label: '日志与标注' },
                   { id: 'monitor', icon: LineChartOutlined, label: '监测' },
+                  { id: 'permissions', icon: SafetyCertificateOutlined, label: '数据权限设置' },
                 ] as const"
                 :key="item.id"
                 :class="['dr-nav-item', { on: nav === item.id }]"
@@ -1788,6 +1794,12 @@ function variableTypeLabel(type: AgentVariable['type']): string {
                 <MonitorPanel :app="app" :api="api" />
               </slot>
             </div>
+            <div v-else-if="nav === 'permissions'" class="dr-permissions-slot">
+              <AppPermissionsModal v-if="app && permissionsApi" :open="open" presentation="inline"
+                :app-id="app.id" :app-name="app.name" :tenant-id="app.tenantId" :api="permissionsApi"
+                @saved="emit('permissions-saved')" />
+              <p v-else class="dr-permissions-empty">请接入权限接口后配置数据权限。</p>
+            </div>
           </main>
         </div>
 
@@ -1894,6 +1906,8 @@ function variableTypeLabel(type: AgentVariable['type']): string {
 </template>
 
 <style scoped>
+.dr-permissions-slot { flex: 1; min-height: 0; overflow: auto; }
+.dr-permissions-empty { padding: 28px; }
 /* ==== Mask + panel (full-screen) ==== */
 .dr-mask {
   position: fixed;

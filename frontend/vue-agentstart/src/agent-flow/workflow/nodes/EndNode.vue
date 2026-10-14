@@ -2,12 +2,11 @@
 import { ref } from 'vue';
 
 import NodeHandle from '@/workflow/NodeHandle.vue';
-import NodeHoverToolbar from '@/workflow/NodeHoverToolbar.vue';
 import workflow_utils from '@/workflow/utils/workflow_utils';
 
 import Icon from '../Icon.vue';
 
-const props = defineProps({
+defineProps({
   id: String,
   data: {
     type: Object,
@@ -18,7 +17,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(['duplicate', 'delete', 'connection-plus-click']);
+defineEmits(['duplicate', 'delete', 'connection-plus-click']);
 
 const isCompleted = ref(false);
 const isHovered = ref(false);
@@ -29,14 +28,6 @@ const onMouseEnter = () => {
 
 const onMouseLeave = () => {
   isHovered.value = false;
-};
-
-const duplicateNode = () => {
-  emit('duplicate', props.id);
-};
-
-const deleteNode = () => {
-  emit('delete', props.id);
 };
 
 const getAnswerTexts = (answer) => {
@@ -62,13 +53,6 @@ const getAnswerTextLabel = (variableSelector) => {
     @mouseenter="onMouseEnter"
     @mouseleave="onMouseLeave"
   >
-    <NodeHoverToolbar
-      v-if="isHovered"
-      node-type="end"
-      @duplicate="duplicateNode"
-      @delete="deleteNode"
-    />
-
     <div class="wf-node-header">
       <div class="wf-node-icon">
         <Icon name="end" />

@@ -28,16 +28,14 @@ import type {
   EmbeddingModelOption,
   ProcessRule,
   ParsedDocument,
-  RecallHit,
-  RecentQuery,
 } from '../types';
+import type { RetrievalConfig } from '../types/dataset';
 import type { RetrievalMethod } from '../types/retrieval';
 import AddDocumentsWizard from './AddDocumentsWizard.vue';
 import DatasetSettingsPanel from './DatasetSettingsPanel.vue';
 import DatasetSidebar from './DatasetSidebar.vue';
 import DocumentChunksView from './DocumentChunksView.vue';
 import DocumentTable from './DocumentTable.vue';
-import RecallTestingPanelV2 from './RecallTestingPanelV2.vue';
 import RagOperationsPanel from './RagOperationsPanel.vue';
 
 interface Props {
@@ -73,9 +71,6 @@ const segmentsLoading = ref(false);
 const chunkPage = ref(1);
 const chunkPageSize = ref(20);
 
-const hits = ref<RecallHit[]>([]);
-const recallHistory = ref<RecentQuery[]>([]);
-const recallLoading = ref(false);
 
 const embeddingModels = ref<EmbeddingModelOption[]>([]);
 const defaultEmbeddingModelId = ref<null | string>(null);
@@ -105,7 +100,6 @@ watch(
       loadDocuments(),
       loadEmbeddingModels(),
       loadRerankModels(),
-      loadRecallHistory(),
     ]);
   },
   { immediate: true },
@@ -174,15 +168,6 @@ async function loadEmbeddingModels() {
       embeddingModels.value.find((m) => m.isDefault)?.id ?? null;
   }
 }
-async function loadRecallHistory() {
-  if (!props.datasetId) return;
-  try {
-    recallHistory.value = await props.hub.listRecallHistory(props.datasetId, 20);
-  } catch {
-    recallHistory.value = [];
-  }
-}
-
 // ---------- sidebar
 async function onNav(next: DatasetTab) {
   // Reset the doc-drilldown when nav switches away from documents.
@@ -251,14 +236,7 @@ const parsedProcessRule = computed<ProcessRule>(() => {
 const parsedRetrievalConfig = computed(() => {
   try {
     if (dataset.value?.retrievalConfigJson) {
-      return JSON.parse(dataset.value.retrievalConfigJson) as {
-        method?: RetrievalMethod;
-        topK?: number;
-        scoreThreshold?: number;
-        rerankEnabled?: boolean;
-        rerankModelId?: string;
-        vectorWeight?: number;
-      };
+      return JSON.parse(dataset.value.retrievalConfigJson) as RetrievalConfig;
     }
   } catch {
     // fall through to default
@@ -433,38 +411,6 @@ function cancelChunkEdit() {
   editorMode.value = null;
 }
 
-// ---------- recall
-async function onRunRecall(payload: {
-  method: string;
-  query: string;
-  config?: {
-    topK?: number;
-    scoreThreshold?: number;
-    rerankEnabled?: boolean;
-    rerankModelId?: string;
-    vectorWeight?: number;
-  };
-}) {
-  if (!props.datasetId) return;
-  recallLoading.value = true;
-  try {
-    // Forward the popover's full config so topK / score / rerank land on the
-    // backend request (previously fixed at topK=10, ignoring the picker).
-    hits.value = await props.hub.retrieve(props.datasetId, {
-      query: payload.query,
-      method: payload.method,
-      topK: payload.config?.topK ?? 10,
-      scoreThreshold: payload.config?.scoreThreshold,
-      rerankEnabled: payload.config?.rerankEnabled,
-      rerankModelId: payload.config?.rerankModelId,
-      vectorWeight: payload.config?.vectorWeight,
-    } as any);
-    await loadRecallHistory();
-  } finally {
-    recallLoading.value = false;
-  }
-}
-
 // ---------- settings form (adapts dataset to DatasetSettingsPanel shape)
 //
 // Reads BOTH indexingTechnique / retrievalConfig AND the chunking mode from
@@ -555,11 +501,6 @@ async function onSaveSettings(payload: any) {
     embeddingModelId: payload.embeddingModelId,
     indexingTechnique: payload.indexingTechnique,
     processRule,
-    retrievalConfig: payload.retrievalConfig ?? {
-      method: payload.retrievalMethod,
-      topK: 10,
-      rerankEnabled: !!payload.rerankEnabled,
-    },
   });
   await loadDataset();
   emit('refresh-list');
@@ -604,7 +545,7 @@ const sidebarData = computed(() => ({
             <span class="kh-drawer-title-name">{{ dataset?.name ?? '知识库详情' }}</span>
             <span class="kh-drawer-title-tab">
               · {{ {
-                documents: '文档', recall: '召回测试',
+                documents: '文档', recall: 'RAG 运行',
                 operations: 'RAG 运行', settings: '设置',
               }[tab] }}
             </span>
@@ -658,29 +599,23 @@ const sidebarData = computed(() => ({
                 @reparse="onReparseDoc"
                 @view-parsed="onViewParsedDoc"
               />
-              <RecallTestingPanelV2
-                v-else-if="tab === 'recall'"
-                :hits="hits"
-                :history="recallHistory"
-                :loading="recallLoading"
-                :initial-config="parsedRetrievalConfig"
-                :rerank-models="rerankModels"
-                :indexing-technique="dataset?.indexingTechnique"
-                @run="onRunRecall"
-              />
               <RagOperationsPanel
-                v-else-if="tab === 'operations' && datasetId"
+                v-else-if="(tab === 'operations' || tab === 'recall') && datasetId"
+                :key="datasetId"
                 :dataset-id="datasetId"
                 :hub="hub"
+                @saved="loadDataset"
               />
               <DatasetSettingsPanel
                 v-else-if="tab === 'settings'"
                 :dataset="settingsForm"
+                retrieval-managed-externally
                 :document-count="documents.length"
                 :embedding-models="embeddingModels"
                 :default-embedding-model-id="defaultEmbeddingModelId"
                 :rerank-models="rerankModels"
                 @save="onSaveSettings"
+                @open-rag="onNav('operations')"
               />
             </template>
           </div>
@@ -760,7 +695,7 @@ const sidebarData = computed(() => ({
 .kh-drawer-shell {
   width: 100%;
   height: 100%;
-  background: #fff;
+  background: var(--kh-color-surface);
   display: flex;
 }
 
@@ -769,7 +704,7 @@ const sidebarData = computed(() => ({
   min-width: 0;
   display: flex;
   flex-direction: column;
-  background: #fff;
+  background: var(--kh-color-surface);
 }
 
 .kh-drawer-topbar {
@@ -777,7 +712,7 @@ const sidebarData = computed(() => ({
   justify-content: space-between;
   align-items: center;
   padding: 12px 20px;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--kh-color-divider);
 }
 .kh-drawer-topbar-title {
   display: flex;
@@ -835,11 +770,11 @@ const sidebarData = computed(() => ({
   white-space: nowrap;
 }
 .kh-drawer-title-name {
-  color: #0f172a;
+  color: var(--kh-color-text-primary);
   font-weight: 600;
 }
 .kh-drawer-title-tab {
-  color: #94a3b8;
+  color: var(--kh-color-text-muted);
 }
 .kh-drawer-close {
   width: 32px;
@@ -848,14 +783,14 @@ const sidebarData = computed(() => ({
   border: none;
   border-radius: 8px;
   background: transparent;
-  color: #94a3b8;
+  color: var(--kh-color-text-muted);
   font-size: 20px;
   line-height: 1;
   cursor: pointer;
 }
 .kh-drawer-close:hover {
-  background: #f1f5f9;
-  color: #475569;
+  background: var(--kh-color-surface-hover);
+  color: var(--kh-color-text-secondary);
 }
 
 .kh-drawer-content {
@@ -868,7 +803,7 @@ const sidebarData = computed(() => ({
 .kh-drawer-stub {
   padding: 80px 40px;
   text-align: center;
-  color: #94a3b8;
+  color: var(--kh-color-text-muted);
 }
 .kh-drawer-stub-icon {
   font-size: 42px;
@@ -878,7 +813,7 @@ const sidebarData = computed(() => ({
   margin-top: 14px;
   font-size: 15px;
   font-weight: 600;
-  color: #64748b;
+  color: var(--kh-color-text-tertiary);
 }
 .kh-drawer-stub-sub {
   margin-top: 6px;
@@ -924,26 +859,27 @@ const sidebarData = computed(() => ({
   cursor: pointer;
 }
 .kh-btn-primary {
-  background: linear-gradient(135deg, #6366f1, #4f46e5);
-  color: #fff;
+  background: var(--kh-color-primary);
+  color: var(--kh-color-primary-contrast);
 }
 .kh-btn-primary:disabled {
-  background: #cbd5e1;
+  background: var(--kh-color-border);
+  color: var(--kh-color-text-muted);
   cursor: not-allowed;
 }
 .kh-btn-secondary {
-  background: #f1f5f9;
-  color: #475569;
+  background: var(--kh-color-surface-sunken);
+  color: var(--kh-color-text-secondary);
 }
 .kh-btn-secondary:hover {
-  background: #e2e8f0;
+  background: var(--kh-color-surface-hover);
 }
 .kh-parsed-mask { position: fixed; inset: 0; z-index: 10020; display: flex; justify-content: flex-end; background: rgba(15,23,42,.35); }
-.kh-parsed-panel { width: min(720px, 88vw); height: 100%; padding: 20px; overflow: hidden; background: #fff; box-shadow: -10px 0 30px rgba(15,23,42,.15); }
-.kh-parsed-panel header { display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 14px; border-bottom: 1px solid #e2e8f0; }
+.kh-parsed-panel { width: min(720px, 88vw); height: 100%; padding: 20px; overflow: hidden; background: var(--kh-color-surface-raised); box-shadow: -10px 0 30px rgba(15,23,42,.15); }
+.kh-parsed-panel header { display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 14px; border-bottom: 1px solid var(--kh-color-border); }
 .kh-parsed-panel header div { display: flex; flex-direction: column; gap: 4px; }
-.kh-parsed-panel small, .kh-parsed-blocks article > span { color: #64748b; font-size: 12px; }
+.kh-parsed-panel small, .kh-parsed-blocks article > span { color: var(--kh-color-text-tertiary); font-size: 12px; }
 .kh-parsed-blocks { height: calc(100% - 62px); overflow: auto; padding-top: 12px; }
-.kh-parsed-blocks article { padding: 10px 12px; margin-bottom: 8px; border: 1px solid #e2e8f0; border-radius: 8px; }
-.kh-parsed-blocks pre { margin: 6px 0 0; white-space: pre-wrap; word-break: break-word; font: inherit; color: #1e293b; }
+.kh-parsed-blocks article { padding: 10px 12px; margin-bottom: 8px; border: 1px solid var(--kh-color-border); border-radius: 8px; }
+.kh-parsed-blocks pre { margin: 6px 0 0; white-space: pre-wrap; word-break: break-word; font: inherit; color: var(--kh-color-text-primary); }
 </style>

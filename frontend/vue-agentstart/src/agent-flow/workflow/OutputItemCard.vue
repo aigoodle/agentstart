@@ -354,15 +354,15 @@ const TreeNode: any = defineComponent({
 
 <style scoped>
 .output-card {
-  --wf-out-panel-bg: #f3f7fd;
-  --wf-out-surface: #ffffff;
-  --wf-out-surface-soft: #eaf2fc;
-  --wf-out-surface-hover: #e2edfb;
-  --wf-out-border: #b9cce5;
-  --wf-out-border-soft: #d2dfef;
-  --wf-out-text: #183153;
-  --wf-out-text-secondary: #58708f;
-  --wf-out-text-muted: #8296ae;
+  --wf-out-panel-bg: var(--as-bg-layout, #f3f7fd);
+  --wf-out-surface: var(--as-bg, #fff);
+  --wf-out-surface-soft: var(--as-bg-layout, #eaf2fc);
+  --wf-out-surface-hover: color-mix(in srgb, var(--as-primary, #1677ff) 8%, var(--as-bg, #fff));
+  --wf-out-border: var(--as-border, #b9cce5);
+  --wf-out-border-soft: var(--as-border-secondary, #d2dfef);
+  --wf-out-text: var(--as-text, #183153);
+  --wf-out-text-secondary: var(--as-text-secondary, #58708f);
+  --wf-out-text-muted: var(--as-text-secondary, #8296ae);
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -648,39 +648,39 @@ const TreeNode: any = defineComponent({
 }
 
 .wf-out-type-string {
-  color: #047857;
-  background: #d1fae5;
-  border-color: #6ee7b7;
+  color: var(--as-text, #183153);
+  background: color-mix(in srgb, var(--as-success, #10b981) 14%, var(--as-bg, #fff));
+  border-color: color-mix(in srgb, var(--as-success, #10b981) 40%, var(--as-border-secondary, #e5e7eb));
 }
 
 .wf-out-type-number {
-  color: #b45309;
-  background: #fef3c7;
-  border-color: #fcd34d;
+  color: var(--as-text, #183153);
+  background: color-mix(in srgb, var(--as-warning, #f59e0b) 14%, var(--as-bg, #fff));
+  border-color: color-mix(in srgb, var(--as-warning, #f59e0b) 40%, var(--as-border-secondary, #e5e7eb));
 }
 
 .wf-out-type-boolean {
-  color: #7c3aed;
-  background: #ede9fe;
-  border-color: #c4b5fd;
+  color: var(--as-text, #183153);
+  background: color-mix(in srgb, #8b5cf6 14%, var(--as-bg, #fff));
+  border-color: color-mix(in srgb, #8b5cf6 40%, var(--as-border-secondary, #e5e7eb));
 }
 
 .wf-out-type-object {
-  color: #1d4ed8;
-  background: #dbeafe;
-  border-color: #93c5fd;
+  color: var(--as-text, #183153);
+  background: color-mix(in srgb, var(--as-primary, #1677ff) 14%, var(--as-bg, #fff));
+  border-color: color-mix(in srgb, var(--as-primary, #1677ff) 40%, var(--as-border-secondary, #e5e7eb));
 }
 
 .wf-out-type-array {
-  color: #be185d;
-  background: #fce7f3;
-  border-color: #f9a8d4;
+  color: var(--as-text, #183153);
+  background: color-mix(in srgb, #ec4899 14%, var(--as-bg, #fff));
+  border-color: color-mix(in srgb, #ec4899 40%, var(--as-border-secondary, #e5e7eb));
 }
 
 .wf-out-type-file {
-  color: #475569;
-  background: #f1f5f9;
-  border-color: #cbd5e1;
+  color: var(--as-text, #183153);
+  background: color-mix(in srgb, var(--as-text-secondary, #64748b) 14%, var(--as-bg, #fff));
+  border-color: color-mix(in srgb, var(--as-text-secondary, #64748b) 40%, var(--as-border-secondary, #e5e7eb));
 }
 
 </style>

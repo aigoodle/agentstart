@@ -36,7 +36,12 @@ public record RagPolicy(
     public record QueryPlanning(QueryStrategy strategy, String modelId, int maxQueries, boolean includeOriginal) {}
 
     public record Retrieval(
-            List<Channel> channels, int candidateLimitPerQuery, int parallelism, Map<String, Object> metadataFilter) {}
+            List<Channel> channels, int candidateLimitPerQuery, int parallelism, Map<String, Object> metadataFilter,
+            Double scoreThreshold, Integer maxChunksPerDocument) {
+        public Retrieval(List<Channel> channels, int candidateLimitPerQuery, int parallelism, Map<String, Object> metadataFilter) {
+            this(channels, candidateLimitPerQuery, parallelism, metadataFilter, null, null);
+        }
+    }
 
     public record Fusion(FusionMethod method, int rrfK, Map<Channel, Double> channelWeights) {}
 
