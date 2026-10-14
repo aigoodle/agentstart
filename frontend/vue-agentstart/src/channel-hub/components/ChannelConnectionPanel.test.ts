@@ -97,7 +97,7 @@ describe('ChannelConnectionPanel', () => {
     expect(body().text()).toContain('已配置账号');
     expect(body().text()).toContain('客服一号');
     expect(body().text()).toContain('bot-001');
-    expect(body().text()).toContain('员工账号');
+    expect(body().text()).toContain('个人账号');
     expect(body().text()).toContain('凭证已配置');
     wrapper.unmount();
   });
@@ -140,7 +140,7 @@ describe('ChannelConnectionPanel', () => {
   it('opens the monitor drawer from the card message button', async () => {
     const wrapper = mount(ChannelConnectionPanel, { props: { client: createClient() } });
     await flushPromises();
-    const messageButton = wrapper.find('.cc-act-monitor');
+    const messageButton = wrapper.findAll('button').find(button => button.text() === '消息')!;
     expect(messageButton.exists()).toBe(true);
     await messageButton.trigger('click');
     await flushPromises();
@@ -166,7 +166,7 @@ describe('ChannelConnectionPanel', () => {
       .mockResolvedValueOnce({ items: [conversation('conversation-1', '较早会话')], hasMore: false });
     const wrapper = mount(ChannelConnectionPanel, { props: { client } });
     await flushPromises();
-    await wrapper.find('.cc-act-monitor').trigger('click');
+    await wrapper.findAll('button').find(button => button.text() === '消息')!.trigger('click');
     await flushPromises();
 
     expect(wrapper.text()).toContain('最新会话');
@@ -207,7 +207,7 @@ describe('ChannelConnectionPanel', () => {
 
     const wrapper = mount(ChannelConnectionPanel, { props: { client } });
     await flushPromises();
-    await wrapper.find('.cc-act-monitor').trigger('click');
+    await wrapper.findAll('button').find(button => button.text() === '消息')!.trigger('click');
     await flushPromises();
     await wrapper.find('.cmd-conversation .cmd-op').trigger('click');
     await flushPromises();
@@ -256,7 +256,7 @@ describe('ChannelConnectionPanel', () => {
 
     const wrapper = mount(ChannelConnectionPanel, { props: { client } });
     await flushPromises();
-    await wrapper.find('.cc-act-monitor').trigger('click');
+    await wrapper.findAll('button').find(button => button.text() === '消息')!.trigger('click');
     await flushPromises();
     const viewButtons = wrapper.findAll('.cmd-conversation').map((row) => row.find('.cmd-op'));
     await viewButtons[0].trigger('click');

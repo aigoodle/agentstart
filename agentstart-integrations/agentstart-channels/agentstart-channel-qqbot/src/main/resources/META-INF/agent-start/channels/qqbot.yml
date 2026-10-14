@@ -1,0 +1,35 @@
+schemaVersion: 1
+id: qqbot
+name: QQBot
+description: QQ 官方机器人消息通道
+version: "1"
+accountModel:
+  scope: PERSONAL
+  instancePolicy: MULTIPLE
+  ownerRequired: true
+  ownerLabel: 员工 / 所有者 ID
+  ownerPlaceholder: 例如 employee-001
+credentialSchema:
+  type: object
+  required: [appId, clientSecret]
+  properties:
+    appId: { type: string, title: App ID }
+    clientSecret: { type: string, title: Client Secret, writeOnly: true }
+configurationSchema:
+  type: object
+  properties:
+    apiBase: { type: string, title: API 基础地址, format: uri }
+    transport:
+      type: string
+      title: 接收方式
+      enum: [websocket, webhook]
+      default: websocket
+    intents: { type: integer, title: Gateway Intents }
+uiSchema:
+  fields:
+    clientSecret: { widget: password }
+metadata:
+  platformId: qqbot
+  icon: QQ
+  transport: websocket
+  transports: [websocket, webhook]

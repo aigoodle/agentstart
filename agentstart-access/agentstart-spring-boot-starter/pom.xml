@@ -5,14 +5,24 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>io.github.aigoodle</groupId>
+        <groupId>io.aigoodle</groupId>
         <artifactId>agentstart-access</artifactId>
         <version>0.1.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>agentstart-spring-boot-starter</artifactId>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
     <name>agentstart-spring-boot-starter</name>
     <description>Spring Boot 自动配置与按需装配入口。</description>
+    <dependencies>
+        <dependency>
+            <groupId>io.aigoodle</groupId>
+            <artifactId>agentstart-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.aigoodle</groupId>
+            <artifactId>agentstart-completion</artifactId>
+        </dependency>
+    </dependencies>
 </project>

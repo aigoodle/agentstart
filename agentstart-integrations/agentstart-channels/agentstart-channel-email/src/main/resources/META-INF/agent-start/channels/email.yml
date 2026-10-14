@@ -1,0 +1,39 @@
+schemaVersion: 1
+id: email
+name: Email
+description: SMTP/IMAP 双向邮件消息通道
+version: "1"
+accountModel:
+  scope: TENANT
+  instancePolicy: MULTIPLE
+  ownerRequired: false
+  identityBridge:
+    enabled: true
+    mode: DIRECTORY
+    externalIdentityLabel: 邮件地址
+    enterpriseIdentityLabel: 企业员工
+    description: 可按企业通讯录将发件人地址关联到员工。
+credentialSchema:
+  type: object
+  required: [smtpHost, imapHost, username, password, from]
+  properties:
+    smtpHost: { type: string, title: SMTP 主机 }
+    imapHost: { type: string, title: IMAP 主机 }
+    username: { type: string, title: 登录账号 }
+    password: { type: string, title: 密码或应用专用密码, writeOnly: true }
+    from: { type: string, title: 默认发件地址, format: email }
+configurationSchema:
+  type: object
+  properties:
+    smtpPort: { type: integer, title: SMTP 端口, default: 465, minimum: 1, maximum: 65535 }
+    imapPort: { type: integer, title: IMAP 端口, default: 993, minimum: 1, maximum: 65535 }
+    ssl: { type: boolean, title: 启用 SSL, default: true }
+    startTls: { type: boolean, title: 启用 STARTTLS, default: false }
+    pollIntervalSeconds: { type: integer, title: 收件轮询间隔（秒）, default: 30, minimum: 5 }
+uiSchema:
+  fields:
+    password: { widget: password }
+metadata:
+  platformId: email
+  icon: Email
+  transport: polling

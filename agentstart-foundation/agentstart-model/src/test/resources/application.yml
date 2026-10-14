@@ -1,0 +1,27 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:agentmodel;DB_CLOSE_DELAY=-1;MODE=MySQL;DATABASE_TO_LOWER=TRUE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:db/model-schema.sql
+
+spring-agent:
+  model:
+    encryption-secret: test-secret-123
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+
+# Ollama base url for the optional end-to-end test; override via OLLAMA_BASE_URL.
+ollama:
+  base-url: ${OLLAMA_BASE_URL:http://localhost:11434}
+  test-model: ${OLLAMA_TEST_MODEL:llama3.2:latest}
+
+logging:
+  level:
+    io.aigoodle: DEBUG

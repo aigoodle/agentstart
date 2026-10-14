@@ -1,7 +1,7 @@
 {
   "name": "vue-agent-start",
   "version": "0.2.0",
-  "description": "Unified spring-agent-start UI kit — provider hub, knowledge hub, agent studio, and workflow designer combined behind a single entry point, plus one framework-neutral SDK (createAgentStartClient) every component talks to the backend through. Replaces the previous four packages (@agent-start/provider-hub, @agent-start/knowledge-hub, @agent-start/agent-studio, @agent-start/agent-flow).",
+  "description": "Unified spring-agent-start UI kit — provider hub, knowledge hub, agent studio, and workflow designer combined behind a single entry point, plus one framework-neutral SDK (createAgentStartClient) every component talks to the backend through. Replaces the previous four packages (@agent-start/model-provider-hub, @agent-start/knowledge-hub, @agent-start/agent-studio, @agent-start/agent-flow).",
   "keywords": [
     "vue",
     "vue3",
@@ -33,10 +33,10 @@
       "import": "./dist/aigoodle.js",
       "require": "./dist/aigoodle.cjs"
     },
-    "./provider-hub": {
-      "types": "./dist/provider-hub/index.d.ts",
-      "import": "./dist/provider-hub/index.js",
-      "require": "./dist/provider-hub/index.cjs"
+    "./model-provider-hub": {
+      "types": "./dist/model-provider-hub/index.d.ts",
+      "import": "./dist/model-provider-hub/index.js",
+      "require": "./dist/model-provider-hub/index.cjs"
     },
     "./knowledge-hub": {
       "types": "./dist/knowledge-hub/index.d.ts",

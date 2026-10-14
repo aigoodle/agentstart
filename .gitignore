@@ -4,3 +4,7 @@
 .classpath
 .project
 .settings/
+**/.env
+**/.env.local
+**/.env.*.local
+**/__pycache__/

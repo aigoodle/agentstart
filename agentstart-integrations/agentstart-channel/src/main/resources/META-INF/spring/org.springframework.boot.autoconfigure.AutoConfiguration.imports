@@ -1,0 +1,2 @@
+io.aigoodle.channel.config.GoodleChannelAutoConfiguration
+io.aigoodle.channel.observability.ChannelMetricsAutoConfiguration

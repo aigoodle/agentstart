@@ -21,7 +21,7 @@ export type {
   AgentStartVisual,
 } from './config';
 
-export { default as ProviderApp } from './provider-hub/components/ProviderApp.vue';
+export { default as ProviderApp } from './model-provider-hub/components/ProviderApp.vue';
 export { default as KnowledgeApp } from './knowledge-hub/components/KnowledgeApp.vue';
 export { default as AgentAppsPage } from './agent-studio/components/AgentAppsPage.vue';
 export { default as AgentChatPage } from './agent-studio/components/AgentChatPage.vue';

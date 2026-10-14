@@ -169,48 +169,46 @@ function replay(h: RecentQuery) {
             </span>
           </div>
         </div>
-        <template>
-          <div v-if="hits.length === 0" class="kh-recall-right-empty">
-            <div class="kh-recall-empty-target">🎯</div>
-            <div class="kh-recall-empty-hint">召回测试结果显示在这里</div>
-          </div>
-          <div v-else class="kh-recall-results">
-            <div
-              v-for="(hit, i) in hits"
-              :key="hit.segmentId"
-              class="kh-recall-hit"
-            >
-              <div class="kh-recall-hit-head">
-                <span class="kh-recall-hit-tag">{{ i + 1 }}</span>
-                <span v-if="hit.documentName" class="kh-recall-hit-doc">
-                  📄 {{ hit.documentName }}
-                </span>
-                <span v-if="hit.blockType" class="kh-recall-hit-type">
-                  {{ hit.blockType }}
-                </span>
-                <span v-if="hit.heading" class="kh-recall-hit-heading">
-                  {{ hit.heading }}
-                </span>
-                <span class="kh-recall-flex" />
-                <span class="kh-recall-hit-score">
-                  综合 {{ hit.score.toFixed(3) }}
-                </span>
-              </div>
-              <div
-                v-if="hit.vectorScore != null || hit.keywordScore != null"
-                class="kh-recall-hit-metrics"
-              >
-                <span v-if="hit.vectorScore != null">
-                  向量 {{ hit.vectorScore.toFixed(3) }}
-                </span>
-                <span v-if="hit.keywordScore != null">
-                  关键词 {{ hit.keywordScore.toFixed(3) }}
-                </span>
-              </div>
-              <div class="kh-recall-hit-body">{{ hit.content }}</div>
+        <div v-if="hits.length === 0" class="kh-recall-right-empty">
+          <div class="kh-recall-empty-target">🎯</div>
+          <div class="kh-recall-empty-hint">召回测试结果显示在这里</div>
+        </div>
+        <div v-else class="kh-recall-results">
+          <div
+            v-for="(hit, i) in hits"
+            :key="hit.segmentId"
+            class="kh-recall-hit"
+          >
+            <div class="kh-recall-hit-head">
+              <span class="kh-recall-hit-tag">{{ i + 1 }}</span>
+              <span v-if="hit.documentName" class="kh-recall-hit-doc">
+                📄 {{ hit.documentName }}
+              </span>
+              <span v-if="hit.blockType" class="kh-recall-hit-type">
+                {{ hit.blockType }}
+              </span>
+              <span v-if="hit.heading" class="kh-recall-hit-heading">
+                {{ hit.heading }}
+              </span>
+              <span class="kh-recall-flex" />
+              <span class="kh-recall-hit-score">
+                综合 {{ hit.score.toFixed(3) }}
+              </span>
             </div>
+            <div
+              v-if="hit.vectorScore != null || hit.keywordScore != null"
+              class="kh-recall-hit-metrics"
+            >
+              <span v-if="hit.vectorScore != null">
+                向量 {{ hit.vectorScore.toFixed(3) }}
+              </span>
+              <span v-if="hit.keywordScore != null">
+                关键词 {{ hit.keywordScore.toFixed(3) }}
+              </span>
+            </div>
+            <div class="kh-recall-hit-body">{{ hit.content }}</div>
           </div>
-        </template>
+        </div>
       </div>
     </div>
 

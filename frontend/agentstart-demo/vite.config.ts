@@ -9,7 +9,7 @@ import { agentStartMock } from './mock/plugin.js'
 const libRoot = fileURLToPath(new URL('../vue-agentstart', import.meta.url))
 const vueAgentStartSource = `${libRoot}/src/index.ts`
 const vueAgentStartClientSource = `${libRoot}/src/client/index.ts`
-const vueAgentStartProviderSource = `${libRoot}/src/provider-hub/index.ts`
+const vueAgentStartProviderSource = `${libRoot}/src/model-provider-hub/index.ts`
 const vueAgentStartKnowledgeSource = `${libRoot}/src/knowledge-hub/index.ts`
 const vueAgentStartStudioSource = `${libRoot}/src/agent-studio/index.ts`
 const vueAgentStartAgentFlowSource = `${libRoot}/src/agent-flow/index.ts`
@@ -58,7 +58,7 @@ export default defineConfig(({ mode }) => {
       alias: [
         { find: /^vue-agent-start\/style\.css$/, replacement: vueAgentStartStyleSource },
         { find: /^vue-agent-start\/client$/, replacement: vueAgentStartClientSource },
-        { find: /^vue-agent-start\/provider-hub$/, replacement: vueAgentStartProviderSource },
+        { find: /^vue-agent-start\/model-provider-hub$/, replacement: vueAgentStartProviderSource },
         { find: /^vue-agent-start\/knowledge-hub$/, replacement: vueAgentStartKnowledgeSource },
         { find: /^vue-agent-start\/agent-studio$/, replacement: vueAgentStartStudioSource },
         { find: /^vue-agent-start\/agent-flow$/, replacement: vueAgentStartAgentFlowSource },

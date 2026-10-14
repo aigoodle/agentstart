@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>io.github.aigoodle</groupId>
+        <groupId>io.aigoodle</groupId>
         <artifactId>agentstart</artifactId>
         <version>0.1.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
@@ -17,8 +17,10 @@
     <description>接入层模块聚合。</description>
 
     <modules>
+        <module>agentstart-api</module>
         <module>agentstart-web</module>
         <module>agentstart-completion</module>
         <module>agentstart-spring-boot-starter</module>
+        <module>agentstart-mcp-auth-spring-starter</module>
     </modules>
 </project>

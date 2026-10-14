@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Route ALL logging to STDERR so the MCP stdio test server (run as a subprocess) keeps
+  STDOUT clean for the MCP JSON-RPC protocol. Picked up by both the test JVM and the
+  spawned subprocess (shared classpath / target/test-classes).
+-->
+<configuration>
+    <appender name="STDERR" class="ch.qos.logback.core.ConsoleAppender">
+        <target>System.err</target>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <root level="WARN">
+        <appender-ref ref="STDERR"/>
+    </root>
+</configuration>

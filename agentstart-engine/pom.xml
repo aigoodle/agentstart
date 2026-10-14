@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>io.github.aigoodle</groupId>
+        <groupId>io.aigoodle</groupId>
         <artifactId>agentstart</artifactId>
         <version>0.1.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
@@ -19,6 +19,7 @@
     <modules>
         <module>agentstart-agent</module>
         <module>agentstart-tools</module>
+        <module>agentstart-agentscope-sdk</module>
         <module>agentstart-runtime-agentscope</module>
         <module>agentstart-workflow</module>
     </modules>

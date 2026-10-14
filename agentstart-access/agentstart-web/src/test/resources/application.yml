@@ -1,0 +1,36 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:agentweb;DB_CLOSE_DELAY=-1;MODE=MySQL;DATABASE_TO_LOWER=TRUE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+  sql:
+    init:
+      mode: always
+      continue-on-error: true
+      schema-locations:
+        - classpath:db/model-schema.sql
+        - classpath:db/knowledge-schema.sql
+        - classpath:db/workflow-schema.sql
+        - classpath:db/agent-schema.sql
+        - classpath:db/trigger-schema.sql
+        - classpath:db/observability-schema.sql
+  # Same Jackson tolerance as the example app so tests exercise the real
+  # designer-payload path (case-insensitive enums, unknown UI-only fields).
+  jackson:
+    mapper:
+      accept-case-insensitive-enums: true
+    deserialization:
+      fail-on-unknown-properties: false
+
+spring-agent:
+  model:
+    encryption-secret: test-secret-web
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+
+logging:
+  level:
+    io.aigoodle: INFO

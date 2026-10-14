@@ -1,0 +1,2 @@
+io.aigoodle.api.config.JacksonTreeAutoConfiguration
+io.aigoodle.api.config.ApiErrorsAutoConfiguration

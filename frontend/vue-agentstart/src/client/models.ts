@@ -9,7 +9,7 @@ import type {
   ModelRegistration,
   ModelTestResult,
   ModelType,
-} from '../provider-hub/types';
+} from '../model-provider-hub/types';
 import { qs, type HttpCore } from './core';
 
 export interface ListModelsOptions {

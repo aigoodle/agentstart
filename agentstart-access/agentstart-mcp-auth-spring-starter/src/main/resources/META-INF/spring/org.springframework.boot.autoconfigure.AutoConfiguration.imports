@@ -1,0 +1,2 @@
+io.aigoodle.mcp.auth.config.McpAuthAutoConfiguration
+io.aigoodle.mcp.auth.config.McpAuthTransportAutoConfiguration

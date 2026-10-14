@@ -1,0 +1,2 @@
+io.aigoodle.rag.query.config.RagQueryAutoConfiguration
+io.aigoodle.rag.rerank.config.RagRerankAutoConfiguration

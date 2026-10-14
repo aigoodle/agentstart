@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import ModelPickerPopover from '../../provider-hub/components/ModelPickerPopover.vue';
-import type { SelectedModel } from '../../provider-hub/types';
+import ModelPickerPopover from '../../model-provider-hub/components/ModelPickerPopover.vue';
+import type { SelectedModel } from '../../model-provider-hub/types';
 
 defineOptions({ inheritAttrs: false });
 

@@ -5,12 +5,12 @@
 ### Major internal rework — distributable build + unified client SDK
 
 - **Library build**: `vite build` (library mode) now produces a publishable
-  `dist/` — `index.{js,cjs}` plus per-module entries (`client`, `provider-hub`,
+  `dist/` — `index.{js,cjs}` plus per-module entries (`client`, `model-provider-hub`,
   `knowledge-hub`, `agent-studio`, `agent-flow`), TypeScript declarations via
   `vite-plugin-dts`, sourcemaps, and a single collected `style.css`. The
   package no longer points `main`/`module`/`exports` at `src/index.ts`;
   consumers no longer need to compile SFC/TS sources themselves.
-- **`exports` subpaths**: `.`, `./client`, `./provider-hub`,
+- **`exports` subpaths**: `.`, `./client`, `./model-provider-hub`,
   `./knowledge-hub`, `./agent-studio`, `./agent-flow`, `./style.css`.
   `files` is whitelisted to `dist` (+ README/CHANGELOG).
 - **Declaration emit fix**: `vite-plugin-dts` pins `@vue/language-core` 2.2.0,

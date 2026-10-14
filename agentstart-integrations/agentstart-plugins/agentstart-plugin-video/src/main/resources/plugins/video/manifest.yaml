@@ -1,0 +1,36 @@
+id: media.video
+version: 1.0.0
+name: 视频生成
+description: 使用模型管理中已配置的视频模型生成视频。
+category: media
+configurationSchema: {type: object, additionalProperties: false}
+requestedCapabilities: []
+actions:
+  - id: generate
+    name: 生成视频
+    idempotent: true
+    timeout: PT40S
+    riskLevel: WRITE
+    inputSchema:
+      type: object
+      required: [model, prompt]
+      additionalProperties: false
+      properties:
+        model: {type: object, title: 视频模型}
+        prompt: {type: string, minLength: 1, maxLength: 10000, title: 提示词}
+        parameters: {type: object, title: 模型参数}
+    outputSchema:
+      type: object
+      required: [taskId, status, videoUrl]
+      properties:
+        taskId: {type: string, title: 任务编号}
+        status: {type: string, title: 状态}
+        videoUrl: {type: string, title: 视频地址}
+        usage: {type: object, title: 用量}
+    metadata:
+      executionMode: ASYNC
+      workflowNodeType: VIDEO_GENERATION
+      uiSchema:
+        fields:
+          model: {widget: model-selector, modelType: VIDEO}
+          prompt: {widget: textarea, allowVariable: true}

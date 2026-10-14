@@ -1,0 +1,56 @@
+id: volcengine.seedance
+version: 1.0.0
+name: Seedance 视频生成
+description: 调用火山方舟生成视频，持久化任务并通过工作流等待生成结果。
+category: media
+requestedCapabilities: []
+configurationSchema:
+  type: object
+  required: [model, apiKey]
+  additionalProperties: false
+  properties:
+    model:
+      type: string
+      minLength: 1
+      title: 方舟视频模型或接入点 ID
+      description: 填写已开通的视频模型 ID 或 ep 接入点，不是平台聊天模型 ID。
+    apiKey:
+      type: string
+      minLength: 1
+      title: 方舟 API Key
+      format: password
+      writeOnly: true
+configurationUiSchema:
+  order: [model, apiKey]
+actions:
+  - id: generate
+    name: 生成视频
+    description: 输入提示词，异步生成视频并返回视频地址。
+    idempotent: true
+    timeout: PT30S
+    riskLevel: WRITE
+    inputSchema:
+      type: object
+      required: [prompt]
+      additionalProperties: false
+      properties:
+        prompt: {type: string, minLength: 1, maxLength: 10000, title: 视频提示词}
+        duration: {type: integer, minimum: 1, maximum: 15, title: 时长（秒）}
+        ratio: {type: string, enum: ['16:9', '9:16', '1:1', '4:3', '3:4', '21:9', adaptive], title: 画面比例}
+        resolution: {type: string, enum: [480p, 720p, 1080p], title: 分辨率}
+        generate_audio: {type: boolean, title: 生成音频}
+        watermark: {type: boolean, title: 添加水印}
+        seed: {type: integer, minimum: -1, maximum: 4294967295, title: 随机种子}
+    outputSchema:
+      type: object
+      required: [taskId, status, videoUrl]
+      properties:
+        taskId: {type: string, title: 方舟任务 ID}
+        status: {type: string, title: 任务状态}
+        videoUrl: {type: string, title: 视频地址}
+    metadata:
+      executionMode: ASYNC
+      uiSchema:
+        order: [prompt, duration, ratio, resolution, generate_audio, watermark, seed]
+        fields:
+          prompt: {widget: textarea, allowVariable: true, placeholder: 可引用上游模型生成的视频脚本}

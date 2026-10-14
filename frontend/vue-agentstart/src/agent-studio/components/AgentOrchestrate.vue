@@ -9,8 +9,8 @@
  * driven via props, or the host can drop its own via the default slot to fully
  * customize. Both flows are supported so old callers can stay declarative.
  */
-import ModelPickerPopover from '../../provider-hub/components/ModelPickerPopover.vue';
-import type { SelectedModel } from '../../provider-hub/types';
+import ModelPickerPopover from '../../model-provider-hub/components/ModelPickerPopover.vue';
+import type { SelectedModel } from '../../model-provider-hub/types';
 
 import type {
   PromptVariable,
@@ -299,7 +299,7 @@ function removeKnowledge(id: string) {
   background: transparent;
 }
 
-/* Model picker — 复用 provider-hub 的 ModelPickerPopover，触发块尺寸对齐 toolbar */
+/* Model picker — 复用 model-provider-hub 的 ModelPickerPopover，触发块尺寸对齐 toolbar */
 .orch-model {
   min-width: 240px;
   max-width: 320px;

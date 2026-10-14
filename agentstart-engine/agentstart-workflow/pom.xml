@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>io.github.aigoodle</groupId>
+        <groupId>io.aigoodle</groupId>
         <artifactId>agentstart-engine</artifactId>
         <version>0.1.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
@@ -15,4 +15,78 @@
     <packaging>jar</packaging>
     <name>agentstart-workflow</name>
     <description>业务 DAG、节点执行、检查点、租约与流程恢复。</description>
+    <dependencies>
+        <dependency>
+            <groupId>io.aigoodle</groupId>
+            <artifactId>agentstart-persistence</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.aigoodle</groupId>
+            <artifactId>agentstart-memory</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.aigoodle</groupId>
+            <artifactId>agentstart-model</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.aigoodle</groupId>
+            <artifactId>agentstart-agent</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.aigoodle</groupId>
+            <artifactId>agentstart-knowledge</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>io.aigoodle</groupId>
+            <artifactId>agentstart-tools</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>io.aigoodle</groupId>
+            <artifactId>agentstart-connector</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>io.aigoodle</groupId>
+            <artifactId>agentstart-channel</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-jexl3</artifactId>
+            <version>3.3</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-core</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>${h2.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 </project>

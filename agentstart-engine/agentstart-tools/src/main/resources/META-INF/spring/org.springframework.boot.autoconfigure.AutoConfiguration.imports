@@ -1,0 +1,2 @@
+io.aigoodle.tool.config.GoodleToolsAutoConfiguration
+io.aigoodle.tool.observability.ToolMetricsAutoConfiguration

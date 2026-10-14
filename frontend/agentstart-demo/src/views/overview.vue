@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useTheme } from '../composables/useTheme'
 
 /**
  * 总览驾驶舱 —— 自制 HUD 监控大屏首页。
@@ -8,6 +9,7 @@ import { useRouter } from 'vue-router'
  */
 
 const router = useRouter()
+const { theme, isDark } = useTheme()
 
 /** define 注入的编译期常量；模板无法直接访问全局，需经 setup 暴露 */
 const isMock = __USE_MOCK__
@@ -213,7 +215,7 @@ function barTip(b: TrendBucket): string {
           </li>
           <li>
             <span class="hud-label">主题</span>
-            <span class="ov-status-val">暗黑 HUD · dark</span>
+            <span class="ov-status-val">{{ isDark ? '暗黑' : '明亮' }} · {{ theme }}</span>
           </li>
           <li>
             <span class="hud-label">快照时间</span>

@@ -1,0 +1,3 @@
+io.aigoodle.agent.config.AgentRuntimeAutoConfiguration
+io.aigoodle.agent.observability.AgentMetricsAutoConfiguration
+io.aigoodle.agent.eval.AgentEvaluationAutoConfiguration

@@ -1,0 +1,46 @@
+schemaVersion: 1
+id: wecom
+name: 企业微信智能机器人
+description: 企业微信智能机器人 WebSocket 长连接消息通道
+version: "2"
+accountModel:
+  scope: TENANT
+  instancePolicy: MULTIPLE
+  ownerRequired: false
+  identityBridge:
+    enabled: true
+    mode: HOST
+    externalIdentityLabel: 企业微信用户
+    enterpriseIdentityLabel: 企业员工
+    description: 如需员工身份绑定，请由宿主系统实现通用 ChannelIdentityBindingProvider。
+credentialSchema:
+  type: object
+  required: [botId, secret]
+  properties:
+    botId:
+      type: string
+      title: Bot ID
+      description: 企业微信「智能机器人」详情页的 Bot ID，通常以 aib 开头；不是 Corp ID 或 Agent ID
+    secret:
+      type: string
+      title: Secret
+      description: 与上述 Bot ID 同一智能机器人详情页生成的 Secret；不是自建应用 Secret 或群机器人 Webhook Key
+      writeOnly: true
+configurationSchema:
+  type: object
+  properties:
+    wsUrl:
+      type: string
+      title: 长连接地址
+      description: 私有化部署时填写，公有云请留空
+      format: uri
+uiSchema:
+  fields:
+    botId: { placeholder: "智能机器人 Bot ID，例如 aib..." }
+    secret: { widget: password }
+    wsUrl: { placeholder: "可选，私有化部署地址" }
+metadata:
+  platformId: wecom
+  icon: 企微
+  transport: websocket
+  transports: [websocket, legacy-webhook]

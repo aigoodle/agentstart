@@ -1,0 +1,41 @@
+schemaVersion: 1
+id: feishu
+name: 飞书机器人
+description: 飞书应用机器人消息通道
+version: "1"
+accountModel:
+  scope: TENANT
+  instancePolicy: MULTIPLE
+  ownerRequired: false
+  identityBridge:
+    enabled: true
+    mode: OAUTH
+    externalIdentityLabel: 飞书用户
+    enterpriseIdentityLabel: 企业员工
+    description: 运行期间可将飞书用户关联到租户员工。
+credentialSchema:
+  type: object
+  required: [appId, appSecret]
+  properties:
+    appId: { type: string, title: App ID }
+    appSecret: { type: string, title: App Secret, writeOnly: true }
+configurationSchema:
+  type: object
+  properties:
+    verificationToken: { type: string, title: Verification Token, writeOnly: true }
+    encryptKey: { type: string, title: Encrypt Key, writeOnly: true }
+    transport:
+      type: string
+      title: 接收方式
+      enum: [stream, webhook]
+      default: stream
+uiSchema:
+  fields:
+    appSecret: { widget: password }
+    verificationToken: { widget: password }
+    encryptKey: { widget: password }
+metadata:
+  platformId: feishu
+  icon: 飞书
+  transport: stream
+  transports: [stream, webhook]

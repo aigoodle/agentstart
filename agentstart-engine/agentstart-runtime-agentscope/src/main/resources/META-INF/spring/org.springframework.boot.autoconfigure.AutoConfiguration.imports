@@ -1,0 +1,3 @@
+io.aigoodle.runtime.agentscope.AgentScopeFactoryAutoConfiguration
+io.aigoodle.runtime.agentscope.AgentScopeAutoConfiguration
+io.aigoodle.runtime.agentscope.AgentScopeStateAutoConfiguration

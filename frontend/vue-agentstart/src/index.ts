@@ -4,7 +4,7 @@
  * All source lives under this one module. It absorbs what used to be four
  * separate packages, now organised as sub-folders under `./`:
  *
- *   • provider-hub  — model provider gallery + credential mgmt + shared picker
+ *   • model-provider-hub  — model provider gallery + credential mgmt + shared picker
  *   • knowledge-hub — dataset CRUD + document ingest + recall testing
  *   • agent-studio  — app list + Dify-parity 编排/API/日志/监测 editor
  *   • agent-flow    — visual workflow / DAG designer for LLM nodes
@@ -78,26 +78,26 @@ export {
 } from './client/vue';
 
 // -----------------------------------------------------------------------------
-// provider-hub — model provider mgmt + shared model picker
+// model-provider-hub — model provider mgmt + shared model picker
 // -----------------------------------------------------------------------------
-export { default as CredentialForm } from './provider-hub/components/CredentialForm.vue';
-export { default as DefaultModelsPanel } from './provider-hub/components/DefaultModelsPanel.vue';
-export { default as ModelCardGrid } from './provider-hub/components/ModelCardGrid.vue';
-export { default as ModelParameterDrawer } from './provider-hub/components/ModelParameterDrawer.vue';
-export { default as ModelPickerPopover } from './provider-hub/components/ModelPickerPopover.vue';
-export { default as ProviderApp } from './provider-hub/components/ProviderApp.vue';
-export { default as ProviderCredentialModal } from './provider-hub/components/ProviderCredentialModal.vue';
-export { default as ProviderGallery } from './provider-hub/components/ProviderGallery.vue';
-export { default as ProviderHubShell } from './provider-hub/components/ProviderHubShell.vue';
-export { default as ProviderIcon } from './provider-hub/components/ProviderIcon.vue';
+export { default as CredentialForm } from './model-provider-hub/components/CredentialForm.vue';
+export { default as DefaultModelsPanel } from './model-provider-hub/components/DefaultModelsPanel.vue';
+export { default as ModelCardGrid } from './model-provider-hub/components/ModelCardGrid.vue';
+export { default as ModelParameterDrawer } from './model-provider-hub/components/ModelParameterDrawer.vue';
+export { default as ModelPickerPopover } from './model-provider-hub/components/ModelPickerPopover.vue';
+export { default as ProviderApp } from './model-provider-hub/components/ProviderApp.vue';
+export { default as ProviderCredentialModal } from './model-provider-hub/components/ProviderCredentialModal.vue';
+export { default as ProviderGallery } from './model-provider-hub/components/ProviderGallery.vue';
+export { default as ProviderHubShell } from './model-provider-hub/components/ProviderHubShell.vue';
+export { default as ProviderIcon } from './model-provider-hub/components/ProviderIcon.vue';
 
-export * from './provider-hub/composables/useProviderHub';
-export * from './provider-hub/types';
+export * from './model-provider-hub/composables/useProviderHub';
+export * from './model-provider-hub/types';
 
 // All three composables (useProviderHub / useKnowledge / useAgentStudio)
 // export a structurally identical `HeadersLike`. Re-export it explicitly once
 // so the `export *` trio below doesn't trip TS2308 (ambiguous star export).
-export type { HeadersLike } from './provider-hub/composables/useProviderHub';
+export type { HeadersLike } from './model-provider-hub/composables/useProviderHub';
 
 export * from './connector-hub';
 export * from './channel-hub';

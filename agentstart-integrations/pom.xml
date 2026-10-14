@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>io.github.aigoodle</groupId>
+        <groupId>io.aigoodle</groupId>
         <artifactId>agentstart</artifactId>
         <version>0.1.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
@@ -21,5 +21,10 @@
         <module>agentstart-plugin</module>
         <module>agentstart-channel</module>
         <module>agentstart-trigger</module>
+        <module>agentstart-channels</module>
+        <module>agentstart-plugins</module>
+        <module>agentstart-channel-redis</module>
+        <module>agentstart-connector-tools</module>
+        <module>agentstart-plugin-agent</module>
     </modules>
 </project>

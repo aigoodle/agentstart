@@ -1,0 +1,27 @@
+schemaVersion: 1
+id: webhook
+name: Webhook
+description: 通用 HTTP JSON 双向消息通道
+version: "1"
+accountModel:
+  scope: TENANT
+  instancePolicy: MULTIPLE
+  ownerRequired: false
+credentialSchema:
+  type: object
+  properties:
+    callbackToken: { type: string, title: 入站回调 Token, writeOnly: true }
+    bearerToken: { type: string, title: 出站 Bearer Token, writeOnly: true }
+configurationSchema:
+  type: object
+  required: [outboundUrl]
+  properties:
+    outboundUrl: { type: string, title: 出站 Webhook URL, format: uri }
+uiSchema:
+  fields:
+    callbackToken: { widget: password }
+    bearerToken: { widget: password }
+metadata:
+  platformId: webhook
+  icon: Webhook
+  transport: webhook

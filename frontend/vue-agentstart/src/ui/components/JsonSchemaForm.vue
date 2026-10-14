@@ -5,7 +5,7 @@ import type { JsonSchema } from '../../connector-hub/types';
 import { parseJsonSchema } from '../../connector-hub/types';
 import { parseSchemaUi, visibleSchemaFields } from '../../connector-hub/schema-ui';
 import VarInsertField from '../../agent-flow/workflow/VarInsertField.vue';
-import ModelPickerPopover from '../../provider-hub/components/ModelPickerPopover.vue';
+import ModelPickerPopover from '../../model-provider-hub/components/ModelPickerPopover.vue';
 
 const props = withDefaults(
   defineProps<{

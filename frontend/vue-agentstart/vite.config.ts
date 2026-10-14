@@ -5,7 +5,7 @@
  *
  *   index          → dist/index.{js,cjs}          (union surface, eager CSS import)
  *   client         → dist/client/index.{js,cjs}   (framework-neutral SDK only)
- *   provider-hub   → dist/provider-hub/index.{js,cjs}
+ *   model-provider-hub   → dist/model-provider-hub/index.{js,cjs}
  *   knowledge-hub  → dist/knowledge-hub/index.{js,cjs}
  *   agent-studio   → dist/agent-studio/index.{js,cjs}
  *   agent-flow     → dist/agent-flow/index.{js,cjs}
@@ -78,7 +78,7 @@ export default defineConfig({
         index: fileURLToPath(new URL('./src/index.ts', import.meta.url)),
         aigoodle: fileURLToPath(new URL('./src/aigoodle.ts', import.meta.url)),
         'client/index': fileURLToPath(new URL('./src/client/index.ts', import.meta.url)),
-        'provider-hub/index': fileURLToPath(new URL('./src/provider-hub/index.ts', import.meta.url)),
+        'model-provider-hub/index': fileURLToPath(new URL('./src/model-provider-hub/index.ts', import.meta.url)),
         'knowledge-hub/index': fileURLToPath(new URL('./src/knowledge-hub/index.ts', import.meta.url)),
         'agent-studio/index': fileURLToPath(new URL('./src/agent-studio/index.ts', import.meta.url)),
         'agent-flow/index': fileURLToPath(new URL('./src/agent-flow/index.ts', import.meta.url)),

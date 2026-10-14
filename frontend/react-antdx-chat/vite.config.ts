@@ -14,6 +14,7 @@ export default defineConfig(({ mode }) => {
   const host: string | boolean =
     !rawHost || rawHost === 'true' ? true : rawHost === 'false' ? false : rawHost
   const strictPort = env.VITE_STRICT_PORT === 'true'
+  const apiTarget = env.VITE_AGENT_API_TARGET || 'http://127.0.0.1:18090'
 
   const rawBase = env.VITE_BASE?.trim() || '/chat/'
   const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`
@@ -39,7 +40,7 @@ export default defineConfig(({ mode }) => {
       strictPort,
       proxy: {
         '/chatapi': {
-          target: 'http://101.33.254.31:18091/v1',
+          target: apiTarget,
           changeOrigin: true,
           rewrite: (p) => p.replace(/^\/chatapi/, ''),
         },

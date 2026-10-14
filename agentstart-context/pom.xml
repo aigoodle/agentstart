@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>io.github.aigoodle</groupId>
+        <groupId>io.aigoodle</groupId>
         <artifactId>agentstart</artifactId>
         <version>0.1.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
@@ -21,5 +21,7 @@
         <module>agentstart-rag</module>
         <module>agentstart-memory</module>
         <module>agentstart-skill</module>
+        <module>agentstart-store</module>
+        <module>agentstart-rag-tools</module>
     </modules>
 </project>

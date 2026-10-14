@@ -1,0 +1,40 @@
+id: example.product-video-java
+version: 1.0.0
+name: 商品视频策划（Java 示例）
+description: 查询内部商品资料并形成视频简报；此示例不生成视频文件。
+category: media
+requestedCapabilities: [product.read]
+configurationSchema:
+  type: object
+  properties:
+    brand:
+      type: string
+      title: 品牌
+actions:
+  - id: prepare
+    name: 生成视频简报
+    idempotent: true
+    timeout: PT15S
+    riskLevel: READ
+    inputSchema:
+      type: object
+      required: [productId]
+      properties:
+        productId:
+          type: string
+          title: 商品编号
+        style:
+          type: string
+          title: 风格要求
+    outputSchema:
+      type: object
+      properties:
+        text: {type: string}
+        product: {type: object}
+    metadata:
+      uiSchema:
+        order: [productId, style]
+        fields:
+          style: {widget: textarea}
+skills:
+  - path: skills/product-video-brief/SKILL.md

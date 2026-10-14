@@ -54,9 +54,9 @@ import type {
 import DatasetPickerModal from '../../knowledge-hub/components/DatasetPickerModal.vue';
 import { useKnowledge } from '../../knowledge-hub/composables/useKnowledge';
 import type { DatasetSummary } from '../../knowledge-hub/types';
-import ModelPickerPopover from '../../provider-hub/components/ModelPickerPopover.vue';
+import ModelPickerPopover from '../../model-provider-hub/components/ModelPickerPopover.vue';
 import SkillSelect from '../../skill-hub/SkillSelect.vue';
-import type { SelectedModel } from '../../provider-hub/types';
+import type { SelectedModel } from '../../model-provider-hub/types';
 import { Drawer } from '../../ui';
 
 import type {
@@ -96,13 +96,13 @@ interface Props {
   /**
    * @deprecated Legacy dropdown data source — left in for backward compat, but
    * the top-right picker now uses {@link ModelPickerPopover}, which pulls the
-   * enabled-model catalog itself via provider-hub. Only meaningful if you have
+   * enabled-model catalog itself via model-provider-hub. Only meaningful if you have
    * an existing caller passing a hand-curated model list.
    */
   models?: StudioModelOption[];
   tools?: StudioTool[];
   knowledgeBases?: StudioKnowledge[];
-  /** Passed to the provider-hub picker for multi-tenant deployments. */
+  /** Passed to the model-provider-hub picker for multi-tenant deployments. */
   tenantId?: string;
   /**
    * Callback bag for the drawer's built-in panels (日志/标注/监测). Every

@@ -1,0 +1,34 @@
+schemaVersion: 1
+id: dingtalk
+name: 钉钉机器人
+description: 钉钉企业机器人消息通道
+version: "1"
+accountModel:
+  scope: TENANT
+  instancePolicy: MULTIPLE
+  ownerRequired: false
+  identityBridge:
+    enabled: true
+    mode: OAUTH
+    externalIdentityLabel: 钉钉用户
+    enterpriseIdentityLabel: 企业员工
+    description: 运行期间可将钉钉用户关联到租户员工。
+credentialSchema:
+  type: object
+  required: [clientId, clientSecret]
+  properties:
+    clientId: { type: string, title: Client ID / AppKey }
+    clientSecret: { type: string, title: Client Secret, writeOnly: true }
+configurationSchema:
+  type: object
+  properties:
+    webhookUrl: { type: string, title: 群机器人 Webhook URL, format: uri }
+    callbackToken: { type: string, title: 回调 Token, writeOnly: true }
+uiSchema:
+  fields:
+    clientSecret: { widget: password }
+    callbackToken: { widget: password }
+metadata:
+  platformId: dingtalk
+  icon: 钉钉
+  transport: stream

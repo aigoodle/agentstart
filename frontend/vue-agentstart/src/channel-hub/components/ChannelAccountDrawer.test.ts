@@ -75,7 +75,7 @@ describe('ChannelAccountDrawer employee-owned account', () => {
     textInputs[1].value = '员工 QQ';
     textInputs[1].dispatchEvent(new Event('input'));
     await flushPromises();
-    (dialog.querySelector('.cad-btn-primary') as HTMLButtonElement).click();
+    Array.from(dialog.querySelectorAll('button')).find(button => button.textContent?.trim() === '创建连接')!.click();
     await flushPromises();
 
     expect(client.channels.saveChannelConnection).toHaveBeenCalledWith(
@@ -108,7 +108,7 @@ describe('ChannelAccountDrawer employee-owned account', () => {
     name.value = '总部企业微信';
     name.dispatchEvent(new Event('input'));
     await flushPromises();
-    (dialog.querySelector('.cad-btn-primary') as HTMLButtonElement).click();
+    Array.from(dialog.querySelectorAll('button')).find(button => button.textContent?.trim() === '创建连接')!.click();
     await flushPromises();
 
     expect(client.channels.saveChannelConnection).toHaveBeenCalledWith(

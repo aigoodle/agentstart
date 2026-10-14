@@ -1,55 +1,60 @@
 import { computed, reactive, watch } from 'vue'
 
 export type Theme = 'dark' | 'light'
+export type ThemeMode = Theme | 'system'
 
 const STORAGE_KEY = 'agent-start-theme'
 
-function readInitial(): Theme {
+function readInitial(): ThemeMode {
   try {
-    const v = localStorage.getItem(STORAGE_KEY)
-    if (v === 'dark' || v === 'light') return v
+    const value = localStorage.getItem(STORAGE_KEY)
+    if (value === 'dark' || value === 'light' || value === 'system') return value
   } catch {
-    /* ignore */
+    /* Storage may be unavailable in an embedded browser. */
   }
   return 'dark'
 }
 
-// 单例状态：所有组件共享同一份主题
-const state = reactive<{ value: Theme }>({ value: readInitial() })
+const media = typeof window !== 'undefined'
+  ? window.matchMedia('(prefers-color-scheme: dark)')
+  : null
+const state = reactive({ mode: readInitial(), systemDark: media?.matches ?? true })
+const theme = computed<Theme>(() => state.mode === 'system'
+  ? (state.systemDark ? 'dark' : 'light')
+  : state.mode)
 
-function apply(theme: Theme) {
-  const root = document.documentElement
-  if (theme === 'dark') {
-    root.classList.add('dark')
-    root.dataset.theme = 'dark'
-  } else {
-    root.classList.remove('dark')
-    root.dataset.theme = 'light'
-  }
+function onSystemChange(event: MediaQueryListEvent) {
+  state.systemDark = event.matches
+}
+media?.addEventListener('change', onSystemChange)
+if (import.meta.hot) {
+  import.meta.hot.dispose(() => media?.removeEventListener('change', onSystemChange))
 }
 
-// 初始化时立即应用一次（SSR-friendly：仅在客户端执行）
-if (typeof document !== 'undefined') apply(state.value)
+watch(theme, (value) => {
+  if (typeof document === 'undefined') return
+  document.documentElement.classList.toggle('dark', value === 'dark')
+  document.documentElement.dataset.theme = value
+}, { immediate: true })
 
-watch(
-  () => state.value,
-  (v) => {
-    apply(v)
-    try {
-      localStorage.setItem(STORAGE_KEY, v)
-    } catch {
-      /* ignore */
-    }
-  },
-)
+watch(() => state.mode, (value) => {
+  try {
+    localStorage.setItem(STORAGE_KEY, value)
+  } catch {
+    /* Storage may be unavailable in an embedded browser. */
+  }
+})
 
 export function useTheme() {
-  const isDark = computed(() => state.value === 'dark')
+  const mode = computed<ThemeMode>({
+    get: () => state.mode,
+    set: value => { state.mode = value },
+  })
   function toggle() {
-    state.value = state.value === 'dark' ? 'light' : 'dark'
+    state.mode = theme.value === 'dark' ? 'light' : 'dark'
   }
-  function set(theme: Theme) {
-    state.value = theme
+  function set(value: ThemeMode) {
+    state.mode = value
   }
-  return { theme: computed(() => state.value), isDark, toggle, set }
+  return { theme, mode, isDark: computed(() => theme.value === 'dark'), toggle, set }
 }

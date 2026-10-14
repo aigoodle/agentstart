@@ -10,7 +10,7 @@ import type {
   ProviderDefinition,
   ProviderView,
   RemoteModel,
-} from '../provider-hub/types';
+} from '../model-provider-hub/types';
 import { qs, type HttpCore } from './core';
 
 /** Payload accepted by {@link ProvidersNamespace.addPredefinedModel}. */
@@ -26,6 +26,7 @@ export interface PredefinedModelPayload {
 }
 
 export interface ProvidersNamespace {
+  synchronizeBuiltinCatalog(): Promise<{ insertedProviders: number }>;
   /** GET /model-providers — gallery rows with installedModelCount etc. */
   list(tenantId?: string): Promise<ProviderView[]>;
   /** GET /model-providers/{name}. */
@@ -94,6 +95,7 @@ export function createProvidersNamespace(core: HttpCore): ProvidersNamespace {
   }
 
   return {
+    synchronizeBuiltinCatalog: () => core.request('/model-providers/catalog/sync', { method: 'POST' }),
     async list(tenantId) {
       return core.request<ProviderView[]>(
         `/model-providers${qs({ tenantId: await tenantParam(tenantId) })}`,

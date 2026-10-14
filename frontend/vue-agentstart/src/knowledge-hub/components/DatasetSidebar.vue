@@ -272,7 +272,7 @@ onBeforeUnmount(() => {
         </div>
         <div class="kh-side-count">
           <div class="kh-side-count-val">{{ dataset.segmentCount ?? 0 }}</div>
-          <div class="kh-side-count-lbl">个关联应用</div>
+          <div class="kh-side-count-lbl">片段</div>
         </div>
       </div>
       <button class="kh-side-api" @click="emit('copy-api')">

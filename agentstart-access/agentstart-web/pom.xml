@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>io.github.aigoodle</groupId>
+        <groupId>io.aigoodle</groupId>
         <artifactId>agentstart-access</artifactId>
         <version>0.1.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
@@ -15,4 +15,111 @@
     <packaging>jar</packaging>
     <name>agentstart-web</name>
     <description>管理 API 与业务 API。</description>
+    <dependencies>
+        <dependency>
+            <groupId>io.aigoodle</groupId>
+            <artifactId>agentstart-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.aigoodle</groupId>
+            <artifactId>agentstart-skill</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>io.aigoodle</groupId>
+            <artifactId>agentstart-plugin</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>io.aigoodle</groupId>
+            <artifactId>agentstart-model</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.aigoodle</groupId>
+            <artifactId>agentstart-knowledge</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>io.aigoodle</groupId>
+            <artifactId>agentstart-workflow</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>io.aigoodle</groupId>
+            <artifactId>agentstart-agent</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>io.aigoodle</groupId>
+            <artifactId>agentstart-tools</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>io.aigoodle</groupId>
+            <artifactId>agentstart-connector</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>io.aigoodle</groupId>
+            <artifactId>agentstart-channel</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>io.aigoodle</groupId>
+            <artifactId>agentstart-observability</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>io.aigoodle</groupId>
+            <artifactId>agentstart-trigger</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webflux</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.projectreactor.netty</groupId>
+            <artifactId>reactor-netty-http</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>${h2.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>context-propagation</artifactId>
+        </dependency>
+    </dependencies>
 </project>

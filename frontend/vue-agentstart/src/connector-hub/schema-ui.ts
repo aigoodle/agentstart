@@ -1,5 +1,5 @@
 import type { JsonSchema } from './types';
-import type { ModelType } from '../provider-hub/types';
+import type { ModelType } from '../model-provider-hub/types';
 
 export interface SchemaFieldUi {
   widget?: 'input' | 'textarea' | 'password' | 'select' | 'model-selector';

@@ -727,6 +727,7 @@ async function onCreateApp(payload: {
   try {
     await createAgentReq({
       name: payload.name,
+      published: false,
       description: payload.description || undefined,
       icon: payload.icon.emoji,
       iconBackground: payload.icon.background,

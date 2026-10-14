@@ -1,0 +1,179 @@
+server:
+  port: ${SERVER_PORT:18090}
+
+spring:
+  application:
+    name: agentstart-server
+
+  # Force Netty/WebFlux even if a MVC servlet class shows up on the classpath
+  # (e.g. spring-webmvc pulled in transitively). The reactive dispatcher can
+  # routes shared controllers plus reactive upload and streaming adapters.
+  # Servlet upload and SSE controllers activate only in servlet hosts.
+  main:
+    web-application-type: reactive
+
+  # -------------------------------------------------------------------------
+  # PostgreSQL is the primary datasource — start Postgres first (see
+  # pgsql/docker-compose.yml or pgsql/init.sql for the schema DDL) then run
+  # `mvn -pl agentstart-server -am package -DskipTests`, then launch the server jar.
+  # -------------------------------------------------------------------------
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:spring-agent}?currentSchema=public&reWriteBatchedInserts=true&stringtype=unspecified&ApplicationName=agentstart-server
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:ai123456}
+    driver-class-name: org.postgresql.Driver
+
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      database: ${REDIS_DB:0}
+      timeout: ${REDIS_TIMEOUT:2s}
+
+  sql:
+    init:
+      # Runs each module's classpath DDL on startup. Continue-on-error so a re-boot
+      # against an already-initialised DB just no-ops the CREATE IF NOT EXISTS
+      # statements instead of killing the app.
+      mode: always
+      continue-on-error: true
+      schema-locations:
+        - classpath:db/model-schema.sql
+        - classpath:db/knowledge-schema.sql
+        - classpath:db/workflow-schema.sql
+        - classpath:db/agent-schema.sql
+        - classpath:db/agentscope-schema.sql
+        - classpath:db/skill-schema.sql
+        - classpath:db/memory-schema.sql
+        - classpath:db/trigger-schema.sql
+        - classpath:db/observability-schema.sql
+        - classpath:db/connector-schema.sql
+        - classpath:db/channel-schema.sql
+        - classpath:db/plugin-video-schema.sql
+
+  # Upload limits — knowledge module accepts multipart docs (PDF/DOCX/etc). Bump
+  # these if you plan to upload very large source files. WebFlux enforces the limit
+  # via the codec's in-memory ceiling rather than servlet.multipart.
+  codec:
+    max-in-memory-size: 100MB
+
+spring-agent:
+  agentscope:
+    state-store: jdbc
+  server:
+    # Automatically enforced for `prod`/`production` profiles. CI/CD can also
+    # enable it explicitly without changing profiles.
+    production-guard:
+      enabled: ${AGENT_PRODUCTION_GUARD:false}
+  demo:
+    # Downloadable demo only: /auth/login returns a front-end state marker, while
+    # DemoCurrentUserWebFilter restores this trusted identity on every request.
+    # No user/tenant table, JWT validation or Redis session is involved.
+    # Set AGENT_DEMO_ENABLED=false in a host system and provide its JWT/session/SSO bridge.
+    enabled: ${AGENT_DEMO_ENABLED:true}
+    login-username: ${AGENT_DEMO_LOGIN_USERNAME:admin}
+    login-password: ${AGENT_DEMO_LOGIN_PASSWORD:123456}
+    user-id: ${AGENT_DEMO_USER_ID:demo-user}
+    username: ${AGENT_DEMO_USERNAME:Demo Administrator}
+    tenant-id: ${AGENT_DEMO_TENANT:default}
+    roles: ${AGENT_DEMO_ROLES:TENANT_ADMIN,CONNECTOR_ADMIN}
+    allow-debug: ${AGENT_DEMO_ALLOW_DEBUG:true}
+  web:
+    base-path: "/agent-start"
+    # CORS wide open by default so a Vite dev server (or any origin) can hit it.
+    allowed-origins: ["*"]
+  model:
+    # AES-GCM key used to encrypt provider credentials at rest. CHANGE THIS in prod.
+    encryption-secret: ${AGENT_SECRET:demo-secret-change-me}
+  connector:
+    # Connector connection credentials are encrypted separately from model credentials.
+    encryption-secret: ${CONNECTOR_SECRET:${AGENT_SECRET:demo-secret-change-me}}
+  channel:
+    # Channel connection credentials historically shared the connector secret; keep
+    # both pointing at the same value so existing ciphertexts keep decrypting.
+    encryption-secret: ${CONNECTOR_SECRET:${AGENT_SECRET:demo-secret-change-me}}
+    catalog-cache-ttl: ${CHANNEL_CATALOG_CACHE_TTL:10m}
+    rate-limit:
+      backend: ${CHANNEL_RATE_LIMIT_BACKEND:redis}
+      key-prefix: ${CHANNEL_RATE_LIMIT_KEY_PREFIX:agent-start:channel-rate}
+    # Explicit server migration switch. Embedded SDK consumers that do not
+    # install the channel schema must not fail application startup.
+    backfill-enabled: true
+  knowledge:
+    # Persist embeddings via the built-in JDBC vector store (same DB). Swap to
+    # pgvector / elasticsearch / milvus by adding the matching starter jar and
+    # changing this value to: pgvector | elasticsearch | milvus.
+    vector-store: jdbc
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+
+# OpenAPI 3 spec + Swagger UI (springdoc-openapi-starter-webflux-ui). Available at:
+#   http://localhost:18090/v3/api-docs         — raw JSON spec (auto-gen clients)
+#   http://localhost:18090/swagger-ui.html     — browsable UI
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    display-request-duration: true
+    operations-sorter: alpha
+    tags-sorter: alpha
+  paths-to-match:
+    - /agent-start/**
+    - /chat-messages/**
+    - /chat/completions/**
+    - /conversations/**
+    - /messages/**
+    - /health
+
+# 内部服务基础地址：HTTP 节点若填写的 url 不是 http/https 开头，会自动拼接到这里。
+agent-boot:
+  http-base-url: http://127.0.0.1:8001/
+
+logging:
+  # 控制台输出格式：时间 + 线程 + 级别(5位对齐) + logger(缩到 40) + 消息
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %clr(%5p) [%15.15t] %clr(%-40.40logger{39}){cyan} : %m%n%wEx"
+  level:
+    # 根日志默认 INFO；调试期若嫌不够详细可临时改成 DEBUG
+    root: INFO
+
+    # 业务代码（每个 module 的 service / controller / runtime 打的日志）
+    io.aigoodle: INFO
+
+    # ---- MyBatis-Plus SQL 打印（每个 module 的 mapper 包）----
+    io.aigoodle.model.mapper: INFO
+    io.aigoodle.knowledge.mapper: INFO
+    io.aigoodle.agent.mapper: INFO
+    io.aigoodle.workflow.mapper: INFO
+    io.aigoodle.trigger.mapper: INFO
+    io.aigoodle.observability.mapper: INFO
+
+    # 高频后台轮询只关闭 SQL 明细，避免每秒刷屏；需要排查时对具体 Mapper 开启 DEBUG。
+    io.aigoodle.workflow.mapper.WorkflowCheckpointMapper: INFO
+    io.aigoodle.trigger.mapper.TriggerMapper: INFO
+    io.aigoodle.channel.persistence.ChannelEventMapper: INFO
+
+    # ---- Spring / WebFlux / 启动 ----
+    org.springframework.boot.autoconfigure: WARN
+    org.springframework.boot.web: INFO
+    org.springframework.web: INFO
+    org.springframework.http.server.reactive: INFO
+    # 想看到每个 HTTP 请求进出，把下面这行改成 DEBUG
+    org.springframework.web.reactive.function.server: INFO
+
+    # ---- JDBC 初始化 & 连接池 ----
+    org.springframework.jdbc.datasource.init: INFO
+    com.zaxxer.hikari: INFO
+    com.zaxxer.hikari.HikariConfig: INFO
+
+    # ---- Spring AI（模型调用 / retry / tool call）----
+    org.springframework.ai: INFO
+    org.springframework.retry: INFO
+
+    # ---- Netty / Reactor（WebFlux 底层）----
+    reactor.netty: INFO
+    io.netty: INFO

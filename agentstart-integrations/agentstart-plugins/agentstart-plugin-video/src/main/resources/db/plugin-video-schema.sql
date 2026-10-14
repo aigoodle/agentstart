@@ -1,0 +1,20 @@
+CREATE TABLE IF NOT EXISTS plugin_video_task (
+    id VARCHAR(64) PRIMARY KEY,
+    invocation_key VARCHAR(64) NOT NULL UNIQUE,
+    tenant_id VARCHAR(128) NOT NULL,
+    owner_id VARCHAR(128),
+    request_hash VARCHAR(64) NOT NULL,
+    endpoint_cipher TEXT NOT NULL,
+    vendor_task_id VARCHAR(255),
+    status VARCHAR(32) NOT NULL,
+    result_json TEXT,
+    last_error VARCHAR(128),
+    cancel_requested INTEGER DEFAULT 0 NOT NULL,
+    attempts INTEGER DEFAULT 0 NOT NULL,
+    next_poll_at TIMESTAMP NOT NULL,
+    deadline_at TIMESTAMP NOT NULL,
+    lease_token VARCHAR(64),
+    lease_until TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+);

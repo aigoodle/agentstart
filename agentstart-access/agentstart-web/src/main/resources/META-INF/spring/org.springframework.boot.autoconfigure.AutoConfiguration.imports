@@ -1,0 +1,3 @@
+io.aigoodle.web.config.GoodleWebAutoConfiguration
+io.aigoodle.web.config.GoodleOpenApiConfig
+io.aigoodle.web.config.ReactiveRequestExecutionAutoConfiguration

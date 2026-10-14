@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    url: ${WORKFLOW_POSTGRES_URL:jdbc:postgresql://127.0.0.1:55432/workflow_test}
+    driver-class-name: org.postgresql.Driver
+    username: ${WORKFLOW_POSTGRES_USER:workflow}
+    password: ${WORKFLOW_POSTGRES_PASSWORD:workflow}
+  sql:
+    init:
+      mode: always
+      schema-locations:
+        - file:../pgsql/init.sql

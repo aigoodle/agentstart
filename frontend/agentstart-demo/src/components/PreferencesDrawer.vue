@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
 
 import { useTheme } from '../composables/useTheme'
 import { useThemeColor } from '../composables/useThemeColor'
@@ -7,38 +7,9 @@ import { useVisualMode } from '../composables/useVisualMode'
 
 const open = ref(false)
 
-const { theme, isDark, set: setTheme } = useTheme()
+const { mode: themeMode } = useTheme()
 const { isTech, set: setVisual } = useVisualMode()
 const { color, presets, setColor } = useThemeColor()
-
-// 系统主题检测
-const systemDark = ref(
-  typeof window !== 'undefined'
-    ? window.matchMedia('(prefers-color-scheme: dark)').matches
-    : true,
-)
-
-onMounted(() => {
-  const mq = window.matchMedia('(prefers-color-scheme: dark)')
-  const handler = (e: MediaQueryListEvent) => (systemDark.value = e.matches)
-  mq.addEventListener('change', handler)
-  onBeforeUnmount(() => mq.removeEventListener('change', handler))
-})
-
-// 当前主题模式：'dark' | 'light' | 'system'
-const themeMode = computed<'dark' | 'light' | 'system'>({
-  get() {
-    // 如果当前主题与系统主题一致，认为是 system
-    return isDark.value === systemDark.value ? 'system' : theme.value
-  },
-  set(mode) {
-    if (mode === 'system') {
-      setTheme(systemDark.value ? 'dark' : 'light')
-    } else {
-      setTheme(mode)
-    }
-  },
-})
 
 function toggle() {
   open.value = !open.value
@@ -66,10 +37,6 @@ function onKeydown(e: KeyboardEvent) {
 onMounted(() => document.addEventListener('keydown', onKeydown))
 onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown))
 
-// 调试：监听颜色变化
-watch(color, (newColor) => {
-  console.log('[PreferencesDrawer] Theme color changed to:', newColor)
-})
 </script>
 
 <template>
@@ -131,6 +98,7 @@ watch(color, (newColor) => {
                       type="button"
                       class="pref-theme-card"
                       :class="{ active: themeMode === 'light' }"
+                      :aria-pressed="themeMode === 'light'"
                       @click="themeMode = 'light'"
                     >
                       <svg viewBox="0 0 1024 1024" width="28" height="28" aria-hidden="true">
@@ -145,6 +113,7 @@ watch(color, (newColor) => {
                       type="button"
                       class="pref-theme-card"
                       :class="{ active: themeMode === 'dark' }"
+                      :aria-pressed="themeMode === 'dark'"
                       @click="themeMode = 'dark'"
                     >
                       <svg viewBox="0 0 1024 1024" width="28" height="28" aria-hidden="true">
@@ -159,6 +128,7 @@ watch(color, (newColor) => {
                       type="button"
                       class="pref-theme-card"
                       :class="{ active: themeMode === 'system' }"
+                      :aria-pressed="themeMode === 'system'"
                       @click="themeMode = 'system'"
                     >
                       <svg viewBox="0 0 1024 1024" width="28" height="28" aria-hidden="true">

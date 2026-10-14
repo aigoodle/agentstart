@@ -11,7 +11,7 @@ import { computed, ref, watch } from 'vue';
 
 import GroupedModelSelect, {
   type GroupedModelSelectOption,
-} from '../../provider-hub/components/GroupedModelSelect.vue';
+} from '../../model-provider-hub/components/GroupedModelSelect.vue';
 import type { EmbeddingModelOption } from '../types/api';
 import type { RetrievalConfig } from '../types/dataset';
 import RetrievalMethodPicker from './RetrievalMethodPicker.vue';
