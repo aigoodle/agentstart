@@ -18,6 +18,7 @@ final class LlmCallRecordFactory {
         TokenUsage tokenUsage = measurement.tokenUsage();
         LlmCallRecord record = new LlmCallRecord();
         record.setTenantId(measurement.tenantId());
+        record.setAppId(measurement.appId());
         record.setProvider(measurement.provider());
         record.setModel(measurement.model());
         record.setPromptTokens(tokenUsage.promptTokens());

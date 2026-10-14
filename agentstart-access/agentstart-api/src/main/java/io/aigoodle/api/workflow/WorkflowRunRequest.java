@@ -19,6 +19,9 @@ import lombok.Data;
 public class WorkflowRunRequest {
 
     private String workflowId;
+    /** Optional application attribution for designer preview; validated by the service. */
+    private String appId;
+
     private JsonNode graph;
     /** Canonical START-node input object used by UI, API and durable triggers. */
     private Map<String, Object> data;

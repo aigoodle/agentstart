@@ -12,6 +12,7 @@ import lombok.Data;
 public class LlmUsageStats {
 
     private String model;
+    private String currency;
     private long calls;
     private long errors;
     private long promptTokens;

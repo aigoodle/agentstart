@@ -42,14 +42,16 @@ class WorkflowStreamControllerTest {
         runResult.succeed(Map.of("text", "ok"));
         runResult.setSteps(List.of(step));
 
-        when(workflowService.runGraph(eq(graph), anyMap(), isNull(), any())).thenAnswer(invocation -> {
-            Consumer<StepRecord> listener = invocation.getArgument(3);
-            listener.accept(step);
-            return runResult;
-        });
+        when(workflowService.runGraphForTenant(eq(graph), anyMap(), isNull(), eq("default"), eq("app-preview"), any()))
+                .thenAnswer(invocation -> {
+                    Consumer<StepRecord> listener = invocation.getArgument(5);
+                    listener.accept(step);
+                    return runResult;
+                });
 
         WorkflowRunRequest request = new WorkflowRunRequest();
         request.setGraph(graph);
+        request.setAppId("app-preview");
         request.setData(Map.of("query", "hello"));
 
         List<ServerSentEvent<Object>> events =

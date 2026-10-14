@@ -461,6 +461,34 @@ public class WorkflowService {
                 defaultIfBlank(tenantId, DEFAULT_TENANT));
     }
 
+    /** App-bound ad-hoc preview; client attribution is accepted only after application access checks. */
+    public WorkflowRunResult runGraphForTenant(
+            JsonNode graphDefinition,
+            Map<String, Object> inputs,
+            String conversationId,
+            String tenantId,
+            String appId,
+            Consumer<StepRecord> stepListener) {
+        String tenant = defaultIfBlank(tenantId, DEFAULT_TENANT);
+        requireTenantAccess(tenant);
+        if (!hasText(appId))
+            return executeAdHoc(graphCodec.read(graphDefinition), inputs, conversationId, stepListener, tenant);
+        if (appPermissions == null)
+            throw new PlatformException(
+                    "app_access_unavailable", "Application access checks are required for attributed previews", null);
+        checkApp(tenant, appId, true);
+        var result = workflowEngine.run(
+                graphCodec.read(graphDefinition),
+                inputs,
+                conversationId,
+                stepListener,
+                null,
+                tenant,
+                io.aigoodle.workflow.engine.WorkflowRunOptions.defaults().withAppId(appId));
+        runStore.recordAdHocRun(tenant, conversationId, inputs, result);
+        return result;
+    }
+
     private WorkflowRunResult executeStored(
             String workflowId,
             Map<String, Object> inputs,
@@ -511,7 +539,9 @@ public class WorkflowService {
         scopedInputs.put("_memory_owner_id", workflow.getAppId() == null ? workflowId : workflow.getAppId());
         scopedInputs.put("_memory_tenant_id", workflow.getTenantId() == null ? "default" : workflow.getTenantId());
         ensureChannelConversation(workflow, scopedInputs, conversationId);
-        var options = io.aigoodle.workflow.engine.WorkflowRunOptions.defaults().withResourceTenantId(resourceTenantId);
+        var options = io.aigoodle.workflow.engine.WorkflowRunOptions.defaults()
+                .withResourceTenantId(resourceTenantId)
+                .withAppId(workflow.getAppId());
         WorkflowRunResult result = persistentRunner == null
                 ? workflowEngine.run(
                         graph, scopedInputs, conversationId, stepListener, chatSink, workflow.getTenantId(), options)
@@ -615,7 +645,7 @@ public class WorkflowService {
             String conversationId,
             Consumer<StepRecord> stepListener,
             String tenantId) {
-        WorkflowRunResult result = workflowEngine.run(graph, inputs, conversationId, stepListener);
+        WorkflowRunResult result = workflowEngine.run(graph, inputs, conversationId, stepListener, null, tenantId);
         runStore.recordAdHocRun(tenantId, conversationId, inputs, result);
         return result;
     }

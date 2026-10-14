@@ -133,6 +133,7 @@ public class PersistentWorkflowRunner {
         // This metadata is written from trusted Java options, never from request inputs.
         Map<String, Object> durableGraph = JsonUtils.parseMap(checkpoint.getGraphJson());
         durableGraph.put("_resourceTenantId", options.resourceTenantId());
+        durableGraph.put("_metricsAppId", options.appId());
         checkpoint.setGraphJson(JsonUtils.toJson(durableGraph));
         ExecutionContext policyContext = ExecutionContext.start(inputs, conversationId, null, runId);
         List<WorkflowRunNodeEntity> nodes = graph.getNodes().stream()
@@ -489,8 +490,10 @@ public class PersistentWorkflowRunner {
                     stepListener,
                     chatSink,
                     checkpoint.getTenantId(),
-                    options.withResourceTenantId((String)
-                            JsonUtils.parseMap(checkpoint.getGraphJson()).get("_resourceTenantId")),
+                    options.withResourceTenantId((String) JsonUtils.parseMap(checkpoint.getGraphJson())
+                                    .get("_resourceTenantId"))
+                            .withAppId((String) JsonUtils.parseMap(checkpoint.getGraphJson())
+                                    .get("_metricsAppId")),
                     resume,
                     observer);
             observer.finish(result);

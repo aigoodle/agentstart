@@ -194,7 +194,12 @@ public class WorkflowController {
             return ApiResponse.error("graph_required", "Field 'graph' is required for ad-hoc runs");
         }
         return ApiResponse.ok(workflowService.runGraphForTenant(
-                request.getGraph(), inputsOf(request), request.getConversationId(), currentTenantId()));
+                request.getGraph(),
+                inputsOf(request),
+                request.getConversationId(),
+                currentTenantId(),
+                request.getAppId(),
+                null));
     }
 
     @GetMapping("/node-types")

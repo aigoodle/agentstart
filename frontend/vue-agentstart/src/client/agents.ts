@@ -96,6 +96,9 @@ export interface AgentsNamespace {
 
   // ---- monitor
   fetchAppMetrics(appId: string): Promise<StudioAppMetrics>;
+  fetchAppLlmUsage(appId: string): Promise<StudioLlmUsageStats>;
+  fetchAppRecentLlmCalls(appId: string, limit?: number): Promise<StudioLlmCallRecord[]>;
+  fetchAppLlmTrend(appId: string, range: StudioLlmTrendRange): Promise<StudioLlmTrendPoint[]>;
   fetchLlmUsage(): Promise<StudioLlmUsageStats>;
   fetchRecentLlmCalls(limit?: number): Promise<StudioLlmCallRecord[]>;
   fetchLlmTrend(range: StudioLlmTrendRange): Promise<StudioLlmTrendPoint[]>;
@@ -234,6 +237,9 @@ export function createAgentsNamespace(core: HttpCore): AgentsNamespace {
 
     fetchAppMetrics: (appId) =>
       core.request<StudioAppMetrics>(`/apps/${encodeURIComponent(appId)}/metrics`),
+    fetchAppLlmUsage: (appId) => core.request<StudioLlmUsageStats>(`/apps/${encodeURIComponent(appId)}/metrics/llm/total`),
+    fetchAppRecentLlmCalls: (appId, limit = 10) => core.request<StudioLlmCallRecord[]>(`/apps/${encodeURIComponent(appId)}/metrics/llm/recent${qs({ limit })}`),
+    fetchAppLlmTrend: (appId, range) => core.request<StudioLlmTrendPoint[]>(`/apps/${encodeURIComponent(appId)}/metrics/llm/trend${qs({ range })}`),
     fetchLlmUsage: () => core.request<StudioLlmUsageStats>('/llmops/total'),
     fetchRecentLlmCalls: (limit = 50) =>
       core.request<StudioLlmCallRecord[]>(`/llmops/recent${qs({ limit })}`),

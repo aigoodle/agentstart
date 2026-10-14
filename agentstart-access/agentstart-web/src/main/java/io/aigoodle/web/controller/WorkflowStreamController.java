@@ -59,6 +59,7 @@ public class WorkflowStreamController {
                             inputsOf(request),
                             request.getConversationId(),
                             currentTenantId(),
+                            request.getAppId(),
                             step -> emitter.event("node_finished", nodePayload(runId, step)))
                     : workflowService.runForTenant(
                             request.getWorkflowId(),

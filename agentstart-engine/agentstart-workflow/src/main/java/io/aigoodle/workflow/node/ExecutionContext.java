@@ -20,6 +20,7 @@ public class ExecutionContext {
 
     private final VariablePool pool = new VariablePool();
     private String runId;
+    private String appId;
     private String conversationId;
     private String tenantId;
     /** Trusted execution option, never populated from client inputs or node settings. */

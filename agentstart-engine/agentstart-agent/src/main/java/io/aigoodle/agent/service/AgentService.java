@@ -516,7 +516,7 @@ public class AgentService implements AgentRuntime {
         notifyStarted(definition, conversationId, runId, false, observationStartedAt);
         ActiveRunKey activeRunKey = new ActiveRunKey(tenantId, runId);
         activeRuns.put(activeRunKey, Thread.currentThread());
-        try {
+        try (var metering = io.aigoodle.common.context.ModelExecutionScope.open(tenantId, meteringAppId(definition))) {
             AgentRunContext runContext = createRunContext(
                     definition,
                     request,
@@ -613,7 +613,7 @@ public class AgentService implements AgentRuntime {
         notifyStarted(definition, pausedRun.conversationId(), runId, true, observationStartedAt);
         ActiveRunKey activeRunKey = new ActiveRunKey(tenantId, runId);
         activeRuns.put(activeRunKey, Thread.currentThread());
-        try {
+        try (var metering = io.aigoodle.common.context.ModelExecutionScope.open(tenantId, meteringAppId(definition))) {
             AgentRunContext context = createRunContext(
                     definition,
                     request,
@@ -687,6 +687,15 @@ public class AgentService implements AgentRuntime {
             case FAILED -> AgentRunStatus.FAILED;
             case MAX_ITERATIONS -> AgentRunStatus.MAX_ITERATIONS;
         };
+    }
+
+    private static String meteringAppId(AgentDefinition definition) {
+        var parent = io.aigoodle.common.context.ModelExecutionScope.current();
+        return parent != null
+                        && parent.appId() != null
+                        && java.util.Objects.equals(parent.tenantId(), definition.getTenantId())
+                ? parent.appId()
+                : definition.getId();
     }
 
     private AgentRunContext createRunContext(

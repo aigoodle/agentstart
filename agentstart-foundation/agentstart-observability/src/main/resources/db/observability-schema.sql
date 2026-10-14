@@ -4,6 +4,7 @@
 CREATE TABLE IF NOT EXISTS goodle_llm_calls (
     id                VARCHAR(64) NOT NULL,
     tenant_id         VARCHAR(64) NOT NULL DEFAULT 'default',
+    app_id            VARCHAR(64),
     provider          VARCHAR(128),
     model             VARCHAR(255),
     prompt_tokens     INT,
@@ -20,3 +21,7 @@ CREATE TABLE IF NOT EXISTS goodle_llm_calls (
 
 CREATE INDEX IF NOT EXISTS idx_llm_call_model ON goodle_llm_calls (model);
 CREATE INDEX IF NOT EXISTS idx_llm_call_created ON goodle_llm_calls (created_at);
+
+-- Existing installations retain unscoped historical records.
+ALTER TABLE goodle_llm_calls ADD COLUMN IF NOT EXISTS app_id VARCHAR(64);
+CREATE INDEX IF NOT EXISTS idx_llm_call_app_created ON goodle_llm_calls (tenant_id, app_id, created_at);

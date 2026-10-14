@@ -13,7 +13,19 @@ public record LlmCallMeasurement(
         TokenUsage tokenUsage,
         long latencyMs,
         boolean successful,
-        String errorType) {
+        String errorType,
+        String appId) {
+
+    public LlmCallMeasurement(
+            String provider,
+            String model,
+            String tenantId,
+            TokenUsage tokenUsage,
+            long latencyMs,
+            boolean successful,
+            String errorType) {
+        this(provider, model, tenantId, tokenUsage, latencyMs, successful, errorType, null);
+    }
 
     public LlmCallMeasurement {
         tokenUsage = tokenUsage == null ? TokenUsage.ZERO : tokenUsage;
@@ -26,7 +38,14 @@ public record LlmCallMeasurement(
 
     public static LlmCallMeasurement successful(ModelCallContext callContext, TokenUsage tokenUsage, long latencyMs) {
         return new LlmCallMeasurement(
-                callContext.provider(), callContext.model(), callContext.tenantId(), tokenUsage, latencyMs, true, null);
+                callContext.provider(),
+                callContext.model(),
+                callContext.tenantId(),
+                tokenUsage,
+                latencyMs,
+                true,
+                null,
+                callContext.appId());
     }
 
     public static LlmCallMeasurement failed(
@@ -42,6 +61,7 @@ public record LlmCallMeasurement(
                 TokenUsage.ZERO,
                 latencyMs,
                 false,
-                errorType);
+                errorType,
+                callContext.appId());
     }
 }

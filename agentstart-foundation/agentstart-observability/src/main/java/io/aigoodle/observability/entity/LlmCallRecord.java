@@ -14,6 +14,9 @@ import lombok.EqualsAndHashCode;
 @TableName("goodle_llm_calls")
 public class LlmCallRecord extends BaseEntity {
 
+    /** Application owning this invocation; null for historical or unscoped calls. */
+    private String appId;
+
     private String provider;
     private String model;
 

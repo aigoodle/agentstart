@@ -60,6 +60,42 @@ class WorkflowEngineTest {
     }
 
     @Test
+    void propagatesTrustedAppAttributionToNodeThreads() {
+        var captured = new AtomicReference<io.aigoodle.common.context.ModelExecutionScope.Attribution>();
+        NodeExecutor start = new NodeExecutor() {
+            @Override
+            public NodeType type() {
+                return NodeType.START;
+            }
+
+            @Override
+            public NodeResult execute(NodeDef node, io.aigoodle.workflow.node.ExecutionContext context) {
+                captured.set(io.aigoodle.common.context.ModelExecutionScope.current());
+                assertEquals("app-metered", context.getAppId());
+                return NodeResult.empty();
+            }
+        };
+        var engine = new WorkflowEngine(new NodeExecutorRegistry(List.of(start, new EndNodeExecutor())));
+        var graph = new WorkflowGraph();
+        graph.addNode(NodeDef.of("start", NodeType.START));
+        graph.addNode(NodeDef.of("end", NodeType.END));
+        graph.addEdge(EdgeDef.of("start", "end"));
+        var result = engine.run(
+                graph,
+                Map.of("appId", "untrusted-app"),
+                null,
+                null,
+                null,
+                "tenant-metered",
+                WorkflowRunOptions.defaults().withAppId("app-metered"));
+        assertTrue(result.isSuccess(), result.getError());
+        assertEquals(
+                new io.aigoodle.common.context.ModelExecutionScope.Attribution("tenant-metered", "app-metered"),
+                captured.get());
+        assertNull(io.aigoodle.common.context.ModelExecutionScope.current());
+    }
+
+    @Test
     void interpolatesAndTakesTrueBranch() {
         WorkflowRunResult r = engine().run(branchingGraph(), Map.of("name", "Alice", "vip", "true"), null);
         assertTrue(r.isSuccess(), r.getError());

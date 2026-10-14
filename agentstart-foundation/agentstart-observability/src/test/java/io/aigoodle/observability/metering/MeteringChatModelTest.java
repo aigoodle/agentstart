@@ -21,6 +21,23 @@ import reactor.core.publisher.Flux;
 class MeteringChatModelTest {
 
     @Test
+    void streamKeepsAppAttributionAfterScopeClosesAndThreadChanges() {
+        ChatModel delegate = mock(ChatModel.class);
+        LlmMetricsService metrics = mock(LlmMetricsService.class);
+        when(delegate.stream(any(Prompt.class))).thenReturn(Flux.empty());
+        var model = new MeteringChatModel(delegate, "p", "m", metrics);
+        Flux<?> stream;
+        try (var scope = io.aigoodle.common.context.ModelExecutionScope.open("tenant-stream", "app-stream")) {
+            stream = model.stream(mock(Prompt.class));
+        }
+        stream.subscribeOn(reactor.core.scheduler.Schedulers.boundedElastic()).blockLast();
+        var capture = ArgumentCaptor.forClass(LlmCallMeasurement.class);
+        verify(metrics).record(capture.capture());
+        assertThat(capture.getValue().appId()).isEqualTo("app-stream");
+        assertThat(capture.getValue().tenantId()).isEqualTo("tenant-stream");
+    }
+
+    @Test
     void preservesProviderSpecificOptionsRequiredBySpringAi2ChatClient() {
         ChatModel delegate = mock(ChatModel.class);
         LlmMetricsService metricsService = mock(LlmMetricsService.class);

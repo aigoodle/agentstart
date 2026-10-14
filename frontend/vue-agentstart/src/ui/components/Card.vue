@@ -72,8 +72,8 @@ function onClickCapture(event: MouseEvent) {
     </div>
     <div v-if="$slots.default" class="as-management-card__content" :class="bodyClass" :style="bodyStyle"><slot /></div>
     <footer v-if="$slots.meta || $slots.actions" class="as-management-card__footer">
-      <div class="as-management-card__meta"><slot name="meta" /></div>
-      <div class="as-management-card__actions"><slot name="actions" /></div>
+      <div v-if="$slots.meta" class="as-management-card__meta"><slot name="meta" /></div>
+      <div v-if="$slots.actions" class="as-management-card__actions"><slot name="actions" /></div>
     </footer>
   </article>
 

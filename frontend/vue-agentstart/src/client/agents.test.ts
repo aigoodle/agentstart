@@ -3,6 +3,19 @@ import { describe, expect, it, vi } from 'vitest';
 import { createAgentStartClient } from './index';
 
 describe('agents namespace', () => {
+  it('uses app-scoped usage endpoints with escaped app IDs', async () => {
+    const fetchSpy = vi.fn().mockImplementation(() => Promise.resolve(new Response(JSON.stringify({ code: 'ok', data: [] }), { status: 200, headers: { 'Content-Type': 'application/json' } })));
+    const client = createAgentStartClient({ baseUrl: '/api', fetch: fetchSpy as any });
+    await client.agents.fetchAppLlmUsage('app/1');
+    await client.agents.fetchAppRecentLlmCalls('app/1', 10);
+    await client.agents.fetchAppLlmTrend('app/1', 'DAY');
+    expect(fetchSpy.mock.calls.map(call => call[0])).toEqual([
+      '/api/agent-start/apps/app%2F1/metrics/llm/total',
+      '/api/agent-start/apps/app%2F1/metrics/llm/recent?limit=10',
+      '/api/agent-start/apps/app%2F1/metrics/llm/trend?range=DAY',
+    ]);
+  });
+
   it('round trips application grants without accepting tenant identity from the UI', async () => {
     const settings = { mode: 'RESTRICTED' as const, grants: [
       { type: 'DEPARTMENT' as const, subjectId: 'project-1', includeDescendants: true },

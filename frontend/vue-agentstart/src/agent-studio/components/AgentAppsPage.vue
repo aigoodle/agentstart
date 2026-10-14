@@ -409,6 +409,9 @@ const studioApi: AppStudioApi = {
   deleteAnnotation: (appId: string, id: string) =>
     deleteAnnotationReq(appId, id),
   fetchAppMetrics: (appId: string) => fetchAppMetricsReq(appId),
+  fetchAppLlmUsage: (appId: string) => client().agents.fetchAppLlmUsage(appId),
+  fetchAppRecentLlmCalls: (appId: string, limit = 10) => client().agents.fetchAppRecentLlmCalls(appId, limit),
+  fetchAppLlmTrend: (appId: string, range: 'HOUR' | 'DAY' | 'WEEK') => client().agents.fetchAppLlmTrend(appId, range),
   fetchLlmUsage: () => fetchTotalReq() as any,
   fetchRecentLlmCalls: (limit?: number) => fetchRecentReq(limit) as any,
   fetchLlmTrend: (range: 'HOUR' | 'DAY' | 'WEEK') => fetchLlmTrendReq(range) as any,

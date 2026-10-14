@@ -34,6 +34,8 @@ export interface CreateWorkflowRequest {
 
 /** POST /workflows/run-graph body. */
 export interface RunGraphRequest {
+  /** Application owning a designer preview. The backend validates access. */
+  appId?: string;
   graph: WorkflowGraphLike | Record<string, unknown>;
   /** Workflow START-node input values. */
   data?: Record<string, unknown>;

@@ -188,6 +188,9 @@ export function createAgentStudioSpringBackend(
     deleteAnnotation: (appId, id) => client.agents.deleteAnnotation(appId, id),
 
     fetchAppMetrics: (appId) => client.agents.fetchAppMetrics(appId),
+  fetchAppLlmUsage: (appId: string) => client.agents.fetchAppLlmUsage(appId),
+  fetchAppRecentLlmCalls: (appId: string, limit = 10) => client.agents.fetchAppRecentLlmCalls(appId, limit),
+  fetchAppLlmTrend: (appId: string, range: 'HOUR' | 'DAY' | 'WEEK') => client.agents.fetchAppLlmTrend(appId, range),
     fetchLlmUsage: () => client.agents.fetchLlmUsage(),
     fetchRecentLlmCalls: (limit = 50) => client.agents.fetchRecentLlmCalls(limit),
     fetchLlmTrend: (range) => client.agents.fetchLlmTrend(range),

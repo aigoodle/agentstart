@@ -78,7 +78,8 @@ public class IterationNodeExecutor implements NodeExecutor {
                     null,
                     context.getTenantId(),
                     io.aigoodle.workflow.engine.WorkflowRunOptions.defaults()
-                            .withResourceTenantId(context.resourceTenant()));
+                            .withResourceTenantId(context.resourceTenant())
+                            .withAppId(context.getAppId()));
             if (iterationResult.isSuccess()) {
                 collectedOutputs.add(iterationResult.getOutputs());
                 context.checkpointIteration(

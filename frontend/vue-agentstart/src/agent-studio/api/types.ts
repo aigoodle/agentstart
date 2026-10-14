@@ -73,6 +73,7 @@ export interface StudioAppMetrics {
 
 /** Rolled-up LLM usage. */
 export interface StudioLlmUsageStats {
+  currency?: string;
   calls: number;
   errors: number;
   promptTokens: number;
@@ -84,6 +85,8 @@ export interface StudioLlmUsageStats {
 
 /** A single LLM call record in the recent-calls table. */
 export interface StudioLlmCallRecord {
+  appId?: string;
+  errorType?: string;
   id: string;
   provider?: string;
   model?: string;
@@ -186,6 +189,10 @@ export interface AppStudioApi {
   fetchLlmUsage?: () => Promise<StudioLlmUsageStats>;
   fetchRecentLlmCalls?: (limit?: number) => Promise<StudioLlmCallRecord[]>;
   fetchLlmTrend?: (range: StudioLlmTrendRange) => Promise<StudioLlmTrendPoint[]>;
+
+  fetchAppLlmUsage?: (appId: string) => Promise<StudioLlmUsageStats>;
+  fetchAppRecentLlmCalls?: (appId: string, limit?: number) => Promise<StudioLlmCallRecord[]>;
+  fetchAppLlmTrend?: (appId: string, range: StudioLlmTrendRange) => Promise<StudioLlmTrendPoint[]>;
 
   // ── 访问 API tab — API-key management ─────────────────────────────────
   /**

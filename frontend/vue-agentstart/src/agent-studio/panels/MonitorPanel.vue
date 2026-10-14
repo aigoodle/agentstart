@@ -3,21 +3,21 @@
  * MonitorPanel — content for {@code AppDesignDrawer}'s "监测" tab.
  *
  * All backend I/O goes through {@link AppStudioApi} — the host supplies
- * {@code fetchAppMetrics}, {@code fetchLlmUsage}, {@code fetchRecentLlmCalls}
- * and {@code fetchLlmTrend}; the trend is independent from the recent-calls table.
+ * {@code fetchAppMetrics}, {@code fetchAppLlmUsage}, {@code fetchAppRecentLlmCalls}
+ * and {@code fetchAppLlmTrend}; the trend is independent from the recent-calls table.
  *
  * Layout mirrors the Dify workspace/monitor stub:
  *   ┌───── 应用级指标 ──────────────┐
  *   │  会话数  消息数  平均互动  最近活跃  │
  *   └───────────────────────────────┘
- *   ┌───── 全局 LLM 用量 ────────────┐
+ *   ┌───── 当前应用模型用量 ────────────┐
  *   │  调用数  Tokens  费用  平均延迟 │
  *   └───────────────────────────────┘
- *   ┌───── 最近 10 条 LLM 调用 ──────┐
+ *   ┌───── 当前应用最近 10 条模型调用 ──────┐
  *   │  Table: model · tokens · cost │
  *   └───────────────────────────────┘
  */
-import { computed, markRaw, onMounted, ref, watch } from 'vue';
+import { computed, markRaw, onBeforeUnmount, ref, watch } from 'vue';
 
 import {
   ClockCircleOutlined,
@@ -30,7 +30,7 @@ import {
   SwapOutlined,
   ThunderboltOutlined,
 } from '@ant-design/icons-vue';
-import { Button, Empty, Segmented, Skeleton, Table, Tag, message } from '../../ui';
+import { Button, Empty, Segmented, Skeleton, Table, Tag } from '../../ui';
 
 import SparkChart from '../components/SparkChart.vue';
 
@@ -56,6 +56,14 @@ const loading = ref(false);
 const trendLoading = ref(false);
 const callChartRange = ref<StudioLlmTrendRange>('HOUR');
 const callTrend = ref<StudioLlmTrendPoint[]>([]);
+const metricError = ref('');
+const usageError = ref('');
+const callsError = ref('');
+const trendError = ref('');
+const chartMetric = ref<'totalTokens' | 'calls' | 'avgLatencyMs'>('totalTokens');
+const chartMetricOptions = [{ label: 'Tokens', value: 'totalTokens' }, { label: '调用次数', value: 'calls' }, { label: '平均延迟', value: 'avgLatencyMs' }];
+let loadVersion = 0;
+let trendVersion = 0;
 
 const callChartOptions = [
   { label: '近 1 小时', value: 'HOUR' },
@@ -65,7 +73,7 @@ const callChartOptions = [
 
 const callChart = computed(() => {
   return {
-    series: callTrend.value.map((point) => point.calls),
+    series: callTrend.value.map((point) => point[chartMetric.value]),
     labels: callTrend.value.map((point) => fmtChartTime(point.bucketStart)),
   };
 });
@@ -77,18 +85,24 @@ const trendDescription = computed(() => ({
 })[callChartRange.value]);
 
 async function loadTrend() {
-  if (!props.api.fetchLlmTrend) {
-    callTrend.value = [];
+  const version = ++trendVersion;
+  const appId = props.app?.id;
+  callTrend.value = [];
+  trendError.value = '';
+  trendLoading.value = false;
+  if (!appId) return;
+  if (!props.api.fetchAppLlmTrend) {
+    trendError.value = '宿主尚未接入应用级调用趋势接口';
     return;
   }
   trendLoading.value = true;
   try {
-    callTrend.value = await props.api.fetchLlmTrend(callChartRange.value);
+    const points = await props.api.fetchAppLlmTrend(appId, callChartRange.value);
+    if (version === trendVersion && appId === props.app?.id) callTrend.value = points;
   } catch (e: any) {
-    callTrend.value = [];
-    message.error(e?.message ?? '调用趋势加载失败');
+    if (version === trendVersion) trendError.value = e?.message ?? '调用趋势加载失败';
   } finally {
-    trendLoading.value = false;
+    if (version === trendVersion) trendLoading.value = false;
   }
 }
 
@@ -108,6 +122,8 @@ const callColumns = [
     width: 90,
     align: 'right' as const,
   },
+  { title: '输入', key: 'promptTokens', dataIndex: 'promptTokens', width: 80, align: 'right' as const },
+  { title: '输出', key: 'completionTokens', dataIndex: 'completionTokens', width: 80, align: 'right' as const },
   { title: '费用', key: 'costMicros', width: 90, align: 'right' as const },
   { title: '延迟', key: 'latencyMs', width: 80, align: 'right' as const },
   { title: '状态', key: 'success', width: 70, align: 'center' as const },
@@ -115,46 +131,37 @@ const callColumns = [
 ];
 
 async function reload() {
-  if (!props.app?.id) return;
+  const version = ++loadVersion;
+  const appId = props.app?.id;
+  appMetrics.value = null;
+  totalStats.value = null;
+  recentCalls.value = [];
+  metricError.value = usageError.value = callsError.value = '';
+  loading.value = false;
+  if (!appId) { await loadTrend(); return; }
   loading.value = true;
-  const jobs: Promise<unknown>[] = [];
-  if (props.api.fetchAppMetrics) {
-    jobs.push(
-      props.api
-        .fetchAppMetrics(props.app.id)
-        .then((r) => (appMetrics.value = r))
-        .catch(() => (appMetrics.value = null)),
-    );
-  }
-  if (props.api.fetchLlmUsage) {
-    jobs.push(
-      props.api
-        .fetchLlmUsage()
-        .then((r) => (totalStats.value = r))
-        .catch(() => (totalStats.value = null)),
-    );
-  }
-  if (props.api.fetchRecentLlmCalls) {
-    jobs.push(
-      props.api
-        .fetchRecentLlmCalls(10)
-        .then((r) => (recentCalls.value = r))
-        .catch(() => (recentCalls.value = [])),
-    );
-  }
-  jobs.push(loadTrend());
-  try {
-    await Promise.all(jobs);
-  } catch (e: any) {
-    message.error(e?.message ?? '加载失败');
-  } finally {
-    loading.value = false;
-  }
+  const current = () => version === loadVersion && appId === props.app?.id;
+  const request = async <T,>(fetch: (() => Promise<T>) | undefined, apply: (value: T) => void, error: typeof metricError, label: string) => {
+    if (!fetch) { error.value = `宿主尚未接入${label}接口`; return; }
+    try {
+      const result = await fetch();
+      if (current()) apply(result);
+    } catch (e: any) {
+      if (current()) error.value = e?.message ?? `${label}加载失败`;
+    }
+  };
+  await Promise.all([
+    request(props.api.fetchAppMetrics ? () => props.api.fetchAppMetrics!(appId) : undefined, v => appMetrics.value = v, metricError, '应用指标'),
+    request(props.api.fetchAppLlmUsage ? () => props.api.fetchAppLlmUsage!(appId) : undefined, v => totalStats.value = v, usageError, '应用级模型用量'),
+    request(props.api.fetchAppRecentLlmCalls ? () => props.api.fetchAppRecentLlmCalls!(appId, 10) : undefined, v => recentCalls.value = v, callsError, '应用级调用记录'),
+    loadTrend(),
+  ]);
+  if (current()) loading.value = false;
 }
 
-watch(() => props.app?.id, reload);
+watch(() => props.app?.id, reload, { immediate: true });
 watch(callChartRange, loadTrend);
-onMounted(reload);
+onBeforeUnmount(() => { loadVersion++; trendVersion++; });
 
 // ---- Formatters ---------------------------------------------------------
 function fromNow(iso?: string): string {
@@ -175,9 +182,10 @@ function fmtNumber(n?: number): string {
   return String(n);
 }
 function fmtCost(micros?: number): string {
-  if (!micros) return '¥0.00';
+  const currency = totalStats.value?.currency ?? '';
+  if (!micros) return `${currency ? currency + ' ' : ''}0.00`;
   const v = micros / 1_000_000;
-  return `¥${v.toFixed(v < 1 ? 4 : 2)}`;
+  return `${currency ? currency + ' ' : ''}${v.toFixed(v < 1 ? 4 : 2)}`;
 }
 function fmtLatency(ms?: number): string {
   if (ms == null) return '—';
@@ -259,13 +267,13 @@ const appTiles = computed(() => {
   ];
 });
 
-const globalTiles = computed(() => {
+const usageTiles = computed(() => {
   const t = totalStats.value;
   return [
     {
       label: 'LLM 调用数',
       value: fmtNumber(t?.calls),
-      sub: t ? `失败 ${t.errors}` : '',
+      sub: t ? `失败 ${t.errors} · 成功率 ${t.calls ? (((t.calls - t.errors) / t.calls) * 100).toFixed(1) : '—'}${t.calls ? '%' : ''}` : '',
       icon: markRaw(ThunderboltOutlined),
       palette: PALETTE.violet,
     },
@@ -279,7 +287,13 @@ const globalTiles = computed(() => {
       palette: PALETTE.fuchsia,
     },
     {
-      label: '费用消耗',
+      label: '输入 Tokens', value: fmtNumber(t?.promptTokens), sub: '发送给模型的上下文', icon: markRaw(MessageOutlined), palette: PALETTE.indigo,
+    },
+    {
+      label: '输出 Tokens', value: fmtNumber(t?.completionTokens), sub: '模型生成的内容', icon: markRaw(CommentOutlined), palette: PALETTE.green,
+    },
+    {
+      label: '估算费用',
       value: fmtCost(t?.costMicros),
       sub: '按配置的模型定价累计',
       icon: markRaw(DollarOutlined),
@@ -288,7 +302,7 @@ const globalTiles = computed(() => {
     {
       label: '平均延迟',
       value: fmtLatency(t?.avgLatencyMs),
-      sub: '所有 LLM 调用',
+      sub: '当前应用所有模型调用',
       icon: markRaw(FieldTimeOutlined),
       palette: PALETTE.cyan,
     },
@@ -302,10 +316,10 @@ const globalTiles = computed(() => {
       <div>
         <div class="monitor-title">监测 · 追踪应用性能</div>
         <div class="monitor-sub">
-          应用级指标 + 全局 LLM 用量。数据源由宿主通过 <code>AppStudioApi</code> 注入。
+          仅统计当前应用的会话与模型调用；Token、费用和延迟包含该应用内的各轮模型调用。
         </div>
       </div>
-      <Button size="small" @click="reload">
+      <Button size="small" :loading="loading" :disabled="!app?.id" @click="reload">
         <template #icon>
           <ReloadOutlined />
         </template>
@@ -313,12 +327,15 @@ const globalTiles = computed(() => {
       </Button>
     </div>
 
+    <Empty v-if="!app?.id" description="请选择应用以查看监测数据" />
+    <template v-else>
     <!-- Per-app tiles -->
     <section class="monitor-section">
       <div class="monitor-section-title">
         <span class="monitor-section-dot" />
         {{ app?.name || '应用' }} · 应用级指标
       </div>
+      <div v-if="metricError" class="monitor-error" role="alert">{{ metricError }}</div>
       <div class="monitor-tiles">
         <div
           v-for="t in appTiles"
@@ -341,22 +358,24 @@ const globalTiles = computed(() => {
                 :paragraph="false"
                 :title="{ width: '60%' }"
               />
-              <template v-else>{{ t.value }}</template>
+              <template v-else>{{ appMetrics ? t.value : '—' }}</template>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Global LLM tiles -->
+    <!-- Application LLM tiles -->
     <section class="monitor-section">
       <div class="monitor-section-title">
         <span class="monitor-section-dot" />
-        全局 LLM 用量
+        当前应用模型用量
       </div>
+      <div v-if="usageError" class="monitor-error" role="alert">{{ usageError }}</div>
+      <div class="monitor-note">累计统计；费用按模型定价估算。未记录应用归属的历史调用不计入。</div>
       <div class="monitor-tiles">
         <div
-          v-for="t in globalTiles"
+          v-for="t in usageTiles"
           :key="t.label"
           class="monitor-tile"
           :style="{
@@ -376,7 +395,7 @@ const globalTiles = computed(() => {
                 :paragraph="false"
                 :title="{ width: '60%' }"
               />
-              <template v-else>{{ t.value }}</template>
+              <template v-else>{{ totalStats ? t.value : '—' }}</template>
             </div>
             <div v-if="t.sub" class="monitor-tile-sub">{{ t.sub }}</div>
           </div>
@@ -390,7 +409,7 @@ const globalTiles = computed(() => {
         <div class="monitor-call-head">
           <div class="monitor-section-title">
             <span class="monitor-section-dot" />
-            调用曲线
+            当前应用调用趋势
           </div>
           <Segmented
             v-model:value="callChartRange"
@@ -401,7 +420,10 @@ const globalTiles = computed(() => {
         <div class="monitor-chart-note">
           {{ trendDescription }}
         </div>
-        <Skeleton v-if="trendLoading" active :paragraph="{ rows: 5 }" />
+        <Segmented v-model:value="chartMetric" size="small" :options="chartMetricOptions" class="monitor-chart-metric" />
+        <div v-if="trendError" class="monitor-error" role="alert">{{ trendError }}</div>
+        <Skeleton v-else-if="trendLoading" active :paragraph="{ rows: 5 }" />
+        <Empty v-else-if="callTrend.length === 0" description="所选时段暂无调用趋势" />
         <SparkChart
           v-else
           :series="callChart.series"
@@ -414,9 +436,11 @@ const globalTiles = computed(() => {
       <div class="monitor-call-card monitor-call-table-card">
         <div class="monitor-section-title">
           <span class="monitor-section-dot" />
-          最近 10 条 LLM 调用
+          当前应用最近 10 条模型调用
         </div>
+        <div v-if="callsError" class="monitor-error" role="alert">{{ callsError }}</div>
         <Table
+          v-else
           class="monitor-table"
           :columns="callColumns"
           :data-source="recentCalls"
@@ -424,7 +448,7 @@ const globalTiles = computed(() => {
           :pagination="false"
           row-key="id"
           size="small"
-          :scroll="{ x: 720, y: 260 }"
+          :scroll="{ x: 880, y: 260 }"
           :locale="{ emptyText: '尚无 LLM 调用记录' }"
         >
           <template #bodyCell="{ column, record }">
@@ -435,7 +459,7 @@ const globalTiles = computed(() => {
               {{ fmtLatency(record.latencyMs) }}
             </template>
             <template v-else-if="column.key === 'success'">
-              <Tag :color="record.success ? 'green' : 'red'" class="mono-tag">
+              <Tag :color="record.success ? 'green' : 'red'" class="mono-tag" :title="record.errorType">
                 {{ record.success ? '✓' : '✕' }}
               </Tag>
             </template>
@@ -447,13 +471,10 @@ const globalTiles = computed(() => {
             </template>
           </template>
         </Table>
-        <Empty
-          v-if="!loading && recentCalls.length === 0"
-          description="尚无 LLM 调用记录 —— 让应用跑一次对话就会出现"
-          class="monitor-empty"
-        />
+
       </div>
     </section>
+    </template>
   </div>
 </template>
 
@@ -667,4 +688,7 @@ const globalTiles = computed(() => {
 .monitor-table :deep(.as-table tbody > tr:hover > td) {
   background: var(--as-bg-layout, #f8fafc);
 }
+.monitor-error { padding: 10px 12px; margin-bottom: 10px; border: 1px solid color-mix(in srgb, var(--as-danger) 35%, var(--as-border)); border-radius: 8px; color: var(--as-danger); background: color-mix(in srgb, var(--as-danger) 8%, var(--as-bg)); font-size: 12px; }
+.monitor-note { color: var(--as-text-secondary); font-size: 11px; margin-bottom: 10px; }
+.monitor-chart-metric { margin-bottom: 12px; }
 </style>

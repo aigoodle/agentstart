@@ -19,6 +19,7 @@ import { cancelWorkflowRun, pauseWorkflowRun, resumeWorkflowRun, runWorkflow, ru
 import type { ChatDebugVariable } from './chat-iframe-types';
 
 interface Props {
+  appId?: string;
   graph: Record<string, unknown>;
   variables?: ChatDebugVariable[];
   title?: string;
@@ -265,7 +266,7 @@ async function execute() {
   liveSteps.value = [];
   for (const key of Object.keys(expanded)) delete expanded[key];
   abortController.value = new AbortController();
-  const payload = { graph: props.graph, data: inputs, inputs };
+  const payload = { appId: props.appId, graph: props.graph, data: inputs, inputs };
   try {
     // ---- 流式优先：每节点完成即推送 ------------------------------------
     const streamFn = props.executeWorkflowStream ?? runWorkflowStream;

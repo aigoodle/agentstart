@@ -26,6 +26,59 @@ class LlmMetricsIntegrationTest {
     private LlmMetricsService metrics;
 
     @Test
+    void applicationQueriesExcludeOtherAppsTenantsAndUnscopedHistory() {
+        metrics.record(LlmCallMeasurement.successful(
+                new io.aigoodle.observability.api.ModelCallContext("p", "m", "app-tenant", "app-one"),
+                new TokenUsage(10, 5, 15),
+                100));
+        metrics.record(LlmCallMeasurement.failed(
+                new io.aigoodle.observability.api.ModelCallContext("p", "m", "app-tenant", "app-one"), 300, "Timeout"));
+        metrics.record(LlmCallMeasurement.successful(
+                new io.aigoodle.observability.api.ModelCallContext("p", "m", "app-tenant", "app-two"),
+                new TokenUsage(100, 50, 150),
+                100));
+        metrics.record(LlmCallMeasurement.successful(
+                new io.aigoodle.observability.api.ModelCallContext("p", "m", "other-tenant", "app-one"),
+                new TokenUsage(1000, 500, 1500),
+                100));
+        metrics.record(LlmCallMeasurement.successful("p", "m", "app-tenant", new TokenUsage(10000, 5000, 15000), 100));
+
+        var usage = metrics.total("app-tenant", "app-one");
+        assertEquals(2, usage.getCalls());
+        assertEquals(1, usage.getErrors());
+        assertEquals(15, usage.getTotalTokens());
+        assertEquals(200, usage.getAvgLatencyMs());
+        assertEquals("USD", usage.getCurrency());
+        assertEquals(2, metrics.recentCalls("app-tenant", "app-one", 10).size());
+        assertEquals(
+                15,
+                metrics.trend("app-tenant", "app-one", LlmTrendRange.HOUR).stream()
+                        .mapToLong(p -> p.totalTokens())
+                        .sum());
+        assertEquals(0, metrics.total("app-tenant", "unknown-app").getCalls());
+    }
+
+    @Test
+    void cachedModelUsesInvocationScopeRatherThanCredentialTenant() {
+        var model = modelService.register(ModelRegistration.builder()
+                .tenantId("shared-models")
+                .providerName("scripted")
+                .modelName("scoped-model")
+                .modelType(ModelType.LLM)
+                .build());
+        var client = modelService.getChatClient("shared-models", model.getId());
+        for (String appId : java.util.List.of("scoped-one", "scoped-two")) {
+            try (var scope = io.aigoodle.common.context.ModelExecutionScope.open("business-tenant", appId)) {
+                client.prompt().user("hello").call().content();
+            }
+        }
+        assertNull(io.aigoodle.common.context.ModelExecutionScope.current());
+        assertEquals(20, metrics.total("business-tenant", "scoped-one").getTotalTokens());
+        assertEquals(20, metrics.total("business-tenant", "scoped-two").getTotalTokens());
+        assertEquals(0, metrics.total("shared-models", "scoped-one").getCalls());
+    }
+
+    @Test
     void chatCallIsMeteredEndToEnd() {
         ModelEntity model = modelService.register(ModelRegistration.builder()
                 .tenantId("obs")

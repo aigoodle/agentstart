@@ -9,7 +9,18 @@ public record WorkflowRunOptions(
         int maxConcurrency,
         RunCancellationToken cancellationToken,
         String runId,
-        String resourceTenantId) {
+        String resourceTenantId,
+        String appId) {
+
+    public WorkflowRunOptions(
+            Duration workflowTimeout,
+            Duration defaultNodeTimeout,
+            int maxConcurrency,
+            RunCancellationToken cancellationToken,
+            String runId,
+            String resourceTenantId) {
+        this(workflowTimeout, defaultNodeTimeout, maxConcurrency, cancellationToken, runId, resourceTenantId, null);
+    }
 
     public WorkflowRunOptions(
             Duration workflowTimeout,
@@ -43,11 +54,16 @@ public record WorkflowRunOptions(
 
     public WorkflowRunOptions withRunId(String value) {
         return new WorkflowRunOptions(
-                workflowTimeout, defaultNodeTimeout, maxConcurrency, cancellationToken, value, resourceTenantId);
+                workflowTimeout, defaultNodeTimeout, maxConcurrency, cancellationToken, value, resourceTenantId, appId);
+    }
+
+    public WorkflowRunOptions withAppId(String value) {
+        return new WorkflowRunOptions(
+                workflowTimeout, defaultNodeTimeout, maxConcurrency, cancellationToken, runId, resourceTenantId, value);
     }
 
     public WorkflowRunOptions withResourceTenantId(String value) {
         return new WorkflowRunOptions(
-                workflowTimeout, defaultNodeTimeout, maxConcurrency, cancellationToken, runId, value);
+                workflowTimeout, defaultNodeTimeout, maxConcurrency, cancellationToken, runId, value, appId);
     }
 }

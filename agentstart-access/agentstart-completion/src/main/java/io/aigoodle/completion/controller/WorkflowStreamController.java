@@ -52,10 +52,12 @@ public class WorkflowStreamController {
             String runId = newRunId();
             emitter.event("workflow_started", startedPayload(runId, request.getConversationId()));
             WorkflowRunResult result = request.getGraph() != null
-                    ? workflowService.runGraph(
+                    ? workflowService.runGraphForTenant(
                             request.getGraph(),
                             inputsOf(request),
                             request.getConversationId(),
+                            io.aigoodle.common.context.UserContextHolder.currentTenantId(),
+                            request.getAppId(),
                             step -> emitter.event("node_finished", nodePayload(runId, step)))
                     : workflowService.run(
                             request.getWorkflowId(),

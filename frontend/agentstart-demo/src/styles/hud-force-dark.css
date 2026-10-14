@@ -1,6 +1,6 @@
 /* 由 scripts/gen-force-dark.mjs 自动生成 —— 请勿手改。
  * 强制暗色层：把组件库 scoped 样式里写死的浅色 hex 重映射为 HUD 暗色变量。
- * 共处理 831 条规则。生成时间：2026-10-14T02:58:50.820Z */
+ * 共处理 820 条规则。生成时间：2026-10-14T03:47:08.132Z */
 
 html.dark[data-theme='dark'] .ph-mp-popover > .as-popover__panel,
 html.dark[data-theme='dark'] .ph-mp,
@@ -16,8 +16,6 @@ html.dark[data-theme='dark'] .cip-iframe,
 html.dark[data-theme='dark'] .wdp-head,
 html.dark[data-theme='dark'] .wdp-stop,
 html.dark[data-theme='dark'] .log-annot,
-html.dark[data-theme='dark'] .monitor-tile,
-html.dark[data-theme='dark'] .monitor-call-card,
 html.dark[data-theme='dark'] .vem-switch-slider::before,
 html.dark[data-theme='dark'] .dr-mask,
 html.dark[data-theme='dark'] .dr-bp-switch-track::after,
@@ -71,8 +69,6 @@ html.dark[data-theme='dark'] .message-route-card strong,
 html.dark[data-theme='dark'] .wf-config-menu-item,
 html.dark[data-theme='dark'] .text-gray-800,
 html.dark[data-theme='dark'] .log-annot-msg-body,
-html.dark[data-theme='dark'] .monitor-title,
-html.dark[data-theme='dark'] .monitor-tile-value,
 html.dark[data-theme='dark'] .akm-token-mono,
 html.dark[data-theme='dark'] .api-top-title,
 html.dark[data-theme='dark'] .api-h1,
@@ -364,7 +360,6 @@ html.dark[data-theme='dark'] .cet-empty,
 html.dark[data-theme='dark'] .cet-running,
 html.dark[data-theme='dark'] .cet-step-head,
 html.dark[data-theme='dark'] .log-annot-msg,
-html.dark[data-theme='dark'] .monitor,
 html.dark[data-theme='dark'] .dr-panel,
 html.dark[data-theme='dark'] .dr-btn-secondary:disabled,
 html.dark[data-theme='dark'] .dr-publish-item:hover,
@@ -425,7 +420,6 @@ html.dark[data-theme='dark'] .http-body-type,
 html.dark[data-theme='dark'] .wf-pe-btn:hover,
 html.dark[data-theme='dark'] .cip-var-btn-badge,
 html.dark[data-theme='dark'] .cet-detail b em,
-html.dark[data-theme='dark'] .monitor-sub code,
 html.dark[data-theme='dark'] .api-toc-item-active,
 html.dark[data-theme='dark'] .dr-bp-action-icon,
 html.dark[data-theme='dark'] .dr-bp-section-icon-api,
@@ -465,7 +459,6 @@ html.dark[data-theme='dark'] .node-item span,
 html.dark[data-theme='dark'] .cip-head-title,
 html.dark[data-theme='dark'] .cip-var-panel-title,
 html.dark[data-theme='dark'] .log-annot-userid,
-html.dark[data-theme='dark'] .monitor-section-title,
 html.dark[data-theme='dark'] .vem-label,
 html.dark[data-theme='dark'] .vem-type-name,
 html.dark[data-theme='dark'] .vem-switch-title,
@@ -543,7 +536,6 @@ html.dark[data-theme='dark'] .cond-case-badge,
 html.dark[data-theme='dark'] .wf-vsf-pill-icon,
 html.dark[data-theme='dark'] .message-route-card.active .message-route-check,
 html.dark[data-theme='dark'] .cet-running i,
-html.dark[data-theme='dark'] .monitor-section-dot,
 html.dark[data-theme='dark'] .vem-switch-row input:checked + .vem-switch-slider,
 html.dark[data-theme='dark'] .dr-card-title-dot,
 html.dark[data-theme='dark'] .dr-switch input:checked + .dr-switch-slider,
@@ -630,7 +622,6 @@ html.dark[data-theme='dark'] .gms-trigger {
 
 html.dark[data-theme='dark'] .wf-node.wf-node-dimmed,
 html.dark[data-theme='dark'] .param-item:hover,
-html.dark[data-theme='dark'] .monitor-tile:hover,
 html.dark[data-theme='dark'] .as-tile:hover,
 html.dark[data-theme='dark'] .as-btn:disabled {
   border-color: var(--hud-border);
@@ -863,7 +854,6 @@ html.dark[data-theme='dark'] .cip-switch,
 html.dark[data-theme='dark'] .wdp-field,
 html.dark[data-theme='dark'] .cet-stream-preview,
 html.dark[data-theme='dark'] .log-annot-nowrap,
-html.dark[data-theme='dark'] .monitor-time,
 html.dark[data-theme='dark'] .api-p,
 html.dark[data-theme='dark'] .api-path,
 html.dark[data-theme='dark'] .dr-nav-item,
@@ -1000,12 +990,6 @@ html.dark[data-theme='dark'] .log-annot-hint {
   border-left: 3px solid var(--hud-border-strong);
 }
 
-html.dark[data-theme='dark'] .monitor-table .ant-table-thead > tr > th,
-html.dark[data-theme='dark'] .dbg-step {
-  background: var(--hud-sunken);
-  color: var(--hud-text-muted);
-}
-
 html.dark[data-theme='dark'] .akm-icon-btn:hover,
 html.dark[data-theme='dark'] .vem-hint code,
 html.dark[data-theme='dark'] .dr-card-empty code,
@@ -1129,6 +1113,11 @@ html.dark[data-theme='dark'] .cdd-btn-primary,
 html.dark[data-theme='dark'] .ch-btn-primary {
   background: var(--hud-primary);
   border-color: var(--hud-border-strong);
+}
+
+html.dark[data-theme='dark'] .dbg-step {
+  background: var(--hud-sunken);
+  color: var(--hud-text-muted);
 }
 
 html.dark[data-theme='dark'] .dbg-input-wrap {

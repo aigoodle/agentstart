@@ -20,7 +20,7 @@ describe('workflows.runGraphStream', () => {
   it('posts to /workflows/run-graph/stream with Accept: text/event-stream and returns the raw Response', async () => {
     const fetchSpy = vi.fn().mockResolvedValue(sseResponse());
     const client = createAgentStartClient({ baseUrl: '/api', fetch: fetchSpy as any });
-    const req = { graph: { nodes: [] }, data: { q: 1 } };
+    const req = { appId: 'app-preview', graph: { nodes: [] }, data: { q: 1 } };
 
     const res = await client.workflows.runGraphStream(req);
 

@@ -36,6 +36,10 @@ import {
   CloudUploadOutlined,
   CodeOutlined,
   CompassOutlined,
+  CopyOutlined,
+  DownloadOutlined,
+  EditOutlined,
+  EllipsisOutlined,
   FileTextOutlined,
   LineChartOutlined,
   PlayCircleOutlined,
@@ -1291,7 +1295,7 @@ function variableTypeLabel(type: AgentVariable['type']): string {
               </div>
               <div v-show="collapsed" class="dr-info-collapsed-dot" />
 
-              <div v-if="brandMenuOpen" class="dr-brand-panel" @click.stop>
+              <div v-if="brandMenuOpen" class="dr-brand-panel hud-panel" @click.stop>
                 <!-- Header: icon + name + mode -->
                 <div class="dr-bp-head">
                   <div
@@ -1309,19 +1313,19 @@ function variableTypeLabel(type: AgentVariable['type']): string {
                 <!-- Quick actions row -->
                 <div class="dr-bp-actions">
                   <button class="dr-bp-action" @click="onBrandEdit">
-                    <span class="dr-bp-action-icon">✎</span>
+                    <EditOutlined class="dr-bp-action-icon" aria-hidden="true" />
                     <span>编辑信息</span>
                   </button>
                   <button class="dr-bp-action" @click="onBrandDuplicate">
-                    <span class="dr-bp-action-icon">⧉</span>
+                    <CopyOutlined class="dr-bp-action-icon" aria-hidden="true" />
                     <span>复制</span>
                   </button>
                   <button class="dr-bp-action" @click="onBrandExport">
-                    <span class="dr-bp-action-icon">⇩</span>
+                    <DownloadOutlined class="dr-bp-action-icon" aria-hidden="true" />
                     <span>导出 DSL</span>
                   </button>
                   <button class="dr-bp-action">
-                    <span class="dr-bp-action-icon">⋯</span>
+                    <EllipsisOutlined class="dr-bp-action-icon" aria-hidden="true" />
                     <span>更多</span>
                   </button>
                 </div>
@@ -1845,6 +1849,7 @@ function variableTypeLabel(type: AgentVariable['type']): string {
             @pointercancel="onDebugPanelPointerUp"
           >
             <WorkflowDebugPanel
+              :app-id="app?.id"
               v-if="isWorkflowMode"
               :key="debugSessionSuffix"
               class="hud-panel"
@@ -2006,8 +2011,9 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   top: 0;
   left: calc(100% + 12px);
   width: 400px;
-  background: linear-gradient(180deg, #ffffff 0%, #fbfbfe 100%);
-  border: 1px solid #e5e7eb;
+  background: var(--as-bg-elevated, var(--as-bg, #fff));
+  color: var(--as-text);
+  border: 1px solid var(--as-border, #e5e7eb);
   border-radius: 14px;
   box-shadow:
     0 20px 40px -12px rgba(15, 23, 42, 0.16),
@@ -2027,7 +2033,7 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   align-items: center;
   gap: 12px;
   padding: 2px 2px 12px;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--as-border-secondary, #e5e7eb);
 }
 .dr-bp-icon {
   width: 40px;
@@ -2050,7 +2056,7 @@ function variableTypeLabel(type: AgentVariable['type']): string {
 .dr-bp-title {
   font-size: 14px;
   font-weight: 600;
-  color: #0f172a;
+  color: var(--as-text, #0f172a);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -2062,82 +2068,61 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.06em;
-  color: #4338ca;
-  background: #eef2ff;
+  color: var(--as-primary, #4338ca);
+  background: color-mix(in srgb, var(--as-primary, #1677ff) 10%, var(--as-bg, #fff));
   border-radius: 4px;
   line-height: 1.5;
 }
 
-/* Quick action tiles ─ 4 up, icon-over-label, lifts on hover */
+/* Compact quick actions with consistent outline icons. */
 .dr-bp-actions {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 6px;
-  padding: 0;
-  border-bottom: none;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 4px;
 }
 .dr-bp-action {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  padding: 10px 4px;
-  border: 1px solid #f1f5f9;
-  background: #fafbfc;
-  border-radius: 10px;
-  color: #475569;
-  font-size: 11px;
-  font-weight: 500;
-  cursor: pointer;
-  transition:
-    background 0.15s ease,
-    border-color 0.15s ease,
-    color 0.15s ease,
-    transform 0.15s ease,
-    box-shadow 0.15s ease;
-}
-.dr-bp-action:hover {
-  border-color: #c7d2fe;
-  background: #eef2ff;
-  color: #4338ca;
-  transform: translateY(-1px);
-  box-shadow: 0 3px 8px rgba(99, 102, 241, 0.1);
-}
-.dr-bp-action-icon {
-  width: 24px;
-  height: 24px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 7px;
-  background: #eef2ff;
-  color: #4338ca;
-  font-size: 12px;
-  line-height: 1;
-  transition:
-    background 0.15s ease,
-    color 0.15s ease;
+  gap: 6px;
+  min-width: 0;
+  padding: 8px 4px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--as-text-secondary, #475569);
+  font: inherit;
+  font-size: 11px;
+  line-height: 18px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
 }
-.dr-bp-action:hover .dr-bp-action-icon {
-  background: #4338ca;
-  color: #fff;
+.dr-bp-action:hover {
+  background: color-mix(in srgb, var(--as-primary, #1677ff) 8%, var(--as-bg, #fff));
+  color: var(--as-primary, #1677ff);
+}
+.dr-bp-action-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  font-size: 14px;
+  color: inherit;
 }
 
 /* Section cards — each channel (Web App / API / MCP) sits in its own
  * light-tinted card with a status chip + toggle in the head row. */
 .dr-bp-section {
   padding: 12px;
-  background: #fafbfc;
-  border: 1px solid #f1f5f9;
+  background: var(--as-bg-layout, #fafbfc);
+  border: 1px solid var(--as-border-secondary, #e5e7eb);
   border-radius: 10px;
   transition:
     background 0.15s ease,
     border-color 0.15s ease;
 }
 .dr-bp-section:hover {
-  background: #f8fafc;
-  border-color: #e2e8f0;
+  background: var(--as-bg-layout, #f8fafc);
+  border-color: var(--as-border, #d9d9d9);
 }
 .dr-bp-section-head {
   display: flex;
@@ -2156,21 +2141,21 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   flex-shrink: 0;
 }
 .dr-bp-section-icon-web {
-  background: #dbeafe;
-  color: #1d4ed8;
+  background: color-mix(in srgb, var(--as-primary, #1677ff) 12%, var(--as-bg, #fff));
+  color: var(--as-primary, #1d4ed8);
 }
 .dr-bp-section-icon-api {
-  background: #e0e7ff;
-  color: #4338ca;
+  background: color-mix(in srgb, var(--as-primary, #1677ff) 14%, var(--as-bg, #fff));
+  color: var(--as-primary, #4338ca);
 }
 .dr-bp-section-icon-mcp {
-  background: #ffedd5;
-  color: #c2410c;
+  background: color-mix(in srgb, var(--as-warning, #f59e0b) 14%, var(--as-bg, #fff));
+  color: var(--as-text, #c2410c);
 }
 .dr-bp-section-title {
   font-size: 13px;
   font-weight: 600;
-  color: #0f172a;
+  color: var(--as-text, #0f172a);
 }
 .dr-bp-status {
   display: inline-flex;
@@ -2180,13 +2165,13 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   padding: 1px 8px;
   font-size: 10px;
   font-weight: 500;
-  color: #64748b;
-  background: #f1f5f9;
+  color: var(--as-text-secondary, #64748b);
+  background: var(--as-bg-layout, #f1f5f9);
   border-radius: 999px;
 }
 .dr-bp-status.on {
-  color: #15803d;
-  background: #dcfce7;
+  color: var(--as-success, #15803d);
+  background: color-mix(in srgb, var(--as-success, #10b981) 12%, var(--as-bg, #fff));
 }
 .dr-bp-switch {
   position: relative;
@@ -2207,7 +2192,7 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   position: absolute;
   inset: 0;
   border-radius: 999px;
-  background: #cbd5e1;
+  background: var(--as-text-disabled, #cbd5e1);
   transition: background 0.15s ease;
 }
 .dr-bp-switch-track::after {
@@ -2223,7 +2208,7 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   transition: transform 0.15s ease;
 }
 .dr-bp-switch input:checked + .dr-bp-switch-track {
-  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+  background: var(--as-primary, #6366f1);
 }
 .dr-bp-switch input:checked + .dr-bp-switch-track::after {
   transform: translateX(14px);
@@ -2234,35 +2219,35 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   margin-bottom: 6px;
   font-size: 11px;
   font-weight: 500;
-  color: #64748b;
+  color: var(--as-text-secondary, #64748b);
 }
 .dr-bp-url-row {
   display: flex;
   align-items: center;
   gap: 2px;
   padding: 5px 6px 5px 10px;
-  background: #fff;
-  border: 1px solid #e5e7eb;
+  background: var(--as-bg, #fff);
+  border: 1px solid var(--as-border, #e5e7eb);
   border-radius: 8px;
   margin-bottom: 10px;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 .dr-bp-url-row:hover {
-  border-color: #c7d2fe;
+  border-color: color-mix(in srgb, var(--as-primary, #1677ff) 45%, var(--as-border));
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.06);
 }
 .dr-bp-url {
   flex: 1;
   min-width: 0;
   font-size: 12px;
-  color: #0f172a;
+  color: var(--as-text, #0f172a);
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 .dr-bp-url-muted {
-  color: #94a3b8;
+  color: var(--as-text-secondary, #94a3b8);
   letter-spacing: 0.05em;
 }
 .dr-bp-icon-btn {
@@ -2271,7 +2256,7 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   border: none;
   background: transparent;
   border-radius: 6px;
-  color: #94a3b8;
+  color: var(--as-text-secondary, #94a3b8);
   font-size: 12px;
   cursor: pointer;
   display: inline-flex;
@@ -2281,8 +2266,8 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   transition: background 0.15s ease, color 0.15s ease;
 }
 .dr-bp-icon-btn:hover {
-  background: #eef2ff;
-  color: #4338ca;
+  background: color-mix(in srgb, var(--as-primary, #1677ff) 10%, var(--as-bg, #fff));
+  color: var(--as-primary, #4338ca);
 }
 
 /* Link pills — rounded chip style, so they visually group as related
@@ -2294,10 +2279,10 @@ function variableTypeLabel(type: AgentVariable['type']): string {
 }
 .dr-bp-link {
   padding: 4px 10px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--as-border, #e5e7eb);
   background: #fff;
   border-radius: 999px;
-  color: #475569;
+  color: var(--as-text-secondary, #475569);
   font-size: 11px;
   font-weight: 500;
   cursor: pointer;
@@ -2310,9 +2295,18 @@ function variableTypeLabel(type: AgentVariable['type']): string {
     color 0.15s ease;
 }
 .dr-bp-link:hover {
-  background: #eef2ff;
-  border-color: #c7d2fe;
-  color: #4338ca;
+  background: color-mix(in srgb, var(--as-primary, #1677ff) 10%, var(--as-bg, #fff));
+  border-color: color-mix(in srgb, var(--as-primary, #1677ff) 45%, var(--as-border));
+  color: var(--as-primary, #4338ca);
+}
+
+.dr-brand-panel :is(button, input):focus-visible {
+  outline: 2px solid var(--as-primary, #1677ff);
+  outline-offset: 2px;
+}
+.dr-bp-switch input:focus-visible + .dr-bp-switch-track {
+  outline: 2px solid var(--as-primary, #1677ff);
+  outline-offset: 2px;
 }
 
 /* Right-aligned wrapper for the model picker + action buttons. Grouping them

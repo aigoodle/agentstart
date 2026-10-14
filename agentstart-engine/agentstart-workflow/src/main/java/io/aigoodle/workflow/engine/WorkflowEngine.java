@@ -170,6 +170,9 @@ public class WorkflowEngine {
         context.setUserId(UserContextHolder.currentUserId());
         context.setExecutionUser(UserContextHolder.get());
         context.setResourceTenantId(options.resourceTenantId());
+        var parentAttribution = io.aigoodle.common.context.ModelExecutionScope.current();
+        context.setAppId(
+                options.appId() == null && parentAttribution != null ? parentAttribution.appId() : options.appId());
         context.getPool().setSystem("tenant_id", context.getTenantId());
         context.getPool().setSystem("user_id", context.getUserId());
         WorkflowRunResult result = WorkflowRunResult.forRun(context.getRunId(), context.getSteps());
@@ -450,7 +453,10 @@ public class WorkflowEngine {
                             .build();
                 }
                 io.aigoodle.common.context.CurrentUser propagated = caller;
-                return UserContextHolder.callAs(propagated, () -> executor.execute(node, run.context));
+                try (var metering = io.aigoodle.common.context.ModelExecutionScope.open(
+                        run.context.getTenantId(), run.context.getAppId())) {
+                    return UserContextHolder.callAs(propagated, () -> executor.execute(node, run.context));
+                }
             }
         });
         try (RunCancellationToken.Registration ignored =

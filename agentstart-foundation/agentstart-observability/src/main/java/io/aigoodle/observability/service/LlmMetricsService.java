@@ -86,22 +86,37 @@ public class LlmMetricsService {
                     .add(record);
         }
         return byModel.entrySet().stream()
-                .map(entry -> usageAggregator.aggregate(entry.getKey(), entry.getValue()))
+                .map(entry -> aggregate(entry.getKey(), entry.getValue()))
                 .toList();
     }
 
     public LlmUsageStats total(String tenantId) {
-        return usageAggregator.aggregate("*", load(tenantId));
+        return total(tenantId, null);
+    }
+
+    public LlmUsageStats total(String tenantId, String appId) {
+        return aggregate("*", load(tenantId, appId));
+    }
+
+    private LlmUsageStats aggregate(String model, List<LlmCallRecord> records) {
+        LlmUsageStats result = usageAggregator.aggregate(model, records);
+        result.setCurrency(observabilityProperties.getCurrency());
+        return result;
     }
 
     public List<LlmCallRecord> recentCalls(int limit) {
+        return recentCalls(null, null, limit);
+    }
+
+    public List<LlmCallRecord> recentCalls(String tenantId, String appId, int limit) {
         LambdaQueryWrapper<LlmCallRecord> query = new LambdaQueryWrapper<LlmCallRecord>()
                 .orderByDesc(LlmCallRecord::getCreatedAt)
-                .last("limit " + Math.max(1, limit));
-        String tenant = resolveTenant(null);
+                .last("limit " + Math.min(200, Math.max(1, limit)));
+        String tenant = resolveTenant(tenantId);
         if (tenant != null) {
             query.eq(LlmCallRecord::getTenantId, tenant);
         }
+        if (appId != null) query.eq(LlmCallRecord::getAppId, appId);
         return callRecordMapper.selectList(query);
     }
 
@@ -110,6 +125,10 @@ public class LlmMetricsService {
      * HOUR has 6 ten-minute buckets, DAY has 24 hourly buckets and WEEK has 7 daily buckets.
      */
     public List<LlmTrendPoint> trend(String tenantId, LlmTrendRange range) {
+        return trend(tenantId, null, range);
+    }
+
+    public List<LlmTrendPoint> trend(String tenantId, String appId, LlmTrendRange range) {
         tenantId = resolveTenant(tenantId);
         LlmTrendRange resolvedRange = range == null ? LlmTrendRange.HOUR : range;
         long bucketSeconds = resolvedRange.bucketSize().toSeconds();
@@ -125,6 +144,8 @@ public class LlmMetricsService {
         if (tenantId != null) {
             query.eq(LlmCallRecord::getTenantId, tenantId);
         }
+
+        if (appId != null) query.eq(LlmCallRecord::getAppId, appId);
 
         Map<LocalDateTime, TrendAccumulator> buckets = new LinkedHashMap<>();
         for (int i = 0; i < resolvedRange.bucketCount(); i++) {
@@ -183,11 +204,16 @@ public class LlmMetricsService {
     }
 
     private List<LlmCallRecord> load(String tenantId) {
+        return load(tenantId, null);
+    }
+
+    private List<LlmCallRecord> load(String tenantId, String appId) {
         tenantId = resolveTenant(tenantId);
         LambdaQueryWrapper<LlmCallRecord> query = new LambdaQueryWrapper<>();
         if (tenantId != null) {
             query.eq(LlmCallRecord::getTenantId, tenantId);
         }
+        if (appId != null) query.eq(LlmCallRecord::getAppId, appId);
         return callRecordMapper.selectList(query);
     }
 }
