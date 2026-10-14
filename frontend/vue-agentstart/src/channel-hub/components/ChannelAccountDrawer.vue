@@ -366,9 +366,7 @@ async function copyCallbackPath(row: ChannelConnection) {
                     </fieldset>
                   </div>
                   <template #footer>
-                  <div class="cad-footer">
-                    <label class="cad-enable"><input v-model="form.enabled" type="checkbox" />启用消息接收</label>
-                    <div class="cad-footer-actions">
+                    <label class="cad-enable as-modal__footer-leading"><input v-model="form.enabled" type="checkbox" />启用消息接收</label>
                       <Button @click="closeForm">取消</Button>
                       <Button
                         type="primary"
@@ -378,8 +376,6 @@ async function copyCallbackPath(row: ChannelConnection) {
                       >
                         {{ editingId ? '保存修改' : '创建连接' }}
                       </Button>
-                    </div>
-                  </div>
                   </template>
             </Modal>
           </template>
@@ -770,14 +766,6 @@ fieldset > p {
 }
 
 /* -------- 底部 -------- */
-.cad-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  padding: 14px 20px;
-  border-top: 1px solid #e5e7eb;
-}
 .cad-enable {
   display: flex;
   align-items: center;
@@ -787,13 +775,6 @@ fieldset > p {
 }
 .cad-enable input {
   accent-color: #6366f1;
-}
-.cad-footer-actions {
-  display: flex;
-  gap: 8px;
-}
-:global(.dark) .cad-footer {
-  border-top-color: #2d2d2d;
 }
 :global(.dark) .cad-enable {
   color: #d1d5db;

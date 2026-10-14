@@ -203,11 +203,9 @@ async function save() {
         </main>
 
         <template #footer>
-        <footer class="rfm-footer">
-          <label class="rfm-enable">
+          <label class="rfm-enable as-modal__footer-leading">
             <input v-model="form.enabled" type="checkbox" />启用消息接收
           </label>
-          <span class="rfm-footer-spacer" />
           <Button @click="emit('update:open', false)">
             取消
           </Button>
@@ -219,7 +217,6 @@ async function save() {
           >
             {{ robot ? '保存修改' : '创建机器人' }}
           </Button>
-        </footer>
         </template>
   </Modal>
 </template>
@@ -291,16 +288,6 @@ async function save() {
   background: #f3f4f6;
   color: #111827;
 }
-.rfm-footer {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 14px 20px;
-  border-top: 1px solid #e5e7eb;
-}
-.rfm-footer-spacer {
-  flex: 1;
-}
 .rfm-enable {
   display: flex;
   align-items: center;
@@ -310,9 +297,6 @@ async function save() {
   cursor: pointer;
 }
 :global(.dark) .rfm-header,
-:global(.dark) .rfm-footer {
-  border-color: #2d2d2d;
-}
 :global(.dark) .rfm-title {
   color: #f3f4f6;
 }

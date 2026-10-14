@@ -81,7 +81,7 @@ onMounted(load);
       </div>
     </Spin>
 
-    <Modal v-model:open="editing" :width="720" :footer="false" :mask-closable="!saving" :keyboard="!saving" :closable="!saving">
+    <Modal v-model:open="editing" :width="720" :mask-closable="!saving" :keyboard="!saving" :closable="!saving">
       <template #title>
         <div class="as-modal-heading as-modal-heading--with-extra">
           <div class="as-modal-title">{{ selected ? '编辑 Skill' : '创建 Skill' }}</div>
@@ -95,8 +95,8 @@ onMounted(load);
           <FormItem label="简介"><Textarea v-model:value="form.description" :rows="2" placeholder="说明这个 Skill 解决什么问题" /></FormItem>
           <FormItem label="Skill 指令" required><Textarea v-model:value="form.instructions" :rows="9" placeholder="说明何时使用、数据来源、步骤、校验规则和输出格式…" /></FormItem>
           <FormItem label="关联工具名" extra="每行填写一个工具名称"><Textarea v-model:value="form.toolNamesText" :rows="3" placeholder="query_sales_data" /></FormItem>
-          <div class="skill-actions"><Button v-if="selected" danger @click="remove()"><DeleteOutlined />删除</Button><span></span><Button v-if="selected&&form.status!=='DISABLED'" @click="setStatus('DISABLED')">停用</Button><Button v-if="selected&&form.status!=='PUBLISHED'" @click="setStatus('PUBLISHED')">发布</Button><Button @click="editing=false">取消</Button><Button type="primary" :loading="saving" @click="save">{{ selected ? '保存修改' : '创建 Skill' }}</Button></div>
-        </Form>
+          </Form>
+      <template #footer><Button v-if="selected" danger class="as-modal__footer-leading" @click="remove()"><DeleteOutlined />删除</Button><Button v-if="selected&&form.status!=='DISABLED'" @click="setStatus('DISABLED')">停用</Button><Button v-if="selected&&form.status!=='PUBLISHED'" @click="setStatus('PUBLISHED')">发布</Button><Button @click="editing=false">取消</Button><Button type="primary" :loading="saving" @click="save">{{ selected ? '保存修改' : '创建 Skill' }}</Button></template>
     </Modal>
   </section>
 </template>
@@ -137,7 +137,6 @@ onMounted(load);
 
 .skill-meta,
 .skill-card-actions,
-.skill-actions,
 .skill-form-row {
   display: flex;
   align-items: center;
@@ -180,14 +179,7 @@ onMounted(load);
   max-width: 150px;
 }
 
-.skill-actions {
-  gap: 8px;
-  padding-top: 4px;
-}
 
-.skill-actions span {
-  flex: 1;
-}
 
 @media (max-width: 600px) {
   .skill-form-row {

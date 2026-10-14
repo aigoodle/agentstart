@@ -14,7 +14,7 @@
  */
 import { reactive, ref, watch } from 'vue';
 
-import { Modal } from '../../ui';
+import { Button, Modal } from '../../ui';
 import { useProviderHub } from '../composables/useProviderHub';
 import type { ProviderView } from '../types';
 
@@ -47,7 +47,7 @@ watch(
     error.value = null;
     // Preload defaults from the schema so baseUrl-like fields are ready.
     for (const f of props.provider?.credentialSchema ?? []) {
-      if (!props.editMode && f.defaultValue) creds[f.name] = f.defaultValue;
+      if (!props.editMode && f.defaultValue !== undefined) creds[f.name] = f.defaultValue;
     }
   },
   { immediate: true },
@@ -58,7 +58,7 @@ async function save() {
   error.value = null;
   const payload: Record<string, unknown> = {};
   for (const [k, v] of Object.entries(creds)) {
-    if (v !== null && v !== undefined && String(v).length > 0) payload[k] = v;
+    if (v !== null && v !== undefined && String(v).trim().length > 0) payload[k] = typeof v === 'string' ? v.trim() : v;
   }
   if (Object.keys(payload).length === 0) {
     error.value = props.editMode ? '至少填写一个字段' : '请填入 API 密钥';
@@ -66,7 +66,7 @@ async function save() {
   }
   if (!props.editMode) {
     const missing = props.provider.credentialSchema.find(field =>
-      field.required && !String(payload[field.name] ?? field.defaultValue ?? '').trim(),
+      !String(payload[field.name] ?? '').trim(),
     );
     if (missing) {
       error.value = `请填写 ${missing.label}`;
@@ -126,13 +126,15 @@ async function save() {
           >
             <label class="pcm-label">
               <span>{{ f.label }}</span>
-              <span v-if="f.required" class="pcm-req">*</span>
+              <span v-if="!editMode" class="pcm-req">*</span>
               <span v-if="f.secret" class="pcm-secret">密文</span>
             </label>
             <input
               v-if="f.secret"
               type="password"
               class="pcm-input"
+              :required="!editMode"
+              :aria-required="!editMode"
               autocomplete="off"
               :value="(creds[f.name] as string) ?? ''"
               :placeholder="editMode ? '留空 = 保持不变' : (f.placeholder ?? '')"
@@ -141,6 +143,8 @@ async function save() {
             <input
               v-else
               type="text"
+              :required="!editMode"
+              :aria-required="!editMode"
               class="pcm-input"
               :value="(creds[f.name] as string) ?? ''"
               :placeholder="editMode ? '留空 = 保持不变' : (f.placeholder ?? '')"
@@ -155,22 +159,19 @@ async function save() {
       </div>
 
       <template #footer>
-      <div class="pcm-footer">
-        <button
-          class="pcm-btn"
+        <Button
           :disabled="saving"
           @click="emit('update:open', false)"
         >
           取消
-        </button>
-        <button
-          class="pcm-btn pcm-btn-primary"
+        </Button>
+        <Button
+          type="primary"
           :disabled="saving"
           @click="save"
         >
           {{ saving ? '校验中…' : '保存' }}
-        </button>
-      </div>
+        </Button>
       </template>
   </Modal>
 </template>
@@ -287,38 +288,5 @@ async function save() {
 .pcm-input:focus {
   outline: none;
   border-color: #6366f1;
-}
-.pcm-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-  padding: 12px 20px;
-  border-top: 1px solid #e5e7eb;
-}
-:global(.dark) .pcm-footer {
-  border-top-color: #2d2d2d;
-}
-.pcm-btn {
-  padding: 6px 16px;
-  font-size: 13px;
-  border-radius: 6px;
-  border: 1px solid #d1d5db;
-  background: #fff;
-  cursor: pointer;
-}
-.pcm-btn:hover {
-  background: #f3f4f6;
-}
-.pcm-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-.pcm-btn-primary {
-  background: #6366f1;
-  color: #fff;
-  border-color: #6366f1;
-}
-.pcm-btn-primary:hover {
-  background: #4f46e5;
 }
 </style>

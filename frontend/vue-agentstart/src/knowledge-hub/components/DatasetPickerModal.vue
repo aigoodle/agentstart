@@ -247,11 +247,9 @@ function onSubmit() {
         </div>
 
         <template #footer>
-        <div class="kh-dpm-footer">
-          <span class="kh-dpm-count">
+          <span class="kh-dpm-count as-modal__footer-leading">
             {{ selected.size }} 个知识库被选中
           </span>
-          <div class="kh-dpm-actions">
             <button class="kh-dpm-btn kh-dpm-btn-ghost" @click="onCancel">
               取消
             </button>
@@ -262,8 +260,6 @@ function onSubmit() {
             >
               添加
             </button>
-          </div>
-        </div>
         </template>
   </Modal>
 </template>
@@ -465,22 +461,9 @@ function onSubmit() {
   background: #6366f1;
 }
 
-.kh-dpm-footer {
-  padding: 12px 18px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  border-top: 1px solid #f1f5f9;
-  background: #fff;
-}
 .kh-dpm-count {
   font-size: 12px;
   color: #64748b;
-}
-.kh-dpm-actions {
-  display: flex;
-  gap: 8px;
 }
 .kh-dpm-btn {
   padding: 5px 14px;

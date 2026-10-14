@@ -1,18 +1,9 @@
 <script setup lang="ts">
 /**
- * ProviderHubShell — Dify-parity three-section settings page.
- *
- * Section 1 · 模型列表      : compact card grid (~5 per row, responsive). Click a
- *                              card → slide-in right drawer shows the catalog
- *                              grouped by model type, each entry a scrollable
- *                              pill row with an enable/disable toggle. Header
- *                              actions live in the drawer: 重新拉取 · 手动添加 ·
- *                              编辑凭证 · 删除凭证.
- * Section 2 · 待配置        : providers with credential but empty catalog.
- * Section 3 · 安装模型供应商 : providers without credentials — catalog grid.
- *
- * Catalog display cost: each provider row is a fixed-height scrollable panel, so
- * a provider with 100+ models doesn't stretch the page — the shell stays scannable.
+ * ProviderHubShell — compact provider settings.
+ * Configured providers, including those with an empty catalog, expose model
+ * management through the count button. The full supported-provider catalog
+ * below exposes credential setup and editing.
  */
 import { computed, onMounted, reactive, ref, watch } from 'vue';
 
@@ -81,7 +72,7 @@ const models = computed(() => props.models ?? localModels.value);
  * /catalog endpoint on demand (openPopover) — that endpoint returns the
  * union of predefined DB rows + custom agent_model rows with the tenant's
  * enable/default state pre-joined. Legacy `models` list stays around as a
- * fallback for the compact top-card counts and pending-section derivation.
+ * fallback for the compact card model counts.
  */
 const catalogByProvider = ref<Record<string, CatalogRow[]>>({});
 
@@ -126,7 +117,7 @@ function providerIconProps(p: ProviderView): {
 /**
  * Total known model count for the compact card. Combines the provider's
  * predefined catalog (visible without opening) + tenant-registered custom
- * models. Used ONLY for the pending/configured section split and the top
+ * models. Used only for the top
  * card's "N 个模型" summary — the popover uses the authoritative catalog.
  */
 function knownModelCount(p: ProviderView): number {
@@ -150,14 +141,7 @@ function enabledCount(p: ProviderView): number {
 }
 
 const configured = computed(() =>
-  providers.value.filter(
-    (p) => p.credentialConfigured && knownModelCount(p) > 0,
-  ),
-);
-const pending = computed(() =>
-  providers.value.filter(
-    (p) => p.credentialConfigured && knownModelCount(p) === 0,
-  ),
+  providers.value.filter((p) => p.credentialConfigured),
 );
 const installable = computed(() => {
   const q = search.value.trim().toLowerCase();
@@ -211,7 +195,7 @@ const modalEditMode = ref(false);
 
 function openCredentialModal(p: ProviderView, editMode = false) {
   modalProvider.value = p;
-  modalEditMode.value = editMode;
+  modalEditMode.value = editMode || p.credentialConfigured;
   modalOpen.value = true;
 }
 
@@ -304,8 +288,9 @@ async function loadCatalog(name: string) {
 }
 
 function openPopover(p: ProviderView) {
+  closeCardMenu();
   popoverProvider.value = p;
-  loadCatalog(p.name);
+  void loadCatalog(p.name);
 }
 function closePopover() {
   popoverProvider.value = null;
@@ -557,8 +542,8 @@ function catalogRowToModelEntity(row: CatalogRow, providerName: string): ModelEn
 
 // -------------------------------------------------- card ⋯ dropdown menu
 const openMenuFor = ref<string | null>(null);
-function toggleCardMenu(providerName: string, e: Event) {
-  e.stopPropagation();
+function toggleCardMenu(providerName: string) {
+  closePopover();
   openMenuFor.value = openMenuFor.value === providerName ? null : providerName;
 }
 function closeCardMenu() {
@@ -612,6 +597,8 @@ watch(popoverProvider, () => resetFilters());
 
 // -------------------------------------------------- row display helpers
 function modelTypeIcon(t: ModelType | string): string {
+  if (t === 'VIDEO') return '🎬';
+  if (t === 'IMAGE') return '🖼';
   if (t === 'LLM') return '💬';
   if (t === 'TEXT_EMBEDDING') return '🧮';
   if (t === 'RERANK') return '🔀';
@@ -619,6 +606,20 @@ function modelTypeIcon(t: ModelType | string): string {
   if (t === 'TTS') return '🔊';
   if (t === 'MODERATION') return '🛡';
   return '🤖';
+}
+
+function modelTypeTagStyle(type: string) {
+  const colors: Record<string, string> = {
+    LLM: '#2563eb', TEXT_EMBEDDING: '#059669', RERANK: '#d97706',
+    VIDEO: '#7c3aed', IMAGE: '#db2777', SPEECH2TEXT: '#0891b2',
+    TTS: '#4f46e5', MODERATION: '#64748b',
+  };
+  const color = colors[type] ?? '#64748b';
+  return {
+    '--phs-type-color': color,
+    color,
+    background: `color-mix(in srgb, ${color} 10%, var(--as-bg, #fff))`,
+  };
 }
 
 /**
@@ -745,7 +746,7 @@ function capabilityTags(
       @change="onDefaultsChanged"
     />
 
-    <!-- Section 1 · 模型列表 (compact card grid; no click-to-open) -->
+    <!-- 模型列表：已配置供应商，包括尚未添加模型的供应商。 -->
     <div v-if="configured.length > 0" class="phs-section">
       <div class="phs-section-title">模型列表</div>
       <div class="phs-configured-grid">
@@ -754,45 +755,45 @@ function capabilityTags(
           :key="p.name"
           class="phs-compact-card"
           :title="p.label"
+          :subtitle="p.name"
+          :interactive="false"
+          compact
           :footer-divider="false"
         >
           <template #icon>
             <ProviderIcon
               :name="p.name"
-              :size="36"
+              :size="32"
               v-bind="providerIconProps(p)"
             />
           </template>
 
-          <template #actions>
-            <div class="phs-card-menu-anchor">
+          <template #badge>
+            <Popover
+              :open="openMenuFor === p.name"
+              trigger="click"
+              placement="bottomRight"
+              overlay-class-name="phs-card-menu-overlay"
+              @update:open="(v: boolean) => (v ? openMenuFor = p.name : closeCardMenu())"
+            >
               <button
+                type="button"
                 class="phs-card-menu-btn"
                 title="更多操作"
-                @click.stop="toggleCardMenu(p.name, $event)"
-              >
-                ⋯
-              </button>
-              <div
-                v-if="openMenuFor === p.name"
-                class="phs-card-menu"
-                @click.stop
-              >
-                <button class="phs-card-menu-item" @click="onRefreshCatalog(p); closeCardMenu()">
-                  ↻ 重新拉取模型
-                </button>
-                <button class="phs-card-menu-item" @click="openCredentialModal(p, true); closeCardMenu()">
-                  🔑 编辑凭证
-                </button>
-                <button class="phs-card-menu-item" @click="openManualAdd(p); closeCardMenu()">
-                  + 手动添加模型
-                </button>
-                <div class="phs-card-menu-sep" />
-                <button class="phs-card-menu-item phs-card-menu-item--danger" @click="clearCredential(p); closeCardMenu()">
-                  🗑 删除凭证
-                </button>
-              </div>
-            </div>
+                :aria-label="`${p.label} 更多操作`"
+                :aria-expanded="openMenuFor === p.name"
+                @click.stop="toggleCardMenu(p.name)"
+              >⋯</button>
+              <template #content>
+                <div class="phs-card-menu-content">
+                  <button v-if="p.supportsRemoteModelListing" class="phs-card-menu-item" @click="onRefreshCatalog(p); closeCardMenu()">↻ 重新拉取模型</button>
+                  <button class="phs-card-menu-item" @click="openCredentialModal(p, true); closeCardMenu()">🔑 编辑凭证</button>
+                  <button class="phs-card-menu-item" @click="openManualAdd(p); closeCardMenu()">+ 手动添加模型</button>
+                  <div class="phs-card-menu-sep" />
+                  <button class="phs-card-menu-item phs-card-menu-item--danger" @click="clearCredential(p); closeCardMenu()">🗑 删除凭证</button>
+                </div>
+              </template>
+            </Popover>
           </template>
           <div class="phs-compact-caps">
             <span
@@ -805,51 +806,34 @@ function capabilityTags(
             </span>
           </div>
 
-          <!-- Antdv 气泡卡片：click count → floating popover, NOT a modal -->
-          <Popover
+          <Modal
             :open="popoverProvider?.name === p.name"
-            trigger="click"
-            placement="rightTop"
-            overlay-class-name="phs-model-popover-overlay"
-            :arrow="false"
-            :destroy-tooltip-on-hide="true"
-            @update:open="(v: boolean) => (v ? openPopover(p) : closePopover())"
+            :width="800"
+            centered
+            class="phs-model-modal"
+            @cancel="closePopover"
           >
-            <template #content>
-              <div
-                v-if="popoverProvider?.name === p.name"
-                class="phs-popover-inner"
-                @click.stop
-              >
-                <header class="phs-popover-head">
-                  <ProviderIcon
-                    :name="p.name"
-                    :size="32"
-                    v-bind="providerIconProps(p)"
-                  />
-                  <div class="phs-popover-head-body">
-                    <div class="phs-popover-title">{{ p.label }}</div>
-                    <div class="phs-popover-subtitle">
-                      {{ enabledCount(p) }} 已启用 · 共
-                      {{ catalogRows(p.name).length || knownModelCount(p) }} 个模型
-                    </div>
-                  </div>
-                </header>
-
+            <template #title>
+              <div class="phs-modal-title">
+                <ProviderIcon :name="p.name" :size="28" v-bind="providerIconProps(p)" />
+                <span>{{ p.label }} · 模型管理</span>
+              </div>
+            </template>
+            <div class="phs-popover-inner">
+              <div class="phs-catalog-toolbar">
+                <span class="phs-catalog-summary">
+                  <strong>{{ enabledCount(p) }}</strong> 已启用 · 共
+                  {{ catalogByProvider[p.name] ? catalogRows(p.name).length : knownModelCount(p) }} 个模型
+                </span>
                 <div class="phs-popover-actions">
-                  <Button
-                    v-if="p.supportsRemoteModelListing"
-                    type="text"
-                    :loading="refreshingCatalog.has(p.name)"
-                    @click="onRefreshCatalog(p)"
-                  >
-                    ↻ 重新拉取
+                  <Button v-if="p.supportsRemoteModelListing" size="small" :loading="refreshingCatalog.has(p.name)" @click="onRefreshCatalog(p)">
+                    <span aria-hidden="true">↻</span> 重新拉取
                   </Button>
-                  <Button type="text" @click="openManualAdd(p)">
-                    + 手动添加
+                  <Button type="primary" size="small" @click="openManualAdd(p)">
+                    <span aria-hidden="true">＋</span> 手动添加
                   </Button>
                 </div>
-
+              </div>
                 <div class="phs-filter-bar">
                   <div class="phs-filter-group">
                     <button
@@ -874,23 +858,24 @@ function capabilityTags(
                       未启用 <span class="phs-filter-count">{{ countBy(p.name, 'disabled') }}</span>
                     </button>
                   </div>
-                  <div class="phs-filter-group">
+                  <div class="phs-filter-group phs-type-filters">
                     <button
                       class="phs-filter-tab"
                       :class="{ 'phs-filter-tab--on': typeFilter === 'all' }"
                       @click="typeFilter = 'all'"
                     >
-                      所有类型
+                      <span aria-hidden="true">▦</span> 所有类型
                     </button>
                     <button
                       v-for="t in availableTypesInCatalog(p.name)"
                       :key="t"
                       class="phs-filter-tab"
                       :class="{ 'phs-filter-tab--on': typeFilter === t }"
-                      :data-color="modelTypeColor(t)"
+                      :style="modelTypeTagStyle(t)"
+                      :aria-pressed="typeFilter === t"
                       @click="typeFilter = t"
                     >
-                      {{ modelTypeLabel(t) }}
+                      <span aria-hidden="true">{{ modelTypeIcon(t) }}</span> {{ modelTypeLabel(t) }}
                     </button>
                   </div>
                 </div>
@@ -925,6 +910,7 @@ function capabilityTags(
                         <span
                           class="phs-row-icon"
                           :data-color="modelTypeColor(row.modelType)"
+                          :style="modelTypeTagStyle(row.modelType)"
                           :title="modelTypeLabel(row.modelType)"
                         >
                           {{ modelTypeIcon(row.modelType) }}
@@ -935,6 +921,7 @@ function capabilityTags(
                         <span
                           class="phs-row-cap"
                           :data-color="modelTypeColor(row.modelType)"
+                          :style="modelTypeTagStyle(row.modelType)"
                         >
                           {{ modelTypeLabel(row.modelType) }}
                         </span>
@@ -993,74 +980,27 @@ function capabilityTags(
                   </template>
                 </div>
 
-                <footer class="phs-popover-foot">
-                  <Button
-                    type="text"
-                    @click="openCredentialModal(p, true)"
-                  >
-                    编辑凭证
-                  </Button>
-                  <Button
-                    type="text"
-                    danger
-                    @click="clearCredential(p)"
-                  >
-                    删除凭证
-                  </Button>
-                </footer>
+            </div>
+            <template #footer>
+              <div class="phs-modal-footer">
+                <Button @click="openCredentialModal(p, true)">编辑凭证</Button>
+                <Button danger @click="clearCredential(p)">删除凭证</Button>
+                <Button class="phs-modal-done" @click="closePopover">完成</Button>
               </div>
             </template>
+          </Modal>
 
             <button
               class="phs-count-btn"
               title="点击查看模型列表"
-              @click.stop
+              @click.stop="popoverProvider?.name === p.name ? closePopover() : openPopover(p)"
+              :aria-expanded="popoverProvider?.name === p.name"
             >
               <span class="phs-count-enabled">{{ enabledCount(p) }}</span>
-              <span class="phs-count-sep">/</span>
-              <span class="phs-count-total">{{ knownModelCount(p) }}</span>
-              <span class="phs-count-label">个模型 →</span>
+              <span class="phs-count-label">已启用</span>
+              <span class="phs-count-total">共 {{ catalogByProvider[p.name] ? catalogRows(p.name).length : knownModelCount(p) }} 个模型</span>
+              <span class="phs-count-arrow" aria-hidden="true">→</span>
             </button>
-          </Popover>
-        </Card>
-      </div>
-    </div>
-
-    <!-- Section 2 · 待配置 (same compact grid style) -->
-    <div v-if="pending.length > 0" class="phs-section">
-      <div class="phs-section-title">待配置</div>
-      <div class="phs-configured-grid">
-        <Card variant="management"
-          v-for="p in pending"
-          :key="p.name"
-          class="phs-compact-card phs-compact-card--pending"
-          :title="p.label"
-        >
-          <template #icon>
-            <ProviderIcon
-              :name="p.name"
-              :size="32"
-              v-bind="providerIconProps(p)"
-            />
-          </template>
-
-          <div class="phs-compact-caps">
-            <span
-              v-for="t in p.supportedModelTypes"
-              :key="t"
-              class="phs-cap"
-              :data-color="modelTypeColor(t)"
-            >
-              {{ modelTypeLabel(t) }}
-            </span>
-          </div>
-
-          <button
-            class="phs-compact-pending"
-            @click.stop="p.supportsRemoteModelListing ? onRefreshCatalog(p) : openManualAdd(p)"
-          >
-            {{ p.supportsRemoteModelListing ? '↻ 点击拉取模型' : '+ 手动添加模型' }}
-          </button>
         </Card>
       </div>
     </div>
@@ -1074,7 +1014,9 @@ function capabilityTags(
           :key="p.name"
           class="phs-installable-card"
           :title="p.label"
-          :description="p.name"
+          :subtitle="p.name"
+          :interactive="false"
+          compact
         >
           <template #icon>
             <ProviderIcon
@@ -1084,13 +1026,19 @@ function capabilityTags(
             />
           </template>
 
-          <template #actions>
-            <Button
-              size="small"
+          <template #badge>
+            <button
+              type="button"
+              class="phs-installable-config"
+              :title="p.name === 'openai-compatible' ? '配置自定义接口' : p.credentialConfigured ? '管理配置' : '配置供应商'"
+              :aria-label="`配置 ${p.label}`"
               @click="openCredentialModal(p)"
             >
-              {{ p.name === 'openai-compatible' ? '配置自定义接口' : p.credentialConfigured ? '管理配置' : '配置供应商' }}
-            </Button>
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="m9.5 3-.6 2.2-1.7 1L5 5.7 2.5 10l1.6 1.6v1.8L2.5 15 5 19.3l2.2-.5 1.7 1 .6 2.2h5l.6-2.2 1.7-1 2.2.5 2.5-4.3-1.6-1.6v-1.8L21.5 10 19 5.7l-2.2.5-1.7-1L14.5 3z" />
+                <circle cx="12" cy="12.5" r="3" />
+              </svg>
+            </button>
           </template>
 
           <div class="phs-installable-caps">
@@ -1103,7 +1051,6 @@ function capabilityTags(
               {{ modelTypeLabel(t) }}
             </span>
           </div>
-          <span v-if="p.supportsRemoteModelListing" class="phs-installable-badge">可手动拉取</span>
         </Card>
       </div>
     </div>
@@ -1173,7 +1120,6 @@ function capabilityTags(
           </div>
         </div>
         <template #footer>
-        <div class="phs-mini-footer">
           <Button @click="manualAddOpen = false">取消</Button>
           <Button
             type="primary"
@@ -1182,7 +1128,6 @@ function capabilityTags(
           >
             添加
           </Button>
-        </div>
         </template>
     </Modal>
   </div>
@@ -1190,6 +1135,7 @@ function capabilityTags(
 
 <style scoped>
 .phs-root {
+  container: provider-hub / inline-size;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -1257,117 +1203,56 @@ function capabilityTags(
   color: #d1d5db;
 }
 
-/* -------- compact grid (larger cards, ~3-4 per row) -------- */
+/* -------- compact configured providers -------- */
 .phs-configured-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
 }
 .phs-compact-card {
-  cursor: pointer;
-  gap: 12px;
-  min-height: 110px;
-  position: relative;
+  min-width: 0;
+  min-height: 0;
+  padding: 10px;
+  gap: 8px;
+  border-radius: 10px;
 }
-/* Card: actions slot holds the "⋯" menu in the top-right corner,
-   lifted out of flow so the title row can use the full width. */
-.phs-compact-card:deep(.as-management-card__actions) {
-  position: absolute;
-  top: 16px;
-  right: 18px;
-  z-index: 5;
-  width: 30px;
-  height: 28px;
-  margin: 0;
-  padding: 0;
+.phs-compact-card:deep(.as-management-card__head) { gap: 8px; }
+.phs-compact-card:deep(.as-management-card__icon) {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
   border: 0;
-  flex: none;
+  background: transparent;
 }
-.phs-compact-card:deep(.as-management-card__actions) .phs-card-menu-anchor {
-  position: relative;
-  width: 30px;
-  height: 28px;
+.phs-compact-card:deep(.as-management-card__title h3) { font-size: 13px; line-height: 18px; }
+.phs-compact-card:deep(.as-management-card__title small) { margin-top: 2px; line-height: 14px; }
+.phs-compact-card:deep(.as-management-card__content) {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
-/* Menu is now anchored to the actions-slot wrapper (top-right corner of the
-   card), so reset its absolute offsets to hang from the anchor's bottom-right. */
-.phs-compact-card .phs-card-menu {
-  top: calc(100% + 2px);
-  right: 0;
-}
-.phs-compact-card--pending {
-  border-style: dashed;
-}
-.phs-compact-head {
+.phs-compact-card:deep(.as-popover) { display: block; width: 100%; }
+.phs-compact-caps { display: flex; gap: 4px; flex-wrap: wrap; }
+.phs-count-btn {
+  width: 100%;
   display: flex;
   align-items: center;
-  gap: 8px;
-  min-width: 0;
-}
-.phs-compact-title {
-  font-size: 14px;
-  font-weight: 600;
-  color: #111827;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  flex: 1;
-  min-width: 0;
-}
-:global(.dark) .phs-compact-title {
-  color: #f3f4f6;
-}
-.phs-compact-caps {
-  display: flex;
   gap: 4px;
-  flex-wrap: wrap;
-}
-.phs-count-btn {
-  background: transparent;
-  border: 1px dashed #d1d5db;
-  border-radius: 8px;
-  padding: 8px 12px;
-  font-size: 13px;
-  color: #6b7280;
-  display: flex;
-  align-items: baseline;
-  gap: 3px;
+  padding: 5px 8px;
+  border: 1px solid var(--as-mgmt-line, #eaecf0);
+  border-radius: 6px;
+  background: var(--as-mgmt-soft, #f8fafc);
+  color: var(--as-mgmt-muted, #667085);
+  font-size: 11px;
   cursor: pointer;
-  transition: border-color 0.15s ease, background 0.15s ease;
-  margin-top: auto;
+  transition: border-color 0.15s, background 0.15s;
 }
-.phs-count-btn:hover {
-  border-color: #6366f1;
-  background: #eef2ff;
-}
-.phs-count-enabled {
-  font-weight: 700;
-  color: #059669;
-  font-size: 16px;
-}
-.phs-count-sep,
-.phs-count-total {
-  color: #9ca3af;
-  font-size: 14px;
-}
-.phs-count-label {
-  margin-left: 6px;
-  color: #6b7280;
-}
-.phs-compact-pending {
-  font-size: 13px;
-  color: #b45309;
-  background: transparent;
-  border: 1px dashed #fbbf24;
-  border-radius: 8px;
-  padding: 8px 12px;
-  cursor: pointer;
-  transition: background 0.15s ease, border-color 0.15s ease;
-  margin-top: auto;
-}
-.phs-compact-pending:hover {
-  background: #fef3c7;
-  border-color: #d97706;
-}
+.phs-count-btn:hover { border-color: #6366f1; background: var(--as-primary-soft, #eef2ff); }
+.phs-count-btn:focus-visible { outline: 2px solid #6366f1; outline-offset: 2px; }
+.phs-count-enabled { font-weight: 600; color: #059669; font-size: 12px; }
+.phs-count-total { margin-left: auto; }
+.phs-count-arrow { margin-left: 2px; }
+.phs-card-menu-content { min-width: 148px; display: flex; flex-direction: column; gap: 2px; }
 
 /* ⋯ menu on each card */
 .phs-card-menu-btn {
@@ -1376,7 +1261,9 @@ function capabilityTags(
   color: #9ca3af;
   cursor: pointer;
   font-size: 20px;
-  padding: 0 6px;
+  width: 28px;
+  height: 28px;
+  padding: 0;
   border-radius: 6px;
   line-height: 1;
   flex-shrink: 0;
@@ -1384,25 +1271,6 @@ function capabilityTags(
 .phs-card-menu-btn:hover {
   background: #f3f4f6;
   color: #374151;
-}
-.phs-card-menu {
-  position: absolute;
-  top: 44px;
-  right: 12px;
-  min-width: 180px;
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
-  z-index: 10;
-  padding: 4px;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-:global(.dark) .phs-card-menu {
-  background: #1f1f1f;
-  border-color: #2d2d2d;
 }
 .phs-card-menu-item {
   padding: 8px 12px;
@@ -1440,11 +1308,11 @@ function capabilityTags(
 
 /* Popover filter tab bar */
 .phs-filter-bar {
-  padding: 10px 18px;
+  padding: 0 0 12px;
   border-bottom: 1px solid #e5e7eb;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 10px;
 }
 :global(.dark) .phs-filter-bar {
   border-bottom-color: #2d2d2d;
@@ -1558,74 +1426,75 @@ function capabilityTags(
   background: #fef2f2;
 }
 
-/* -------- installable grid -------- */
+/* -------- compact provider catalog -------- */
 .phs-installable-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
 }
 .phs-installable-card {
+  min-width: 0;
+  min-height: 0;
+  padding: 10px;
   gap: 8px;
+  border-radius: 10px;
+}
+.phs-installable-card:deep(.as-management-card__head) {
+  gap: 8px;
+}
+.phs-installable-card:deep(.as-management-card__icon) {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border: 0;
+  background: transparent;
 }
 .phs-installable-card:deep(.as-management-card__title h3) {
-  white-space: normal;
-  overflow: visible;
-  text-overflow: clip;
-  line-height: 1.4;
+  font-size: 13px;
+  line-height: 18px;
 }
-/* Card footer: action button pushed to the right, anchored at the
-   bottom of the card. */
-.phs-installable-card:deep(.as-management-card__footer) {
-  margin-top: auto;
+.phs-installable-card:deep(.as-management-card__title small) {
+  margin-top: 2px;
+  line-height: 14px;
+}
+.phs-installable-config {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-}
-.phs-installable-card:deep(.as-management-card__actions) {
-  margin: 0;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
   padding: 0;
   border: 0;
-  flex: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--as-mgmt-muted, #6b7280);
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
 }
-.phs-installable-head {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.phs-installable-config:hover {
+  background: var(--as-primary-soft, #eef2ff);
+  color: var(--as-primary, #4f46e5);
 }
-.phs-installable-name {
-  font-size: 14px;
-  font-weight: 600;
-  color: #111827;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  flex: 1;
-  min-width: 0;
-}
-:global(.dark) .phs-installable-name {
-  color: #f3f4f6;
-}
-.phs-installable-desc {
-  font-size: 11px;
-  color: #6b7280;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.phs-installable-badge {
-  padding: 0 6px;
-  background: #ecfdf5;
-  color: #059669;
-  border-radius: 3px;
-  font-weight: 500;
+.phs-installable-config:focus-visible {
+  outline: 2px solid var(--as-primary, #4f46e5);
+  outline-offset: 2px;
 }
 .phs-installable-caps {
   display: flex;
   gap: 4px;
   flex-wrap: wrap;
 }
-.phs-installable-footer {
-  margin-top: auto;
+@container provider-hub (max-width: 1099px) {
+  .phs-configured-grid, .phs-installable-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+@container provider-hub (max-width: 879px) {
+  .phs-configured-grid, .phs-installable-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@container provider-hub (max-width: 659px) {
+  .phs-configured-grid, .phs-installable-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@container provider-hub (max-width: 439px) {
+  .phs-configured-grid, .phs-installable-grid { grid-template-columns: minmax(0, 1fr); }
 }
 
 .phs-loading,
@@ -1636,110 +1505,44 @@ function capabilityTags(
   font-size: 13px;
 }
 
-/* -------- Shared popover header / body / actions styling -------- */
-.phs-popover-head {
+/* Model manager uses the shared Modal chrome and footer. */
+:global(.phs-card-menu-overlay) {
+  width: max-content;
+  min-width: 0;
+  max-width: calc(100vw - 16px);
+  padding: 6px;
+}
+.phs-modal-title { display: flex; align-items: center; gap: 8px; }
+.phs-popover-inner { display: flex; flex-direction: column; min-width: 0; }
+.phs-catalog-toolbar {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 14px 18px;
-  border-bottom: 1px solid #e5e7eb;
-}
-:global(.dark) .phs-popover-head {
-  border-bottom-color: #2d2d2d;
-}
-.phs-popover-head-body {
-  flex: 1;
-  min-width: 0;
-}
-.phs-popover-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: #111827;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-:global(.dark) .phs-popover-title {
-  color: #f3f4f6;
-}
-.phs-popover-subtitle {
-  margin-top: 2px;
-  font-size: 12px;
-  color: #6b7280;
-}
-.phs-popover-actions {
-  display: flex;
-  gap: 6px;
-  padding: 10px 18px;
-  border-bottom: 1px solid #e5e7eb;
+  justify-content: space-between;
   flex-wrap: wrap;
-  flex-shrink: 0;
+  gap: 10px;
+  padding-bottom: 14px;
 }
-:global(.dark) .phs-popover-actions {
-  border-bottom-color: #2d2d2d;
-}
+.phs-catalog-summary { font-size: 12px; color: var(--as-text-secondary, #667085); }
+.phs-catalog-summary strong { color: #059669; font-size: 15px; }
+.phs-popover-actions { display: flex; align-items: center; gap: 8px; }
 .phs-popover-body {
-  flex: 1;
-  overflow-y: auto;
-  padding: 14px 18px 18px;
-}
-.phs-popover-empty {
-  padding: 40px 0;
-  text-align: center;
-  color: #9ca3af;
-  font-size: 13px;
-  line-height: 1.6;
-}
-.phs-popover-list {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-/* Antdv Popover container — override defaults so our content fits nicely */
-:global(.phs-model-popover-overlay .ant-popover-inner) {
-  padding: 0;
-  overflow: hidden;
-  border: 1px solid rgba(15, 23, 42, 0.08);
-  border-radius: 14px;
-  box-shadow:
-    0 18px 48px rgba(15, 23, 42, 0.14),
-    0 2px 8px rgba(15, 23, 42, 0.06);
-}
-:global(.phs-model-popover-overlay .ant-popover-inner-content) {
-  padding: 0;
-}
-.phs-popover-inner {
-  width: 520px;
-  max-width: 90vw;
-  max-height: 78vh;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-.phs-popover-inner .phs-popover-head {
-  padding: 12px 16px;
-  border-bottom: 1px solid #e5e7eb;
-}
-.phs-popover-inner .phs-popover-body {
-  flex: 1;
-  overflow-y: auto;
-  padding: 8px 10px 10px;
-}
-.phs-popover-inner .phs-popover-actions {
-  padding: 8px 16px;
-  border-bottom: 1px solid #e5e7eb;
-  display: flex;
-  gap: 6px;
-}
-.phs-popover-foot {
-  padding: 8px 16px;
-  border-top: 1px solid #e5e7eb;
-  display: flex;
-  justify-content: flex-end;
-  gap: 6px;
+  height: min(52vh, 520px);
   flex-shrink: 0;
+  box-sizing: border-box;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+  padding-top: 10px;
 }
+.phs-popover-empty { padding: 40px 12px; text-align: center; color: var(--as-text-secondary, #667085); font-size: 13px; }
+.phs-popover-list { display: flex; flex-direction: column; gap: 4px; }
+.phs-modal-footer { display: flex; gap: 8px; width: 100%; }
+.phs-modal-done { margin-left: auto; }
+.phs-type-filters .phs-filter-tab { border-radius: 999px; padding: 4px 10px; }
+.phs-type-filters .phs-filter-tab--on {
+  border-color: var(--phs-type-color, #6366f1);
+  box-shadow: 0 0 0 1px var(--phs-type-color, #6366f1);
+}
+.phs-filter-tab:focus-visible { outline: 2px solid var(--phs-type-color, #6366f1); outline-offset: 2px; }
 
 /* Row: single-line — icon | name (flex:1) | tags | gear | switch */
 .phs-row {
@@ -2002,9 +1805,6 @@ function capabilityTags(
 }
 
 @media (max-width: 560px) {
-  .phs-popover-inner {
-    width: min(520px, calc(100vw - 24px));
-  }
   .phs-row-cap--ctx,
   .phs-row-cap[data-color='blue'] {
     display: none;
@@ -2110,13 +1910,6 @@ function capabilityTags(
   border-radius: 6px;
   color: #b91c1c;
   font-size: 12px;
-}
-.phs-mini-footer {
-  padding: 10px 16px;
-  border-top: 1px solid #e5e7eb;
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
 }
 .phs-req {
   color: #dc2626;

@@ -336,7 +336,6 @@ function humanSize(bytes: number): string {
     :open="open"
     title="创建知识库"
     :width="1200"
-    :footer="false"
     @update:open="close"
   >
     <div class="kh-wizard-content">
@@ -433,15 +432,7 @@ function humanSize(bytes: number): string {
             </div>
           </div>
 
-          <div class="kh-step1-actions">
-            <button
-              class="kh-btn kh-btn-primary"
-              :disabled="!step1Ready"
-              @click="goToStep2"
-            >
-              下一步 →
-            </button>
-          </div>
+
 
           <div class="kh-empty-link" @click="emit('skip-to-empty')">
             📂 创建一个空知识库
@@ -725,18 +716,7 @@ function humanSize(bytes: number): string {
               :indexing-technique="indexingTechnique"
             />
 
-            <div class="kh-step-actions">
-              <button class="kh-btn kh-btn-secondary" @click="step = 1">
-                ← 上一步
-              </button>
-              <button
-                class="kh-btn kh-btn-primary"
-                :disabled="!embeddingModelId && indexingTechnique === 'HIGH_QUALITY'"
-                @click="submitCreate"
-              >
-                保存并处理 →
-              </button>
-            </div>
+
           </div>
 
           <!-- RIGHT: preview -->
@@ -857,15 +837,39 @@ function humanSize(bytes: number): string {
               </div>
             </div>
 
-            <div class="kh-done-actions">
+
+          </div>
+        </div>
+    </div>
+    <template #footer>
+      <template v-if="step === 1">
+            <button
+              class="kh-btn kh-btn-primary"
+              :disabled="!step1Ready"
+              @click="goToStep2"
+            >
+              下一步 →
+            </button>
+                </template>
+      <template v-if="step === 2">
+              <button class="kh-btn kh-btn-secondary" @click="step = 1">
+                ← 上一步
+              </button>
+              <button
+                class="kh-btn kh-btn-primary"
+                :disabled="!embeddingModelId && indexingTechnique === 'HIGH_QUALITY'"
+                @click="submitCreate"
+              >
+                保存并处理 →
+              </button>
+                  </template>
+      <template v-if="step === 3">
               <button class="kh-btn kh-btn-secondary">◈ Access the API</button>
               <button class="kh-btn kh-btn-primary" @click="close">
                 前往文档 →
               </button>
-            </div>
-          </div>
-        </div>
-    </div>
+                  </template>
+    </template>
   </Modal>
 </template>
 
@@ -1090,11 +1094,6 @@ function humanSize(bytes: number): string {
 }
 
 /* Step 1 — actions */
-.kh-step1-actions {
-  margin-top: 22px;
-  display: flex;
-  justify-content: flex-end;
-}
 .kh-empty-link {
   margin-top: 20px;
   font-size: 13px;
@@ -1512,11 +1511,6 @@ function humanSize(bytes: number): string {
   line-height: 1.5;
 }
 
-.kh-step-actions {
-  margin-top: 20px;
-  display: flex;
-  justify-content: space-between;
-}
 
 /* Preview pane (right) */
 .kh-split-right {
@@ -1696,9 +1690,5 @@ function humanSize(bytes: number): string {
 }
 .kh-fact-val {
   color: #334155;
-}
-.kh-done-actions {
-  display: flex;
-  gap: 10px;
 }
 </style>

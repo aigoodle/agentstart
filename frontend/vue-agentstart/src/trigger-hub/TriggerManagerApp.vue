@@ -281,7 +281,7 @@ onMounted(load);
       </div>
     </template>
 
-    <Modal v-model:open="editorOpen" class="th-modal" centered :width="620" :footer="false" :mask-closable="!saving"
+    <Modal v-model:open="editorOpen" class="th-modal" centered :width="620" :mask-closable="!saving"
            :keyboard="!saving" :closable="!saving">
       <template #title>
         <div class="as-modal-heading">
@@ -289,7 +289,7 @@ onMounted(load);
           <div class="as-modal-subtitle">保存后即可接收事件或按计划调度。</div>
         </div>
       </template>
-      <form @submit.prevent="save">
+      <form id="trigger-editor-form" @submit.prevent="save">
         <label>名称<input v-model="form.name" required placeholder="订单创建后处理"/></label>
         <div class="th-form-row"><label>触发类型<select v-model="form.type">
           <option>WEBHOOK</option>
@@ -301,11 +301,11 @@ onMounted(load);
         <label>目标 ID<input v-model="form.targetId" required placeholder="工作流或 Agent ID"/></label><label>配置
         JSON<textarea v-model="configText" rows="8" placeholder='{"path":"order-created"}'></textarea></label><label
           class="th-check"><input v-model="form.enabled" type="checkbox"> 创建后立即启用</label>
-        <footer>
-          <Button @click="editorOpen=false">取消</Button>
-          <Button type="primary" :loading="saving" html-type="submit">创建</Button>
-        </footer>
       </form>
+      <template #footer>
+          <Button @click="editorOpen=false">取消</Button>
+          <Button type="primary" :loading="saving" html-type="submit" form="trigger-editor-form">创建</Button>
+      </template>
     </Modal>
     <Drawer v-model:open="historyOpen" width="min(760px, 92vw)">
       <template #title>
@@ -699,17 +699,7 @@ onMounted(load);
   justify-content: start
 }
 
-.th-modal form > footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px
-}
 
-.th-modal form > footer button {
-  padding: 8px 14px;
-  border: 1px solid var(--line);
-  border-radius: 7px
-}
 
 .th-drawer-root {
   display: flex;

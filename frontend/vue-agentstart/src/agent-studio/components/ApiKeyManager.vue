@@ -119,7 +119,6 @@ const dataSource = computed(() => props.keys ?? []);
   <Modal
     :open="open"
     title="API 密钥"
-    :footer="null"
     :width="720"
     :destroy-on-close="true"
     :mask-closable="false"
@@ -189,11 +188,11 @@ const dataSource = computed(() => props.keys ?? []);
       </Table>
     </Spin>
 
-    <div class="akm-footer">
+    <template #footer>
       <Button type="primary" :loading="creating" @click="onCreate">
         创建密钥
       </Button>
-    </div>
+    </template>
   </Modal>
 </template>
 
@@ -244,10 +243,5 @@ const dataSource = computed(() => props.keys ?? []);
 .akm-dim {
   color: #64748b;
   font-size: 12px;
-}
-.akm-footer {
-  margin-top: 16px;
-  display: flex;
-  justify-content: flex-end;
 }
 </style>

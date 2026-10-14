@@ -82,7 +82,6 @@ function onKey(e: KeyboardEvent) {
     centered
     :width="440"
     :title="title"
-    :footer="false"
     @cancel="onCancel"
     @keydown="onKey"
   >
@@ -94,7 +93,7 @@ function onKey(e: KeyboardEvent) {
           class="khd-input"
           :placeholder="promptPlaceholder"
         />
-        <div class="khd-actions">
+        <template #footer>
           <button class="khd-btn khd-btn-secondary" @click="onCancel">
             {{ cancelText ?? t('common.cancel') }}
           </button>
@@ -106,7 +105,7 @@ function onKey(e: KeyboardEvent) {
           >
             {{ okText ?? t('common.ok') }}
           </button>
-        </div>
+        </template>
   </Modal>
 </template>
 
@@ -152,12 +151,6 @@ function onKey(e: KeyboardEvent) {
 .khd-input:focus {
   border-color: var(--kh-color-primary);
   box-shadow: var(--kh-focus-ring);
-}
-.khd-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: var(--kh-space-2);
-  margin-top: var(--kh-space-2);
 }
 .khd-btn {
   padding: 6px 18px;

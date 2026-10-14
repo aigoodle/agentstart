@@ -132,6 +132,8 @@ const Popover = defineComponent({
         : Math.max(margin, top);
       panelStyle.value = {
         position: 'fixed',
+        right: 'auto',
+        bottom: 'auto',
         left: `${left}px`,
         top: `${top}px`,
         ...(props.matchTriggerWidth ? { width: `${triggerRect.width}px` } : {}),

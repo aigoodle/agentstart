@@ -191,14 +191,12 @@ defineExpose({ open: openModal, close: closeModal });
         </div>
 
         <template #footer>
-        <div class="vem-footer">
           <Button @click="closeModal">
             取消
           </Button>
           <Button type="primary" @click="submit">
             {{ editing ? '保存' : '添加' }}
           </Button>
-        </div>
         </template>
   </Modal>
 </template>
@@ -430,13 +428,6 @@ defineExpose({ open: openModal, close: closeModal });
   color: #94a3b8;
 }
 
-.vem-footer {
-  padding: 12px 18px;
-  border-top: 1px solid #f1f5f9;
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-}
 .vem-btn {
   height: 32px;
   padding: 0 16px;

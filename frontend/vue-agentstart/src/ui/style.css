@@ -919,3 +919,7 @@
   letter-spacing: 0;
   text-shadow: none;
 }
+
+/* Auxiliary footer content stays before the shared modal actions. */
+.as-modal__footer { align-items: center; }
+.as-modal__footer > .as-modal__footer-leading { margin-right: auto; }

@@ -594,7 +594,7 @@ const formatTime = (value?: string) => (value ? new Date(value).toLocaleString()
               </div>
               <div v-if="replyError" class="cmd-form-error">{{ replyError }}</div>
             </main>
-            <template #footer><div class="cmd-dialog-footer">
+            <template #footer>
               <Button :disabled="replySaving" @click="closeReply">取消</Button>
               <Button
                 type="primary"
@@ -604,7 +604,7 @@ const formatTime = (value?: string) => (value ? new Date(value).toLocaleString()
               >
                 加入发送队列
               </Button>
-            </div></template>
+            </template>
       </Modal>
 
       <Modal :open="handoffOpen" class="cmd-dialog" centered :width="560" :mask-closable="!handoffSaving" :keyboard="!handoffSaving" :closable="!handoffSaving" @cancel="closeHandoff">
@@ -629,7 +629,7 @@ const formatTime = (value?: string) => (value ? new Date(value).toLocaleString()
               </label>
               <div v-if="handoffError" class="cmd-form-error">{{ handoffError }}</div>
             </main>
-            <template #footer><div class="cmd-dialog-footer">
+            <template #footer>
               <Button :disabled="handoffSaving" @click="closeHandoff">取消</Button>
               <Button
                 type="primary"
@@ -638,7 +638,7 @@ const formatTime = (value?: string) => (value ? new Date(value).toLocaleString()
               >
                 确认转人工
               </Button>
-            </div></template>
+            </template>
       </Modal>
 
       <Modal v-model:open="noteOpen" class="cmd-dialog" centered :width="560" :mask-closable="!noteSaving" :keyboard="!noteSaving" :closable="!noteSaving">
@@ -649,7 +649,7 @@ const formatTime = (value?: string) => (value ? new Date(value).toLocaleString()
               </div>
             </template>
             <main><label class="cmd-form-field">备注内容<textarea v-model="noteContent" rows="5" maxlength="2000" placeholder="记录处理过程、判断或交接信息"></textarea></label></main>
-            <template #footer><div class="cmd-dialog-footer"><Button :disabled="noteSaving" @click="noteOpen = false">取消</Button><Button type="primary" :loading="noteSaving" :disabled="!noteContent.trim()" @click="submitNote">保存内部备注</Button></div></template>
+            <template #footer><Button :disabled="noteSaving" @click="noteOpen = false">取消</Button><Button type="primary" :loading="noteSaving" :disabled="!noteContent.trim()" @click="submitNote">保存内部备注</Button></template>
       </Modal>
     </div>
   </Transition>
@@ -957,17 +957,8 @@ const formatTime = (value?: string) => (value ? new Date(value).toLocaleString()
   box-shadow: 0 24px 70px rgba(15, 23, 42, 0.28);
 }
 .cmd-dialog > header,
-.cmd-dialog > footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 16px 20px;
-}
 .cmd-dialog > header { border-bottom: 1px solid #e5e7eb; }
 .cmd-dialog main { display: grid; gap: 16px; }
-.cmd-dialog-footer { display: flex; justify-content: flex-end; gap: 12px; width: 100%; }
-.cmd-dialog > footer { justify-content: flex-end; border-top: 1px solid #e5e7eb; }
 .cmd-handoff-notice {
   padding: 11px 13px;
   color: #92400e;
@@ -1008,7 +999,6 @@ const formatTime = (value?: string) => (value ? new Date(value).toLocaleString()
 .cmd-form-error { color: #b91c1c; font-size: 12px; }
 :global(.dark) .cmd-dialog { background: #1f1f1f; }
 :global(.dark) .cmd-dialog > header,
-:global(.dark) .cmd-dialog > footer { border-color: #2d2d2d; }
 :global(.dark) .cmd-form-field { color: #d1d5db; }
 :global(.dark) .cmd-form-field textarea { color: #f3f4f6; background: #2d2d2d; border-color: #3d3d3d; }
 :global(.dark) .cmd-handoff-notice { color: #fbbf24; background: rgba(245, 158, 11, 0.12); border-color: rgba(245, 158, 11, 0.3); }

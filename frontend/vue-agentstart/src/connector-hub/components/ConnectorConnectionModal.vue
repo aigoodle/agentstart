@@ -143,15 +143,13 @@ async function remove() {
         </main>
 
         <template #footer>
-        <footer class="ccm-footer">
           <button
             v-if="connection"
-            class="ccm-btn ccm-btn-danger"
+            class="ccm-btn ccm-btn-danger as-modal__footer-leading"
             @click="remove"
           >
             删除
           </button>
-          <span class="ccm-footer-spacer" />
           <button
             v-if="connection"
             class="ccm-btn"
@@ -170,7 +168,6 @@ async function remove() {
           >
             {{ saving ? '保存中…' : '保存连接' }}
           </button>
-        </footer>
         </template>
   </Modal>
 </template>
@@ -244,20 +241,7 @@ async function remove() {
   background: #f3f4f6;
   color: #111827;
 }
-.ccm-footer {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 14px 20px;
-  border-top: 1px solid #e5e7eb;
-}
-.ccm-footer-spacer {
-  flex: 1;
-}
 :global(.dark) .ccm-header,
-:global(.dark) .ccm-footer {
-  border-color: #2d2d2d;
-}
 :global(.dark) .ccm-title {
   color: #f3f4f6;
 }

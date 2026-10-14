@@ -14,6 +14,10 @@ import { Button } from './Button';
 
 type AnyRecord = Record<string, unknown>;
 
+// Teleported dialogs share one layer stack, ordered by opening time.
+let nextModalLayer = 1200;
+const modalLayers = new Map<symbol, number>();
+
 export const Modal = defineComponent({
   name: 'AsModal',
   inheritAttrs: false,
@@ -38,6 +42,15 @@ export const Modal = defineComponent({
   setup(props, { attrs, emit, slots }) {
     const panel = ref<HTMLElement | null>(null);
     const previouslyFocused = ref<HTMLElement | null>(null);
+    const layerId = Symbol('modal');
+    const layer = ref(1200);
+    const isTopModal = () => modalLayers.get(layerId) === Math.max(...modalLayers.values());
+    const releaseLayer = () => {
+      const restoreFocus = isTopModal();
+      modalLayers.delete(layerId);
+      if (restoreFocus && previouslyFocused.value?.isConnected) previouslyFocused.value.focus();
+      previouslyFocused.value = null;
+    };
     const close = (event?: Event) => {
       emit('update:open', false);
       emit('update:visible', false);
@@ -48,22 +61,30 @@ export const Modal = defineComponent({
     watch(isOpen, async (open) => {
       if (typeof document === 'undefined') return;
       if (open) {
+        layer.value = nextModalLayer;
+        nextModalLayer += 10;
+        modalLayers.set(layerId, layer.value);
         previouslyFocused.value = document.activeElement as HTMLElement | null;
         await nextTick();
-        panel.value?.focus();
+        if (isOpen() && isTopModal()) panel.value?.focus();
       } else {
-        previouslyFocused.value?.focus?.();
-        previouslyFocused.value = null;
+        releaseLayer();
       }
-    });
-    onBeforeUnmount(() => previouslyFocused.value?.focus?.());
+    }, { immediate: true });
+    onBeforeUnmount(releaseLayer);
 
     return () => h(Teleport, { to: 'body' }, h(Transition, {
       name: 'as-modal-fade',
       onAfterLeave: () => emit('afterClose'),
     }, () => isOpen() ? h('div', {
       class: ['as-modal-root', { 'as-modal-root--centered': props.centered }],
-      onKeydown: (event: KeyboardEvent) => { if (props.keyboard && event.key === 'Escape') close(event); },
+      style: { zIndex: layer.value },
+      onKeydown: (event: KeyboardEvent) => {
+        if (isTopModal() && event.key === 'Escape') {
+          event.stopPropagation();
+          if (props.keyboard) close(event);
+        }
+      },
     }, [
       h('div', { class: 'as-modal__mask', onClick: (event: Event) => { if (props.maskClosable) close(event); } }),
       h('section', {
