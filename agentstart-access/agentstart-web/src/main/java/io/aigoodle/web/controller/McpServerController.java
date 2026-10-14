@@ -3,6 +3,7 @@ package io.aigoodle.web.controller;
 import io.aigoodle.api.ApiResponse;
 import io.aigoodle.tool.ToolRegistry;
 import io.aigoodle.tool.mcp.McpClientManager;
+import io.aigoodle.tool.mcp.McpInvocationHeaders;
 import io.aigoodle.tool.mcp.McpProperties;
 import io.aigoodle.tool.mcp.McpToolProvider;
 import java.util.List;
@@ -86,8 +87,17 @@ public class McpServerController {
     }
 
     @PostMapping("/{id}/test")
-    public CompletableFuture<ApiResponse<TestResult>> test(@PathVariable String id) {
-        return CompletableFuture.supplyAsync(() -> testBlocking(id));
+    public CompletableFuture<ApiResponse<TestResult>> test(
+            @PathVariable String id,
+            @RequestHeader(value = "Authorization", required = false) String authorization,
+            @RequestHeader(value = "X-MCP-Authorization", required = false) String mcpAuthorization) {
+        String forwardedAuthorization =
+                mcpAuthorization == null || mcpAuthorization.isBlank() ? authorization : mcpAuthorization;
+        return CompletableFuture.supplyAsync(() -> {
+            try (McpInvocationHeaders.Scope ignored = McpInvocationHeaders.withAuthorization(forwardedAuthorization)) {
+                return testBlocking(id);
+            }
+        });
     }
 
     private ApiResponse<TestResult> testBlocking(String id) {
@@ -113,6 +123,9 @@ public class McpServerController {
         String message = cause.getMessage();
         if (message == null || message.isBlank()) message = failure.getMessage();
         if (message == null || message.isBlank()) message = failure.getClass().getSimpleName();
+        if (message.contains("Authorization error when sending message")) {
+            return "MCP 服务拒绝鉴权，请在测试请求中提供有效的 X-MCP-Authorization: Bearer <业务令牌>，" + "或 Authorization: Bearer <业务令牌>";
+        }
         return message.length() > 600 ? message.substring(0, 600) + "…" : message;
     }
 
