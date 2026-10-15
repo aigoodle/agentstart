@@ -135,14 +135,14 @@ const removeFilter = (index: number) => {
 
   <div v-if="formState.operation === 'slice'" class="wf-config-section">
     <WfField title="偏移" is-subtitle>
-      <a-input-number
+      <a-input-number size="small"
         v-model:value="formState.offset"
         :min="0"
         style="width: 100%"
       />
     </WfField>
     <WfField title="数量" is-subtitle>
-      <a-input-number
+      <a-input-number size="small"
         v-model:value="formState.limit"
         :min="0"
         style="width: 100%"
@@ -152,13 +152,13 @@ const removeFilter = (index: number) => {
 
   <div v-if="formState.operation === 'sort'" class="wf-config-section">
     <WfField title="排序字段" is-subtitle>
-      <a-input
+      <a-input size="small"
         v-model:value="formState.sortField"
         placeholder="留空按 item 本身"
       />
     </WfField>
     <WfField title="顺序" is-subtitle>
-      <a-select
+      <a-select size="small"
         v-model:value="formState.sortOrder"
         :options="SORT_ORDERS"
         style="width: 100%"
@@ -169,7 +169,7 @@ const removeFilter = (index: number) => {
 
 <style scoped>
 .list-op-empty {
-  padding: 12px;
+  padding: 8px;
   text-align: center;
   font-size: 12px;
   color: var(--muted-foreground);

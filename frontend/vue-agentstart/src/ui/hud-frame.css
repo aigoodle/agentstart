@@ -1,7 +1,13 @@
 /* One theme-colored frame for pages, dialogs, sheets and info popovers. */
 :root[data-visual='tech'] {
-  --as-frame-hot: color-mix(in srgb, var(--primary) 70%, white);
-  --as-frame-glow: color-mix(in srgb, var(--primary) 30%, transparent);
+  --as-frame-hot: color-mix(in srgb, var(--primary) 76%, black);
+  --as-frame-halo-mask: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2072%2072%22%3E%3Cdefs%3E%3Cfilter%20id%3D%22g%22%20x%3D%22-30%25%22%20y%3D%22-30%25%22%20width%3D%22160%25%22%20height%3D%22160%25%22%3E%3CfeGaussianBlur%20stdDeviation%3D%221.5%22%2F%3E%3C%2Ffilter%3E%3C%2Fdefs%3E%3Cg%20transform%3D%22rotate%280%2036%2036%29%22%20fill%3D%22none%22%20stroke%3D%22white%22%20stroke-linejoin%3D%22miter%22%20filter%3D%22url%28%23g%29%22%20opacity%3D%22.28%22%3E%3Cpath%20d%3D%22M59%201.5H14.5L1.5%2014.5V59%22%20stroke-width%3D%225%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") left top / 72px 72px no-repeat,
+    url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2072%2072%22%3E%3Cdefs%3E%3Cfilter%20id%3D%22g%22%20x%3D%22-30%25%22%20y%3D%22-30%25%22%20width%3D%22160%25%22%20height%3D%22160%25%22%3E%3CfeGaussianBlur%20stdDeviation%3D%221.5%22%2F%3E%3C%2Ffilter%3E%3C%2Fdefs%3E%3Cg%20transform%3D%22rotate%2890%2036%2036%29%22%20fill%3D%22none%22%20stroke%3D%22white%22%20stroke-linejoin%3D%22miter%22%20filter%3D%22url%28%23g%29%22%20opacity%3D%22.28%22%3E%3Cpath%20d%3D%22M59%201.5H14.5L1.5%2014.5V59%22%20stroke-width%3D%225%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") right top / 72px 72px no-repeat,
+    url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2072%2072%22%3E%3Cdefs%3E%3Cfilter%20id%3D%22g%22%20x%3D%22-30%25%22%20y%3D%22-30%25%22%20width%3D%22160%25%22%20height%3D%22160%25%22%3E%3CfeGaussianBlur%20stdDeviation%3D%221.5%22%2F%3E%3C%2Ffilter%3E%3C%2Fdefs%3E%3Cg%20transform%3D%22rotate%28180%2036%2036%29%22%20fill%3D%22none%22%20stroke%3D%22white%22%20stroke-linejoin%3D%22miter%22%20filter%3D%22url%28%23g%29%22%20opacity%3D%22.28%22%3E%3Cpath%20d%3D%22M59%201.5H14.5L1.5%2014.5V59%22%20stroke-width%3D%225%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") right bottom / 72px 72px no-repeat,
+    url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2072%2072%22%3E%3Cdefs%3E%3Cfilter%20id%3D%22g%22%20x%3D%22-30%25%22%20y%3D%22-30%25%22%20width%3D%22160%25%22%20height%3D%22160%25%22%3E%3CfeGaussianBlur%20stdDeviation%3D%221.5%22%2F%3E%3C%2Ffilter%3E%3C%2Fdefs%3E%3Cg%20transform%3D%22rotate%28270%2036%2036%29%22%20fill%3D%22none%22%20stroke%3D%22white%22%20stroke-linejoin%3D%22miter%22%20filter%3D%22url%28%23g%29%22%20opacity%3D%22.28%22%3E%3Cpath%20d%3D%22M59%201.5H14.5L1.5%2014.5V59%22%20stroke-width%3D%225%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") left bottom / 72px 72px no-repeat;
+  --as-frame-render-mask: var(--as-frame-mask);
+  --as-frame-opacity: .92;
+  --as-frame-glow: color-mix(in srgb, var(--primary) 8%, transparent);
   --as-frame-mask: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2272%22%20height%3D%2272%22%20viewBox%3D%220%200%2072%2072%22%3E%3Cg%20transform%3D%22rotate%280%2036%2036%29%22%20fill%3D%22none%22%20stroke%3D%22white%22%20stroke-linejoin%3D%22miter%22%3E%3Cpath%20d%3D%22M72%20.5H14L.5%2014V72%22%20stroke-width%3D%221%22%20opacity%3D%22.65%22%2F%3E%3Cpath%20d%3D%22M59%201.5H14.5L1.5%2014.5V59%22%20stroke-width%3D%223%22%2F%3E%3Cpath%20d%3D%22M45%205.5H16.5L5.5%2016.5V45%22%20stroke-width%3D%221%22%20opacity%3D%22.7%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") left top / 72px 72px no-repeat,
     url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2272%22%20height%3D%2272%22%20viewBox%3D%220%200%2072%2072%22%3E%3Cg%20transform%3D%22rotate%2890%2036%2036%29%22%20fill%3D%22none%22%20stroke%3D%22white%22%20stroke-linejoin%3D%22miter%22%3E%3Cpath%20d%3D%22M72%20.5H14L.5%2014V72%22%20stroke-width%3D%221%22%20opacity%3D%22.65%22%2F%3E%3Cpath%20d%3D%22M59%201.5H14.5L1.5%2014.5V59%22%20stroke-width%3D%223%22%2F%3E%3Cpath%20d%3D%22M45%205.5H16.5L5.5%2016.5V45%22%20stroke-width%3D%221%22%20opacity%3D%22.7%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") right top / 72px 72px no-repeat,
     url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2272%22%20height%3D%2272%22%20viewBox%3D%220%200%2072%2072%22%3E%3Cg%20transform%3D%22rotate%28180%2036%2036%29%22%20fill%3D%22none%22%20stroke%3D%22white%22%20stroke-linejoin%3D%22miter%22%3E%3Cpath%20d%3D%22M72%20.5H14L.5%2014V72%22%20stroke-width%3D%221%22%20opacity%3D%22.65%22%2F%3E%3Cpath%20d%3D%22M59%201.5H14.5L1.5%2014.5V59%22%20stroke-width%3D%223%22%2F%3E%3Cpath%20d%3D%22M45%205.5H16.5L5.5%2016.5V45%22%20stroke-width%3D%221%22%20opacity%3D%22.7%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") right bottom / 72px 72px no-repeat,
@@ -13,9 +19,9 @@
 }
 :root[data-visual='tech'] :is(.hud-panel, .as-info-popover)::before {
   content: ''; position: absolute; inset: 0; z-index: 3; pointer-events: none;
-  padding: 0; border: 0; border-radius: 0; opacity: 1;
+  padding: 0; border: 0; border-radius: 0; opacity: var(--as-frame-opacity);
   background: var(--as-frame-hot); clip-path: none;
-  -webkit-mask: var(--as-frame-mask); mask: var(--as-frame-mask);
+  -webkit-mask: var(--as-frame-render-mask); mask: var(--as-frame-render-mask);
   filter: drop-shadow(0 0 2px var(--as-frame-glow)); animation: none;
 }
 /* No second inset rectangle: reinforcement exists only at the four corners. */
@@ -24,8 +30,35 @@
   border: 0; border-radius: 0; box-shadow: 0 12px 36px rgb(0 0 0 / 28%);
   clip-path: polygon(14px 0, calc(100% - 14px) 0, 100% 14px, 100% calc(100% - 14px), calc(100% - 14px) 100%, 14px 100%, 0 calc(100% - 14px), 0 14px);
 }
-:root[data-visual='tech'] .as-sheet-hud__chrome { background: var(--as-frame-hot); -webkit-mask: var(--as-frame-mask); mask: var(--as-frame-mask); filter: drop-shadow(0 0 2px var(--as-frame-glow)); }
+:root[data-visual='tech'] .as-sheet-hud__chrome { background: var(--as-frame-hot); -webkit-mask: var(--as-frame-render-mask); mask: var(--as-frame-render-mask); filter: drop-shadow(0 0 2px var(--as-frame-glow)); }
 :root[data-visual='tech'] .as-sheet-hud { border: 0; clip-path: polygon(14px 0, calc(100% - 14px) 0, 100% 14px, 100% calc(100% - 14px), calc(100% - 14px) 100%, 14px 100%, 0 calc(100% - 14px), 0 14px); }
 
 /* Clip the surface itself, including workflow configuration panel corners. */
 :root[data-visual='tech'] .hud-panel { border-radius: 0; clip-path: polygon(14px 0, calc(100% - 14px) 0, 100% 14px, 100% calc(100% - 14px), calc(100% - 14px) 100%, 14px 100%, 0 calc(100% - 14px), 0 14px); }
+
+/* Only dark tech gets a softly feathered corner halo. Light tech stays crisp. */
+:root.dark[data-visual='tech'], :root[data-theme='dark'][data-visual='tech'] {
+  --as-frame-hot: color-mix(in srgb, var(--primary) 62%, white);
+  --as-frame-glow: color-mix(in srgb, var(--primary) 22%, transparent);
+  --as-frame-render-mask: var(--as-frame-mask), var(--as-frame-halo-mask);
+  --as-frame-opacity: .88;
+}
+:root[data-visual='tech'] :is(.hud-panel, .as-info-popover)::before,
+:root[data-visual='tech'] .as-sheet-hud__chrome { transition: opacity 180ms ease, background-color 180ms ease; opacity: var(--as-frame-opacity); }
+@media (hover: hover) {
+  :root[data-visual='tech'] :is(.hud-panel, .as-info-popover):hover::before,
+  :root[data-visual='tech'] .as-sheet-hud:hover > .as-sheet-hud__chrome { opacity: 1; }
+}
+:root[data-visual='tech'] :is(.hud-panel, .as-info-popover):focus-within::before,
+:root[data-visual='tech'] .as-sheet-hud:focus-within > .as-sheet-hud__chrome { opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  :root[data-visual='tech'] :is(.hud-panel, .as-info-popover)::before,
+  :root[data-visual='tech'] .as-sheet-hud__chrome { transition: none; }
+}
+/* Modal keeps its original chrome geometry, sharing the theme frame palette. */
+:root[data-visual='tech'] .as-modal.as-hud-frame--modal {
+  --as-hud-modal-line: color-mix(in srgb, var(--as-frame-hot) 65%, transparent);
+  --as-hud-modal-hot: var(--as-frame-hot);
+  --as-hud-modal-glow: var(--as-frame-glow);
+  --as-hud-glow: var(--as-frame-glow);
+}

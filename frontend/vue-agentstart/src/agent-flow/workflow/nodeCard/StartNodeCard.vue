@@ -84,6 +84,8 @@ const variableFormSubmit = (data: any) => {
       <template #operations>
         <a-button
           :icon="h(PlusOutlined)"
+          class="start-add-variable"
+          aria-label="添加输入变量"
           size="small"
           type="primary"
           @click="toEditVariable({})"
@@ -160,7 +162,7 @@ const variableFormSubmit = (data: any) => {
 
 <style scoped>
 .start-empty {
-  padding: 12px;
+  padding: 8px;
   text-align: center;
   font-size: 12px;
   color: var(--wf-config-text-muted, var(--as-text-secondary, #9ca3af));
@@ -208,7 +210,7 @@ const variableFormSubmit = (data: any) => {
 
 .start-var-icon {
   font-size: 16px;
-  color: var(--as-primary, #6366f1);
+  color: var(--as-primary, var(--wf-config-accent));
 }
 
 .start-var-label {

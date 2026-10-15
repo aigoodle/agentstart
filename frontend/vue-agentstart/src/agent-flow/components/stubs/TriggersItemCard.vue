@@ -167,25 +167,26 @@ onMounted(loadMessageConnectors);
     </div>
 
     <div v-if="enabled" class="wf-triggers-types">
-      <AsShadcnButton variant="ghost"
+      <AsShadcnButton size="sm" variant="ghost"
         v-for="item in TRIGGERS"
         :key="item.key"
         type="button"
         class="wf-triggers-type"
         :class="{ 'is-active': currentType === item.key }"
+        :aria-pressed="currentType === item.key"
         :style="{ '--tc': item.color }"
         @click="currentType = item.key"
       >
-        <component :is="item.icon" class="wf-triggers-type-icon" />
+        <span class="wf-triggers-type-icon"><component :is="item.icon" /></span>
         <span>{{ item.label }}</span>
       </AsShadcnButton>
     </div>
 
     <div v-if="enabled && currentType === 'schedule'" class="wf-schedule-form">
-      <label>任务名称<a-input v-model:value="formState.triggers.name" /></label>
-      <label>执行工作流 ID<a-input v-model:value="formState.triggers.targetWorkflowId" placeholder="可选择当前或另一个已发布工作流" /></label>
+      <label>任务名称<a-input size="small" v-model:value="formState.triggers.name" /></label>
+      <label>执行工作流 ID<a-input size="small" v-model:value="formState.triggers.targetWorkflowId" placeholder="可选择当前或另一个已发布工作流" /></label>
       <label>计划类型
-        <a-select v-model:value="formState.triggers.scheduleType">
+        <a-select size="small" v-model:value="formState.triggers.scheduleType">
           <a-select-option value="CRON">周期任务</a-select-option>
           <a-select-option value="ONCE">一次性任务</a-select-option>
         </a-select>
@@ -193,7 +194,7 @@ onMounted(loadMessageConnectors);
 
       <template v-if="formState.triggers.scheduleType === 'CRON'">
         <label>周期
-          <a-select v-model:value="formState.triggers.recurrence">
+          <a-select size="small" v-model:value="formState.triggers.recurrence">
             <a-select-option value="DAILY">每天</a-select-option>
             <a-select-option value="WEEKLY">每周</a-select-option>
             <a-select-option value="MONTHLY">每月</a-select-option>
@@ -201,27 +202,27 @@ onMounted(loadMessageConnectors);
           </a-select>
         </label>
         <label v-if="formState.triggers.recurrence !== 'CUSTOM'">执行时间
-          <a-input v-model:value="formState.triggers.time" type="time" />
+          <a-input size="small" v-model:value="formState.triggers.time" type="time" />
         </label>
         <label v-if="formState.triggers.recurrence === 'WEEKLY'">星期
-          <a-select v-model:value="formState.triggers.weekDay">
+          <a-select size="small" v-model:value="formState.triggers.weekDay">
             <a-select-option v-for="(name, index) in ['周日','周一','周二','周三','周四','周五','周六']" :key="index" :value="index">{{ name }}</a-select-option>
           </a-select>
         </label>
         <label v-if="formState.triggers.recurrence === 'MONTHLY'">每月日期
-          <a-input-number v-model:value="formState.triggers.dayOfMonth" :min="1" :max="31" />
+          <a-input-number size="small" v-model:value="formState.triggers.dayOfMonth" :min="1" :max="31" />
         </label>
         <label v-if="formState.triggers.recurrence === 'CUSTOM'">Cron 表达式
-          <a-input v-model:value="formState.triggers.expression" placeholder="0 0 8 * * *" />
+          <a-input size="small" v-model:value="formState.triggers.expression" placeholder="0 0 8 * * *" />
         </label>
       </template>
       <label v-else>执行时间
-        <a-input v-model:value="formState.triggers.runAt" type="datetime-local" />
+        <a-input size="small" v-model:value="formState.triggers.runAt" type="datetime-local" />
       </label>
 
-      <label>时区<a-input v-model:value="formState.triggers.timeZone" placeholder="Asia/Shanghai" /></label>
-      <label>继续会话 ID（可选）<a-input v-model:value="formState.triggers.conversationId" placeholder="定时执行时继续原多轮会话" /></label>
-      <label>工作流输入 JSON<a-textarea v-model:value="formState.triggers.payloadJson" :rows="3" placeholder='{"schoolId":"001"}' /></label>
+      <label>时区<a-input size="small" v-model:value="formState.triggers.timeZone" placeholder="Asia/Shanghai" /></label>
+      <label>继续会话 ID（可选）<a-input size="small" v-model:value="formState.triggers.conversationId" placeholder="定时执行时继续原多轮会话" /></label>
+      <label>工作流输入 JSON<a-textarea size="small" v-model:value="formState.triggers.payloadJson" :rows="3" placeholder='{"schoolId":"001"}' /></label>
       <div class="wf-schedule-preview">{{ schedulePreview }}</div>
       <div class="wf-schedule-note">保存/发布后由后端持久化调度；集群部署时同一周期只会被一个节点抢占执行。</div>
     </div>
@@ -234,7 +235,7 @@ onMounted(loadMessageConnectors);
       </div>
 
       <label>消息连接器
-        <a-select
+        <a-select size="small"
           :value="formState.triggers.provider && formState.triggers.channelId ? `${formState.triggers.provider}:${formState.triggers.channelId}` : undefined"
           placeholder="请选择已接入的消息平台"
           show-search
@@ -258,14 +259,14 @@ onMounted(loadMessageConnectors);
 
       <template v-if="formState.triggers.provider && formState.triggers.channelId">
         <label>账户接入方式
-          <a-select v-model:value="accountScope">
+          <a-select size="small" v-model:value="accountScope">
             <a-select-option value="ALL">全部账户</a-select-option>
             <a-select-option value="SPECIFIC">指定账户</a-select-option>
           </a-select>
         </label>
 
         <label v-if="accountScope === 'SPECIFIC'">接入账户
-          <a-select
+          <a-select size="small"
             v-model:value="formState.triggers.connectionId"
             placeholder="请选择已接入且启用的账户"
             show-search
@@ -288,13 +289,13 @@ onMounted(loadMessageConnectors);
       </template>
 
       <label>接收的消息类型
-        <a-select v-model:value="formState.triggers.messageTypes" mode="multiple" placeholder="全部消息类型">
+        <a-select size="small" v-model:value="formState.triggers.messageTypes" mode="multiple" placeholder="全部消息类型">
           <a-select-option v-for="type in ['TEXT', 'IMAGE', 'AUDIO', 'VIDEO', 'FILE', 'RICH_TEXT']" :key="type" :value="type">{{ type }}</a-select-option>
         </a-select>
       </label>
 
       <label>工作流回复方式
-        <a-select v-model:value="formState.triggers.replyMode">
+        <a-select size="small" v-model:value="formState.triggers.replyMode">
           <a-select-option value="ASYNC">异步回复原会话（推荐）</a-select-option>
           <a-select-option value="NONE">不自动回复</a-select-option>
         </a-select>
@@ -316,12 +317,11 @@ onMounted(loadMessageConnectors);
 <style scoped>
 .wf-triggers { display: flex; flex-direction: column; gap: 8px; }
 .wf-triggers-toggle { display:flex; align-items:center; justify-content:space-between; padding:6px 10px; background:var(--as-bg-layout, #f9fafb); border-radius:6px; font-size:12px; color:var(--as-text, #4b5563); }
-.wf-triggers-types { display:grid; grid-template-columns:repeat(2,1fr); gap:6px; }
-.wf-triggers-type { display:flex; flex-direction:column; align-items:center; gap:4px; padding:10px 6px; background:var(--as-bg, #fff); border:1px solid var(--as-border-secondary, #e5e7eb); border-radius:6px; cursor:pointer; color:var(--as-text, #4b5563); font-size:11px; }
-.wf-triggers-type:hover,.wf-triggers-type.is-active { border-color:var(--tc); color:var(--tc); }
-.wf-triggers-type.is-active { background:color-mix(in srgb,var(--tc) 10%,var(--as-bg, #fff)); }
+.wf-triggers-types { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+.wf-triggers-type { display:flex; width:100%; height:auto; min-height:58px; justify-content:flex-start; align-items:center; gap:9px; padding:10px; white-space:normal; text-align:left; line-height:1.4; background:var(--as-bg, #fff); border:1px solid var(--as-border-secondary, #e5e7eb); border-radius:8px; cursor:pointer; color:var(--as-text, #4b5563); font-size:12px; font-weight:500; transition:background .15s,border-color .15s; }
+.wf-triggers-type:hover,.wf-triggers-type.is-active { border-color:var(--tc); color:var(--as-text, #4b5563); background:color-mix(in srgb,var(--tc) 7%,var(--as-bg, #fff)); }
 .wf-triggers-type:focus-visible { outline:2px solid var(--tc); outline-offset:2px; }
-.wf-triggers-type-icon { font-size:18px; color:var(--tc); }
+.wf-triggers-type-icon { display:inline-flex; flex:none; align-items:center; justify-content:center; width:30px; height:30px; border-radius:8px; font-size:16px; color:var(--tc); background:color-mix(in srgb,var(--tc) 12%,var(--as-bg, #fff)); }
 .wf-schedule-form { display:grid; gap:9px; padding:10px; border:1px solid color-mix(in srgb, var(--as-warning, #f59e0b) 35%, var(--as-border-secondary, #e5e7eb)); border-radius:7px; background:color-mix(in srgb, var(--as-warning, #f59e0b) 6%, var(--as-bg, #fff)); }
 .wf-schedule-form label { display:grid; gap:4px; font-size:11px; color:var(--as-text, #4b5563); }
 .wf-schedule-form :deep(.as-select),.wf-schedule-form :deep(.as-input-number) { width:100%; }

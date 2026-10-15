@@ -126,7 +126,7 @@ const authEnabled = computed(() => {
             {{ m }}
           </a-select-option>
         </a-select>
-        <a-input
+        <a-input size="small"
           v-model:value="formState.url"
           :bordered="false"
           class="wf-http-url-input"
@@ -217,7 +217,7 @@ const authEnabled = computed(() => {
 
       <!-- Body 类型切换：紧凑的 chip 风格 -->
       <div class="wf-http-body-tabs">
-        <AsShadcnButton variant="ghost"
+        <AsShadcnButton size="sm" variant="ghost"
           v-for="t in BODY_TYPES"
           :key="t.value"
           class="wf-http-body-tab"
@@ -297,8 +297,8 @@ const authEnabled = computed(() => {
 }
 
 .wf-http-url:focus-within {
-  border-color: #6366f1;
-  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.12);
+  border-color: var(--wf-config-accent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--wf-config-accent) 12%, transparent);
 }
 
 .wf-http-method {
@@ -308,10 +308,10 @@ const authEnabled = computed(() => {
   background: color-mix(in srgb, var(--http-method-color) 10%, transparent);
 }
 
-.wf-http-method :deep(.ant-select-selector) {
+.wf-http-method :deep([data-slot="select-trigger"]) {
   padding: 0 8px !important;
   font-weight: 700;
-  color: var(--http-method-color);
+  color: color-mix(in srgb, var(--http-method-color) 65%, var(--foreground));
   font-size: 12px;
   letter-spacing: 0.4px;
 }
@@ -343,9 +343,9 @@ const authEnabled = computed(() => {
   width: 42px;
 }
 
-.wf-http-timeout-input :deep(.ant-input-number-input) {
+.wf-http-timeout-input :deep(input[data-slot="input"]) {
   padding: 0 !important;
-  height: 30px;
+  height: 24px;
   font-size: 12px;
   text-align: right;
   color: var(--foreground);
@@ -368,8 +368,8 @@ const authEnabled = computed(() => {
   height: 18px;
   font-size: 10px;
   font-weight: 600;
-  color: #4338ca;
-  background: color-mix(in srgb, var(--wf-accent, #6366f1) 14%, var(--wf-config-surface, #fff));
+  color: var(--wf-config-accent-text);
+  background: color-mix(in srgb, var(--wf-config-accent) 14%, var(--wf-config-surface, #fff));
   border-radius: 9px;
   letter-spacing: 0.2px;
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
@@ -377,8 +377,8 @@ const authEnabled = computed(() => {
 }
 
 .wf-http-badge-on {
-  color: #047857;
-  background: #d1fae5;
+  color: var(--wf-config-success);
+  background: var(--wf-config-success-bg);
 }
 
 /* -------------------------------------------------------------
@@ -412,7 +412,7 @@ const authEnabled = computed(() => {
 }
 
 .wf-http-body-tab.is-active {
-  color: #4338ca;
+  color: var(--wf-config-accent-text);
   background: var(--wf-config-surface, #ffffff);
   box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
   font-weight: 500;
@@ -435,8 +435,8 @@ const authEnabled = computed(() => {
 .wf-http-binary-trigger {
   display: flex;
   align-items: center;
-  padding: 6px 10px;
-  min-height: 32px;
+  padding: 2px 7px;
+  min-height: 24px;
   background: var(--wf-config-surface-hover, #f9fafb);
   border: 1px dashed var(--border);
   border-radius: 6px;
@@ -445,7 +445,7 @@ const authEnabled = computed(() => {
 }
 
 .wf-http-binary-trigger:hover {
-  border-color: #6366f1;
+  border-color: var(--wf-config-accent);
 }
 
 .wf-http-binary-hint {

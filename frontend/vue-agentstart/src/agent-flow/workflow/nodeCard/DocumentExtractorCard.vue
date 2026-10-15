@@ -78,7 +78,7 @@ const SPLIT_MODES = [
   <div class="wf-config-section">
     <WfField title="支持格式" is-subtitle inline>
       <template #operations>
-        <span style="font-size: 11px; color: #6b7280">
+        <span style="font-size: 11px; color: var(--muted-foreground)">
           PDF · DOCX · TXT · MD · HTML
         </span>
       </template>

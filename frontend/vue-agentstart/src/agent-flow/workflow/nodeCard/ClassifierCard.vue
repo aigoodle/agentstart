@@ -97,7 +97,7 @@ const removeClass = (index: number) => {
 
 <style scoped>
 .classifier-empty {
-  padding: 12px;
+  padding: 8px;
   text-align: center;
   font-size: 12px;
   color: var(--muted-foreground);

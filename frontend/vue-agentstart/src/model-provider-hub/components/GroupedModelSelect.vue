@@ -52,6 +52,8 @@ interface Props {
   emptyHint?: string;
   /** Disables the trigger. */
   disabled?: boolean;
+  loading?: boolean;
+  bodyMaxHeight?: number | string;
   /**
    * Fallback icon (single char) rendered when the selected option has no
    * provider — e.g. legacy datasets whose embedding rows don't carry provider
@@ -148,6 +150,9 @@ function pick(m: GroupedModelSelectOption) {
       class="gms-trigger"
       :class="{ 'is-active': open, 'has-value': !!current }"
       :disabled="disabled"
+      role="combobox"
+      :aria-expanded="open"
+      aria-label="选择模型"
     >
       <span class="gms-trigger-icon">
         <ProviderIcon
@@ -171,8 +176,9 @@ function pick(m: GroupedModelSelectOption) {
       <div class="gms-search">
         <AsShadcnInput v-model="search" class="h-8 text-xs" :placeholder="searchPlaceholder" @click.stop />
       </div>
-      <div class="gms-body">
-        <div v-if="filteredGroups.length === 0" class="gms-empty">
+      <div class="gms-body" :style="{ maxHeight: typeof bodyMaxHeight === 'number' ? `${bodyMaxHeight}px` : bodyMaxHeight }">
+        <div v-if="loading" class="gms-empty" role="status">正在加载模型…</div>
+        <div v-else-if="filteredGroups.length === 0" class="gms-empty">
           <div class="gms-empty-icon">{{ fallbackIcon }}</div>
           <div>{{ emptyText }}</div>
           <div v-if="emptyHint" class="gms-empty-hint">{{ emptyHint }}</div>
@@ -182,7 +188,10 @@ function pick(m: GroupedModelSelectOption) {
           :key="g.providerName"
           class="gms-group"
         >
-          <div
+          <AsShadcnButton
+            variant="ghost"
+            type="button"
+            :aria-expanded="!collapsed.has(g.providerName)"
             class="gms-group-head"
             @click="toggleGroup(g.providerName)"
           >
@@ -197,12 +206,15 @@ function pick(m: GroupedModelSelectOption) {
             <span v-else class="gms-group-icon">{{ fallbackIcon }}</span>
             <span class="gms-group-name">{{ g.providerLabel }}</span>
             <span class="gms-group-count">{{ g.models.length }}</span>
-          </div>
+          </AsShadcnButton>
           <div
             v-if="!collapsed.has(g.providerName)"
             class="gms-group-body"
           >
-            <div
+            <AsShadcnButton
+              variant="ghost"
+              type="button"
+              :aria-pressed="modelValue === m.id"
               v-for="m in g.models"
               :key="m.id"
               class="gms-item"
@@ -219,10 +231,11 @@ function pick(m: GroupedModelSelectOption) {
               </span>
               <span v-if="m.isDefault" class="gms-item-default">默认</span>
               <span v-if="modelValue === m.id" class="gms-item-check">✓</span>
-            </div>
+            </AsShadcnButton>
           </div>
         </div>
       </div>
+      <div v-if="$slots.footer" class="gms-footer"><slot name="footer" /></div>
     </PopoverContent>
     </Popover>
   </div>
@@ -301,22 +314,25 @@ function pick(m: GroupedModelSelectOption) {
   font-size: 10px;
   color: var(--muted-foreground);
 }
-.gms-panel {
+/* PopoverContent is portaled through a fragment and does not inherit this
+ * component scope ID. Keep its surface rule global; children remain scoped. */
+:global(.gms-panel) {
   width: var(--reka-popover-trigger-width);
   /* Narrow trigger cards (系统默认模型 grid) would squeeze the grouped
    * list / empty-state text into wraps — keep the panel readable instead. */
   min-width: min(260px, calc(100vw - 64px));
-  z-index: 10000;
+  z-index: 10020;
   padding: 6px;
   background: var(--popover);
   color: var(--popover-foreground);
   border: 1px solid var(--border);
   border-radius: 10px;
   box-shadow: 0 12px 32px rgba(15, 23, 42, 0.12);
-  max-height: 360px;
+  max-height: min(360px, var(--reka-popover-content-available-height));
   display: flex;
   flex-direction: column;
 }
+.gms-footer { flex: none; border-top: 1px solid var(--border); padding-top: 4px; }
 .gms-search { padding: 4px 4px 8px; border-bottom: 1px solid var(--border); }
 .gms-body {
   overflow-y: auto;
@@ -344,6 +360,10 @@ function pick(m: GroupedModelSelectOption) {
   border-top: 1px solid var(--border);
 }
 .gms-group-head {
+  width: 100%;
+  height: auto;
+  justify-content: flex-start;
+  text-align: left;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -382,6 +402,10 @@ function pick(m: GroupedModelSelectOption) {
   padding: 2px 0 4px 24px;
 }
 .gms-item {
+  width: 100%;
+  height: auto;
+  justify-content: flex-start;
+  text-align: left;
   display: flex;
   align-items: center;
   gap: 8px;

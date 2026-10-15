@@ -144,7 +144,7 @@ const toggleLogicalOperator = (caseItem: any) => {
             <!-- 相邻条件之间的 AND / OR 连接词：点击可整案切换 —— Dify parity
                  这里的逻辑操作符是 case 级别（所有条件共享一个），而不是每对
                  相邻条件独立设置。 -->
-            <AsShadcnButton variant="ghost"
+            <AsShadcnButton size="sm" variant="ghost"
               v-if="condIndex > 0"
               type="button"
               class="cond-logical-op"
@@ -159,7 +159,7 @@ const toggleLogicalOperator = (caseItem: any) => {
 
             <div class="cond-condition">
               <div class="cond-condition-row">
-                <VariableSelector
+                <VariableSelector size="small"
                   v-model="cond.variableSelector"
                   :node-id="nodeId"
                   placeholder="选择变量"
@@ -173,7 +173,7 @@ const toggleLogicalOperator = (caseItem: any) => {
                 />
               </div>
               <div class="cond-condition-value">
-                <a-input v-model:value="cond.value" placeholder="比较值" />
+                <a-input size="small" v-model:value="cond.value" placeholder="比较值" />
                 <a-button
                   v-if="item.conditions.length > 1"
                   :icon="h(DeleteOutlined)"
@@ -203,7 +203,7 @@ const toggleLogicalOperator = (caseItem: any) => {
 
 <style scoped>
 .cond-empty {
-  padding: 12px;
+  padding: 8px;
   text-align: center;
   font-size: 12px;
   color: var(--muted-foreground);
@@ -251,8 +251,8 @@ const toggleLogicalOperator = (caseItem: any) => {
   padding: 2px 8px;
   font-size: 11px;
   font-weight: 700;
-  color: #ffffff;
-  background: #6366f1;
+  color: var(--primary-foreground);
+  background: var(--wf-config-accent);
   border-radius: 4px;
 }
 
@@ -284,26 +284,26 @@ const toggleLogicalOperator = (caseItem: any) => {
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.6px;
-  color: #4338ca;
-  background: color-mix(in srgb, var(--wf-accent, #6366f1) 14%, var(--wf-config-surface, #fff));
-  border: 1px solid #c7d2fe;
+  color: var(--wf-config-accent-text);
+  background: color-mix(in srgb, var(--wf-config-accent) 14%, var(--wf-config-surface, #fff));
+  border: 1px solid var(--wf-config-accent-border);
   border-radius: 999px;
   cursor: pointer;
   transition: background 0.15s, border-color 0.15s, color 0.15s;
   line-height: 16px;
 }
 .cond-logical-op:hover {
-  background: color-mix(in srgb, var(--wf-accent, #6366f1) 20%, var(--wf-config-surface, #fff));
-  border-color: #a5b4fc;
+  background: color-mix(in srgb, var(--wf-config-accent) 20%, var(--wf-config-surface, #fff));
+  border-color: var(--wf-config-accent-border);
 }
 .cond-logical-op-or {
-  color: #b45309;
-  background: #fef3c7;
-  border-color: #fcd34d;
+  color: var(--wf-config-warning);
+  background: var(--wf-config-warning-bg);
+  border-color: var(--wf-config-warning);
 }
 .cond-logical-op-or:hover {
-  background: #fde68a;
-  border-color: #fbbf24;
+  background: var(--wf-config-warning-bg);
+  border-color: var(--wf-config-warning);
 }
 
 .cond-condition-row {
@@ -324,6 +324,6 @@ const toggleLogicalOperator = (caseItem: any) => {
 }
 
 .cond-chosen {
-  background: color-mix(in srgb, var(--wf-accent, #6366f1) 14%, var(--wf-config-surface, #fff));
+  background: color-mix(in srgb, var(--wf-config-accent) 14%, var(--wf-config-surface, #fff));
 }
 </style>

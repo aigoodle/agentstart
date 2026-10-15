@@ -49,7 +49,7 @@ const paramCount = computed(() => nonEmptyCount(formState.value.parameters));
             {{ m }}
           </a-select-option>
         </a-select>
-        <a-input
+        <a-input size="small"
           v-model:value="formState.url"
           :bordered="false"
           class="wf-http-url-input"
@@ -113,8 +113,8 @@ const paramCount = computed(() => nonEmptyCount(formState.value.parameters));
 }
 
 .wf-http-url:focus-within {
-  border-color: #6366f1;
-  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.12);
+  border-color: var(--wf-config-accent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--wf-config-accent) 12%, transparent);
 }
 
 .wf-http-method {
@@ -124,10 +124,10 @@ const paramCount = computed(() => nonEmptyCount(formState.value.parameters));
   background: color-mix(in srgb, var(--http-method-color) 10%, transparent);
 }
 
-.wf-http-method :deep(.ant-select-selector) {
+.wf-http-method :deep([data-slot="select-trigger"]) {
   padding: 0 8px !important;
   font-weight: 700;
-  color: var(--http-method-color);
+  color: color-mix(in srgb, var(--http-method-color) 65%, var(--foreground));
   font-size: 12px;
   letter-spacing: 0.4px;
 }
@@ -158,9 +158,9 @@ const paramCount = computed(() => nonEmptyCount(formState.value.parameters));
   width: 42px;
 }
 
-.wf-http-timeout-input :deep(.ant-input-number-input) {
+.wf-http-timeout-input :deep(input[data-slot="input"]) {
   padding: 0 !important;
-  height: 30px;
+  height: 24px;
   font-size: 12px;
   text-align: right;
   color: var(--foreground);
@@ -180,8 +180,8 @@ const paramCount = computed(() => nonEmptyCount(formState.value.parameters));
   height: 18px;
   font-size: 10px;
   font-weight: 600;
-  color: #4338ca;
-  background: color-mix(in srgb, var(--wf-accent, #6366f1) 14%, var(--wf-config-surface, #fff));
+  color: var(--wf-config-accent-text);
+  background: color-mix(in srgb, var(--wf-config-accent) 14%, var(--wf-config-surface, #fff));
   border-radius: 9px;
   letter-spacing: 0.2px;
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;

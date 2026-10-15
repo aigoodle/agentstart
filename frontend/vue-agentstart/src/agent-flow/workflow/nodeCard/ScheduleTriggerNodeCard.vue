@@ -167,8 +167,8 @@ function syncTargetWorkflow(workflowId?: string) {
 <style scoped>
 .wf-full-width { width: 100%; }
 .wf-help { margin-top: 6px; color: var(--muted-foreground); font-size: 11px; line-height: 1.55; }
-.wf-error { margin-top: 6px; color: #dc2626; font-size: 11px; }
-.workflow-option { display: flex; align-items: center; gap: 12px; }
+.wf-error { margin-top: 6px; color: var(--wf-config-danger); font-size: 11px; }
+.workflow-option { display: flex; align-items: center; gap: 8px; }
 .workflow-option-icon { display: inline-flex; flex: none; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 6px; }
 .workflow-option-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 </style>

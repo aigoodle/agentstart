@@ -1,61 +1,23 @@
 <script setup lang="ts">
 import { Switch as ASwitch, Tooltip as ATooltip, Slider as ASlider, InputNumber as AInputNumber, Segmented as ASegmented, Textarea as ATextarea } from '../../ui';
 
-import { Card as AsShadcnCard } from '../../ui/shadcn/card';
 
-import { Button as AsShadcnButton } from '../../ui/shadcn/button';
-import { Input as AsShadcnInput } from '../../ui/shadcn/input';
+import GroupedModelSelect from './GroupedModelSelect.vue';
+import { Button } from '../../ui/shadcn/button';
 
 /**
- * ModelPickerPopover — 通用「模型设置」面板。
- *
- * 一个组件同时服务三处：
- *   1. 应用设计右上角的模型选择（agent-studio）
- *   2. 工作流 LLM / Agent / QuestionClassifier / ParameterExtractor 节点的
- *      模型选择（agent-flow）
- *   3. 任何需要「模型 + 参数微调」组合的地方
- *
- * 交互（对齐 Dify 「模型设置」样式）：
- *
- *   触发块 —— 一个"普通的块"（非下拉框样式），单行显示 provider icon +
- *   模型名 + provider 标签；点击弹出 popover。调用方可通过 #trigger 插槽
- *   完全自定义外观。
- *
- *   Popover 内容（外层"模型设置"面板）：
- *     ┌─────────────────────────────────────────┐
- *     │ 模型设置                             × │
- *     │ ┌ 🔷 qwen3.7-plus [CHAT] ⚙︎        ▼┐ │  ← 模型卡片，点击展开二级下拉
- *     │ 参数                                    │
- *     │ ○ 温度       ⓘ  ━━━●━━━ [0.3 ]        │
- *     │ ○ 最大标记   ⓘ  ━━━━━━● [8192]        │
- *     │ ... (更多参数)                          │
- *     └─────────────────────────────────────────┘
- *
- *   二级下拉（点击模型卡片时展开）—— 搜索框 + 分组模型列表；选中一条模型后
- *   只关闭二级下拉，"模型设置"外层面板保持打开，方便继续调参。
- *
- * 数据源默认走 useProviderHub().listModelsGroupedByType()，即 model-provider-hub
- * 已经暴露的 /models/grouped-by-type — 和"系统默认模型"面板同一份数据，保证
- * 全站分组、启用状态一致。宿主项目也可以通过 `groups` prop 直接注入。
- *
- * v-model 载荷至少 { providerName, modelName, modelType, modelProvider }；同
- * 时兼容 workflow 历史 { provider, modelName, mode, completionParams } 形状：
- * 组件读取时两套字段都识别，回填时保留所有原有键 —— 调用方无需做任何形状转
- * 换。历史上把 provider::model::type 合成到 `modelId` 的做法已废弃 —— 组件不
- * 再写入该字段，遇到旧的合成值会顺手清掉，避免节点/应用配置里再出现无意义
- * 的合成 id。
+ * Model settings popover shared by application and workflow configuration.
+ * Uses GroupedModelSelect (also used by tenant defaults) for the floating
+ * searchable provider list, keeping the parameter form stationary.
+ * Supports both SelectedModel and legacy workflow model shapes.
  */
 import { computed, onMounted, reactive, ref, watch } from 'vue';
 
-import { Popover, Segmented, Spin } from '../../ui';
+import { Popover, Segmented } from '../../ui';
 import {
-  CheckOutlined,
-  CloseOutlined,
   DownOutlined,
   QuestionCircleOutlined,
-  RightOutlined,
   RobotOutlined,
-  SearchOutlined,
   SettingOutlined,
 } from '@ant-design/icons-vue';
 
@@ -64,8 +26,6 @@ import {
   useAgentStartConfig,
 } from '../../config';
 import {
-  modelTypeColor,
-  modelTypeLabel,
   setProviderHubApiBase,
   setProviderHubHeaders,
   useProviderHub,
@@ -91,7 +51,7 @@ interface Props {
   placeholder?: string;
   /** 气泡卡片宽度。 */
   width?: number | string;
-  /** 二级"模型下拉"高度上限。 */
+  /** 二级"模型列表"高度上限。 */
   bodyMaxHeight?: number | string;
   /** Popover placement passthrough. */
   placement?:
@@ -137,7 +97,7 @@ const emit = defineEmits<{
   ): void;
   /** 底部「多个模型进行调试」的点击回调 —— 触发后调用方自行处理。 */
   (e: 'multiModelDebug'): void;
-  /** 二级下拉底部「模型供应商设置」入口，方便直接跳到 provider hub 设置页。 */
+  /** 浮动列表底部「模型供应商设置」入口，方便直接跳到 provider hub 设置页。 */
   (e: 'openProviderSettings'): void;
 }>();
 
@@ -152,10 +112,7 @@ setProviderHubHeaders(() => mergeAgentStartHeaders(globalConfig.headers));
 const { listDefaults, listModelsGroupedByType } = useProviderHub();
 
 const open = ref(false);
-const modelDropdownOpen = ref(false);
 const loading = ref(false);
-const searchQuery = ref('');
-const collapsed = ref<Set<string>>(new Set());
 const internalGroups = ref<GroupedProviderView[]>([]);
 
 const groups = computed<GroupedProviderView[]>(
@@ -186,37 +143,18 @@ const currentMeta = computed<null | {
   return null;
 });
 
-/** 搜索命中模型 / provider / description。空关键字直接返回全部。 */
-const filteredGroups = computed(() => {
-  const q = searchQuery.value.trim().toLowerCase();
-  if (!q) return groups.value;
-  return groups.value
-    .map((p) => {
-      const hits = p.modelList.filter((m) => {
-        return (
-          m.modelName.toLowerCase().includes(q) ||
-          (p.label ?? p.provider).toLowerCase().includes(q) ||
-          (p.description ?? '').toLowerCase().includes(q)
-        );
-      });
-      return { ...p, modelList: hits };
-    })
-    .filter((p) => p.modelList.length > 0);
-});
-
-const hasResult = computed(() =>
-  filteredGroups.value.some((g) => g.modelList.length > 0),
-);
-
-function isCollapsed(p: GroupedProviderView): boolean {
-  return collapsed.value.has(p.provider);
-}
-
-function toggleCollapse(p: GroupedProviderView) {
-  const next = new Set(collapsed.value);
-  if (next.has(p.provider)) next.delete(p.provider);
-  else next.add(p.provider);
-  collapsed.value = next;
+const modelOptions = computed(() => groups.value.flatMap(provider => provider.modelList.map(model => ({
+  id: JSON.stringify([model.providerName, model.modelName]),
+  label: model.modelName,
+  providerName: model.providerName,
+  providerLabel: provider.label || provider.provider,
+}))));
+const selectedModelKey = computed(() => JSON.stringify([currentProvider.value, currentModelName.value]));
+function pickModel(key: string | null) {
+  for (const provider of groups.value) {
+    const model = provider.modelList.find(item => JSON.stringify([item.providerName, item.modelName]) === key);
+    if (model) { selectModel(provider, model); return; }
+  }
 }
 
 /** ------- 参数 ------- */
@@ -433,8 +371,6 @@ function selectModel(p: GroupedProviderView, m: GroupedModelView) {
   });
   emit('update:modelValue', payload);
   emit('change', payload, p, m);
-  // 只关掉二级下拉，外层"模型设置"面板保持打开
-  modelDropdownOpen.value = false;
 }
 
 function onParamsChange() {
@@ -508,24 +444,8 @@ watch(
   { deep: true },
 );
 
-watch(open, (v) => {
-  if (!v) {
-    // 关闭外层时同时把二级下拉收起来，避免下次打开还残留
-    modelDropdownOpen.value = false;
-    return;
-  }
-  if (!props.groups) loadGroups();
-});
-
-watch(modelDropdownOpen, (v) => {
-  if (!v) return;
-  if (!props.groups) loadGroups();
-  // 打开二级下拉时展开当前选中的分组
-  if (currentProvider.value) {
-    const next = new Set(collapsed.value);
-    next.delete(currentProvider.value);
-    collapsed.value = next;
-  }
+watch(open, (value) => {
+  if (value && !props.groups) loadGroups();
 });
 
 function toggleOpen() {
@@ -563,12 +483,12 @@ defineExpose({
     :match-trigger-width="matchTriggerWidth"
     :flip-on-overflow="!matchTriggerWidth"
     trigger="click"
-    overlay-class-name="ph-model-picker-popover"
+    overlay-class-name="ph-model-picker-popover hud-panel hud-popover border-0 rounded-none shadow-none"
     :get-popup-container="popupContainer"
   >
     <template #content>
       <div
-        class="ph-mp hud-panel"
+        class="ph-mp"
         :style="{
           width: matchTriggerWidth
             ? '100%'
@@ -580,174 +500,24 @@ defineExpose({
         <!-- 顶部标题栏 -->
         <div class="ph-mp-header">
           <span class="ph-mp-title">{{ title }}</span>
-          <AsShadcnButton variant="ghost"
-            type="button"
-            class="ph-mp-close"
-            aria-label="关闭"
-            @click="closePanel"
-          >
-            <CloseOutlined />
-          </AsShadcnButton>
         </div>
 
         <div class="ph-mp-scroll">
-          <!-- 模型卡片 —— 点击展开二级下拉 -->
-          <Popover
-            v-model:open="modelDropdownOpen"
-            class="ph-mp-popover"
-            trigger="click"
-            placement="bottomLeft"
-            match-trigger-width
-            :flip-on-overflow="false"
-            overlay-class-name="ph-model-picker-popover"
-            :get-popup-container="popupContainer"
+          <GroupedModelSelect
+            class="ph-mp-selector"
+            :model-value="selectedModelKey"
+            :options="modelOptions"
+            :loading="loading"
+            :body-max-height="bodyMaxHeight"
+            placeholder="请选择模型"
+            @change="pickModel"
           >
-            <template #content>
-              <div
-                class="ph-mp-dropdown hud-panel"
-                :style="{
-                  width: '100%',
-                }"
-              >
-                <div class="ph-mp-search">
-                  <SearchOutlined class="ph-mp-search-icon" />
-                  <AsShadcnInput
-                    v-model="searchQuery"
-                    class="ph-mp-search-input"
-                    placeholder="搜索模型"
-                    @keydown.stop
-                  />
-                </div>
-
-                <div
-                  class="ph-mp-body"
-                  :style="{
-                    maxHeight:
-                      typeof bodyMaxHeight === 'number'
-                        ? `${bodyMaxHeight}px`
-                        : bodyMaxHeight,
-                  }"
-                >
-                  <Spin :spinning="loading">
-                    <div
-                      v-if="!loading && groups.length === 0"
-                      class="ph-mp-empty"
-                    >
-                      <RobotOutlined class="ph-mp-empty-icon" />
-                      <div>暂无可用模型</div>
-                      <div class="ph-mp-empty-hint">
-                        请先在"模型供应商"里配置并启用
-                      </div>
-                    </div>
-
-                    <div v-else-if="!hasResult" class="ph-mp-empty">
-                      <SearchOutlined class="ph-mp-empty-icon" />
-                      <div>没有匹配的模型</div>
-                    </div>
-
-                    <div v-else class="ph-mp-groups">
-                      <div
-                        v-for="p in filteredGroups"
-                        :key="p.id"
-                        class="ph-mp-group"
-                      >
-                        <div
-                          class="ph-mp-group-header"
-                          @click="toggleCollapse(p)"
-                        >
-                          <RightOutlined
-                            v-if="isCollapsed(p)"
-                            class="ph-mp-fold"
-                          />
-                          <DownOutlined v-else class="ph-mp-fold" />
-                          <ProviderIcon :name="p.provider" :size="18" />
-                          <span class="ph-mp-group-name">
-                            {{ p.label || p.provider }}
-                          </span>
-                          <span
-                            class="ph-mp-item-tag"
-                            :data-color="modelTypeColor(modelType)"
-                          >
-                            {{ modelTypeLabel(modelType) }}
-                          </span>
-                        </div>
-
-                        <div v-if="!isCollapsed(p)" class="ph-mp-group-body">
-                          <div
-                            v-for="m in p.modelList"
-                            :key="m.id"
-                            class="ph-mp-item"
-                            :class="{
-                              'is-active':
-                                currentProvider === m.providerName &&
-                                currentModelName === m.modelName,
-                            }"
-                            @click="selectModel(p, m)"
-                          >
-                            <ProviderIcon :name="m.providerName" :size="16" />
-                            <span class="ph-mp-item-name" :title="m.modelName">
-                              {{ m.modelName }}
-                            </span>
-                            <CheckOutlined
-                              v-if="
-                                currentProvider === m.providerName &&
-                                currentModelName === m.modelName
-                              "
-                              class="ph-mp-item-check"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </Spin>
-                </div>
-
-                <div
-                  class="ph-mp-dropdown-footer"
-                  @click="emit('openProviderSettings')"
-                >
-                  <SettingOutlined />
-                  <span>模型供应商设置</span>
-                </div>
-              </div>
+            <template #footer>
+              <Button variant="ghost" size="sm" class="w-full justify-start" @click="emit('openProviderSettings')">
+                <SettingOutlined />模型供应商设置
+              </Button>
             </template>
-
-            <AsShadcnCard
-              class="ph-mp-model-card"
-              :class="{
-                'is-active': modelDropdownOpen,
-                'has-value': !!currentModelName,
-              }"
-            >
-              <div class="ph-mp-model-card-icon">
-                <ProviderIcon
-                  v-if="currentProvider"
-                  :name="currentProvider"
-                  :size="20"
-                />
-                <RobotOutlined v-else />
-              </div>
-              <span
-                v-if="currentModelName"
-                class="ph-mp-model-card-name"
-                :title="currentModelName"
-              >
-                {{ currentModelName }}
-              </span>
-              <span v-else class="ph-mp-model-card-placeholder">
-                请选择模型
-              </span>
-              <span
-                v-if="currentModelName"
-                class="ph-mp-item-tag"
-                :data-color="modelTypeColor(current.modelType || modelType)"
-              >
-                {{ modelTypeLabel(current.modelType || modelType) }}
-              </span>
-              <SettingOutlined class="ph-mp-model-card-cog" />
-              <DownOutlined class="ph-mp-model-card-arrow" />
-            </AsShadcnCard>
-          </Popover>
+          </GroupedModelSelect>
 
           <!-- 参数区 -->
           <div v-if="showParams" class="ph-mp-params-block">
@@ -872,56 +642,25 @@ defineExpose({
 </template>
 
 <style>
-/* Popover 内容会 Teleport 到 body，不能用 scoped。 */
-.ph-model-picker-popover .ant-popover-inner,
-.ph-model-picker-popover .ant-popover-inner-content {
-  padding: 0;
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-/* Model pickers used inside the full-screen app-design drawer are teleported
- * to body.  The drawer root sits at z-index 1100, so the default popover layer
- * (1050) would open behind it and make the trigger appear unresponsive. */
-.ph-model-picker-popover {
-  z-index: 1200 !important;
-}
-
-.ph-model-picker-popover.as-popover__panel {
-  padding: 0;
-  border-radius: 12px;
-  background: transparent;
-  box-shadow: none;
-}
-
-/* Tailwind-backed Ant compatibility layer renders the panel below the trigger
- * instead of teleporting it. Keep the same edge treatment in both runtimes. */
-.ph-mp-popover > .as-popover__panel {
-  padding: 0;
-  border-radius: 12px;
-  background: var(--background);
-  overflow: hidden;
+/* Popover owns the only surface and outer spacing. */
+.ph-model-picker-popover.as-popover-popup {
+  z-index: 10010 !important;
+  width: max-content;
+  max-width: calc(100vw - 20px);
+  padding: 12px;
 }
 
 .ph-mp {
   display: flex;
   box-sizing: border-box;
   flex-direction: column;
-  max-width: 92vw;
+  max-width: calc(100vw - 46px);
   max-height: 84vh;
-  border: 1px solid #d9dee8;
-  border-radius: 12px;
-  background: var(--background);
-  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.16);
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
   overflow: hidden;
-}
-
-/* The model selector inside the settings surface is a field, not an inline
- * action. Make both the compatibility-popover anchor and its card consume the
- * full content width. */
-.ph-mp .ph-mp-popover {
-  display: flex;
-  width: 100%;
 }
 
 /* 顶部标题栏 */
@@ -929,35 +668,19 @@ defineExpose({
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 18px 10px;
+  padding: 0 0 10px;
 }
 .ph-mp-title {
   font-size: 15px;
   font-weight: 700;
   color: var(--foreground);
 }
-.ph-mp-close {
-  padding: 0;
-  border: none;
-  background: transparent;
-  color: var(--muted-foreground);
-  font-size: 14px;
-  cursor: pointer;
-  border-radius: 6px;
-  width: 24px;
-  height: 24px;
-}
-.ph-mp-close:hover {
-  background: var(--muted);
-  color: var(--muted-foreground);
-}
-
-/* 模型卡片（点击展开二级下拉） */
+/* 模型卡片（点击展开浮动列表） */
 .ph-mp-scroll {
   flex: 1;
   min-width: 0;
   min-height: 0;
-  padding: 0 18px 4px;
+  padding: 0;
   overflow-x: hidden;
   overflow-y: auto;
   scrollbar-width: none;
@@ -965,312 +688,43 @@ defineExpose({
 .ph-mp-scroll::-webkit-scrollbar {
   display: none;
 }
-.ph-mp-model-card {
-  display: flex;
-  box-sizing: border-box;
-  width: 100%;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
-  margin-bottom: 14px;
-  background: var(--background);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  cursor: pointer;
-  transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
-}
-.ph-mp-model-card:hover {
-  border-color: var(--ring);
-}
-.ph-mp-model-card.is-active {
-  border-color: var(--ring);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 12%, transparent);
-}
-.ph-mp-model-card.has-value {
-  background: var(--background);
-}
-.ph-mp-model-card-icon {
-  flex: none;
-  width: 22px;
-  height: 22px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #6366f1;
-}
-.ph-mp-model-card-name {
-  flex: 1;
-  min-width: 0;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--foreground);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.ph-mp-model-card-placeholder {
-  flex: 1;
-  font-size: 13px;
-  color: var(--muted-foreground);
-}
-.ph-mp-model-card-cog {
-  color: var(--muted-foreground);
-  font-size: 12px;
-}
-.ph-mp-model-card-arrow {
-  color: var(--muted-foreground);
-  font-size: 10px;
-  transition: transform 0.15s;
-}
-.ph-mp-model-card.is-active .ph-mp-model-card-arrow {
-  transform: rotate(180deg);
-  color: var(--primary);
-}
-
-/* 二级下拉 */
-.ph-mp-dropdown {
-  display: flex;
-  box-sizing: border-box;
-  flex-direction: column;
-  max-width: 92vw;
-  border: 1px solid #d9dee8;
-  border-radius: 10px;
-  background: var(--background);
-  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.14);
-  overflow: hidden;
-}
-.ph-mp-search {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  border-bottom: 1px solid var(--border);
-  background: var(--muted);
-}
-.ph-mp-search-icon {
-  color: var(--muted-foreground);
-}
-.ph-mp-search-input {
-  flex: 1;
-  min-width: 0;
-  border: 0;
-  outline: 0;
-  background: transparent;
-  font-size: 13px;
-  color: var(--foreground);
-}
-.ph-mp-search-input::placeholder {
-  color: var(--muted-foreground);
-}
-.ph-mp-body {
-  overflow-x: hidden;
-  overflow-y: auto;
-  padding: 6px 4px;
-  scrollbar-width: none;
-}
-.ph-mp-body::-webkit-scrollbar {
-  display: none;
-}
-.ph-mp-empty {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  padding: 28px 16px;
-  color: var(--muted-foreground);
-  font-size: 12px;
-  text-align: center;
-}
-.ph-mp-empty-icon {
-  font-size: 28px;
-  opacity: 0.35;
-}
-.ph-mp-empty-hint {
-  font-size: 11px;
-  color: #cbd5e1;
-}
-.ph-mp-groups {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-.ph-mp-group + .ph-mp-group {
-  margin-top: 2px;
-  padding-top: 4px;
-  border-top: 1px solid var(--border);
-}
-.ph-mp-group-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 10px;
-  cursor: pointer;
-  border-radius: 6px;
-  user-select: none;
-  transition: background 0.12s;
-}
-.ph-mp-group-header:hover {
-  background: var(--muted);
-}
-.ph-mp-fold {
-  font-size: 10px;
-  color: var(--muted-foreground);
-}
-.ph-mp-group-name {
-  flex: 1;
-  min-width: 0;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--foreground);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.ph-mp-group-body {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: 2px 0 6px 22px;
-}
-.ph-mp-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 10px;
-  cursor: pointer;
-  border-radius: 6px;
-  transition: background 0.12s;
-}
-.ph-mp-item:hover {
-  background: var(--muted);
-}
-.ph-mp-item.is-active {
-  background: color-mix(in srgb, var(--primary) 10%, var(--background));
-}
-.ph-mp-item-name {
-  flex: 1;
-  min-width: 0;
-  font-size: 13px;
-  color: var(--foreground);
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas,
-    'Liberation Mono', monospace;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.ph-mp-item.is-active .ph-mp-item-name {
-  color: var(--primary);
-  font-weight: 500;
-}
-.ph-mp-item-tag {
-  flex: none;
-  padding: 1px 6px;
-  font-size: 10px;
-  border-radius: 4px;
-  background: #eef2ff;
-  color: #4338ca;
-  letter-spacing: 0.3px;
-}
-.ph-mp-item-tag[data-color='green'] {
-  background: #ecfdf5;
-  color: #059669;
-}
-.ph-mp-item-tag[data-color='orange'] {
-  background: #fff7ed;
-  color: #c2410c;
-}
-.ph-mp-item-tag[data-color='purple'] {
-  background: #faf5ff;
-  color: #7c3aed;
-}
-.ph-mp-item-check {
-  color: #4338ca;
-  font-size: 12px;
-}
-.ph-mp-dropdown-footer {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 10px 14px;
-  border-top: 1px solid var(--border);
-  color: #4338ca;
-  font-size: 12px;
-  cursor: pointer;
-  background: var(--background);
-}
-.ph-mp-dropdown-footer:hover {
-  background: #eef2ff;
-}
-
-/* The dropdown is teleported into the host app. In Vben's dark theme the
- * Ant Popover surface is dark, so the light-theme slate text above becomes
- * effectively invisible even though the model rows are present. */
-.dark .ph-mp-search {
-  background: #18181b;
-  border-bottom-color: #3f3f46;
-}
-.dark .ph-mp-search-input,
-.dark .ph-mp-group-name,
-.dark .ph-mp-item-name {
-  color: #f4f4f5;
-}
-.dark .ph-mp-group + .ph-mp-group {
-  border-top-color: #3f3f46;
-}
-.dark .ph-mp-group-header:hover,
-.dark .ph-mp-item:hover {
-  background: #27272a;
-}
-.dark .ph-mp-item.is-active {
-  background: #312e81;
-}
-.dark .ph-mp-item.is-active .ph-mp-item-name {
-  color: color-mix(in srgb, var(--primary) 10%, var(--background));
-}
-.dark .ph-mp-dropdown-footer {
-  border-top-color: #3f3f46;
-  background: #18181b;
-  color: #a5b4fc;
-}
-.dark .ph-mp-dropdown-footer:hover {
-  background: #27272a;
-}
+.ph-mp-selector { margin-bottom: 8px; }
 
 /* 参数区 */
 .ph-mp-params-block {
-  padding-top: 4px;
+  padding-top: 2px;
 }
 .ph-mp-params-title {
-  padding: 4px 0 10px;
-  font-size: 14px;
+  padding: 2px 0 6px;
+  font-size: 12px;
   font-weight: 700;
   color: var(--foreground);
 }
 .ph-mp-params {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
 }
 .ph-mp-param {
   display: flex;
   min-width: 0;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
 }
 .ph-mp-param-row {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
-  min-height: 24px;
+  gap: 6px;
+  min-height: 22px;
 }
 .ph-mp-param-switch {
   flex: none;
 }
 .ph-mp-param-name {
   flex: none;
-  width: 88px;
-  font-size: 13px;
+  width: 76px;
+  font-size: 12px;
   font-weight: 500;
   color: var(--foreground);
   overflow: hidden;
@@ -1279,7 +733,7 @@ defineExpose({
 }
 .ph-mp-param-hint {
   color: var(--muted-foreground);
-  font-size: 12px;
+  font-size: 11px;
   cursor: help;
 }
 .ph-mp-param-slider {
@@ -1289,11 +743,20 @@ defineExpose({
 }
 .ph-mp-param-num {
   flex: none;
-  width: 88px;
+  width: 72px;
+  height: 26px;
+  padding: 2px 6px;
+  font-size: 11px;
   margin-left: auto;
 }
 .ph-mp-param-seg {
   margin-left: auto;
+}
+.ph-mp-param-seg [data-slot="toggle-group-item"] {
+  height: 26px;
+  min-width: 30px;
+  padding: 0 6px;
+  font-size: 11px;
 }
 .ph-mp-param.is-block .ph-mp-param-row {
   min-height: unset;
@@ -1308,7 +771,10 @@ defineExpose({
   overflow-wrap: anywhere;
   white-space: pre-wrap;
   resize: none;
-  font-size: 12px !important;
+  min-height: 44px;
+  padding: 4px 6px;
+  line-height: 1.4;
+  font-size: 11px !important;
 }
 
 </style>

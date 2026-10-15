@@ -135,9 +135,9 @@ onMounted(() => {
       <a-table-column data-index="action">
         <template #title>
           <span>操作</span>
-          <a class="vben-link" @click="toAddItem">
+          <a-button type="text" size="small" title="添加字段" @click="toAddItem">
             <PlusOutlined />
-          </a>
+          </a-button>
         </template>
       </a-table-column>
       <template #bodyCell="{ column, text, record }">
@@ -153,13 +153,15 @@ onMounted(() => {
                 <MinusCircleOutlined />
               </a>
             </a-popconfirm>
-            <a
-              class="vben-link"
+            <a-button
+              type="text"
+              size="small"
+              title="添加子字段"
               v-if="record.type === 'object'"
               @click="toAddItem(record)"
             >
               <PlusOutlined />
-            </a>
+            </a-button>
           </div>
         </template>
       </template>
@@ -197,7 +199,7 @@ onMounted(() => {
             </div>
           </div>
         </template>
-        <a-button />
+        <a-button size="small" />
       </a-popover>
     </div>
   </div>

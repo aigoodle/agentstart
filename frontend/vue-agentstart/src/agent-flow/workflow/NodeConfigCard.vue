@@ -299,18 +299,18 @@ watch(() => props.selectNode, panelInit);
               </template>
             </div>
           </template>
-          <AsShadcnButton variant="ghost" class="wf-config-header-btn" title="更多">
+          <AsShadcnButton size="sm" variant="ghost" class="wf-config-header-btn" title="更多">
             <EllipsisOutlined />
           </AsShadcnButton>
         </a-popover>
         <a-tooltip title="帮助文档" placement="bottom">
-          <AsShadcnButton variant="ghost" class="wf-config-header-btn">
+          <AsShadcnButton size="sm" variant="ghost" class="wf-config-header-btn">
             <ReadOutlined />
           </AsShadcnButton>
         </a-tooltip>
         <div class="wf-config-header-divider" />
         <a-tooltip title="关闭" placement="bottom">
-          <AsShadcnButton variant="ghost" class="wf-config-header-btn" @click="closeCard">
+          <AsShadcnButton size="sm" variant="ghost" class="wf-config-header-btn" @click="closeCard">
             <CloseOutlined />
           </AsShadcnButton>
         </a-tooltip>
@@ -319,7 +319,7 @@ watch(() => props.selectNode, panelInit);
 
     <!-- 描述行 -->
     <div class="wf-config-desc">
-      <a-input
+      <a-input size="small"
         v-model:value="formData.description"
         :bordered="false"
         placeholder="添加描述"

@@ -20,6 +20,9 @@
   --as-primary-foreground: var(--primary-foreground);
   --color-as-primary-hover: color-mix(in srgb, var(--primary) 85%, var(--foreground));
   --color-as-primary-active: color-mix(in srgb, var(--primary) 75%, var(--foreground));
+  --as-hud-line: color-mix(in srgb, var(--primary) 60%, transparent);
+  --as-hud-hot: color-mix(in srgb, var(--primary) 65%, white);
+  --as-hud-glow: color-mix(in srgb, var(--primary) 22%, transparent);
   --hud-primary: var(--primary);
   --hud-primary-bright: var(--primary);
   --hud-primary-deep: var(--primary);

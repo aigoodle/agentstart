@@ -40,7 +40,7 @@ function removeItem(index: number) {
       </div>
       <div class="wf-param-cell wf-param-cell-value">值</div>
       <div class="wf-param-cell wf-param-cell-action">
-        <AsShadcnButton variant="ghost" class="wf-param-add" title="添加" @click="addItem">
+        <AsShadcnButton variant="ghost" size="sm" class="wf-param-add" title="添加" @click="addItem">
           <PlusOutlined />
         </AsShadcnButton>
       </div>
@@ -84,7 +84,7 @@ function removeItem(index: number) {
         />
       </div>
       <div class="wf-param-cell wf-param-cell-action">
-        <AsShadcnButton variant="ghost" class="wf-param-del" title="删除" @click="removeItem(index)">
+        <AsShadcnButton size="sm" variant="ghost" class="wf-param-del" title="删除" @click="removeItem(index)">
           <DeleteOutlined />
         </AsShadcnButton>
       </div>
@@ -169,7 +169,6 @@ function removeItem(index: number) {
   box-shadow: none !important;
 }
 
-.wf-param-add,
 .wf-param-del {
   display: inline-flex;
   align-items: center;

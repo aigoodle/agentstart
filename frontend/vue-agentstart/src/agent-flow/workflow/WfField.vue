@@ -167,7 +167,7 @@ const toggleFold = () => {
 }
 
 .wf-field-required {
-  color: var(--as-danger, #ef4444);
+  color: var(--wf-config-danger, var(--destructive));
   font-weight: 700;
 }
 
@@ -175,7 +175,7 @@ const toggleFold = () => {
   display: inline-block;
   width: 6px;
   height: 6px;
-  background: #ef4444;
+  background: var(--wf-config-danger, var(--destructive));
   border-radius: 50%;
 }
 

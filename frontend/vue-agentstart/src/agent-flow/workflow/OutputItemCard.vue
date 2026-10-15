@@ -152,16 +152,18 @@ const TreeNode: any = defineComponent({
           h('div', { class: 'wf-out-row-actions' }, [
             isBranch
               ? h(
-                  'a',
+                  AsShadcnButton,
                   {
-                    class: 'wf-out-row-action wf-out-row-action-add',
+                    class: 'wf-out-row-action-add',
+                    variant: 'ghost',
+                    size: 'sm',
                     title: '添加子字段',
                     onClick: (e: Event) => {
                       e.stopPropagation();
                       emit('add', node);
                     },
                   },
-                  [h(PlusOutlined)],
+                  () => [h(PlusOutlined)],
                 )
               : null,
             h(
@@ -251,7 +253,7 @@ const TreeNode: any = defineComponent({
                 <span v-if="root.description" class="output-tree-root-desc">
                   {{ root.description }}
                 </span>
-                <AsShadcnButton variant="ghost"
+                <AsShadcnButton variant="ghost" size="sm"
                   v-if="!readonly"
                   type="button"
                   class="output-tree-root-add"

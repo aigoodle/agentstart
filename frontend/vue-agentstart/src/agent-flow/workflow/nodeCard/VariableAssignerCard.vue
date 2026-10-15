@@ -83,7 +83,7 @@ const removeAssignment = (index: number) => {
               @click="removeAssignment(index)"
             />
           </div>
-          <VariableSelector
+          <VariableSelector size="small"
             v-if="a.writeMode !== 'clear'"
             v-model="a.source"
             :node-id="nodeId"
@@ -97,7 +97,7 @@ const removeAssignment = (index: number) => {
 
 <style scoped>
 .assigner-empty {
-  padding: 12px;
+  padding: 8px;
   text-align: center;
   font-size: 12px;
   color: var(--muted-foreground);

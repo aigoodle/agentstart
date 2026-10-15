@@ -16,7 +16,7 @@ export const Popover = defineComponent({
     const local = ref(false);
     const setOpen = (open: boolean) => { local.value = open; emit('update:open', open); };
     return () => h(UiPopover, { open: props.open ?? local.value, 'onUpdate:open': setOpen }, () => [
-      h(PopoverTrigger, { asChild: true }, () => h('span', { class: 'as-popover',
+      h(PopoverTrigger, { asChild: true }, () => h('span', { class: ['as-popover', props.matchTriggerWidth && 'w-full'],
         onMouseenter: () => { if (props.trigger === 'hover') setOpen(true); },
         onMouseleave: () => { if (props.trigger === 'hover') setOpen(false); },
       }, slots.default?.())),

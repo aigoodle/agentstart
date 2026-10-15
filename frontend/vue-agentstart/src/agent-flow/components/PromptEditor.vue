@@ -7,7 +7,9 @@ import {
   FullscreenOutlined,
   PlusOutlined,
 } from '@ant-design/icons-vue';
+import { DialogRoot, DialogContent, DialogOverlay, DialogTitle } from 'reka-ui';
 import { message } from '../../ui';
+import { Button as AsShadcnButton } from '../../ui/shadcn/button';
 
 import { useWorkflowStore } from '@/stores/workflow';
 import workflow_utils from '@/workflow/utils/workflow_utils';
@@ -240,6 +242,7 @@ function onKeyDown(e: KeyboardEvent) {
     }
     if (e.key === 'Escape') {
       e.preventDefault();
+      e.stopPropagation();
       closePanel();
       return;
     }
@@ -282,7 +285,8 @@ function onKeyDown(e: KeyboardEvent) {
   // Fullscreen Esc
   if (e.key === 'Escape' && isFullscreen.value && !panel.open) {
     e.preventDefault();
-    isFullscreen.value = false;
+    e.stopPropagation();
+    toggleFullscreen();
   }
 }
 
@@ -477,7 +481,19 @@ async function copyToClipboard() {
 }
 
 function toggleFullscreen() {
+  closePanel();
+  saveSelection();
   isFullscreen.value = !isFullscreen.value;
+  void nextTick(() => {
+    editorRef.value?.focus();
+    restoreSelection();
+  });
+}
+
+function onFullscreenEscape(event: KeyboardEvent) {
+  event.preventDefault();
+  if (panel.open) closePanel();
+  else if (isFullscreen.value) toggleFullscreen();
 }
 
 function insertVariable(selector: string[]) {
@@ -542,7 +558,22 @@ onUnmounted(() => {
 </script>
 
 <template>
+  <!-- Keep the inline editor interactive inside a modal host: a closed,
+       force-mounted DialogContent is outside Reka's active layer stack and
+       otherwise receives pointer-events: none from the host modal. -->
+  <DialogRoot :open="isFullscreen">
   <Teleport to="body" :disabled="!isFullscreen">
+    <DialogOverlay class="wf-pe-backdrop" />
+    <DialogContent
+      force-mount
+      as-child
+      :aria-describedby="undefined"
+      :style="!isFullscreen ? { pointerEvents: 'auto' } : undefined"
+      @open-auto-focus.prevent
+      @close-auto-focus.prevent
+      @interact-outside.prevent
+      @escape-key-down="onFullscreenEscape"
+    >
     <div
       class="wf-pe"
       :class="{
@@ -550,19 +581,23 @@ onUnmounted(() => {
         'hud-panel': isFullscreen,
       }"
     >
+    <DialogTitle class="sr-only">{{ title }}</DialogTitle>
     <div v-if="showToolbar" class="wf-pe-toolbar">
       <div class="wf-pe-title">{{ title }}</div>
       <div class="wf-pe-actions">
-        <a
-          ref="insertBtnRef"
-          class="wf-pe-btn"
-          title="插入变量"
-          @mousedown.prevent
-          @click.prevent="toggleInsertPanel"
-        >
-          <PlusOutlined />
-          <span>变量</span>
-        </a>
+        <AsShadcnButton variant="ghost" size="sm" as-child>
+          <button
+            type="button"
+            ref="insertBtnRef"
+            class="wf-pe-btn"
+            title="插入变量"
+            @mousedown.prevent
+            @click.prevent="toggleInsertPanel"
+          >
+            <PlusOutlined />
+            <span>变量</span>
+          </button>
+        </AsShadcnButton>
         <a
           class="wf-pe-btn"
           title="复制"
@@ -616,7 +651,9 @@ onUnmounted(() => {
       @select="onPanelSelect"
     />
     </div>
+    </DialogContent>
   </Teleport>
+  </DialogRoot>
 </template>
 
 <style scoped>
@@ -632,6 +669,15 @@ onUnmounted(() => {
 .wf-pe:focus-within {
   border-color: var(--primary);
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 12%, transparent);
+}
+
+.wf-pe-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1499;
+  background: rgb(15 23 42 / 28%);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
 }
 
 .wf-pe-fullscreen {

@@ -331,7 +331,9 @@
   }
 
   .as-tooltip { @apply relative inline-flex; }
-  .as-tooltip__panel { @apply pointer-events-none fixed z-[11000] w-max rounded bg-black/85 px-2 py-1.5 text-xs text-white; max-width: min(260px, calc(100vw - 16px)); max-height: calc(100vh - 16px); overflow-wrap: anywhere; }
+  /* Reka positions and measures the outer Popper wrapper. Keep the panel in flow
+   * so its dimensions remain available for placement and collision detection. */
+  .as-tooltip__panel { @apply pointer-events-none z-[11000] w-max rounded bg-black/85 px-2 py-1.5 text-xs text-white; max-width: min(260px, calc(100vw - 16px)); max-height: calc(100vh - 16px); overflow-wrap: anywhere; }
   .as-popover { @apply relative inline-flex; }
   .as-popover__panel { @apply absolute left-0 top-[calc(100%+8px)] z-[1050] min-w-[180px] rounded-lg p-3 shadow-[var(--as-shadow)]; background: var(--as-bg); }
   .as-popover__panel--teleported { @apply fixed; }
@@ -584,6 +586,23 @@
 }
 [data-visual='normal'] .hud-panel::before,
 [data-visual='normal'] .hud-panel::after { display: none; }
+
+/* Explicit HUD popovers keep their frame even inside a normal visual host.
+ * The Popover surface owns the frame; no second CSS border is needed. */
+.hud-panel.hud-popover,
+[data-visual='normal'] .hud-panel.hud-popover {
+  isolation: isolate;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: var(--popover, var(--as-bg-elevated, var(--as-bg)));
+}
+.hud-panel.hud-popover::before,
+.hud-panel.hud-popover::after,
+[data-visual='normal'] .hud-panel.hud-popover::before,
+[data-visual='normal'] .hud-panel.hud-popover::after {
+  display: block;
+}
 
 /* Modal HUD chrome -------------------------------------------------------- */
 .as-modal.as-hud-frame--modal {

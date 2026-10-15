@@ -57,14 +57,15 @@ function toRemoveMetadataCondition(index: number) {
         <SettingOutlined />
         召回设置
       </a>
-      <a
+      <a-button
         v-if="!formState.dynamic"
-        class="wf-ds-link"
+        type="text"
+        size="small"
         @click="toChooserDataset"
       >
         <PlusOutlined />
         添加
-      </a>
+      </a-button>
       <div class="wf-ds-dynamic">
         <a-switch v-model:checked="formState.dynamic" size="small" />
         <span>动态</span>

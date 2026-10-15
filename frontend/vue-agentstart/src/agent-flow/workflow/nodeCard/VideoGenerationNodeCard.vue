@@ -65,8 +65,8 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-.video-config { display: grid; gap: 12px; }
+.video-config { display: grid; gap: 8px; }
 h4, p { margin: 0; }
-[role='alert'] { color: #b42318; }
+[role='alert'] { color: var(--wf-config-danger); }
 .hint { color: var(--muted-foreground); font-size: 12px; }
 </style>

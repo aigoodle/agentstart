@@ -5,6 +5,7 @@ import { defineComponent, h, nextTick } from 'vue';
 import { useVueFlow } from '@vue-flow/core';
 
 import PromptEditorTagPanel from './PromptEditorTagPanel.vue';
+import { PopoverAnchor } from '../../ui/shadcn/popover';
 import { useWorkflowGraph } from '../workflow/composables/useWorkflowGraph';
 
 describe('live workflow variables', () => {
@@ -34,12 +35,27 @@ describe('live workflow variables', () => {
 
     const panel = document.body.querySelector<HTMLElement>('.wf-tag-panel')!;
     expect(panel).not.toBeNull();
+    expect(panel.classList.contains('hud-popover')).toBe(true);
+    expect(panel.classList.contains('border')).toBe(false);
     expect(panel.style.width).toBe('300px');
     expect(panel.getAttribute('data-align')).toBe('start');
     expect(wrapper.element.contains(panel)).toBe(false);
 
+    // The parent clears its anchor together with show after selecting a variable.
+    // Keep the outgoing panel attached to the old trigger throughout its exit.
+    expect(wrapper.findComponent(PopoverAnchor).props('reference')).toBe(trigger);
+    await wrapper.setProps({ show: false, targetElement: null });
+    expect(wrapper.findComponent(PopoverAnchor).props('reference')).toBe(trigger);
+
+    const nextTrigger = document.createElement('button');
+    document.body.appendChild(nextTrigger);
+    await wrapper.setProps({ show: true, targetElement: nextTrigger });
+    await flushPromises();
+    expect(wrapper.findComponent(PopoverAnchor).props('reference')).toBe(nextTrigger);
+
     wrapper.unmount();
     trigger.remove();
+    nextTrigger.remove();
   });
 
   it('updates an open picker after parameter edits, graph replacement, and connection changes', async () => {

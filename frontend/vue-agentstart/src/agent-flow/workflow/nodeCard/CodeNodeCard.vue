@@ -68,7 +68,7 @@ const removeVariable = (index: number) => {
             size="small"
             style="width: 120px"
           />
-          <VariableSelector
+          <VariableSelector size="small"
             v-model="v.value_selector"
             :node-id="nodeId"
             placeholder="选择变量"
@@ -114,7 +114,7 @@ const removeVariable = (index: number) => {
 
 <style scoped>
 .code-empty {
-  padding: 12px;
+  padding: 8px;
   text-align: center;
   font-size: 12px;
   color: var(--muted-foreground);

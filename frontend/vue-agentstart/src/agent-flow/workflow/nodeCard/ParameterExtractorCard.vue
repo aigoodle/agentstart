@@ -29,13 +29,13 @@ const PARAM_TYPES = [
   { value: 'object', label: 'Object' },
 ];
 
-const TYPE_META: Record<string, { label: string; color: string; bg: string }> =
+const TYPE_META: Record<string, { label: string; color: string }> =
   {
-    string: { label: 'Str', color: '#2563eb', bg: '#dbeafe' },
-    number: { label: 'Num', color: '#7c3aed', bg: '#ede9fe' },
-    boolean: { label: 'Bool', color: '#16a34a', bg: '#dcfce7' },
-    array: { label: 'Arr', color: '#ea580c', bg: '#ffedd5' },
-    object: { label: 'Obj', color: '#db2777', bg: '#fce7f3' },
+    string: { label: 'Str', color: '#2563eb' },
+    number: { label: 'Num', color: '#7c3aed' },
+    boolean: { label: 'Bool', color: '#16a34a' },
+    array: { label: 'Arr', color: '#ea580c' },
+    object: { label: 'Obj', color: '#db2777' },
   };
 
 const typeMeta = (t: string) => TYPE_META[t] || TYPE_META.string;
@@ -206,8 +206,8 @@ function removeParam(index: number) {
             <span
               class="param-type-badge"
               :style="{
-                color: typeMeta(p.type).color,
-                background: typeMeta(p.type).bg,
+                color: `color-mix(in srgb, ${typeMeta(p.type).color} 65%, var(--foreground))`,
+                background: `color-mix(in srgb, ${typeMeta(p.type).color} 12%, var(--wf-config-surface, var(--background)))`,
               }"
             >
               {{ typeMeta(p.type).label }}
@@ -249,7 +249,7 @@ function removeParam(index: number) {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  padding: 16px;
+  padding: 10px;
   font-size: 12px;
   color: var(--muted-foreground);
   background: var(--wf-config-surface-hover, #f9fafb);
@@ -263,9 +263,9 @@ function removeParam(index: number) {
 }
 
 .param-empty:hover {
-  color: #eab308;
-  border-color: #eab308;
-  background: #fefce8;
+  color: var(--wf-config-warning);
+  border-color: var(--wf-config-warning);
+  background: var(--wf-config-warning-bg);
 }
 
 .param-empty-icon {
@@ -323,7 +323,7 @@ function removeParam(index: number) {
 
 .param-required {
   margin-left: 2px;
-  color: #ef4444;
+  color: var(--wf-config-danger);
   font-weight: 700;
 }
 

@@ -130,10 +130,10 @@ onMounted(load);
     <section class="connector-kind-section">
       <h4>连接器类型</h4>
       <div class="connector-kind-grid">
-        <AsShadcnButton variant="ghost" type="button" class="connector-kind-card" :class="{ active: form.connectorMode === 'CHANNEL_MESSAGE' }" @click="form.connectorMode = 'CHANNEL_MESSAGE'">
+        <AsShadcnButton size="sm" variant="ghost" type="button" class="connector-kind-card" :class="{ active: form.connectorMode === 'CHANNEL_MESSAGE' }" @click="form.connectorMode = 'CHANNEL_MESSAGE'">
           <strong>消息连接器</strong><span>向 QQ Bot、企业微信等渠道发送消息</span>
         </AsShadcnButton>
-        <AsShadcnButton variant="ghost" type="button" class="connector-kind-card" :class="{ active: form.connectorMode === 'CONNECTOR_ACTION' }" @click="form.connectorMode = 'CONNECTOR_ACTION'">
+        <AsShadcnButton size="sm" variant="ghost" type="button" class="connector-kind-card" :class="{ active: form.connectorMode === 'CONNECTOR_ACTION' }" @click="form.connectorMode = 'CONNECTOR_ACTION'">
           <strong>插件连接器</strong><span>调用邮件、日历或自定义插件 Action</span>
         </AsShadcnButton>
       </div>
@@ -170,7 +170,7 @@ onMounted(load);
       <small>节点只保存连接 ID；后台会携带当前租户和用户上下文，凭证保持加密存储且不会进入工作流参数。</small>
     </label>
     <label v-if="form.connectionSource === 'DYNAMIC'">连接 ID
-      <VarSelectField v-model="form.connectionIdTemplate" :node-id="nodeId || ''" placeholder="选择一个上游 connectionId 参数" />
+      <VarSelectField size="middle" v-model="form.connectionIdTemplate" :node-id="nodeId || ''" placeholder="选择一个上游 connectionId 参数" />
       <small>运行时解析连接 ID，适合同一个工作流由不同用户使用各自的连接账号。</small>
     </label>
     <section v-if="action">
@@ -186,7 +186,7 @@ onMounted(load);
       />
       <template v-if="!hasActionFields">
         <label class="generic-input-label">输入内容
-          <VarInsertField v-model="form.inputText" :node-id="nodeId || ''" placeholder="输入文本，或选择上游节点参数" />
+          <VarInsertField size="middle" v-model="form.inputText" :node-id="nodeId || ''" placeholder="输入文本，或选择上游节点参数" />
           <small>适用于没有声明参数 Schema 的插件，使用方式与提示词一致。</small>
         </label>
         <label class="input-field-label">传递字段名
@@ -203,11 +203,11 @@ onMounted(load);
       <section class="message-route-section">
         <h4>发送方式</h4>
         <div class="message-route-list">
-          <AsShadcnButton variant="ghost" type="button" class="message-route-card" :class="{ active: form.channelSource === 'REPLY_TRIGGER' }" @click="form.channelSource = 'REPLY_TRIGGER'">
+          <AsShadcnButton size="sm" variant="ghost" type="button" class="message-route-card" :class="{ active: form.channelSource === 'REPLY_TRIGGER' }" @click="form.channelSource = 'REPLY_TRIGGER'">
             <span class="message-route-check">{{ form.channelSource === 'REPLY_TRIGGER' ? '✓' : '' }}</span>
             <span><strong>回复当前触发消息</strong><small>哪里来、回哪里；使用本次收到消息的机器人账号、会话和回复目标。</small></span>
           </AsShadcnButton>
-          <AsShadcnButton variant="ghost" type="button" class="message-route-card" :class="{ active: form.channelSource === 'DYNAMIC' }" @click="form.channelSource = 'DYNAMIC'">
+          <AsShadcnButton size="sm" variant="ghost" type="button" class="message-route-card" :class="{ active: form.channelSource === 'DYNAMIC' }" @click="form.channelSource = 'DYNAMIC'">
             <span class="message-route-check">{{ form.channelSource === 'DYNAMIC' ? '✓' : '' }}</span>
             <span><strong>发送到其他消息渠道</strong><small>从上游参数取得连接器账号和接收目标，可发送到另一个机器人或渠道。</small></span>
           </AsShadcnButton>
@@ -216,14 +216,14 @@ onMounted(load);
         <p v-else>不绑定设计者的个人账号；后台会按本次运行用户和租户重新校验权限。</p>
       </section>
       <label v-if="form.channelSource === 'DYNAMIC'">连接器账号 ID
-        <VarSelectField v-model="form.channelConnectionId" :node-id="nodeId || ''" placeholder="选择一个上游 connectionId 参数" />
+        <VarSelectField size="middle" v-model="form.channelConnectionId" :node-id="nodeId || ''" placeholder="选择一个上游 connectionId 参数" />
         <small>工作流不保存个人账号；每次运行根据变量取得连接 ID，并由后台校验当前租户和用户是否有权使用。</small>
       </label>
       <label v-if="form.channelSource === 'DYNAMIC'">接收目标
-        <VarInsertField v-model="form.targetId" :node-id="nodeId || ''" placeholder="用户/群 ID，可选择上游参数" />
+        <VarInsertField size="middle" v-model="form.targetId" :node-id="nodeId || ''" placeholder="用户/群 ID，可选择上游参数" />
       </label>
       <label v-if="form.channelSource === 'DYNAMIC'">会话 ID（可选）
-        <VarInsertField v-model="form.channelConversationId" :node-id="nodeId || ''" placeholder="可选择上游 conversationId" />
+        <VarInsertField size="middle" v-model="form.channelConversationId" :node-id="nodeId || ''" placeholder="可选择上游 conversationId" />
       </label>
       <label>消息类型
         <a-select v-model:value="form.messageType" :options="['TEXT','IMAGE','AUDIO','VIDEO','FILE'].map(value => ({ value, label: value }))" />
@@ -244,41 +244,41 @@ onMounted(load);
 </template>
 
 <style scoped>
-.cnc { display:grid; gap:15px; }
+.cnc { display:grid; gap:10px; }
 .cnc label { display:grid; gap:6px; font-size:13px; }
 .cnc label small { color: var(--muted-foreground); font-size:11px; line-height:1.5; }
-.cnc select,.cnc input { border: 1px solid var(--border); border-radius:6px; padding:8px; background: var(--wf-config-surface, #fff); }
+
 .cnc section { display:grid; gap:8px; }
 .cnc h4,.cnc p { margin:0; }
 .cnc p { font-size:12px; color: var(--muted-foreground); line-height:1.5; }
 .schema-diagnostic { color: var(--muted-foreground); font:11px ui-monospace,monospace; }
-.error { color: #dc2626; }
-.warning { padding:9px; background: #fff7ed; color: #c2410c; border-radius:6px; }
-.connector-kind-section { padding:12px; border: 1px solid var(--border); border-radius:10px; background: var(--wf-config-surface-hover, #f9fafb); }
+.error { color: var(--wf-config-danger); }
+.warning { padding:9px; background: var(--wf-config-warning-bg); color: var(--wf-config-warning); border-radius:6px; }
+.connector-kind-section { padding:8px; border: 1px solid var(--border); border-radius:10px; background: var(--wf-config-surface-hover, #f9fafb); }
 .connector-kind-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
-.connector-kind-card { display:grid; gap:4px; min-height:76px; padding:11px; text-align:left; color: var(--muted-foreground); background: var(--wf-config-surface, #fff); border: 1px solid #dbe2ea; border-radius:8px; cursor:pointer; }
+.connector-kind-card { display:grid; gap:4px; height:auto; min-height:60px; padding:8px; text-align:left; color: var(--muted-foreground); background: var(--wf-config-surface, #fff); border: 1px solid var(--wf-config-border); border-radius:8px; cursor:pointer; }
 .connector-kind-card strong { color: var(--foreground); font-size:13px; }
 .connector-kind-card span { font-size:11px; line-height:1.45; }
-.connector-kind-card:hover { border-color: #a5b4fc; }
-.connector-kind-card.active { border-color: #6366f1; background: color-mix(in srgb, var(--wf-accent, #6366f1) 14%, var(--wf-config-surface, #fff)); box-shadow:0 0 0 2px rgb(99 102 241 / 10%); }
-.connector-kind-card.active strong { color: #4338ca; }
+.connector-kind-card:hover { border-color: var(--wf-config-accent-border); }
+.connector-kind-card.active { border-color: var(--wf-config-accent); background: color-mix(in srgb, var(--wf-config-accent) 14%, var(--wf-config-surface, #fff)); box-shadow:0 0 0 2px color-mix(in srgb, var(--wf-config-accent) 10%, transparent); }
+.connector-kind-card.active strong { color: var(--wf-config-accent-text); }
 .message-route-section { display:grid; gap:9px; }
 .message-route-list { display:grid; gap:8px; }
-.message-route-card { display:grid; grid-template-columns:22px minmax(0,1fr); gap:8px; width:100%; padding:10px; text-align:left; color: var(--muted-foreground); background: var(--wf-config-surface, #fff); border: 1px solid #dbe2ea; border-radius:8px; cursor:pointer; }
-.message-route-card:hover { border-color: #a5b4fc; }
-.message-route-card.active { border-color: #6366f1; background: color-mix(in srgb, var(--wf-accent, #6366f1) 14%, var(--wf-config-surface, #fff)); }
+.message-route-card { display:grid; grid-template-columns:22px minmax(0,1fr); gap:8px; width:100%; padding:8px; text-align:left; color: var(--muted-foreground); background: var(--wf-config-surface, #fff); border: 1px solid var(--wf-config-border); border-radius:8px; cursor:pointer; }
+.message-route-card:hover { border-color: var(--wf-config-accent-border); }
+.message-route-card.active { border-color: var(--wf-config-accent); background: color-mix(in srgb, var(--wf-config-accent) 14%, var(--wf-config-surface, #fff)); }
 .message-route-card strong,.message-route-card small { display:block; }
 .message-route-card strong { margin-bottom:3px; color: var(--foreground); font-size:12px; }
 .message-route-card small { color: var(--muted-foreground); font-size:11px; line-height:1.5; }
-.message-route-check { display:grid; place-items:center; width:18px; height:18px; margin-top:1px; color: #fff; background: var(--muted); border-radius:50%; font-size:11px; }
-.message-route-card.active .message-route-check { background: #6366f1; }
+.message-route-check { display:grid; place-items:center; width:18px; height:18px; margin-top:1px; color: var(--muted-foreground); background: var(--muted); border-radius:50%; font-size:11px; }
+.message-route-card.active .message-route-check { color: var(--primary-foreground); background: var(--wf-config-accent); }
 .connector-tip { padding:9px 10px; color: var(--muted-foreground); background: var(--wf-config-surface-hover, #f9fafb); border-radius:7px; font-size:11px; line-height:1.55; }
 .generic-input-label,.input-field-label { margin-top:4px; }
-.output-contract { padding:10px; border: 1px solid #dbeafe; border-radius:8px; background: #eff6ff; }
-.output-contract code { color: #1d4ed8; }
+.output-contract { padding:8px; border: 1px solid var(--wf-config-accent-bg); border-radius:8px; background: var(--wf-config-accent-bg); }
+.output-contract code { color: var(--wf-config-accent-text); }
 .fixed-output { margin-top:2px; }
 .output-title-row { display:flex; align-items:center; justify-content:space-between; gap:8px; }
-.output-title-row code { padding:2px 7px; background: #dbeafe; border-radius:5px; font-size:11px; }
+.output-title-row code { padding:2px 7px; background: var(--wf-config-accent-bg); border-radius:5px; font-size:11px; }
 .send-content-section > small { color: var(--muted-foreground); font-size:11px; line-height:1.5; }
-.dark .cnc select,.dark .cnc input { background: #27272a; color: #eee; border-color: #52525b; }
+
 </style>

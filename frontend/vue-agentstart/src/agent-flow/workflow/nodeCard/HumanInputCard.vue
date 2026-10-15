@@ -161,12 +161,13 @@ const addOption = (field: FormField) => {
   <div class="wf-config-section">
     <WfField title="表单生成方式" required>
       <div class="human-mode-list">
-        <AsShadcnButton variant="ghost"
+        <AsShadcnButton size="sm" variant="ghost"
           v-for="mode in FORM_MODES"
           :key="mode.value"
           type="button"
           class="human-mode-button"
           :class="{ 'is-active': formState.formMode === mode.value && modeExpanded }"
+          :aria-pressed="formState.formMode === mode.value && modeExpanded"
           @click="selectMode(mode.value)"
         >
           <span class="human-mode-check">{{ formState.formMode === mode.value ? '✓' : '' }}</span>
@@ -229,7 +230,8 @@ const addOption = (field: FormField) => {
   <div class="wf-config-section">
     <WfField title="呈现方式" required>
       <div class="human-mode-list">
-        <AsShadcnButton variant="ghost" v-for="mode in PRESENTATIONS" :key="mode.value" type="button" class="human-mode-button"
+        <AsShadcnButton size="sm" variant="ghost" v-for="mode in PRESENTATIONS" :key="mode.value" type="button" class="human-mode-button"
+          :aria-pressed="formState.presentationMode === mode.value"
           :class="{ 'is-active': formState.presentationMode === mode.value }" @click="formState.presentationMode = mode.value">
           <span class="human-mode-check">{{ formState.presentationMode === mode.value ? '✓' : '' }}</span><span>{{ mode.label }}</span>
         </AsShadcnButton>
@@ -240,18 +242,18 @@ const addOption = (field: FormField) => {
   <div v-if="!['CHAT_COMPONENT'].includes(formState.presentationMode)" class="wf-config-section">
     <WfField title="通知渠道">
       <div class="human-channel-fields">
-        <a-select v-model:value="selectedChannelKey" allow-clear :options="channelOptions" placeholder="可选：从连接器 Hub 选择支持发送的渠道" />
-        <a-select v-if="selectedChannelKey" v-model:value="formState.channelConnectionId" allow-clear :options="connectionOptions" placeholder="选择已配置连接" />
-        <a-input v-if="selectedChannelKey" v-model:value="formState.channelTarget" placeholder="接收目标，可填写地址或上游变量" />
+        <a-select size="small" v-model:value="selectedChannelKey" allow-clear :options="channelOptions" placeholder="可选：从连接器 Hub 选择支持发送的渠道" />
+        <a-select size="small" v-if="selectedChannelKey" v-model:value="formState.channelConnectionId" allow-clear :options="connectionOptions" placeholder="选择已配置连接" />
+        <a-input size="small" v-if="selectedChannelKey" v-model:value="formState.channelTarget" placeholder="接收目标，可填写地址或上游变量" />
       </div>
     </WfField>
   </div>
   <div class="wf-config-section">
     <WfField title="响应时限">
-      <a-switch v-model:checked="formState.timeoutEnabled" checked-children="限时" un-checked-children="不限时" />
+      <a-switch size="small" v-model:checked="formState.timeoutEnabled" checked-children="限时" un-checked-children="不限时" />
       <a-input-group v-if="formState.timeoutEnabled" compact class="human-timeout">
-        <a-input-number v-model:value="formState.timeoutValue" :min="1" :precision="0" style="width: 65%" />
-        <a-select v-model:value="formState.timeoutUnit" :options="TIME_UNITS" style="width: 35%" />
+        <a-input-number size="small" v-model:value="formState.timeoutValue" :min="1" :precision="0" style="width: 65%" />
+        <a-select size="small" v-model:value="formState.timeoutUnit" :options="TIME_UNITS" style="width: 35%" />
       </a-input-group>
       <div v-if="formState.timeoutEnabled" class="human-help">聊天端将显示倒计时；后台保存值为 {{ formState.timeoutSeconds }} 秒。</div>
     </WfField>
@@ -259,23 +261,23 @@ const addOption = (field: FormField) => {
 </template>
 
 <style scoped>
-.human-empty { padding: 18px 10px; text-align: center; font-size: 12px; color: var(--muted-foreground); background: var(--wf-config-surface-hover, #f9fafb); border: 1px dashed var(--border); border-radius: 8px; }
-.human-field-list { display: flex; flex-direction: column; gap: 10px; }
-.human-field-card { padding: 10px; background: var(--wf-config-surface-hover, #f9fafb); border: 1px solid #eef0f3; border-radius: 8px; }
+.human-empty { padding: 10px 8px; text-align: center; font-size: 12px; color: var(--muted-foreground); background: var(--wf-config-surface-hover, #f9fafb); border: 1px dashed var(--border); border-radius: 8px; }
+.human-field-list { display: flex; flex-direction: column; gap: 8px; }
+.human-field-card { display: flex; flex-direction: column; gap: 6px; padding: 8px; box-shadow: none; background: var(--wf-config-surface-hover, #f9fafb); border: 1px solid var(--wf-config-border); border-radius: 8px; }
 .human-field-toolbar { display: flex; align-items: center; justify-content: flex-end; margin-bottom: 8px; }
-.human-field-index { margin-right: auto; width: 22px; height: 22px; line-height: 22px; text-align: center; color: #fff; background: #f59e0b; border-radius: 50%; font-size: 11px; }
+.human-field-index { margin-right: auto; width: 22px; height: 22px; line-height: 22px; text-align: center; color: var(--wf-config-accent-text); background: var(--wf-config-accent-bg); border-radius: 50%; font-size: 11px; }
 .human-field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-bottom: 8px; }
 .human-options { display: flex; flex-direction: column; gap: 6px; padding: 8px; margin-bottom: 8px; background: var(--wf-config-surface, #fff); border-radius: 6px; }
 .human-option-row { display: grid; grid-template-columns: 1fr 1fr auto; gap: 5px; }
 .human-timeout { display: flex; margin-top: 8px; }
 .human-channel-fields { display: grid; width: 100%; gap: 8px; }
-.human-channel-fields :deep(.ant-select), .human-channel-fields :deep(.ant-input) { width: 100%; min-width: 0; }
+.human-channel-fields :deep(.as-select-field), .human-channel-fields :deep(.as-input-wrap) { width: 100%; min-width: 0; }
 .human-help { margin-top: 6px; color: var(--muted-foreground); font-size: 11px; }
-.human-ai-tip { margin: -2px 16px 14px; padding: 9px 11px; color: #7c3aed; font-size: 12px; background: #f5f3ff; border-radius: 7px; }
+.human-ai-tip { margin: 0 10px 8px; padding: 6px 8px; color: var(--wf-config-accent-text); font-size: 12px; background: var(--wf-config-accent-bg); border-radius: 6px; }
 .human-mode-list { display: flex; flex-wrap: wrap; gap: 6px; }
-.human-mode-button { display: inline-flex; align-items: center; min-width: 0; padding: 5px 9px; color: var(--muted-foreground); background: var(--wf-config-surface, #fff); border: 1px solid var(--border); border-radius: 7px; cursor: pointer; font-size: 12px; line-height: 18px; transition: all .18s ease; }
-.human-mode-button:hover { color: #7c3aed; border-color: #c4b5fd; background: #faf9ff; }
-.human-mode-button.is-active { color: #6d28d9; border-color: #8b5cf6; background: #f5f3ff; box-shadow: 0 0 0 2px rgb(139 92 246 / 10%); }
-.human-mode-check { flex: 0 0 15px; height: 15px; margin-right: 5px; line-height: 15px; text-align: center; color: #fff; background: #8b5cf6; border-radius: 50%; font-size: 10px; }
+.human-mode-button { display: inline-flex; align-items: center; min-width: 0; padding: 2px 7px; color: var(--muted-foreground); background: var(--wf-config-surface, #fff); border: 1px solid var(--border); border-radius: 6px; cursor: pointer; font-size: 12px; line-height: 18px; transition: all .18s ease; }
+.human-mode-button:hover { color: var(--wf-config-accent-text); border-color: var(--wf-config-accent-border); background: var(--wf-config-accent-bg); }
+.human-mode-button.is-active { color: var(--wf-config-accent-text); border-color: var(--wf-config-accent); background: var(--wf-config-accent-bg); box-shadow: 0 0 0 2px color-mix(in srgb, var(--wf-config-accent) 10%, transparent); }
+.human-mode-check { flex: 0 0 15px; height: 15px; margin-right: 5px; line-height: 15px; text-align: center; color: var(--primary-foreground); background: var(--wf-config-accent); border-radius: 50%; font-size: 10px; }
 .human-mode-button:not(.is-active) .human-mode-check { background: var(--muted); }
 </style>

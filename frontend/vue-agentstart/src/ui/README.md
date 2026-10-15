@@ -25,3 +25,5 @@
 科技模式的 HUD 装饰统一由 `hud-frame.css` 提供：页面 `.hud-panel`、信息 `.as-info-popover`、抽屉 `.as-sheet-hud__chrome` 共用 `--as-frame-mask`。颜色从全局 `--primary` 派生，四角使用连续折线路径，将横边、斜边和竖边一起加粗，局部平行细线增强层次，不再另画整圈内边框。宿主样式应在旧 HUD 样式之后引入此文件，避免固定色或 `!important` 覆盖。
 
 提示统一入口：浮动成功/错误/信息使用 `message`（shadcn Sonner）；页面内错误、警告和信息使用 `InlineNotice`（shadcn Alert/AlertDescription）。提示表面和正文遵循语义主题变量，不再使用页面自绘的浅色提示背景。
+
+HUD 光效区分明暗：明亮科技模式加深主色并保持清晰边线；暗黑科技模式提亮四角、添加局部短距离光晕。悬停和 focus-within 适度提高轮廓亮度，普通模式不应用这套装饰。

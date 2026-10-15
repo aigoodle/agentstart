@@ -37,11 +37,17 @@ const props = defineProps({
 
 const emit = defineEmits(['close', 'select']);
 
-const anchorReference = computed(() => props.targetElement?.element ?? props.targetElement ?? {
+// Popover keeps its content mounted during the exit animation. The parent may
+// clear targetElement on close, so retain the last anchor until the next open
+// instead of repositioning the exiting panel at the (0, 0) fallback.
+const anchorReference = computed((previous: any) => {
+  if (!props.show && previous) return previous;
+  return props.targetElement?.element ?? props.targetElement ?? {
   getBoundingClientRect: () => {
     const left = parseFloat(props.position?.left ?? '0'), top = parseFloat(props.position?.top ?? '0');
     return { x: left, y: top, left, top, right: left, bottom: top, width: 0, height: 0 } as DOMRect;
   },
+  };
 });
 const expandedKeys = ref<Set<string>>(new Set());
 const workflowStore = useWorkflowStore();
@@ -128,7 +134,7 @@ function isActive(nodeId: string, parentName: string | null, name: string) {
 <template>
   <Popover :open="show" @update:open="!$event && close()">
     <PopoverAnchor :reference="anchorReference" style="display: none" />
-    <PopoverContent class="wf-tag-panel hud-panel" side="bottom" align="start" :side-offset="6" :collision-padding="10"
+    <PopoverContent class="wf-tag-panel hud-panel hud-popover border-0 rounded-none shadow-none" side="bottom" align="start" :side-offset="6" :collision-padding="10"
       :style="{ width: '300px', padding: 0 }" @open-auto-focus.prevent @close-auto-focus.prevent @mousedown.stop>
     <div class="wf-tag-panel-header">
       <div class="wf-tag-panel-title">快速插入变量</div>
@@ -217,9 +223,9 @@ function isActive(nodeId: string, parentName: string | null, name: string) {
   width: 300px;
   max-height: 360px;
   background: var(--background);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.16);
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
   overflow: hidden;
   font-size: 13px;
   color: var(--foreground);

@@ -10,11 +10,13 @@ interface Props {
   nodeId: string;
   placeholder?: string;
   disabled?: boolean;
+  size?: 'small' | 'middle';
 }
 
 const props = withDefaults(defineProps<Props>(), {
   placeholder: '选择变量',
   disabled: false,
+  size: 'middle',
 });
 
 const model: any = defineModel();
@@ -54,7 +56,7 @@ const clear = (e: MouseEvent) => {
     <div
       ref="targetElement"
       class="wf-var-selector-trigger"
-      :class="{ 'is-disabled': disabled, 'has-value': label }"
+      :class="{ 'is-disabled': disabled, 'has-value': label, 'is-small': size === 'small' }"
       @click="openPanel"
     >
       <template v-if="label">
@@ -93,13 +95,18 @@ const clear = (e: MouseEvent) => {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 4px 8px;
-  min-height: 28px;
+  padding: 6px 10px;
+  min-height: 36px;
   background: var(--background);
   border: 1px solid var(--border);
   border-radius: 6px;
   cursor: pointer;
   transition: border-color 0.15s, background 0.15s;
+}
+
+.wf-var-selector-trigger.is-small {
+  padding: 2px 6px;
+  min-height: 24px;
 }
 
 .wf-var-selector-trigger:hover:not(.is-disabled) {

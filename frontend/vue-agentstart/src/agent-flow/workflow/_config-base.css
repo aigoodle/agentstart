@@ -10,14 +10,23 @@
 
 /* -------- 配置面板结构 -------- */
 .wf-config-panel {
-  --wf-config-bg: #ffffff;
-  --wf-config-body-bg: #f6f7f9;
-  --wf-config-surface: #ffffff;
-  --wf-config-surface-hover: #f3f4f6;
-  --wf-config-border: #e5e7eb;
-  --wf-config-text: #1f2937;
-  --wf-config-text-secondary: #4b5563;
-  --wf-config-text-muted: #9ca3af;
+  --wf-config-accent: var(--primary);
+  --wf-config-accent-text: color-mix(in srgb, var(--primary) 75%, var(--foreground));
+  --wf-config-accent-bg: color-mix(in srgb, var(--primary) 10%, var(--wf-config-surface));
+  --wf-config-accent-border: color-mix(in srgb, var(--primary) 35%, var(--border));
+  --wf-config-warning: color-mix(in srgb, var(--as-warning, #d97706) 70%, var(--foreground));
+  --wf-config-warning-bg: color-mix(in srgb, var(--as-warning, #d97706) 12%, var(--wf-config-surface));
+  --wf-config-success: color-mix(in srgb, var(--as-success, #16a34a) 70%, var(--foreground));
+  --wf-config-success-bg: color-mix(in srgb, var(--as-success, #16a34a) 12%, var(--wf-config-surface));
+  --wf-config-danger: var(--destructive, var(--as-danger));
+  --wf-config-bg: var(--background);
+  --wf-config-body-bg: var(--muted);
+  --wf-config-surface: var(--card, var(--background));
+  --wf-config-surface-hover: var(--muted);
+  --wf-config-border: var(--border);
+  --wf-config-text: var(--foreground);
+  --wf-config-text-secondary: var(--muted-foreground);
+  --wf-config-text-muted: var(--muted-foreground);
   position: relative;
   display: flex;
   flex-direction: column;
@@ -113,8 +122,8 @@
 
 /* -------- 表单节段（各 nodeCard 内部划分） -------- */
 .wf-config-section {
-  padding: 12px 14px;
-  margin-bottom: 10px;
+  padding: 8px 10px;
+  margin-bottom: 8px;
   background: var(--wf-config-surface);
   border: 1px solid var(--wf-config-border);
   border-radius: 8px;
@@ -127,7 +136,7 @@
 /* 独立的 PromptEditor 作为单个 section（不用 wf-config-section 包一层）；
  * PromptEditor 自带 toolbar 和边框，外层再包 section 会视觉重叠 */
 .wf-config-prompt {
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 .wf-config-prompt:last-child {
   margin-bottom: 0;
@@ -172,8 +181,8 @@
   padding: 0 4px;
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
   font-size: 10px;
-  color: #4338ca;
-  background: #eef2ff;
+  color: var(--wf-config-accent-text);
+  background: var(--wf-config-accent-bg);
   border-radius: 3px;
 }
 
@@ -204,44 +213,43 @@
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--wf-accent, var(--primary)) 15%, transparent) !important;
 }
 
-/* 更紧凑的默认高度：接近 Dify 的紧凑表单感 */
-.wf-config-body :deep(.ant-input:not(.ant-input-sm):not(.ant-input-lg)),
-.wf-config-body :deep(.ant-input-number:not(.ant-input-number-sm)) {
-  padding: 3px 8px;
+/* Only explicitly compact controls use 24px sizing. Independent full-width
+ * fields retain the UI kit's default dimensions. */
+.wf-config-panel .wf-config-body .as-input-wrap--small,
+.wf-config-panel .wf-config-body input.as-input--small {
+  height: 24px;
+  min-height: 24px;
+  padding: 2px 7px;
   font-size: 12px;
 }
 
-.wf-config-body :deep(.ant-input-affix-wrapper:not(.ant-input-affix-wrapper-sm)) {
-  padding: 3px 8px;
-}
-
-.wf-config-body :deep(.ant-input-affix-wrapper .ant-input) {
+.wf-config-panel .wf-config-body .as-input-wrap--small input[data-slot="input"] {
+  height: 100%;
+  min-height: 0;
   padding: 0;
 }
 
-.wf-config-body :deep(.ant-select:not(.ant-select-sm) .ant-select-selector) {
-  height: 28px;
-  padding: 0 8px;
+.wf-config-panel .wf-config-body [data-slot="select-trigger"].as-select--small {
+  height: auto;
+  min-height: 24px;
+  padding: 2px 7px;
+  font-size: 12px;
+  line-height: 18px;
+}
+
+/* Selection cards contain descriptions and need their own content height. */
+.wf-config-panel .wf-config-body [data-slot="button"][data-size="sm"]:not(
+  .connector-kind-card, .message-route-card, .wf-triggers-type
+) {
+  height: 24px;
+  min-height: 24px;
   font-size: 12px;
 }
 
-.wf-config-body :deep(.ant-select-single .ant-select-selector .ant-select-selection-item),
-.wf-config-body :deep(.ant-select-single .ant-select-selector .ant-select-selection-placeholder) {
-  line-height: 26px;
-}
-
-.wf-config-body :deep(.ant-input-number-input) {
-  height: 26px;
-}
-
-.wf-config-body :deep(.ant-btn) {
-  border-radius: 6px;
-  font-size: 12px;
-}
-
-.wf-config-body :deep(.ant-btn:not(.ant-btn-sm):not(.ant-btn-lg)) {
-  height: 28px;
-  padding: 0 10px;
+.wf-config-panel .wf-config-body .wf-param-add,
+.wf-config-panel .wf-config-body .wf-out-row-action-add {
+  width: 24px;
+  padding: 0;
 }
 
 .wf-config-body :deep(.ant-btn-primary) {
@@ -267,7 +275,7 @@
 .wf-config-body :deep(.ant-collapse-ghost > .ant-collapse-item > .ant-collapse-header) {
   padding: 6px 0 !important;
   font-size: 12px;
-  color: #4b5563;
+  color: var(--wf-config-text-secondary);
 }
 
 .wf-config-body :deep(.ant-collapse-ghost > .ant-collapse-item > .ant-collapse-content > .ant-collapse-content-box) {
@@ -315,37 +323,37 @@
   gap: 8px;
   padding: 6px 10px;
   font-size: 12px;
-  color: #1f2937;
+  color: var(--wf-config-text);
   border-radius: 4px;
   cursor: pointer;
   transition: background 0.15s;
 }
 
 .wf-config-menu-item:hover {
-  background: #eef2ff;
+  background: var(--wf-config-accent-bg);
 }
 
 .wf-config-menu-item-danger {
-  color: #dc2626;
+  color: var(--wf-config-danger);
 }
 
 .wf-config-menu-item-danger:hover {
-  background: #fef2f2;
+  background: color-mix(in srgb, var(--wf-config-danger) 10%, var(--wf-config-surface));
 }
 
 .wf-config-menu-icon {
   font-size: 13px;
-  color: #6b7280;
+  color: var(--wf-config-text-secondary);
   flex: none;
 }
 
 .wf-config-menu-item-danger .wf-config-menu-icon {
-  color: #dc2626;
+  color: var(--wf-config-danger);
 }
 
 .wf-config-menu-item .wf-config-menu-shortcut {
   margin-left: auto;
-  color: #9ca3af;
+  color: var(--wf-config-text-muted);
   font-size: 11px;
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
 }
@@ -353,7 +361,7 @@
 .wf-config-menu-divider {
   height: 1px;
   margin: 2px 0;
-  background: #f3f4f6;
+  background: var(--wf-config-surface-hover);
 }
 
 /* Header 右上角小按钮：与菜单/关闭统一样式 */
@@ -363,7 +371,7 @@
   justify-content: center;
   width: 24px;
   height: 24px;
-  color: #6b7280;
+  color: var(--wf-config-text-secondary);
   background: transparent;
   border: none;
   border-radius: 4px;
@@ -373,85 +381,16 @@
 }
 
 .wf-config-header-btn:hover {
-  color: #1f2937;
-  background: #f3f4f6;
+  color: var(--wf-config-text);
+  background: var(--wf-config-surface-hover);
 }
 
 .wf-config-header-divider {
   width: 1px;
   height: 16px;
   margin: 0 2px;
-  background: #e5e7eb;
-}
-
-/* Dark workflow configuration panel. Both host theme conventions are supported. */
-.dark .wf-config-panel,
-[data-theme='dark'] .wf-config-panel {
-  --wf-config-bg: #081e36;
-  --wf-config-body-bg: #061629;
-  --wf-config-surface: #0b2947;
-  --wf-config-surface-hover: #103555;
-  --wf-config-border: #29445f;
-  --wf-config-text: #e7eef7;
-  --wf-config-text-secondary: #a9bad0;
-  --wf-config-text-muted: #7890aa;
-}
-
-.dark .wf-config-panel :is(input, textarea, select),
-.dark .wf-config-panel :deep(.ant-input),
-.dark .wf-config-panel :deep(.ant-input-number),
-.dark .wf-config-panel :deep(.ant-input-affix-wrapper),
-.dark .wf-config-panel :deep(.ant-select-selector),
-.dark .wf-config-panel :deep(.ant-picker),
-[data-theme='dark'] .wf-config-panel :is(input, textarea, select),
-[data-theme='dark'] .wf-config-panel :deep(.ant-input),
-[data-theme='dark'] .wf-config-panel :deep(.ant-input-number),
-[data-theme='dark'] .wf-config-panel :deep(.ant-input-affix-wrapper),
-[data-theme='dark'] .wf-config-panel :deep(.ant-select-selector),
-[data-theme='dark'] .wf-config-panel :deep(.ant-picker) {
-  color: var(--wf-config-text) !important;
-  background: var(--wf-config-bg) !important;
-  border-color: var(--wf-config-border) !important;
-}
-
-.dark .wf-config-panel :deep(.ant-select-selection-placeholder),
-.dark .wf-config-panel :deep(.ant-input::placeholder),
-[data-theme='dark'] .wf-config-panel :deep(.ant-select-selection-placeholder),
-[data-theme='dark'] .wf-config-panel :deep(.ant-input::placeholder) {
-  color: var(--wf-config-text-muted) !important;
-}
-
-.dark .wf-config-hint code,
-[data-theme='dark'] .wf-config-hint code {
-  color: #aeb7ff;
-  background: #162d54;
-}
-
-.dark .wf-config-header-btn:hover,
-[data-theme='dark'] .wf-config-header-btn:hover {
-  color: var(--wf-config-text);
-  background: var(--wf-config-surface-hover);
-}
-
-.dark .wf-config-header-divider,
-.dark .wf-config-menu-divider,
-[data-theme='dark'] .wf-config-header-divider,
-[data-theme='dark'] .wf-config-menu-divider {
   background: var(--wf-config-border);
 }
-
-.dark .wf-config-panel .bg-white,
-[data-theme='dark'] .wf-config-panel .bg-white { background: var(--wf-config-surface); }
-.dark .wf-config-panel .bg-gray-50,
-.dark .wf-config-panel .bg-gray-100,
-[data-theme='dark'] .wf-config-panel .bg-gray-50,
-[data-theme='dark'] .wf-config-panel .bg-gray-100 { background: var(--wf-config-surface-hover); }
-.dark .wf-config-panel :is(.text-gray-400, .text-gray-500, .text-gray-600),
-[data-theme='dark'] .wf-config-panel :is(.text-gray-400, .text-gray-500, .text-gray-600) { color: var(--wf-config-text-secondary); }
-.dark .wf-config-panel .text-gray-800,
-[data-theme='dark'] .wf-config-panel .text-gray-800 { color: var(--wf-config-text); }
-.dark .wf-config-panel :is(.border, .border-t, .border-b),
-[data-theme='dark'] .wf-config-panel :is(.border, .border-t, .border-b) { border-color: var(--wf-config-border); }
 
 /* Shared utility classes are compiled by the library's Tailwind entry. */
 .wf-config-panel .hover\:bg-primary-light:hover {

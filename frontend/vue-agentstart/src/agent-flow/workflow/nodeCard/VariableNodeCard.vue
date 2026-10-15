@@ -77,7 +77,7 @@ const onNameChange = (it: any) => {
             style="width: 120px"
             @change="onNameChange(it)"
           />
-          <VariableSelector
+          <VariableSelector size="small"
             v-model="it.variableSelector"
             :node-id="nodeId"
             placeholder="选择上游变量"
@@ -98,7 +98,7 @@ const onNameChange = (it: any) => {
 
 <style scoped>
 .var-empty {
-  padding: 12px;
+  padding: 8px;
   text-align: center;
   font-size: 12px;
   color: var(--muted-foreground);

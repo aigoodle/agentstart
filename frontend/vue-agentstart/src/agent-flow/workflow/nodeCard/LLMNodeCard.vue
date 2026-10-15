@@ -185,19 +185,19 @@ const RESPONSE_FORMATS = [
 }
 
 .llm-varselect {
-  padding: 4px 8px;
+  padding: 6px 10px;
   background: var(--wf-config-surface-hover, #f9fafb);
   border: 1px dashed var(--border);
   border-radius: 6px;
   cursor: pointer;
   transition: border-color 0.15s;
-  min-height: 28px;
+  min-height: 36px;
   display: flex;
   align-items: center;
 }
 
 .llm-varselect:hover {
-  border-color: #6366f1;
+  border-color: var(--wf-config-accent);
 }
 
 .llm-varselect-tag {
