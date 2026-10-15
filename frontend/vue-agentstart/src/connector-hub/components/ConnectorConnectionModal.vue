@@ -281,8 +281,8 @@ async function remove() {
 }
 .ccm-input:focus {
   outline: none;
-  border-color: #6366f1;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 15%, transparent);
 }
 .ccm-group {
   display: grid;
@@ -364,12 +364,12 @@ async function remove() {
   cursor: not-allowed;
 }
 .ccm-btn-primary {
-  color: #fff;
-  background: #6366f1;
-  border-color: #6366f1;
+  color: var(--primary-foreground);
+  background: var(--primary);
+  border-color: var(--primary);
 }
 .ccm-btn-primary:hover {
-  background: #4f46e5;
+  background: var(--primary);
 }
 .ccm-btn-danger {
   color: #dc2626;
@@ -387,11 +387,11 @@ async function remove() {
   background: #3d3d3d;
 }
 .dark .ccm-btn-primary {
-  background: #6366f1;
-  border-color: #6366f1;
+  background: var(--primary);
+  border-color: var(--primary);
 }
 .dark .ccm-btn-primary:hover {
-  background: #818cf8;
+  background: var(--primary);
 }
 .dark .ccm-btn-danger {
   color: #f87171;

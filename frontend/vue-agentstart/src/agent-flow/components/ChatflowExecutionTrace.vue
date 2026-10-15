@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import UiNotice from '../../ui/components/InlineNotice.vue';
 import { Button as AsShadcnButton } from '../../ui/shadcn/button';
 
 import { computed, reactive, ref } from 'vue';
@@ -128,7 +129,7 @@ defineExpose({ receive });
         <div v-if="expanded[index]" class="cet-detail">
           <b>输入</b><pre>{{ pretty(step.inputs ?? step.input) }}</pre>
           <b>输出 <em v-if="step.__streamedAnswer">流式</em></b><pre>{{ pretty(stepOutput(step)) }}</pre>
-          <div v-if="step.error" class="cet-error">{{ step.error }}</div>
+          <UiNotice type="error" v-if="step.error" class="cet-error">{{ step.error }}</UiNotice>
         </div>
       </article>
       <div v-if="status === 'running'" class="cet-running"><i /> 正在执行下一个节点…</div>

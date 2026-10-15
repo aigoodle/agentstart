@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import UiNotice from '../../../ui/components/InlineNotice.vue';
 import { Input as AInput, Select as ASelect } from '../../../ui';
 
 import { onMounted, ref, watchEffect } from 'vue';
@@ -150,7 +151,7 @@ function syncTargetWorkflow(workflowId?: string) {
           </div>
         </template>
       </a-select>
-      <div v-if="workflowLoadError" class="wf-error">{{ workflowLoadError }}</div>
+      <UiNotice type="error" v-if="workflowLoadError" class="wf-error">{{ workflowLoadError }}</UiNotice>
       <div v-else-if="!workflowLoading && workflowApps.length === 0" class="wf-help">当前租户下没有其他已发布的工作流应用。</div>
       <div v-else class="wf-help">新增时，提取出的 data 对象会作为开始节点输入传给该工作流；删除时不执行目标工作流。</div>
     </WfField>

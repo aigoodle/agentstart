@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Popover, PopoverTrigger, PopoverContent } from '../../ui/shadcn/popover';
 import { Card as AsShadcnCard } from '../../ui/shadcn/card';
 
 import { ShadcnBoolean as AsShadcnBoolean } from '../../ui/components/ShadcnBoolean';
@@ -271,9 +272,19 @@ function save() {
       <div class="kh-settings-row">
         <label class="kh-settings-label">名称和图标</label>
         <div class="kh-settings-name-row">
-          <AsShadcnButton variant="ghost" class="kh-settings-icon-btn" :style="{ background: form.iconBg ?? '#FFEAD5' }">
+          <Popover><PopoverTrigger as-child><AsShadcnButton variant="ghost" class="kh-settings-icon-btn" aria-label="选择知识库图标" :style="{ background: form.iconBg ?? '#FFEAD5' }">
             {{ form.icon ?? '📙' }}
-          </AsShadcnButton>
+          </AsShadcnButton></PopoverTrigger>
+<PopoverContent class="w-64 p-3" align="start">
+  <div class="mb-2 text-xs text-muted-foreground">选择图标</div>
+  <div class="grid grid-cols-5 gap-1">
+    <AsShadcnButton v-for="emoji in ['📙','📚','🧭','📗','📄','💡','🧠','🔬','💼','🗂️']" :key="emoji" variant="ghost" size="icon" :aria-label="`图标 ${emoji}`" :aria-pressed="form.icon === emoji" @click="form.icon = emoji">{{ emoji }}</AsShadcnButton>
+  </div>
+  <div class="my-2 text-xs text-muted-foreground">背景颜色</div>
+  <div class="flex gap-2">
+    <AsShadcnButton v-for="color in ['#FFEAD5','#DBEAFE','#DCFCE7','#F3E8FF','#FCE7F3']" :key="color" variant="outline" size="icon-sm" :style="{background:color}" :aria-label="`图标背景 ${color}`" :aria-pressed="form.iconBg === color" @click="form.iconBg = color" />
+  </div>
+</PopoverContent></Popover>
           <AsShadcnInput v-model="form.name" class="kh-input" />
         </div>
       </div>

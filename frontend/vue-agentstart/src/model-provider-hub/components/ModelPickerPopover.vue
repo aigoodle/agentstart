@@ -984,7 +984,7 @@ defineExpose({
 }
 .ph-mp-model-card.is-active {
   border-color: var(--ring);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 12%, transparent);
 }
 .ph-mp-model-card.has-value {
   background: var(--background);
@@ -1024,7 +1024,7 @@ defineExpose({
 }
 .ph-mp-model-card.is-active .ph-mp-model-card-arrow {
   transform: rotate(180deg);
-  color: #6366f1;
+  color: var(--primary);
 }
 
 /* 二级下拉 */
@@ -1145,7 +1145,7 @@ defineExpose({
   background: var(--muted);
 }
 .ph-mp-item.is-active {
-  background: #eef2ff;
+  background: color-mix(in srgb, var(--primary) 10%, var(--background));
 }
 .ph-mp-item-name {
   flex: 1;
@@ -1159,7 +1159,7 @@ defineExpose({
   white-space: nowrap;
 }
 .ph-mp-item.is-active .ph-mp-item-name {
-  color: #4338ca;
+  color: var(--primary);
   font-weight: 500;
 }
 .ph-mp-item-tag {
@@ -1225,7 +1225,7 @@ defineExpose({
   background: #312e81;
 }
 .dark .ph-mp-item.is-active .ph-mp-item-name {
-  color: #e0e7ff;
+  color: color-mix(in srgb, var(--primary) 10%, var(--background));
 }
 .dark .ph-mp-dropdown-footer {
   border-top-color: #3f3f46;
@@ -1337,7 +1337,7 @@ defineExpose({
 }
 .ph-mp-trigger.is-active {
   border-color: var(--ring);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 15%, transparent);
 }
 .ph-mp-trigger.has-value {
   background: var(--background);
@@ -1353,7 +1353,7 @@ defineExpose({
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #6366f1;
+  color: var(--primary);
 }
 .ph-mp-trigger-name {
   flex: none;
@@ -1387,6 +1387,6 @@ defineExpose({
 }
 .ph-mp-trigger.is-active .ph-mp-trigger-arrow {
   transform: rotate(180deg);
-  color: #6366f1;
+  color: var(--primary);
 }
 </style>

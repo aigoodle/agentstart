@@ -100,6 +100,6 @@ function set(name: string, value: unknown) {
 }
 .ph-input:focus {
   outline: none;
-  border-color: #6366f1;
+  border-color: var(--primary);
 }
 </style>

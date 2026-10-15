@@ -66,10 +66,11 @@ onMounted(load);
           <template #badge>
             <Tag :color="row.status==='PUBLISHED'?'green':row.status==='DISABLED'?'red':'orange'">{{ row.status }}</Tag>
           </template>
+          <div class="text-xs text-muted-foreground">{{ parseTools(row.toolNamesJson).length }} 个关联工具</div>
           <template #meta>
             <div class="skill-meta">
               <span>v{{ row.version }}</span>
-              <span>{{ parseTools(row.toolNamesJson).length }} 个关联工具</span>
+
             </div>
           </template>
           <template #actions>

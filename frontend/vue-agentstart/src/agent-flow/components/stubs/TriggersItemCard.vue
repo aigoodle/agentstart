@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import UiNotice from '../../../ui/components/InlineNotice.vue';
 import { Switch as ASwitch, Input as AInput, Select as ASelect, SelectOption as ASelectOption, InputNumber as AInputNumber, Textarea as ATextarea, Button as AButton } from '../../../ui';
 
 import { Button as AsShadcnButton } from '../../../ui/shadcn/button';
@@ -251,9 +252,9 @@ onMounted(loadMessageConnectors);
         </a-select>
       </label>
 
-      <div v-if="!connectorLoading && !connectorError && installedChannels.length === 0" class="wf-connector-warning">
+      <UiNotice type="warning" v-if="!connectorLoading && !connectorError && installedChannels.length === 0" class="wf-connector-warning">
         暂无已安装并启用的消息连接器，请先在连接器中心完成接入。
-      </div>
+      </UiNotice>
 
       <template v-if="formState.triggers.provider && formState.triggers.channelId">
         <label>账户接入方式
@@ -281,9 +282,9 @@ onMounted(loadMessageConnectors);
           </a-select>
         </label>
 
-        <div v-if="accountScope === 'SPECIFIC' && availableConnections.length === 0" class="wf-connector-warning">
+        <UiNotice type="warning" v-if="accountScope === 'SPECIFIC' && availableConnections.length === 0" class="wf-connector-warning">
           当前消息连接器暂无已启用的接入账户，请先在连接器中心添加并启用账户。
-        </div>
+        </UiNotice>
       </template>
 
       <label>接收的消息类型

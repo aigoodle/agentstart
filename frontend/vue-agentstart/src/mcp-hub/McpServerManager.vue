@@ -303,10 +303,10 @@ onMounted(load);
               {{ server.lastError || server.url || [server.command, ...(server.args || [])].filter(Boolean).join(' ') || (server.enabled ? '服务已启用，可查看并调用其工具。' : '服务当前已停用。') }}
             </span>
           </template>
-          <template #meta>
+          <template #default><div class="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
             <Tag :color="server.status === 'CONNECTED' || server.status === 'CONFIGURED' ? 'green' : 'orange'">{{ server.status || 'UNKNOWN' }}</Tag>
             <span>{{ server.toolCount ?? '待发现' }}{{ server.toolCount == null ? '' : ' 个工具' }}</span>
-          </template>
+          </div></template>
           <template #actions>
 
               <Button type="primary" size="small" @click="openDetail(server)">

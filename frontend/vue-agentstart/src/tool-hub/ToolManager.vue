@@ -235,11 +235,11 @@ onMounted(load);
           <template #badge>
             <Tag :color="tool.custom ? 'blue' : 'green'">{{ tool.custom ? '自定义' : '系统' }}</Tag>
           </template>
-          <template #meta>
+          <template #default><div class="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
             <div class="tool-meta">
               <Tag>{{ parametersOf(tool).length }} 个参数</Tag>
             </div>
-          </template>
+          </div></template>
           <template #actions>
 
               <Button size="small" @click.stop="openDetail(tool)">

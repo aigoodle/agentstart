@@ -3,3 +3,5 @@
 @import 'tailwindcss/utilities.css' source('../');
 
 @import '../../../vue-agentstart/src/ui/theme-compat.css';
+
+@import '../../../vue-agentstart/src/ui/hud-frame.css';

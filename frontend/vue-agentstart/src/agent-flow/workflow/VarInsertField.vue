@@ -377,8 +377,8 @@ watch(
 }
 
 .wf-vi:focus-within {
-  border-color: #6366f1;
-  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.12);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 12%, transparent);
 }
 
 .wf-vi-borderless {
@@ -439,8 +439,8 @@ watch(
 }
 
 .wf-vi-insert-btn:hover {
-  color: #4338ca;
-  background: #eef2ff;
+  color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 10%, var(--background));
 }
 </style>
 
@@ -457,8 +457,8 @@ watch(
   font-size: 12px;
   line-height: 1.4;
   color: var(--foreground);
-  background: #eef2ff;
-  border: 1px solid #c7d2fe;
+  background: color-mix(in srgb, var(--primary) 10%, var(--background));
+  border: 1px solid color-mix(in srgb, var(--primary) 30%, var(--border));
   border-radius: 4px;
   cursor: default;
   user-select: none;

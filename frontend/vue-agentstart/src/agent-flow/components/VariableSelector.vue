@@ -103,13 +103,13 @@ const clear = (e: MouseEvent) => {
 }
 
 .wf-var-selector-trigger:hover:not(.is-disabled) {
-  border-color: #6366f1;
+  border-color: var(--primary);
   background: #fafbff;
 }
 
 .wf-var-selector-trigger.has-value {
-  background: #eef2ff;
-  border-color: #c7d2fe;
+  background: color-mix(in srgb, var(--primary) 10%, var(--background));
+  border-color: color-mix(in srgb, var(--primary) 30%, var(--border));
 }
 
 .wf-var-selector-trigger.is-disabled {
@@ -121,7 +121,7 @@ const clear = (e: MouseEvent) => {
 .wf-var-selector-icon {
   flex: none;
   font-size: 12px;
-  color: #6366f1;
+  color: var(--primary);
 }
 
 .wf-var-selector-value {
@@ -131,7 +131,7 @@ const clear = (e: MouseEvent) => {
   text-overflow: ellipsis;
   white-space: nowrap;
   font-size: 12px;
-  color: #4338ca;
+  color: var(--primary);
   font-weight: 500;
 }
 
@@ -150,13 +150,13 @@ const clear = (e: MouseEvent) => {
   justify-content: center;
   font-size: 14px;
   line-height: 1;
-  color: #6366f1;
+  color: var(--primary);
   border-radius: 50%;
   transition: background 0.15s;
 }
 
 .wf-var-selector-clear:hover {
-  background: #c7d2fe;
+  background: color-mix(in srgb, var(--primary) 30%, var(--border));
   color: #1e1b4b;
 }
 </style>

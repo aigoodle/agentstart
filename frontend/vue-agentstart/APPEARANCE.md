@@ -136,3 +136,5 @@ Dialog 与 Sheet 共用按打开顺序递增的层级；Select/Popover/Dropdown/
 主题颜色由 `src/ui/shadcn.css` 的 `:root` / `.dark` 语义变量定义。
 `theme-compat.css` 将旧 as / kh 变量映射到这些变量，旧变量不再决定 shadcn 的颜色。
 演示主色选择器仅更新 `--primary`、`--primary-foreground` 和 `--ring`，不再生成按页面覆盖的 CSS。
+
+暗黑科技模式（`.dark[data-visual="tech"]`）使用统一海军蓝语义表面：背景 `#081e36`、卡片与浮层 `#0a2540`、下沉区域 `#04101e`，搭配蓝灰边框和冷白正文。普通模式继续使用中性灰配色。所有 shadcn 组件与兼容变量共用这套 token，业务页面无需自行覆盖背景。

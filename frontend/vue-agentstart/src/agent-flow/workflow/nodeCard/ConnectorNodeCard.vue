@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import UiNotice from '../../../ui/components/InlineNotice.vue';
 import { Select as ASelect } from '../../../ui';
 
 import { Button as AsShadcnButton } from '../../../ui/shadcn/button';
@@ -125,7 +126,7 @@ onMounted(load);
 <template>
   <div class="cnc">
     <div v-if="loading">加载连接器…</div>
-    <div v-if="error" class="error">{{ error }}</div>
+    <UiNotice type="error" v-if="error" class="error">{{ error }}</UiNotice>
     <section class="connector-kind-section">
       <h4>连接器类型</h4>
       <div class="connector-kind-grid">
@@ -195,7 +196,7 @@ onMounted(load);
         <small class="schema-diagnostic">Schema 来源：{{ connector?.key.provider }}/{{ connector?.key.connectorId }}/{{ action.id }}</small>
       </template>
     </section>
-    <div v-if="action?.riskLevel === 'DESTRUCTIVE'" class="warning">高风险操作：运行前请确认权限和目标对象。</div>
+    <UiNotice type="warning" v-if="action?.riskLevel === 'DESTRUCTIVE'" class="warning">高风险操作：运行前请确认权限和目标对象。</UiNotice>
     </template>
 
     <template v-else>

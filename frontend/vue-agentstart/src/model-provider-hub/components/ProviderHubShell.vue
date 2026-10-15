@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import UiNotice from '../../ui/components/InlineNotice.vue';
 import { ShadcnBoolean as AsShadcnBoolean } from '../../ui/components/ShadcnBoolean';
 
 import { Input as AsShadcnInput } from '../../ui/shadcn/input';
@@ -735,6 +736,7 @@ function capabilityTags(
           v-for="p in configured"
           :key="p.name"
           class="phs-compact-card"
+          body-class="flex flex-1 flex-col gap-3"
           :title="p.label"
           :subtitle="p.name"
           :interactive="false"
@@ -1071,7 +1073,7 @@ function capabilityTags(
           </Modal>
 
             <AsShadcnButton variant="ghost"
-              class="phs-count-btn mt-3"
+              class="phs-count-btn"
               title="点击查看模型列表"
               @click.stop="popoverProvider?.name === p.name ? closePopover() : openPopover(p)"
               :aria-expanded="popoverProvider?.name === p.name"
@@ -1195,9 +1197,9 @@ function capabilityTags(
               </option>
             </AsShadcnSelect>
           </div>
-          <div v-if="manualAddError" class="phs-mini-error">
+          <UiNotice type="error" v-if="manualAddError" class="phs-mini-error">
             {{ manualAddError }}
-          </div>
+          </UiNotice>
         </div>
         <template #footer>
           <Button @click="manualAddOpen = false">取消</Button>
@@ -1260,8 +1262,8 @@ function capabilityTags(
 }
 .phs-search:focus {
   outline: none;
-  border-color: #6366f1;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 15%, transparent);
 }
 .dark .phs-search {
   background: #2d2d2d;
@@ -1298,6 +1300,7 @@ function capabilityTags(
 .phs-compact-card:deep(.as-popover) { display: block; width: 100%; }
 .phs-compact-caps { display: flex; gap: 4px; flex-wrap: wrap; }
 .phs-count-btn {
+  margin-top: auto;
   width: 100%;
   display: flex;
   align-items: center;
@@ -1312,10 +1315,10 @@ function capabilityTags(
   transition: border-color 0.15s, background 0.15s;
 }
 .phs-count-btn:hover {
-  border-color: var(--as-primary, #6366f1);
-  background: color-mix(in srgb, var(--as-primary, #6366f1) 10%, var(--as-bg, #fff));
+  border-color: var(--as-primary, var(--primary));
+  background: color-mix(in srgb, var(--as-primary, var(--primary)) 10%, var(--as-bg, #fff));
 }
-.phs-count-btn:focus-visible { outline: 2px solid var(--as-primary, #6366f1); outline-offset: 2px; }
+.phs-count-btn:focus-visible { outline: 2px solid var(--as-primary, var(--primary)); outline-offset: 2px; }
 .phs-count-enabled { font-weight: 600; color: var(--as-success, #059669); font-size: 12px; }
 .phs-count-total { margin-left: auto; }
 .phs-count-arrow { margin-left: 2px; }
@@ -1356,11 +1359,11 @@ function capabilityTags(
   color: var(--as-mgmt-text, #374151);
 }
 .phs-card-menu-btn--open {
-  background: color-mix(in srgb, var(--as-primary, #6366f1) 10%, transparent);
-  color: var(--as-primary, #6366f1);
+  background: color-mix(in srgb, var(--as-primary, var(--primary)) 10%, transparent);
+  color: var(--as-primary, var(--primary));
 }
 .phs-card-menu-btn:focus-visible {
-  outline: 2px solid var(--as-primary, #6366f1);
+  outline: 2px solid var(--as-primary, var(--primary));
   outline-offset: 1px;
 }
 
@@ -1395,10 +1398,10 @@ function capabilityTags(
   color: var(--as-primary, #6366f1);
 }
 .phs-card-menu-item:active {
-  background: color-mix(in srgb, var(--as-primary, #6366f1) 14%, transparent);
+  background: color-mix(in srgb, var(--as-primary, var(--primary)) 14%, transparent);
 }
 .phs-card-menu-item:focus-visible {
-  outline: 2px solid var(--as-primary, #6366f1);
+  outline: 2px solid var(--as-primary, var(--primary));
   outline-offset: -2px;
 }
 .phs-card-menu-item--danger,
@@ -1456,9 +1459,9 @@ function capabilityTags(
   background: var(--muted);
 }
 .phs-filter-tab--on {
-  background: #eef2ff;
-  border-color: #6366f1;
-  color: #4338ca;
+  background: color-mix(in srgb, var(--primary) 10%, var(--background));
+  border-color: var(--primary);
+  color: var(--primary);
   font-weight: 500;
 }
 .dark .phs-filter-tab {
@@ -1470,7 +1473,7 @@ function capabilityTags(
 }
 .dark .phs-filter-tab--on {
   background: #312e81;
-  color: #a5b4fc;
+  color: color-mix(in srgb, var(--primary) 30%, var(--border));
 }
 .phs-filter-count {
   background: rgba(255, 255, 255, 0.6);
@@ -1483,7 +1486,7 @@ function capabilityTags(
 }
 .phs-filter-tab--on .phs-filter-count {
   background: var(--background);
-  color: #4338ca;
+  color: var(--primary);
 }
 
 
@@ -1530,12 +1533,12 @@ function capabilityTags(
   background: transparent;
 }
 .phs-btn-primary {
-  background: #6366f1;
-  border-color: #6366f1;
-  color: #fff;
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--primary-foreground);
 }
 .phs-btn-primary:hover {
-  background: #4f46e5;
+  background: var(--primary);
 }
 .phs-btn-danger {
   color: #dc2626;
@@ -1574,7 +1577,7 @@ function capabilityTags(
   color: var(--as-primary, #4f46e5);
 }
 .phs-installable-config:focus-visible {
-  outline: 2px solid var(--as-primary, #4f46e5);
+  outline: 2px solid var(--as-primary, var(--primary));
   outline-offset: 2px;
 }
 .phs-installable-caps {
@@ -1637,10 +1640,10 @@ function capabilityTags(
 .phs-modal-done { margin-left: auto; }
 .phs-type-filters .phs-filter-tab { border-radius: 999px; padding: 4px 10px; }
 .phs-type-filters .phs-filter-tab--on {
-  border-color: var(--phs-type-color, #6366f1);
-  box-shadow: 0 0 0 1px var(--phs-type-color, #6366f1);
+  border-color: var(--phs-type-color, var(--primary));
+  box-shadow: 0 0 0 1px var(--phs-type-color, var(--primary));
 }
-.phs-filter-tab:focus-visible { outline: 2px solid var(--phs-type-color, #6366f1); outline-offset: 2px; }
+.phs-filter-tab:focus-visible { outline: 2px solid var(--phs-type-color, var(--primary)); outline-offset: 2px; }
 
 /* Row: single-line — icon | name (flex:1) | tags | gear | switch */
 .phs-row {
@@ -1970,7 +1973,7 @@ function capabilityTags(
 }
 .phs-mini-input:focus {
   outline: none;
-  border-color: #6366f1;
+  border-color: var(--primary);
 }
 .phs-mini-error {
   padding: 6px 10px;

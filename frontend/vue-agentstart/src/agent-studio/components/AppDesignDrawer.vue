@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Popover, PopoverTrigger, PopoverContent } from '../../ui/shadcn/popover';
 import { Card as AsShadcnCard } from '../../ui/shadcn/card';
 
 import { ShadcnBoolean as AsShadcnBoolean } from '../../ui/components/ShadcnBoolean';
@@ -751,10 +752,6 @@ function onDocClick(e: MouseEvent) {
     const wrap = publishMenuRef.value;
     if (wrap && !wrap.contains(e.target as Node)) closePublishMenu();
   }
-  if (brandMenuOpen.value) {
-    const wrap = brandMenuRef.value;
-    if (wrap && !wrap.contains(e.target as Node)) closeBrandMenu();
-  }
 }
 function onDocKeydown(e: KeyboardEvent) {
   if (!props.open) return;
@@ -1272,39 +1269,15 @@ function variableTypeLabel(type: AgentVariable['type']): string {
               class="dr-info-card"
               :class="{ 'dr-info-card-active': brandMenuOpen }"
             >
-              <AsShadcnButton variant="ghost"
+              <Popover v-model:open="brandMenuOpen"><PopoverTrigger as-child><AsShadcnButton variant="ghost"
                 v-show="!collapsed"
                 type="button"
                 class="dr-info-trigger"
                 :class="{ 'dr-info-trigger-open': brandMenuOpen }"
                 :title="brandMenuOpen ? '收起基本信息' : '展开基本信息'"
-                @click.stop="toggleBrandMenu"
               >
                 ⋯
-              </AsShadcnButton>
-
-              <div
-                class="dr-info-avatar"
-                :style="{ background: app?.iconBackground || '#EEF4FF' }"
-              >
-                {{ app?.icon || '🤖' }}
-              </div>
-              <div v-show="!collapsed" class="dr-info-body">
-                <div class="dr-info-name">{{ app?.name }}</div>
-                <div class="dr-info-desc">
-                  {{ app?.description || 'AI 驱动的智能应用' }}
-                </div>
-                <div class="dr-info-meta">
-                  <span>🕒 {{ app?.updatedAt || '刚刚' }}</span>
-                </div>
-                <div class="dr-info-tags">
-                  <span class="dr-tag dr-tag-live">● 运行中</span>
-                  <span class="dr-tag dr-tag-ver">v1.0</span>
-                </div>
-              </div>
-              <div v-show="collapsed" class="dr-info-collapsed-dot" />
-
-              <div v-if="brandMenuOpen" class="dr-brand-panel hud-panel" @click.stop>
+              </AsShadcnButton></PopoverTrigger><PopoverContent side="right" align="start" :side-offset="12" class="dr-brand-panel as-info-popover" @click.stop>
                 <!-- Header: icon + name + mode -->
                 <div class="dr-bp-head">
                   <div
@@ -1428,7 +1401,30 @@ function variableTypeLabel(type: AgentVariable['type']): string {
                     <AsShadcnButton variant="ghost" class="dr-bp-link">✎ 添加描述</AsShadcnButton>
                   </div>
                 </section>
+              </PopoverContent></Popover>
+
+              <div
+                class="dr-info-avatar"
+                :style="{ background: app?.iconBackground || '#EEF4FF' }"
+              >
+                {{ app?.icon || '🤖' }}
               </div>
+              <div v-show="!collapsed" class="dr-info-body">
+                <div class="dr-info-name">{{ app?.name }}</div>
+                <div class="dr-info-desc">
+                  {{ app?.description || 'AI 驱动的智能应用' }}
+                </div>
+                <div class="dr-info-meta">
+                  <span>🕒 {{ app?.updatedAt || '刚刚' }}</span>
+                </div>
+                <div class="dr-info-tags">
+                  <span class="dr-tag dr-tag-live">● 运行中</span>
+                  <span class="dr-tag dr-tag-ver">v1.0</span>
+                </div>
+              </div>
+              <div v-show="collapsed" class="dr-info-collapsed-dot" />
+
+
             </AsShadcnCard>
 
             <!-- Nav items -->
@@ -2005,8 +2001,8 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   padding: 1px 6px;
   font-size: 10px;
   font-weight: 500;
-  color: #4338ca;
-  background: #eef2ff;
+  color: var(--foreground);
+  background: color-mix(in srgb, var(--primary) 12%, var(--card));
   border-radius: 4px;
   letter-spacing: 0.05em;
 }
@@ -2015,26 +2011,7 @@ function variableTypeLabel(type: AgentVariable['type']): string {
  * pops out to the right so the 380px panel doesn't clip the 224px rail. ----- */
 /* Panel container — soft floating card with a slight gradient wash and a
  * more generous shadow so it visually separates from the drawer chrome. */
-.dr-brand-panel {
-  position: absolute;
-  top: 0;
-  left: calc(100% + 12px);
-  width: 400px;
-  background: var(--as-bg-elevated, var(--as-bg, #fff));
-  color: var(--as-text);
-  border: 1px solid var(--as-border, #e5e7eb);
-  border-radius: 14px;
-  box-shadow:
-    0 20px 40px -12px rgba(15, 23, 42, 0.16),
-    0 4px 12px rgba(15, 23, 42, 0.06);
-  padding: 14px;
-  z-index: 60;
-  animation: dr-fade-in 0.14s ease-out;
-  text-align: left;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
+.dr-brand-panel { display: flex; flex-direction: column; gap: 12px; text-align: left; }
 
 /* Panel header ─ app icon + name + mode chip */
 .dr-bp-head {
@@ -2077,7 +2054,7 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.06em;
-  color: var(--as-primary, #4338ca);
+  color: var(--as-primary, var(--primary));
   background: color-mix(in srgb, var(--as-primary, #1677ff) 10%, var(--as-bg, #fff));
   border-radius: 4px;
   line-height: 1.5;
@@ -2155,7 +2132,7 @@ function variableTypeLabel(type: AgentVariable['type']): string {
 }
 .dr-bp-section-icon-api {
   background: color-mix(in srgb, var(--as-primary, #1677ff) 14%, var(--as-bg, #fff));
-  color: var(--as-primary, #4338ca);
+  color: var(--as-primary, var(--primary));
 }
 .dr-bp-section-icon-mcp {
   background: color-mix(in srgb, var(--as-warning, #f59e0b) 14%, var(--as-bg, #fff));
@@ -2251,7 +2228,7 @@ function variableTypeLabel(type: AgentVariable['type']): string {
 }
 .dr-bp-icon-btn:hover {
   background: color-mix(in srgb, var(--as-primary, #1677ff) 10%, var(--as-bg, #fff));
-  color: var(--as-primary, #4338ca);
+  color: var(--as-primary, var(--primary));
 }
 
 /* Link pills — rounded chip style, so they visually group as related
@@ -2281,7 +2258,7 @@ function variableTypeLabel(type: AgentVariable['type']): string {
 .dr-bp-link:hover {
   background: color-mix(in srgb, var(--as-primary, #1677ff) 10%, var(--as-bg, #fff));
   border-color: color-mix(in srgb, var(--as-primary, #1677ff) 45%, var(--as-border));
-  color: var(--as-primary, #4338ca);
+  color: var(--as-primary, var(--primary));
 }
 
 .dr-brand-panel :is(button, input):focus-visible {
@@ -2338,7 +2315,7 @@ function variableTypeLabel(type: AgentVariable['type']): string {
 }
 .dr-btn:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 25%, transparent);
 }
 .dr-btn-icon {
   font-size: 13px;
@@ -2363,15 +2340,15 @@ function variableTypeLabel(type: AgentVariable['type']): string {
 
 /* 发布 — primary gradient CTA */
 .dr-btn-primary {
-  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-  color: #fff;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary) 100%);
+  color: var(--primary-foreground);
   box-shadow:
-    0 1px 2px rgba(79, 70, 229, 0.24),
+    0 1px 2px color-mix(in srgb, var(--primary) 24%, transparent),
     0 1px 1px rgba(15, 23, 42, 0.06);
 }
 .dr-btn-primary:hover:not(:disabled) {
   box-shadow:
-    0 3px 8px rgba(79, 70, 229, 0.32),
+    0 3px 8px color-mix(in srgb, var(--primary) 32%, transparent),
     0 1px 2px rgba(15, 23, 42, 0.08);
   transform: translateY(-0.5px);
 }
@@ -2388,12 +2365,12 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   border-color: var(--border);
 }
 .dr-btn-secondary:hover:not(:disabled) {
-  background: #eef2ff;
-  border-color: #c7d2fe;
-  color: #4338ca;
+  background: color-mix(in srgb, var(--primary) 10%, var(--background));
+  border-color: color-mix(in srgb, var(--primary) 30%, var(--border));
+  color: var(--primary);
 }
 .dr-btn-secondary:active:not(:disabled) {
-  background: #e0e7ff;
+  background: color-mix(in srgb, var(--primary) 10%, var(--background));
 }
 .dr-btn-secondary:disabled {
   color: var(--muted-foreground);
@@ -2402,9 +2379,9 @@ function variableTypeLabel(type: AgentVariable['type']): string {
 }
 /* 「调试」按钮打开中 —— 用轻微填充 + 边框色标记正在活动 */
 .dr-btn-active {
-  background: #eef2ff;
-  border-color: #a5b4fc;
-  color: #4338ca;
+  background: color-mix(in srgb, var(--primary) 10%, var(--background));
+  border-color: color-mix(in srgb, var(--primary) 30%, var(--border));
+  color: var(--primary);
 }
 
 /* 调试浮层：浮在抽屉右上，无蒙版，下面内容仍可点/滚 */
@@ -2433,8 +2410,8 @@ function variableTypeLabel(type: AgentVariable['type']): string {
 .dr-chatflow-layout{display:grid;grid-template-columns:1fr;width:100%;height:100%;gap:10px}
 .dr-debug-panel-expanded .dr-chatflow-layout{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
 .dr-chatflow-trace{min-width:0}
-.dr-chatflow-expand{position:absolute;z-index:4;left:-22px;top:50%;display:grid;place-items:center;width:24px;height:48px;padding:0;transform:translateY(-50%);border: 1px solid #c7d2fe;border-right: 0;border-radius:9px 0 0 9px;background: var(--background);color: #4f46e5;box-shadow:-4px 3px 10px rgb(15 23 42/.12);cursor:pointer;font-size:11px}
-.dr-chatflow-expand:hover{background: #eef2ff;color: #3730a3}
+.dr-chatflow-expand{position:absolute;z-index:4;left:-22px;top:50%;display:grid;place-items:center;width:24px;height:48px;padding:0;transform:translateY(-50%);border: 1px solid #c7d2fe;border-right: 0;border-radius:9px 0 0 9px;background: var(--background);color: var(--primary);box-shadow:-4px 3px 10px rgb(15 23 42/.12);cursor:pointer;font-size:11px}
+.dr-chatflow-expand:hover{background: color-mix(in srgb, var(--primary) 10%, var(--background));color: #3730a3}
 /* 用了 left/top 内联样式时，覆盖默认的 right 定位 */
 .dr-debug-panel[style*='left'] {
   right: auto;
@@ -2560,15 +2537,15 @@ function variableTypeLabel(type: AgentVariable['type']): string {
 .dr-publish-restore {
   padding: 3px 10px;
   font-size: 12px;
-  color: #4338ca;
+  color: var(--primary);
   background: var(--background);
-  border: 1px solid #c7d2fe;
+  border: 1px solid color-mix(in srgb, var(--primary) 30%, var(--border));
   border-radius: 6px;
   cursor: pointer;
   transition: background 0.15s;
 }
 .dr-publish-restore:hover {
-  background: #eef2ff;
+  background: color-mix(in srgb, var(--primary) 10%, var(--background));
 }
 .dr-publish-primary {
   margin-top: 2px;
@@ -2579,8 +2556,8 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   gap: 8px;
   font-size: 13px;
   font-weight: 500;
-  color: #fff;
-  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+  color: var(--primary-foreground);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary) 100%);
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -2608,7 +2585,7 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   font-family: inherit;
   font-size: 10px;
   font-weight: 500;
-  color: #e0e7ff;
+  color: color-mix(in srgb, var(--primary) 10%, var(--background));
   background: rgba(255, 255, 255, 0.18);
   border-radius: 4px;
 }
@@ -2719,14 +2696,14 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   opacity: 1;
 }
 .dr-info-card-active {
-  background: #eef2ff;
-  border-color: #c7d2fe;
-  box-shadow: 0 1px 2px rgba(99, 102, 241, 0.08);
+  background: color-mix(in srgb, var(--primary) 10%, var(--background));
+  border-color: color-mix(in srgb, var(--primary) 30%, var(--border));
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--primary) 8%, transparent);
 }
 .dr-info-card-active .dr-info-trigger {
   opacity: 1;
-  color: #4338ca;
-  background: #e0e7ff;
+  color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 10%, var(--background));
 }
 .dr-info-trigger {
   position: absolute;
@@ -2753,8 +2730,8 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   z-index: 2;
 }
 .dr-info-trigger:hover {
-  background: #eef2ff;
-  color: #4338ca;
+  background: color-mix(in srgb, var(--primary) 10%, var(--background));
+  color: var(--primary);
 }
 .dr-info-trigger-open {
   opacity: 1;
@@ -2774,8 +2751,8 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   justify-content: center;
   border-radius: 50%;
   font-size: 24px;
-  background: #eef2ff;
-  color: #4338ca;
+  background: color-mix(in srgb, var(--primary) 10%, var(--background));
+  color: var(--primary);
 }
 .dr-info-body {
   width: 100%;
@@ -2867,9 +2844,9 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   background: var(--muted);
 }
 .dr-nav-item.on {
-  background: #eef2ff;
-  color: #4338ca;
-  border: 1px solid #c7d2fe;
+  background: color-mix(in srgb, var(--primary) 10%, var(--background));
+  color: var(--primary);
+  border: 1px solid color-mix(in srgb, var(--primary) 30%, var(--border));
   font-weight: 500;
 }
 .dr-nav-icon {
@@ -3025,7 +3002,7 @@ function variableTypeLabel(type: AgentVariable['type']): string {
 .dr-card-title-dot {
   width: 4px;
   height: 12px;
-  background: #6366f1;
+  background: var(--primary);
   border-radius: 2px;
 }
 .dr-card-actions {
@@ -3041,21 +3018,21 @@ function variableTypeLabel(type: AgentVariable['type']): string {
 .dr-card-empty code {
   padding: 1px 4px;
   background: var(--muted);
-  color: #6366f1;
+  color: var(--primary);
   border-radius: 3px;
   font-size: 11px;
 }
 .dr-link-btn {
   padding: 2px 8px;
   font-size: 12px;
-  color: #4338ca;
+  color: var(--primary);
   background: transparent;
   border: none;
   cursor: pointer;
   border-radius: 4px;
 }
 .dr-link-btn:hover {
-  background: #eef2ff;
+  background: color-mix(in srgb, var(--primary) 10%, var(--background));
 }
 .dr-link-btn-solid {
   display: inline-flex;
@@ -3063,17 +3040,17 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   gap: 4px;
   height: 24px;
   padding: 0 10px;
-  color: #fff;
-  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+  color: var(--primary-foreground);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary) 100%);
   border-radius: 6px;
-  box-shadow: 0 1px 2px rgba(79, 70, 229, 0.24);
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--primary) 24%, transparent);
   transition:
     box-shadow 0.15s ease,
     transform 0.15s ease;
 }
 .dr-link-btn-solid:hover {
-  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-  box-shadow: 0 2px 6px rgba(79, 70, 229, 0.32);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary) 100%);
+  box-shadow: 0 2px 6px color-mix(in srgb, var(--primary) 32%, transparent);
   transform: translateY(-0.5px);
 }
 .dr-link-muted {
@@ -3087,7 +3064,7 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   width: 100%;
   padding: 10px 12px;
   font-size: 13px;
-  border: 1.5px solid #6366f1;
+  border: 1.5px solid var(--primary);
   border-radius: 8px;
   background: var(--background);
   color: var(--foreground);
@@ -3098,7 +3075,7 @@ function variableTypeLabel(type: AgentVariable['type']): string {
 }
 .dr-prompt-textarea:focus {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 15%, transparent);
 }
 
 .dr-input {
@@ -3111,8 +3088,8 @@ function variableTypeLabel(type: AgentVariable['type']): string {
 }
 .dr-input:focus {
   outline: none;
-  border-color: #6366f1;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 15%, transparent);
 }
 .dr-input-sm {
   padding: 4px 8px;
@@ -3133,8 +3110,8 @@ function variableTypeLabel(type: AgentVariable['type']): string {
 }
 .dr-var-empty code {
   padding: 1px 5px;
-  background: #eef2ff;
-  color: #4338ca;
+  background: color-mix(in srgb, var(--primary) 10%, var(--background));
+  color: var(--primary);
   border-radius: 4px;
   font-size: 11px;
 }
@@ -3173,8 +3150,8 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: #eef2ff;
-  color: #4338ca;
+  background: color-mix(in srgb, var(--primary) 10%, var(--background));
+  color: var(--primary);
   border-radius: 6px;
   font-size: 13px;
   flex-shrink: 0;
@@ -3210,8 +3187,8 @@ function variableTypeLabel(type: AgentVariable['type']): string {
 .dr-var-tag {
   padding: 1px 6px;
   font-size: 10px;
-  color: #4338ca;
-  background: #e0e7ff;
+  color: var(--foreground);
+  background: color-mix(in srgb, var(--primary) 12%, var(--card));
   border-radius: 4px;
   white-space: nowrap;
 }
@@ -3242,9 +3219,9 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   color: var(--foreground);
 }
 .dr-chip.on {
-  background: #eef2ff;
-  border-color: #6366f1;
-  color: #4338ca;
+  background: color-mix(in srgb, var(--primary) 10%, var(--background));
+  border-color: var(--primary);
+  color: var(--primary);
 }
 .dr-chip input {
   display: none;
@@ -3275,8 +3252,8 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: #eef2ff;
-  color: #4338ca;
+  background: color-mix(in srgb, var(--primary) 10%, var(--background));
+  color: var(--primary);
   border-radius: 6px;
   font-size: 13px;
   flex-shrink: 0;
@@ -3300,8 +3277,8 @@ function variableTypeLabel(type: AgentVariable['type']): string {
 .dr-ds-tag {
   padding: 1px 6px;
   font-size: 10px;
-  color: #4338ca;
-  background: #e0e7ff;
+  color: var(--foreground);
+  background: color-mix(in srgb, var(--primary) 12%, var(--card));
   border-radius: 4px;
   white-space: nowrap;
 }
@@ -3410,7 +3387,7 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   line-height: 1.55;
 }
 .dr-msg-user .dr-msg-body {
-  background: #4f46e5;
+  background: var(--primary);
   color: #fff;
 }
 .dr-msg-assistant .dr-msg-body {
@@ -3438,8 +3415,8 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   height: 36px;
   padding: 0;
   border: none;
-  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-  color: #fff;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary) 100%);
+  color: var(--primary-foreground);
   border-radius: 50%;
   cursor: pointer;
   font-size: 12px;
@@ -3472,7 +3449,7 @@ function variableTypeLabel(type: AgentVariable['type']): string {
 .dr-plain-hint code {
   padding: 1px 6px;
   background: var(--muted);
-  color: #4338ca;
+  color: var(--primary);
   border-radius: 4px;
   font-size: 12px;
 }
@@ -3510,7 +3487,7 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   padding: 1px 5px;
   background: var(--muted);
   border-radius: 4px;
-  color: #4338ca;
+  color: var(--primary);
   font-size: 11px;
 }
 .dr-history-mask { position: fixed; inset: 0; z-index: 1200; display: flex; justify-content: flex-end; background: rgba(15, 23, 42, 0.35); }
@@ -3524,4 +3501,12 @@ function variableTypeLabel(type: AgentVariable['type']): string {
 .dr-history-info span, .dr-history-info p, .dr-history-empty { margin: 0; color: var(--muted-foreground); font-size: 12px; }
 .dr-history-info p { overflow-wrap: anywhere; }
 .dr-history-empty { padding: 40px 0; text-align: center; }
+</style>
+
+<style scoped>
+.dr-nav-item { justify-content: flex-start; text-align: left; width: 100%; white-space: normal; color: var(--muted-foreground); }
+.dr-nav-item.on { background: color-mix(in srgb, var(--primary) 14%, var(--background)); color: var(--foreground); border-color: color-mix(in srgb, var(--primary) 35%, var(--border)); }
+.dr-info-card-active { background: var(--card); border-color: var(--border); }
+.dr-prompt-textarea { border-color: var(--input); }
+.dr-prompt-textarea:focus { border-color: var(--ring); }
 </style>

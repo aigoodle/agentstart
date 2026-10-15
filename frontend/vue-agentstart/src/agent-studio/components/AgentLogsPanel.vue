@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '../../ui/shadcn/table';
 import { ShadcnSelect as AsShadcnSelect } from '../../ui/components/ShadcnSelect';
 import { Input as AsShadcnInput } from '../../ui/shadcn/input';
 import { Button as AsShadcnButton } from '../../ui/shadcn/button';
@@ -126,51 +127,51 @@ const totalPages = computed(() =>
     </div>
 
     <div class="logs-table-wrap">
-      <table class="logs-table">
-        <thead>
-          <tr>
-            <th>标题</th>
-            <th>用户/终端用户</th>
-            <th>状态</th>
-            <th>消息数</th>
-            <th>用户反馈</th>
-            <th>管理员反馈</th>
-            <th>更新时间</th>
-            <th>创建时间</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-if="loading">
-            <td colspan="8" class="logs-tbody-empty">加载中...</td>
-          </tr>
-          <tr
+      <Table class="logs-table">
+        <TableHeader>
+          <TableRow>
+            <TableHead>标题</TableHead>
+            <TableHead>用户/终端用户</TableHead>
+            <TableHead>状态</TableHead>
+            <TableHead>消息数</TableHead>
+            <TableHead>用户反馈</TableHead>
+            <TableHead>管理员反馈</TableHead>
+            <TableHead>更新时间</TableHead>
+            <TableHead>创建时间</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          <TableRow v-if="loading">
+            <TableCell colspan="8" class="logs-tbody-empty">加载中...</TableCell>
+          </TableRow>
+          <TableRow
             v-else-if="filtered.length === 0"
             class="logs-empty-row"
           >
-            <td colspan="8" class="logs-tbody-empty">暂无日志</td>
-          </tr>
-          <tr
+            <TableCell colspan="8" class="logs-tbody-empty">暂无日志</TableCell>
+          </TableRow>
+          <TableRow
             v-for="e in filtered"
             :key="e.id"
             class="logs-row"
             @click="emit('select', e)"
           >
-            <td class="logs-title-cell">
+            <TableCell class="logs-title-cell">
               <span class="logs-title-dot" />
               {{ e.title }}
-            </td>
-            <td class="logs-user-cell">{{ e.endUser ?? '-' }}</td>
-            <td>
+            </TableCell>
+            <TableCell class="logs-user-cell">{{ e.endUser ?? '-' }}</TableCell>
+            <TableCell>
               <span :class="statusClass(e.status)">{{ e.status }}</span>
-            </td>
-            <td>{{ e.messageCount ?? '-' }}</td>
-            <td>{{ e.userFeedback ?? 'N/A' }}</td>
-            <td>{{ e.adminFeedback ?? 'N/A' }}</td>
-            <td class="logs-date">{{ fmt(e.updatedAt) }}</td>
-            <td class="logs-date">{{ fmt(e.createdAt) }}</td>
-          </tr>
-        </tbody>
-      </table>
+            </TableCell>
+            <TableCell>{{ e.messageCount ?? '-' }}</TableCell>
+            <TableCell>{{ e.userFeedback ?? 'N/A' }}</TableCell>
+            <TableCell>{{ e.adminFeedback ?? 'N/A' }}</TableCell>
+            <TableCell class="logs-date">{{ fmt(e.updatedAt) }}</TableCell>
+            <TableCell class="logs-date">{{ fmt(e.createdAt) }}</TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
     </div>
 
     <footer class="logs-foot">
@@ -246,7 +247,7 @@ const totalPages = computed(() =>
   outline: none;
 }
 .logs-input:focus {
-  border-color: #6366f1;
+  border-color: var(--primary);
 }
 .logs-search {
   min-width: 220px;

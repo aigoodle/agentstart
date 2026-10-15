@@ -565,7 +565,7 @@ async function copyCallbackPath(row: ChannelConnection) {
   background: none;
   padding: 0;
   font-size: 12px;
-  color: var(--as-primary, #4f46e5);
+  color: var(--as-primary, var(--primary));
   cursor: pointer;
 }
 .cad-link:hover {
@@ -677,7 +677,7 @@ async function copyCallbackPath(row: ChannelConnection) {
 .cad-fields input:focus,
 .cad-fields select:focus {
   outline: none;
-  border-color: var(--as-primary, #6366f1);
+  border-color: var(--as-primary, var(--primary));
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--as-primary) 15%, transparent);
 }
 fieldset {
@@ -718,7 +718,7 @@ fieldset > p {
   color: var(--as-text, #374151);
 }
 .cad-enable input {
-  accent-color: var(--as-primary, #6366f1);
+  accent-color: var(--as-primary, var(--primary));
 }
 
 
@@ -744,12 +744,12 @@ fieldset > p {
   cursor: not-allowed;
 }
 .cad-btn-primary {
-  color: #fff;
-  background: var(--as-primary, #6366f1);
-  border-color: var(--as-primary, #6366f1);
+  color: var(--primary-foreground);
+  background: var(--as-primary, var(--primary));
+  border-color: var(--as-primary, var(--primary));
 }
 .cad-btn-primary:hover {
-  background: var(--as-primary, #4f46e5);
+  background: var(--as-primary, var(--primary));
 }
 
 

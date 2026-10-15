@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
+import { Alert } from '../../ui/shadcn/alert';
 import { Button, Checkbox, Form, FormItem, Input, Modal, Drawer, Select, Spin, message } from '../../ui';
 import type { AgentsNamespace, AppPermissionSettings } from '../../client/agents';
 
@@ -64,10 +65,10 @@ async function save() {
     </header>
     <Spin :spinning="loading">
       <Form v-if="loaded" layout="vertical">
-        <div class="permission-scope">
+        <Alert class="permission-scope">
           <strong>租户范围：{{ tenantId || '应用所属租户' }}</strong>
           <p>授权始终受应用租户范围约束，不会扩大到其他租户。查看和使用授权不包含应用编辑权限。</p>
-        </div>
+        </Alert>
         <FormItem label="谁可以查看和使用此应用">
           <Select v-model:value="settings.mode" :options="[
             { label: '租户范围内开放', value: 'ALL' },
@@ -110,7 +111,7 @@ async function save() {
 .permission-heading h2 { margin: 0; font-size: 20px; font-weight: 600; }
 .permission-heading p { margin: 8px 0 0; color: var(--as-text-secondary, #64748b); font-size: 13px; }
 .permission-page-actions { display: flex; justify-content: flex-end; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--as-border, #e5e7eb); }
-.permission-scope { padding: 14px 16px; margin-bottom: 20px; border: 1px solid #dbeafe; border-radius: 10px; background: #eff6ff; color: #1e40af; }
+.permission-scope { padding: 14px 16px; margin-bottom: 20px; border: 1px solid var(--border); border-radius: 10px; background: color-mix(in srgb, var(--primary) 8%, var(--card)); color: var(--foreground); }
 .permission-scope p { margin: 8px 0 0; font-size: 13px; line-height: 1.6; }
 .permission-grant { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 12px; }
 .permission-footer { display: flex; justify-content: flex-end; gap: 8px; }

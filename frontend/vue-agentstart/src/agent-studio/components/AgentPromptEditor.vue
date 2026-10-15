@@ -123,9 +123,9 @@ function insertVariable(v: PromptVariable) {
 .prompt-card {
   padding: 12px 14px 8px;
   background: var(--background);
-  border: 1.5px solid #6366f1;
+  border: 1.5px solid var(--primary);
   border-radius: 12px;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.08);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 8%, transparent);
 }
 .prompt-head {
   display: flex;
@@ -155,16 +155,16 @@ function insertVariable(v: PromptVariable) {
   border-radius: 999px;
   background: var(--background);
   font-size: 12px;
-  color: #4338ca;
+  color: var(--primary);
   cursor: pointer;
   transition: background 0.15s;
 }
 .prompt-chip:hover {
-  background: #eef2ff;
+  background: color-mix(in srgb, var(--primary) 10%, var(--background));
 }
 .prompt-chip-primary {
-  background: linear-gradient(135deg, #eef2ff, #e0e7ff);
-  border-color: #c7d2fe;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--primary) 10%, var(--background)), color-mix(in srgb, var(--primary) 10%, var(--background)));
+  border-color: color-mix(in srgb, var(--primary) 30%, var(--border));
 }
 .prompt-body {
   position: relative;
@@ -220,8 +220,8 @@ function insertVariable(v: PromptVariable) {
 }
 .prompt-var-item code {
   padding: 1px 5px;
-  background: #eef2ff;
-  color: #4338ca;
+  background: color-mix(in srgb, var(--primary) 10%, var(--background));
+  color: var(--primary);
   border-radius: 4px;
   font-size: 11px;
   font-family: ui-monospace, monospace;

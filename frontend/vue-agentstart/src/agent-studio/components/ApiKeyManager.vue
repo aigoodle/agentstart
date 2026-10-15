@@ -240,7 +240,7 @@ const dataSource = computed(() => props.keys ?? []);
 }
 .akm-icon-btn:hover {
   background: var(--muted);
-  color: #4338ca;
+  color: var(--primary);
 }
 .akm-dim {
   color: var(--muted-foreground);

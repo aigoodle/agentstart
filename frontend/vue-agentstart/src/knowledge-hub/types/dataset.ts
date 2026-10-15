@@ -27,6 +27,9 @@ export interface DatasetCardItem {
  */
 export interface DatasetSummary {
   id: string;
+  /** Optional host-persisted presentation fields. */
+  icon?: string;
+  iconBg?: string;
   name: string;
   description?: string;
   documentCount?: number;

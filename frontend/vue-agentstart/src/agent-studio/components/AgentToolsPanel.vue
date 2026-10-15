@@ -302,7 +302,7 @@ function remove(name: string) {
   outline: none;
 }
 .tool-search:focus {
-  border-color: #6366f1;
+  border-color: var(--primary);
 }
 .tool-pop-close {
   width: 26px;
@@ -332,8 +332,8 @@ function remove(name: string) {
   cursor: pointer;
 }
 .tool-pop-tab-active {
-  color: #4338ca;
-  border-bottom-color: #4338ca;
+  color: var(--primary);
+  border-bottom-color: var(--primary);
 }
 .tool-pop-section-title {
   padding: 6px 4px;
@@ -364,12 +364,12 @@ function remove(name: string) {
   background: var(--muted);
 }
 .tool-pop-item-active {
-  background: #eef2ff;
+  background: color-mix(in srgb, var(--primary) 10%, var(--background));
 }
 .tool-pop-item-active::after {
   content: '✓';
   margin-left: auto;
-  color: #4338ca;
+  color: var(--primary);
 }
 .tool-pop-item-icon {
   flex-shrink: 0;

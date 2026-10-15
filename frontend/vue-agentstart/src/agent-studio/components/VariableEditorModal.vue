@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import UiNotice from '../../ui/components/InlineNotice.vue';
 import { ShadcnBoolean as AsShadcnBoolean } from '../../ui/components/ShadcnBoolean';
 
 import { Input as AsShadcnInput } from '../../ui/shadcn/input';
@@ -137,7 +138,7 @@ defineExpose({ open: openModal, close: closeModal });
               <code v-pre>{{ variable }}</code>
               引用
             </div>
-            <div v-if="errors.name" class="vem-error">{{ errors.name }}</div>
+            <UiNotice type="error" v-if="errors.name" class="vem-error">{{ errors.name }}</UiNotice>
           </div>
 
           <div class="vem-field">
@@ -309,8 +310,8 @@ defineExpose({ open: openModal, close: closeModal });
 .vem-input:focus,
 .vem-textarea:focus {
   outline: none;
-  border-color: #6366f1;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 15%, transparent);
 }
 .vem-input-error {
   border-color: #ef4444;
@@ -361,8 +362,8 @@ defineExpose({ open: openModal, close: closeModal });
   background: var(--muted);
 }
 .vem-type-chip.on {
-  background: #eef2ff;
-  border-color: #6366f1;
+  background: color-mix(in srgb, var(--primary) 10%, var(--background));
+  border-color: var(--primary);
 }
 .vem-type-name {
   font-size: 12px;
@@ -370,7 +371,7 @@ defineExpose({ open: openModal, close: closeModal });
   color: var(--foreground);
 }
 .vem-type-chip.on .vem-type-name {
-  color: #4338ca;
+  color: var(--primary);
 }
 .vem-type-hint {
   font-size: 10px;
@@ -425,7 +426,7 @@ defineExpose({ open: openModal, close: closeModal });
 }
 .vem-btn:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 25%, transparent);
 }
 .vem-btn-ghost {
   background: transparent;
@@ -436,15 +437,15 @@ defineExpose({ open: openModal, close: closeModal });
   color: var(--foreground);
 }
 .vem-btn-primary {
-  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-  color: #fff;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary) 100%);
+  color: var(--primary-foreground);
   box-shadow:
-    0 1px 2px rgba(79, 70, 229, 0.24),
+    0 1px 2px color-mix(in srgb, var(--primary) 24%, transparent),
     0 1px 1px rgba(15, 23, 42, 0.06);
 }
 .vem-btn-primary:hover {
   box-shadow:
-    0 3px 8px rgba(79, 70, 229, 0.32),
+    0 3px 8px color-mix(in srgb, var(--primary) 32%, transparent),
     0 1px 2px rgba(15, 23, 42, 0.08);
 }
 </style>

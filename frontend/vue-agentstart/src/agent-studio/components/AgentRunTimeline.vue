@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import UiNotice from '../../ui/components/InlineNotice.vue';
 import { ShadcnSelect as AsShadcnSelect } from '../../ui/components/ShadcnSelect';
 import { Button as AsShadcnButton } from '../../ui/shadcn/button';
 
@@ -199,7 +200,7 @@ defineExpose({ refresh: load, cancel: cancelRun, snapshot, events });
       </slot>
     </header>
 
-    <p v-if="error" class="error">{{ error }}</p>
+    <UiNotice type="error" v-if="error" class="error">{{ error }}</UiNotice>
     <slot v-if="pendingApproval" name="approval" :approval="pendingApproval" :approvals="pendingApprovals"
           :approve="() => decide('APPROVE')" :deny="() => decide('DENY')" :acting="acting">
       <div class="approval">
@@ -233,7 +234,7 @@ defineExpose({ refresh: load, cancel: cancelRun, snapshot, events });
       <details v-if="snapshot.requestJson"><summary>请求快照</summary><pre>{{ formattedJson(snapshot.requestJson) }}</pre></details>
       <details v-if="snapshot.definitionJson"><summary>Agent 快照</summary><pre>{{ formattedJson(snapshot.definitionJson) }}</pre></details>
       <details v-if="snapshot.responseJson"><summary>响应快照</summary><pre>{{ formattedJson(snapshot.responseJson) }}</pre></details>
-      <p v-if="snapshot.error" class="error">{{ snapshot.error }}</p>
+      <UiNotice type="error" v-if="snapshot.error" class="error">{{ snapshot.error }}</UiNotice>
     </details>
 
     <div class="timeline-workspace" :class="{ 'has-inspector': showInspector && selectedEvent }">

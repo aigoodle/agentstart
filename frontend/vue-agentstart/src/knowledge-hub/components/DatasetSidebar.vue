@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Popover, PopoverTrigger, PopoverContent } from '../../ui/shadcn/popover';
 import { Button as AsShadcnButton } from '../../ui/shadcn/button';
 
 /**
@@ -11,7 +12,7 @@ import { Button as AsShadcnButton } from '../../ui/shadcn/button';
  * emits `edit-info` / `duplicate` / `export` / `delete` — actual mutation is
  * delegated to the host so the sidebar stays presentational.
  */
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
+import { computed, ref } from 'vue';
 
 import type { DatasetTab } from '../types';
 
@@ -85,9 +86,6 @@ const createdAgo = computed(() => {
 const infoOpen = ref(false);
 const headRef = ref<HTMLElement | null>(null);
 
-function toggleInfo() {
-  infoOpen.value = !infoOpen.value;
-}
 function closeInfo() {
   infoOpen.value = false;
 }
@@ -109,23 +107,6 @@ function onDelete() {
   closeInfo();
 }
 
-function onDocClick(e: MouseEvent) {
-  if (!infoOpen.value) return;
-  const wrap = headRef.value;
-  if (wrap && !wrap.contains(e.target as Node)) closeInfo();
-}
-function onDocKeydown(e: KeyboardEvent) {
-  if (e.key === 'Escape' && infoOpen.value) closeInfo();
-}
-
-onMounted(() => {
-  document.addEventListener('mousedown', onDocClick);
-  document.addEventListener('keydown', onDocKeydown);
-});
-onBeforeUnmount(() => {
-  document.removeEventListener('mousedown', onDocClick);
-  document.removeEventListener('keydown', onDocKeydown);
-});
 </script>
 
 <template>
@@ -136,26 +117,14 @@ onBeforeUnmount(() => {
       class="kh-side-head"
       :class="{ 'kh-side-head-active': infoOpen }"
     >
-      <AsShadcnButton variant="ghost"
+      <Popover v-model:open="infoOpen"><PopoverTrigger as-child><AsShadcnButton variant="ghost"
         type="button"
         class="kh-side-trigger"
         :class="{ 'kh-side-trigger-open': infoOpen }"
         :title="infoOpen ? '收起基本信息' : '展开基本信息'"
-        @click.stop="toggleInfo"
       >
         ⋯
-      </AsShadcnButton>
-
-      <div class="kh-side-icon" :style="{ background: iconBg }">
-        {{ icon }}
-      </div>
-      <div class="kh-side-name" :title="dataset.name">{{ dataset.name }}</div>
-      <div v-if="dataset.description" class="kh-side-desc" :title="dataset.description">
-        {{ dataset.description }}
-      </div>
-
-      <!-- Basic-info popover -->
-      <div v-if="infoOpen" class="kh-info-panel" @click.stop>
+      </AsShadcnButton></PopoverTrigger><PopoverContent side="right" align="start" :side-offset="12" class="kh-info-panel as-info-popover" @click.stop>
         <!-- Header: icon + name + type chip -->
         <div class="kh-ip-head">
           <div class="kh-ip-icon" :style="{ background: iconBg }">
@@ -247,7 +216,18 @@ onBeforeUnmount(() => {
             <AsShadcnButton variant="ghost" class="kh-ip-link">📄 查看 API 文档</AsShadcnButton>
           </div>
         </section>
+      </PopoverContent></Popover>
+
+      <div class="kh-side-icon" :style="{ background: iconBg }">
+        {{ icon }}
       </div>
+      <div class="kh-side-name" :title="dataset.name">{{ dataset.name }}</div>
+      <div v-if="dataset.description" class="kh-side-desc" :title="dataset.description">
+        {{ dataset.description }}
+      </div>
+
+      <!-- Basic-info popover -->
+
     </div>
 
     <!-- nav items -->
@@ -392,25 +372,7 @@ onBeforeUnmount(() => {
 }
 
 /* ---- Basic-info popover (mirrors AppDesignDrawer's brand panel) ---- */
-.kh-info-panel {
-  position: absolute;
-  top: 0;
-  left: calc(100% + 12px);
-  width: 400px;
-  padding: 14px;
-  background: var(--kh-color-surface);
-  border: 1px solid var(--kh-color-border);
-  border-radius: 14px;
-  box-shadow:
-    0 20px 40px -12px rgba(15, 23, 42, 0.16),
-    0 4px 12px rgba(15, 23, 42, 0.06);
-  z-index: 60;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  text-align: left;
-  animation: kh-info-fade 0.14s ease-out;
-}
+.kh-info-panel { display: flex; flex-direction: column; gap: 12px; text-align: left; }
 @keyframes kh-info-fade {
   from {
     opacity: 0;

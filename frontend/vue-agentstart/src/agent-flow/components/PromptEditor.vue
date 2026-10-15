@@ -630,8 +630,8 @@ onUnmounted(() => {
 }
 
 .wf-pe:focus-within {
-  border-color: #6366f1;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 12%, transparent);
 }
 
 .wf-pe-fullscreen {
@@ -684,8 +684,8 @@ onUnmounted(() => {
 }
 
 .wf-pe-btn:hover {
-  background: #eef2ff;
-  color: #4338ca;
+  background: color-mix(in srgb, var(--primary) 10%, var(--background));
+  color: var(--primary);
 }
 
 .wf-pe-input {
@@ -742,8 +742,8 @@ onUnmounted(() => {
   font-size: 12px;
   line-height: 1.4;
   color: var(--foreground);
-  background: #eef2ff;
-  border: 1px solid #c7d2fe;
+  background: color-mix(in srgb, var(--primary) 10%, var(--background));
+  border: 1px solid color-mix(in srgb, var(--primary) 30%, var(--border));
   border-radius: 4px;
   cursor: default;
   user-select: none;

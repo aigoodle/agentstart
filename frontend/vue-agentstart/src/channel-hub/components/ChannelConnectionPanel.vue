@@ -542,12 +542,12 @@ onUnmounted(() => {
     background 0.15s ease;
 }
 .cc-stat.is-link:hover {
-  color: #4f46e5;
-  border-color: #c7d2fe;
-  background: #eef2ff;
+  color: var(--primary);
+  border-color: color-mix(in srgb, var(--primary) 30%, var(--border));
+  background: color-mix(in srgb, var(--primary) 10%, var(--background));
 }
 .cc-stat.is-link:hover b {
-  color: #4f46e5;
+  color: var(--primary);
 }
 .cc-runtime {
   margin-left: auto;
@@ -567,12 +567,12 @@ onUnmounted(() => {
   color: #f3f4f6;
 }
 .dark .cc-stat.is-link:hover {
-  color: #818cf8;
-  border-color: #6366f1;
-  background: rgba(99, 102, 241, 0.12);
+  color: var(--primary);
+  border-color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 12%, transparent);
 }
 .dark .cc-stat.is-link:hover b {
-  color: #818cf8;
+  color: var(--primary);
 }
 
 /* 状态圆点 */
@@ -674,11 +674,11 @@ a.cc-act-link {
 }
 .cc-act:hover,
 .cc-act-link:hover {
-  color: #4f46e5;
+  color: var(--primary);
   transform: translateY(-1px);
 }
 .cc-act.is-primary {
-  color: #4f46e5;
+  color: var(--primary);
 }
 .cc-act.is-disabled {
   color: #c7d2fe;
@@ -695,10 +695,10 @@ a.cc-act-link {
 }
 .dark .cc-act:hover,
 .dark .cc-act-link:hover {
-  color: #818cf8;
+  color: var(--primary);
 }
 .dark .cc-act.is-primary {
-  color: #818cf8;
+  color: var(--primary);
 }
 .dark .cc-act.is-disabled {
   color: var(--muted-foreground);
@@ -726,12 +726,12 @@ a.cc-act-link {
   cursor: not-allowed;
 }
 .cc-btn-primary {
-  color: #fff;
-  background: #6366f1;
-  border-color: #6366f1;
+  color: var(--primary-foreground);
+  background: var(--primary);
+  border-color: var(--primary);
 }
 .cc-btn-primary:hover {
-  background: #4f46e5;
+  background: var(--primary);
 }
 .cc-btn.is-danger {
   color: #dc2626;
@@ -749,11 +749,11 @@ a.cc-act-link {
   background: #3d3d3d;
 }
 .dark .cc-btn-primary {
-  background: #6366f1;
-  border-color: #6366f1;
+  background: var(--primary);
+  border-color: var(--primary);
 }
 .dark .cc-btn-primary:hover {
-  background: #818cf8;
+  background: var(--primary);
 }
 .dark .cc-btn.is-danger {
   color: #f87171;
@@ -782,12 +782,12 @@ a.cc-act-link {
   border-color: #a5b4fc;
 }
 .cc-mini.is-primary {
-  color: #fff;
-  background: #6366f1;
-  border-color: #6366f1;
+  color: var(--primary-foreground);
+  background: var(--primary);
+  border-color: var(--primary);
 }
 .cc-mini.is-primary:hover {
-  background: #4f46e5;
+  background: var(--primary);
 }
 .cc-mini:disabled {
   opacity: 0.5;
@@ -802,9 +802,9 @@ a.cc-act-link {
   background: #3d3d3d;
 }
 .dark .cc-mini.is-primary {
-  background: #6366f1;
-  border-color: #6366f1;
-  color: #fff;
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--primary-foreground);
 }
 
 </style>

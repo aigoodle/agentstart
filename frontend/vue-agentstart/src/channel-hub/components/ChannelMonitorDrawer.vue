@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import UiNotice from '../../ui/components/InlineNotice.vue';
 import { Drawer as ShadcnDrawer } from '../../ui/components/Drawer';
 import { ShadcnBoolean as AsShadcnBoolean } from '../../ui/components/ShadcnBoolean';
 
@@ -461,7 +462,7 @@ const formatTime = (value?: string) => (value ? new Date(value).toLocaleString()
         </nav>
 
         <main v-if="activeView === 'conversations'" class="cmd-main cmd-conversation-list">
-          <div v-if="conversationError" class="cmd-error">{{ conversationError }}</div>
+          <UiNotice type="error" v-if="conversationError" class="cmd-error">{{ conversationError }}</UiNotice>
           <div v-if="conversationsLoading" class="cmd-empty">正在加载会话…</div>
           <div v-else-if="!filteredConversations.length" class="cmd-empty">该通道暂无会话</div>
           <article v-for="row in filteredConversations" :key="row.id" class="cmd-conversation" :class="{ breached: row.slaBreached }">
@@ -500,7 +501,7 @@ const formatTime = (value?: string) => (value ? new Date(value).toLocaleString()
 
         <main v-else class="cmd-main">
           <AsShadcnButton variant="ghost" v-if="selectedConversationId" class="cmd-clear-filter" @click="clearConversationFilter">清除会话筛选</AsShadcnButton>
-          <div v-if="timelineError" class="cmd-error">{{ timelineError }}</div>
+          <UiNotice type="error" v-if="timelineError" class="cmd-error">{{ timelineError }}</UiNotice>
           <div v-if="selectedConversationId && timelineLoading" class="cmd-empty">正在加载完整消息时间线…</div>
           <div v-else-if="!filtered.length" class="cmd-empty">该通道暂无消息</div>
           <article v-for="event in filtered" :key="event.id" class="cmd-msg">
@@ -557,7 +558,7 @@ const formatTime = (value?: string) => (value ? new Date(value).toLocaleString()
               <small>Agent 回复 · {{ event.durationMs ?? 0 }} ms</small>
               <p>{{ event.replyContent }}</p>
             </div>
-            <div v-if="event.errorMessage" class="cmd-error">{{ event.errorMessage }}</div>
+            <UiNotice type="error" v-if="event.errorMessage" class="cmd-error">{{ event.errorMessage }}</UiNotice>
           </article>
           <AsShadcnButton variant="ghost"
             v-if="selectedConversationId && timelineHasMore"
@@ -600,7 +601,7 @@ const formatTime = (value?: string) => (value ? new Date(value).toLocaleString()
                   <small>由宿主对象存储提供可访问 URL；附件和文字会进入同一可靠发送队列。</small>
                 </label>
               </div>
-              <div v-if="replyError" class="cmd-form-error">{{ replyError }}</div>
+              <UiNotice type="error" v-if="replyError" class="cmd-form-error">{{ replyError }}</UiNotice>
             </main>
             <template #footer>
               <Button :disabled="replySaving" @click="closeReply">取消</Button>
@@ -623,9 +624,9 @@ const formatTime = (value?: string) => (value ? new Date(value).toLocaleString()
               </div>
             </template>
             <main>
-              <div class="cmd-handoff-notice">
+              <UiNotice type="info" class="cmd-handoff-notice">
                 该操作只将消息标记为待人工处理并记录备注，不会发送消息。如需回复用户，请使用“回复消息”。
-              </div>
+              </UiNotice>
               <label class="cmd-form-field">
                 接管备注
                 <AsShadcnTextarea v-model="handoffNote" rows="4" placeholder="例如：已转交客服组，预计 10 分钟内处理"></AsShadcnTextarea>
@@ -635,7 +636,7 @@ const formatTime = (value?: string) => (value ? new Date(value).toLocaleString()
                 处理组（可选）
                 <AsShadcnInput v-model="assignmentGroup" maxlength="128" placeholder="例如：售后支持组" />
               </label>
-              <div v-if="handoffError" class="cmd-form-error">{{ handoffError }}</div>
+              <UiNotice type="error" v-if="handoffError" class="cmd-form-error">{{ handoffError }}</UiNotice>
             </main>
             <template #footer>
               <Button :disabled="handoffSaving" @click="closeHandoff">取消</Button>
@@ -758,7 +759,7 @@ const formatTime = (value?: string) => (value ? new Date(value).toLocaleString()
   white-space: nowrap;
 }
 .cmd-auto input {
-  accent-color: var(--as-primary, #6366f1);
+  accent-color: var(--as-primary, var(--primary));
 }
 .cmd-close {
   flex-shrink: 0;
@@ -961,7 +962,7 @@ const formatTime = (value?: string) => (value ? new Date(value).toLocaleString()
 }
 .cmd-form-field textarea:focus {
   outline: none;
-  border-color: var(--as-primary, #6366f1);
+  border-color: var(--as-primary, var(--primary));
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--as-primary) 14%, transparent);
 }
 .cmd-form-field small { color: var(--as-text-secondary, #9ca3af); font-size: 11px; font-weight: 400; }
@@ -990,15 +991,15 @@ const formatTime = (value?: string) => (value ? new Date(value).toLocaleString()
     background 0.15s ease,
     border-color 0.15s ease;
 }
-.cmd-btn.is-primary { color: #fff; background: var(--as-primary, #4f46e5); border-color: var(--as-primary, #4f46e5); }
-.cmd-btn.is-primary:hover { background: var(--as-primary-hover, #4338ca); }
+.cmd-btn.is-primary { color: var(--primary-foreground); background: var(--as-primary, var(--primary)); border-color: var(--as-primary, var(--primary)); }
+.cmd-btn.is-primary:hover { background: var(--as-primary-hover, var(--primary)); }
 .cmd-btn:disabled { opacity: 0.55; cursor: not-allowed; }
 .cmd-btn:hover {
   background: var(--as-bg-layout, #f3f4f6);
 }
 .cmd-view-tabs { display: flex; align-items: center; gap: 8px; padding: 9px 20px; background: var(--as-bg, #fff); border-bottom: 1px solid var(--as-border, #e5e7eb); }
 .cmd-view-tabs button { padding: 6px 10px; color: var(--as-text-secondary, #6b7280); background: transparent; border: 0; border-radius: 6px; cursor: pointer; }
-.cmd-view-tabs button.active { color: var(--as-primary, #4338ca); background: color-mix(in srgb, var(--as-primary, #1677ff) 10%, var(--as-bg, #fff)); font-weight: 600; }
+.cmd-view-tabs button.active { color: var(--as-primary, var(--primary)); background: color-mix(in srgb, var(--as-primary, #1677ff) 10%, var(--as-bg, #fff)); font-weight: 600; }
 .cmd-view-tabs span { margin-left: auto; color: var(--as-text-secondary, #6b7280); font-size: 12px; }
 .cmd-conversation-list { display: grid; align-content: start; gap: 10px; }
 .cmd-conversation { padding: 14px; background: var(--as-bg, #fff); border: 1px solid var(--as-border, #e5e7eb); border-radius: 10px; }

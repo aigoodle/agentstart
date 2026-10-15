@@ -73,3 +73,6 @@ export {
 export * from './shadcn';
 export { ShadcnSelect as UiNativeSelect } from './components/ShadcnSelect';
 export { getAgentStartColorForeground, getAgentStartAccessiblePrimary } from './color';
+
+export { default as Pagination } from './components/Pagination.vue';
+export { default as InlineNotice } from './components/InlineNotice.vue';

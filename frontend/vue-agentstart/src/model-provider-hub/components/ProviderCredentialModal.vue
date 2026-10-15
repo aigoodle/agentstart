@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import UiNotice from '../../ui/components/InlineNotice.vue';
 import { Input as AsShadcnInput } from '../../ui/shadcn/input';
 
 /**
@@ -155,9 +156,9 @@ async function save() {
           </div>
         </div>
 
-        <div v-if="error" class="pcm-error">
+        <UiNotice type="error" v-if="error" class="pcm-error">
           {{ error }}
-        </div>
+        </UiNotice>
       </div>
 
       <template #footer>
@@ -289,6 +290,6 @@ async function save() {
 }
 .pcm-input:focus {
   outline: none;
-  border-color: #6366f1;
+  border-color: var(--primary);
 }
 </style>

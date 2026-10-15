@@ -433,7 +433,7 @@ const disabled = computed(() => !props.app?.id);
   color: var(--muted-foreground);
 }
 .log-annot-link {
-  color: #4338ca;
+  color: var(--primary);
   cursor: pointer;
 }
 .log-annot-link:hover {
@@ -470,10 +470,10 @@ const disabled = computed(() => !props.app?.id);
   align-items: flex-start;
 }
 .log-annot-msg-user {
-  background: #eef4ff;
+  background: color-mix(in srgb, var(--primary) 8%, var(--card));
 }
 .log-annot-msg-assistant {
-  background: #f0fdf4;
+  background: var(--muted);
 }
 .log-annot-msg-body {
   font-size: 13px;

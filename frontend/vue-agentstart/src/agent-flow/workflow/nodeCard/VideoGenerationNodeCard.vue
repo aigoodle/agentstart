@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import UiNotice from '../../../ui/components/InlineNotice.vue';
 import { ref, watch, onMounted } from 'vue';
 import WorkflowModelPicker from '@/workflow/WorkflowModelPicker.vue';
 import JsonSchemaForm from '../../../ui/components/JsonSchemaForm.vue';
@@ -48,13 +49,13 @@ onMounted(async () => {
 
 <template>
   <section class="video-config">
-    <p v-if="installationError" role="alert">{{ installationError }}</p>
+    <UiNotice type="error" v-if="installationError" role="alert">{{ installationError }}</UiNotice>
     <h4>视频模型</h4>
     <WorkflowModelPicker v-model="form.model" model-type="VIDEO" :show-params="false" :auto-load-default="false" placeholder="选择已配置的视频模型" />
     <h4>视频提示词</h4>
     <PromptEditor v-model="form.prompt" :node-id="nodeId || ''" title="提示词" />
     <p v-if="loading">读取模型参数…</p>
-    <p v-if="error" role="alert">{{ error }}</p>
+    <UiNotice type="error" v-if="error" role="alert">{{ error }}</UiNotice>
     <template v-if="schema">
       <h4>生成参数</h4>
       <JsonSchemaForm v-model="form.parameters" :schema="schema" :node-id="nodeId" :allow-advanced="false" />

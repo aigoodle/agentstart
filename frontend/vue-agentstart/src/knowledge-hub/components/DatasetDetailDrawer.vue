@@ -442,8 +442,8 @@ const settingsForm = computed(() => {
     id: dataset.value.id,
     name: dataset.value.name,
     description: dataset.value.description ?? '',
-    icon: '📙',
-    iconBg: '#FFEAD5',
+    icon: dataset.value.icon ?? '📙',
+    iconBg: dataset.value.iconBg ?? '#FFEAD5',
     permission: 'ONLY_ME' as const,
     chunkMode:
       processRule.template === 'PARENT_CHILD'
@@ -501,6 +501,8 @@ async function onSaveSettings(payload: any) {
   await props.hub.updateDataset(props.datasetId, {
     name: payload.name,
     description: payload.description,
+    icon: payload.icon,
+    iconBg: payload.iconBg,
     embeddingModelId: payload.embeddingModelId,
     indexingTechnique: payload.indexingTechnique,
     processRule,
@@ -703,6 +705,7 @@ const sidebarData = computed(() => ({
 }
 
 .kh-drawer-main {
+  min-height: 0;
   flex: 1;
   min-width: 0;
   display: flex;
@@ -797,6 +800,8 @@ const sidebarData = computed(() => ({
 }
 
 .kh-drawer-content {
+  min-height: 0;
+  min-width: 0;
   flex: 1;
   overflow: hidden;
   display: flex;

@@ -239,7 +239,7 @@ async function save() {
 }
 .rfm-modal { max-height: 88vh; }
 .dark .rfm-modal {
-  background: #1f1f1f;
+  background: var(--card);
 }
 
 .rfm-enter-active,
@@ -306,7 +306,7 @@ async function save() {
   color: #f3f4f6;
 }
 .dark .rfm-close:hover {
-  background: #2d2d2d;
+  background: var(--card);
   color: #f3f4f6;
 }
 .dark .rfm-enable {
@@ -347,8 +347,8 @@ async function save() {
 }
 .rfm-input:focus {
   outline: none;
-  border-color: #6366f1;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 15%, transparent);
 }
 .rfm-input:disabled {
   background: var(--muted);
@@ -364,12 +364,12 @@ async function save() {
   color: var(--muted-foreground);
 }
 .dark .rfm-input {
-  background: #2a2a2a;
+  background: var(--card);
   border-color: #3f3f3f;
   color: #f3f4f6;
 }
 .dark .rfm-input:disabled {
-  background: #2d2d2d;
+  background: var(--card);
   color: var(--muted-foreground);
 }
 .dark .rfm-hint {
@@ -433,24 +433,24 @@ async function save() {
   cursor: not-allowed;
 }
 .rfm-btn-primary {
-  background: #6366f1;
-  border-color: #6366f1;
-  color: #fff;
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--primary-foreground);
 }
 .rfm-btn-primary:hover {
   background: #4f52e8;
 }
 .dark .rfm-btn {
-  background: #2a2a2a;
+  background: var(--card);
   border-color: #3f3f3f;
   color: var(--muted-foreground);
 }
 .dark .rfm-btn:hover {
-  background: #333;
+  background: var(--card);
 }
 .dark .rfm-btn-primary {
-  background: #6366f1;
-  border-color: #6366f1;
-  color: #fff;
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--primary-foreground);
 }
 </style>

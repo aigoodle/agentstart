@@ -175,6 +175,7 @@ function onKeydown(e: KeyboardEvent) {
                 :key="a.id"
                 class="as-tile"
                 :class="{ 'as-tile-active': selectedType === a.id }"
+                :aria-pressed="selectedType === a.id"
                 @click="selectedType = a.id"
               >
                 <div class="as-tile-icon" :style="{ background: a.iconBg }">
@@ -379,8 +380,8 @@ function onKeydown(e: KeyboardEvent) {
 }
 .as-tile-active {
   border-color: transparent;
-  outline: 1.5px solid #6366f1;
-  box-shadow: 0 4px 10px rgba(99, 102, 241, 0.15);
+  outline: 1.5px solid var(--primary);
+  box-shadow: 0 4px 10px color-mix(in srgb, var(--primary) 15%, transparent);
 }
 .as-tile-icon {
   width: 28px;
@@ -452,8 +453,8 @@ function onKeydown(e: KeyboardEvent) {
 }
 .as-input:focus {
   outline: none;
-  border-color: #6366f1;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 15%, transparent);
 }
 .as-textarea {
   padding: 8px 12px;
@@ -469,8 +470,8 @@ function onKeydown(e: KeyboardEvent) {
 }
 .as-textarea:focus {
   outline: none;
-  border-color: #6366f1;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 15%, transparent);
 }
 .as-icon-btn {
   width: 44px;
@@ -516,7 +517,7 @@ function onKeydown(e: KeyboardEvent) {
 }
 .as-emoji-active {
   background: var(--background);
-  border-color: #6366f1;
+  border-color: var(--primary);
 }
 .as-swatch-row {
   margin-top: 8px;
@@ -537,7 +538,7 @@ function onKeydown(e: KeyboardEvent) {
   transform: scale(1.15);
 }
 .as-swatch-active {
-  outline: 2px solid #6366f1;
+  outline: 2px solid var(--primary);
 }
 
 .as-kbd {
@@ -658,4 +659,15 @@ function onKeydown(e: KeyboardEvent) {
   background: color-mix(in srgb, var(--as-bg) 76%, transparent);
   border-color: var(--as-border);
 }
+</style>
+
+<style scoped>
+.as-tile { display: grid; grid-template-columns: 36px minmax(0,1fr); grid-template-rows: auto 1fr; align-items: start; justify-content: start; gap: 5px 10px; height: auto; min-height: 110px; padding: 14px; white-space: normal; background: var(--card); border: 1px solid var(--border); box-shadow: none; }
+.as-tile .as-tile-icon { grid-row: 1 / 3; width: 36px; height: 36px; font-size: 20px; margin: 0; }
+.as-tile .as-tile-title { margin: 0; line-height: 22px; color: var(--foreground); }
+.as-tile .as-tile-desc { margin: 0; line-height: 1.6; font-size: 12px; color: var(--muted-foreground); overflow-wrap: anywhere; }
+.as-tile:hover { background: var(--accent); border-color: var(--input); transform: none; box-shadow: none; }
+.as-tile-active { outline: 2px solid var(--primary); outline-offset: -1px; background: color-mix(in srgb, var(--primary) 8%, var(--card)); box-shadow: none; }
+.as-right { background: var(--muted); }
+@media (max-width: 760px) { .as-right { display: none; } .as-left { min-width: 0; } .as-tile-row { grid-template-columns: minmax(0,1fr); } }
 </style>

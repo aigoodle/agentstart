@@ -1275,7 +1275,7 @@ html[data-theme='light'] .hud-panel::after {
     var(--hud-frame-color) 72%,
     var(--hud-frame-color) 92%,
     var(--hud-frame-hot) 100%
-  ) !important;
+  );
   clip-path: polygon(
     var(--hud-frame-cut) 0,
     calc(100% - var(--hud-frame-cut)) 0,
@@ -1369,7 +1369,7 @@ html[data-theme='light'] .hud-panel::after {
     linear-gradient(var(--hud-frame-hot), var(--hud-frame-hot))
       calc(100% - 2px) calc(100% - var(--hud-frame-cut) - 2px) / 1px min(100px, 20%) no-repeat,
     linear-gradient(var(--hud-frame-hot), var(--hud-frame-hot))
-      100% calc(100% - var(--hud-frame-cut) - 2px) / 2px min(50px, 10%) no-repeat !important;
+      100% calc(100% - var(--hud-frame-cut) - 2px) / 2px min(50px, 10%) no-repeat;
   /* 只给线条加外发光，不再绘制四角径向背景光斑 */
   filter: drop-shadow(0 0 3px var(--hud-frame-glow));
   animation: hud-panel-breathe-band 4.5s ease-in-out infinite;

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import UiNotice from '../../ui/components/InlineNotice.vue';
 import { Input as AsShadcnInput } from '../../ui/shadcn/input';
 import { Button as AsShadcnButton } from '../../ui/shadcn/button';
 
@@ -209,9 +210,9 @@ function onSubmit() {
 
         <div class="kh-dpm-list">
           <div v-if="loading" class="kh-dpm-state">加载中…</div>
-          <div v-else-if="loadError" class="kh-dpm-state kh-dpm-state-error">
+          <UiNotice type="error" v-else-if="loadError" class="kh-dpm-state kh-dpm-state-error">
             加载失败：{{ loadError }}
-          </div>
+          </UiNotice>
           <div v-else-if="filtered.length === 0" class="kh-dpm-state">
             {{ catalog.length === 0 ? '暂无可选知识库' : '未匹配到任何知识库' }}
           </div>

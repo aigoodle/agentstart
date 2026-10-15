@@ -195,12 +195,12 @@ function toRemoveMetadataCondition(index: number) {
   align-items: center;
   gap: 4px;
   font-size: 12px;
-  color: #6366f1;
+  color: var(--primary);
   cursor: pointer;
 }
 
 .wf-ds-link:hover {
-  color: #4338ca;
+  color: var(--primary);
 }
 
 .wf-ds-dynamic {

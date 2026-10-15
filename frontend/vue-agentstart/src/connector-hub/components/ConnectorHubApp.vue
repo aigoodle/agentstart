@@ -468,8 +468,8 @@ onMounted(load);
   color: var(--foreground);
 }
 .ch-tab.is-active {
-  color: #4f46e5;
-  border-bottom-color: #4f46e5;
+  color: var(--primary);
+  border-bottom-color: var(--primary);
 }
 .dark .ch-tabs {
   border-bottom-color: #2d2d2d;
@@ -481,8 +481,8 @@ onMounted(load);
   color: #f3f4f6;
 }
 .dark .ch-tab.is-active {
-  color: #818cf8;
-  border-bottom-color: #818cf8;
+  color: var(--primary);
+  border-bottom-color: var(--primary);
 }
 
 /* -------- 错误提示条 -------- */
@@ -521,8 +521,8 @@ onMounted(load);
 }
 .ch-input:focus {
   outline: none;
-  border-color: #6366f1;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 15%, transparent);
 }
 .ch-search {
   width: 280px;
@@ -666,12 +666,12 @@ onMounted(load);
   cursor: not-allowed;
 }
 .ch-btn-primary {
-  color: #fff;
-  background: #6366f1;
-  border-color: #6366f1;
+  color: var(--primary-foreground);
+  background: var(--primary);
+  border-color: var(--primary);
 }
 .ch-btn-primary:hover {
-  background: #4f46e5;
+  background: var(--primary);
 }
 .dark .ch-btn {
   background: #2d2d2d;
@@ -682,11 +682,11 @@ onMounted(load);
   background: #3d3d3d;
 }
 .dark .ch-btn-primary {
-  background: #6366f1;
-  border-color: #6366f1;
+  background: var(--primary);
+  border-color: var(--primary);
 }
 .dark .ch-btn-primary:hover {
-  background: #818cf8;
+  background: var(--primary);
 }
 
 /* -------- 状态徽章 -------- */

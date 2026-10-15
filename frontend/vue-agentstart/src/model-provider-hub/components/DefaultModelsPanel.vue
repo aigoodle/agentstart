@@ -224,8 +224,8 @@ const rows = computed(() =>
   gap: 8px;
 }
 .dark .dmp-row {
-  background: #1f1f1f;
-  border-color: #2d2d2d;
+  background: var(--card);
+  border-color: var(--border);
 }
 .dmp-row-head {
   display: flex;

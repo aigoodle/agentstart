@@ -551,14 +551,14 @@ defineExpose({
   transition: background 0.15s, border-color 0.15s;
 }
 .cip-var-btn:hover {
-  background: #eef2ff;
-  border-color: #c7d2fe;
-  color: #4338ca;
+  background: color-mix(in srgb, var(--primary) 10%, var(--background));
+  border-color: color-mix(in srgb, var(--primary) 30%, var(--border));
+  color: var(--primary);
 }
 .cip-var-btn-open {
-  background: #eef2ff;
-  border-color: #a5b4fc;
-  color: #4338ca;
+  background: color-mix(in srgb, var(--primary) 10%, var(--background));
+  border-color: color-mix(in srgb, var(--primary) 30%, var(--border));
+  color: var(--primary);
 }
 .cip-var-btn-warn {
   border-color: #fecaca;
@@ -566,7 +566,7 @@ defineExpose({
   color: #b91c1c;
 }
 .cip-var-btn-icon {
-  color: #6366f1;
+  color: var(--primary);
   font-size: 10px;
 }
 .cip-var-btn-badge {
@@ -656,13 +656,13 @@ defineExpose({
   padding: 2px 6px;
   border: none;
   background: transparent;
-  color: #4338ca;
+  color: var(--primary);
   font-size: 12px;
   cursor: pointer;
   border-radius: 4px;
 }
 .cip-link-btn:hover {
-  background: #eef2ff;
+  background: color-mix(in srgb, var(--primary) 10%, var(--background));
 }
 .cip-var-warn {
   padding: 6px 12px;
@@ -719,7 +719,7 @@ defineExpose({
 }
 .cip-input:focus,
 .cip-textarea:focus {
-  border-color: #6366f1;
+  border-color: var(--primary);
   background: var(--background);
 }
 .cip-textarea {

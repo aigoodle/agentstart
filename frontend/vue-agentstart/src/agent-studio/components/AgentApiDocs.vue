@@ -321,10 +321,10 @@ onMounted(() => {
   align-items: center;
   gap: 6px;
   padding: 4px 10px;
-  border: 1px solid #c7d2fe;
+  border: 1px solid color-mix(in srgb, var(--primary) 30%, var(--border));
   border-radius: 6px;
-  background: #eef2ff;
-  color: #4338ca;
+  background: color-mix(in srgb, var(--primary) 10%, var(--background));
+  color: var(--primary);
   font-size: 12px;
   cursor: pointer;
   transition:
@@ -332,8 +332,8 @@ onMounted(() => {
     border-color 0.15s ease;
 }
 .api-key-btn:hover {
-  background: #e0e7ff;
-  border-color: #a5b4fc;
+  background: color-mix(in srgb, var(--primary) 10%, var(--background));
+  border-color: color-mix(in srgb, var(--primary) 30%, var(--border));
 }
 .api-body {
   flex: 1;
@@ -393,7 +393,7 @@ onMounted(() => {
 }
 .api-codeblock-head {
   padding: 6px 12px;
-  background: #eef2f7;
+  background: var(--secondary);
   color: var(--muted-foreground);
   font-size: 11px;
   font-weight: 600;
@@ -424,11 +424,11 @@ onMounted(() => {
   color: #4338ca;
 }
 .api-codeblock-dark {
-  background: #0f172a;
-  border-color: #1e293b;
+  background: var(--muted);
+  border-color: var(--border);
 }
 .api-codeblock-head-dark {
-  background: #1e293b;
+  background: var(--secondary);
   color: var(--muted-foreground);
 }
 .api-code-dark {
@@ -495,8 +495,14 @@ onMounted(() => {
   color: var(--foreground);
 }
 .api-toc-item-active {
-  background: #eef2ff;
-  color: #4338ca;
+  background: color-mix(in srgb, var(--primary) 10%, var(--background));
+  color: var(--primary);
   font-weight: 500;
 }
+</style>
+
+<style scoped>
+.api-codeblock { background: var(--muted); color: var(--foreground); }
+.api-codeblock pre, .api-codeblock code { background: transparent; color: inherit; }
+.api-codeblock-head { background: var(--secondary); color: var(--muted-foreground); border-bottom: 1px solid var(--border); }
 </style>

@@ -402,12 +402,12 @@ function riskClass(level?: string) {
   background: var(--muted);
 }
 .cdd-btn-primary {
-  color: #fff;
-  background: #6366f1;
-  border-color: #6366f1;
+  color: var(--primary-foreground);
+  background: var(--primary);
+  border-color: var(--primary);
 }
 .cdd-btn-primary:hover {
-  background: #4f46e5;
+  background: var(--primary);
 }
 .dark .cdd-btn {
   background: #2d2d2d;
@@ -418,11 +418,11 @@ function riskClass(level?: string) {
   background: #3d3d3d;
 }
 .dark .cdd-btn-primary {
-  background: #6366f1;
-  border-color: #6366f1;
+  background: var(--primary);
+  border-color: var(--primary);
 }
 .dark .cdd-btn-primary:hover {
-  background: #818cf8;
+  background: var(--primary);
 }
 
 /* -------- 底部 -------- */

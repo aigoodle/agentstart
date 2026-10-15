@@ -164,7 +164,7 @@ function clear(e: MouseEvent) {
 .wf-vsf-large { min-height: 40px; font-size: 15px; }
 .wf-vsf-placeholder { flex:1; min-width:0; color: var(--muted-foreground); }
 .wf-vsf-selector-icon { display:inline-flex; align-items:center; justify-content:center; flex:none; width:22px; color: var(--muted-foreground); }
-.wf-vsf:hover .wf-vsf-selector-icon { color: #4f46e5; }
+.wf-vsf:hover .wf-vsf-selector-icon { color: var(--primary); }
 
 .wf-vsf-placeholder {
   color: var(--muted-foreground);

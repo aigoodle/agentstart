@@ -1,5 +1,9 @@
 /* Compatibility aliases only; shadcn tokens own the palette. */
 [data-agent-start-theme], html:root, html:root.dark, html:root[data-theme] {
+  --as-page-header-bg: var(--card);
+  --as-page-header-border: var(--border);
+  --as-page-header-title: var(--foreground);
+  --as-page-header-subtitle: var(--muted-foreground);
   --as-bg: var(--background);
   --as-bg-layout: var(--muted);
   --as-bg-elevated: var(--popover);

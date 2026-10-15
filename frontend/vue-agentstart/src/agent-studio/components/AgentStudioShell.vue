@@ -240,8 +240,8 @@ const items = computed<StudioNavItem[]>(() => props.nav ?? DEFAULT_NAV);
   color: var(--foreground);
 }
 .studio-nav-item-active {
-  background: #eef2ff;
-  color: #4338ca;
+  background: color-mix(in srgb, var(--primary) 10%, var(--background));
+  color: var(--primary);
   font-weight: 600;
 }
 .studio-nav-icon {

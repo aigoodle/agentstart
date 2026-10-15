@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import UiNotice from '../../ui/components/InlineNotice.vue';
 import { Card as AsShadcnCard } from '../../ui/shadcn/card';
 
 /**
@@ -337,7 +338,7 @@ const usageTiles = computed(() => {
         <span class="monitor-section-dot" />
         {{ app?.name || '应用' }} · 应用级指标
       </div>
-      <div v-if="metricError" class="monitor-error" role="alert">{{ metricError }}</div>
+      <UiNotice type="error" v-if="metricError" class="monitor-error" role="alert">{{ metricError }}</UiNotice>
       <div class="monitor-tiles">
         <div
           v-for="t in appTiles"
@@ -373,7 +374,7 @@ const usageTiles = computed(() => {
         <span class="monitor-section-dot" />
         当前应用模型用量
       </div>
-      <div v-if="usageError" class="monitor-error" role="alert">{{ usageError }}</div>
+      <UiNotice type="error" v-if="usageError" class="monitor-error" role="alert">{{ usageError }}</UiNotice>
       <div class="monitor-note">累计统计；费用按模型定价估算。未记录应用归属的历史调用不计入。</div>
       <div class="monitor-tiles">
         <div
@@ -423,7 +424,7 @@ const usageTiles = computed(() => {
           {{ trendDescription }}
         </div>
         <Segmented v-model:value="chartMetric" size="small" :options="chartMetricOptions" class="monitor-chart-metric" />
-        <div v-if="trendError" class="monitor-error" role="alert">{{ trendError }}</div>
+        <UiNotice type="error" v-if="trendError" class="monitor-error" role="alert">{{ trendError }}</UiNotice>
         <Skeleton v-else-if="trendLoading" active :paragraph="{ rows: 5 }" />
         <Empty v-else-if="callTrend.length === 0" description="所选时段暂无调用趋势" />
         <SparkChart
@@ -440,7 +441,7 @@ const usageTiles = computed(() => {
           <span class="monitor-section-dot" />
           当前应用最近 10 条模型调用
         </div>
-        <div v-if="callsError" class="monitor-error" role="alert">{{ callsError }}</div>
+        <UiNotice type="error" v-if="callsError" class="monitor-error" role="alert">{{ callsError }}</UiNotice>
         <Table
           v-else
           class="monitor-table"

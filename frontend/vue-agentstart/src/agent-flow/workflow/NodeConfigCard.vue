@@ -488,6 +488,6 @@ watch(() => props.selectNode, panelInit);
 
 .wf-config-resize:hover .wf-config-resize-bar,
 .wf-config-resize-active .wf-config-resize-bar {
-  background: var(--wf-accent, #6366f1);
+  background: var(--wf-accent, var(--primary));
 }
 </style>

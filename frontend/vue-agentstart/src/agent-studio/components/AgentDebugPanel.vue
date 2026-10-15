@@ -287,7 +287,7 @@ function onKeydown(e: KeyboardEvent) {
   background: var(--muted);
 }
 .dbg-input-row:focus-within {
-  border-color: #6366f1;
+  border-color: var(--primary);
   background: var(--background);
 }
 .dbg-input {
@@ -345,7 +345,7 @@ function onKeydown(e: KeyboardEvent) {
   padding: 0;
   border: none;
   background: transparent;
-  color: #4338ca;
+  color: var(--primary);
   font-size: 11px;
   cursor: pointer;
 }

@@ -312,11 +312,11 @@ function isActive(nodeId: string, parentName: string | null, name: string) {
 
 .wf-tag-item:hover,
 .wf-tag-item.is-active {
-  background: #eef2ff;
+  background: color-mix(in srgb, var(--primary) 10%, var(--background));
 }
 
 .wf-tag-item.is-active {
-  color: #4338ca;
+  color: var(--primary);
 }
 
 .wf-tag-item-child {

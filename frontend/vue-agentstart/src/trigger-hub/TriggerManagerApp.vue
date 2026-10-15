@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import Pagination from '../ui/components/Pagination.vue';
 import { ShadcnBoolean as AsShadcnBoolean } from '../ui/components/ShadcnBoolean';
 
 import { Input as AsShadcnInput } from '../ui/shadcn/input';
@@ -275,18 +276,7 @@ onMounted(load);
         </div>
       </template>
     </Table>
-    <template v-if="total">
-      <div class="th-pagination"><span>共 {{ total }} 条</span><AsShadcnSelect v-model.number="pageSize"
-                                                                       @change="changePageSize">
-        <option :value="10">10 条/页</option>
-        <option :value="20">20 条/页</option>
-        <option :value="50">50 条/页</option>
-      </AsShadcnSelect>
-        <AsShadcnButton variant="ghost" :disabled="page===1" @click="changePage(page-1)">上一页</AsShadcnButton>
-        <b>{{ page }} / {{ pageCount() }}</b>
-        <AsShadcnButton variant="ghost" :disabled="page===pageCount()" @click="changePage(page+1)">下一页</AsShadcnButton>
-      </div>
-    </template>
+    <Pagination v-if="total" :total="total" :page="page" :page-size="pageSize" @page-change="changePage" @page-size-change="size => { pageSize = size; changePageSize(); }" />
 
     <Modal v-model:open="editorOpen" class="th-modal" centered :width="620" :mask-closable="!saving"
            :keyboard="!saving" :closable="!saving">
@@ -1015,4 +1005,9 @@ onMounted(load);
     flex: 1;
   }
 }
+</style>
+
+<style scoped>
+.th-pagination { flex-wrap: wrap; }
+.th-page-size { flex: 0 0 112px; width: 112px; }
 </style>

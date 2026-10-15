@@ -290,13 +290,13 @@ function removeKnowledge(id: string) {
   background: var(--muted);
 }
 .orch-btn-primary {
-  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  background: linear-gradient(135deg, var(--primary), var(--primary));
   border-color: transparent;
-  color: #fff;
+  color: var(--primary-foreground);
   font-weight: 500;
 }
 .orch-btn-primary:hover:not(:disabled) {
-  background: linear-gradient(135deg, #4f46e5, #4338ca);
+  background: linear-gradient(135deg, var(--primary), var(--primary));
 }
 .orch-btn-primary:disabled {
   background: #cbd5e1;
@@ -362,11 +362,11 @@ function removeKnowledge(id: string) {
   border-radius: 6px;
   background: transparent;
   font-size: 12px;
-  color: #4338ca;
+  color: var(--primary);
   cursor: pointer;
 }
 .orch-card-btn:hover {
-  background: #eef2ff;
+  background: color-mix(in srgb, var(--primary) 10%, var(--background));
 }
 .orch-help {
   margin-left: 4px;

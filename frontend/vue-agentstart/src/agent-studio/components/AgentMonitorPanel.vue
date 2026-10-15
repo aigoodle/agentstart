@@ -125,7 +125,7 @@ const period = ref('过去 7 天');
   outline: none;
 }
 .mon-select:focus {
-  border-color: #6366f1;
+  border-color: var(--primary);
 }
 .mon-btn {
   width: 28px;

@@ -192,7 +192,7 @@
 .wf-config-body :deep(.ant-input-affix-wrapper:hover),
 .wf-config-body :deep(.ant-select:hover .ant-select-selector),
 .wf-config-body :deep(.ant-picker:hover) {
-  border-color: var(--wf-accent, #6366f1) !important;
+  border-color: var(--wf-accent, var(--primary)) !important;
 }
 
 .wf-config-body :deep(.ant-input:focus),
@@ -200,8 +200,8 @@
 .wf-config-body :deep(.ant-input-affix-wrapper-focused),
 .wf-config-body :deep(.ant-select-focused .ant-select-selector),
 .wf-config-body :deep(.ant-picker-focused) {
-  border-color: var(--wf-accent, #6366f1) !important;
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--wf-accent, #6366f1) 15%, transparent) !important;
+  border-color: var(--wf-accent, var(--primary)) !important;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--wf-accent, var(--primary)) 15%, transparent) !important;
 }
 
 /* 更紧凑的默认高度：接近 Dify 的紧凑表单感 */
@@ -245,19 +245,19 @@
 }
 
 .wf-config-body :deep(.ant-btn-primary) {
-  background: var(--wf-accent, #6366f1);
-  border-color: var(--wf-accent, #6366f1);
+  background: var(--wf-accent, var(--primary));
+  border-color: var(--wf-accent, var(--primary));
 }
 
 .wf-config-body :deep(.ant-btn-primary:hover) {
-  background: var(--wf-accent-hover, #4f46e5) !important;
-  border-color: var(--wf-accent-hover, #4f46e5) !important;
+  background: var(--wf-accent-hover, var(--primary)) !important;
+  border-color: var(--wf-accent-hover, var(--primary)) !important;
 }
 
 .wf-config-body :deep(.ant-btn-link) {
   padding: 0 6px;
   height: auto;
-  color: var(--wf-accent, #6366f1);
+  color: var(--wf-accent, var(--primary));
 }
 
 .wf-config-body :deep(.ant-collapse-ghost > .ant-collapse-item) {

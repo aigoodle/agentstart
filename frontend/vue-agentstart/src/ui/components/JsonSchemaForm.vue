@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import UiNotice from './InlineNotice.vue';
 import { ShadcnSelect as AsShadcnSelect } from './ShadcnSelect';
 import { ShadcnBoolean as AsShadcnBoolean } from './ShadcnBoolean';
 import { Textarea as AsShadcnTextarea } from '../shadcn/textarea';
@@ -175,7 +176,7 @@ function placeholder(name: string, schema: JsonSchema) {
         spellcheck="false"
         @blur="applyJson"
       />
-      <div v-if="jsonError" class="jsf-error">{{ jsonError }}</div>
+      <UiNotice type="error" v-if="jsonError" class="jsf-error">{{ jsonError }}</UiNotice>
     </div>
     <div v-else class="jsf-empty">{{ emptyText }}</div>
     <AsShadcnButton variant="ghost"
@@ -238,14 +239,14 @@ function placeholder(name: string, schema: JsonSchema) {
 .jsf-field textarea:focus,
 .jsf-json:focus {
   outline: none;
-  border-color: #6366f1;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 15%, transparent);
 }
 .jsf-field input[type='checkbox'] {
   width: 16px;
   height: 16px;
   justify-self: start;
-  accent-color: #6366f1;
+  accent-color: var(--primary);
   cursor: pointer;
 }
 .jsf-field textarea,
@@ -299,9 +300,9 @@ function placeholder(name: string, schema: JsonSchema) {
 .dark .jsf-field select,
 .dark .jsf-field textarea,
 .dark .jsf-json {
-  background: #2d2d2d;
-  border-color: #3d3d3d;
-  color: #f3f4f6;
+  background: var(--background);
+  border-color: var(--input);
+  color: var(--foreground);
 }
 .dark .jsf-mode {
   color: #818cf8;

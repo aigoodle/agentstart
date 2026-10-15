@@ -1295,7 +1295,6 @@ onBeforeUnmount(() => {
           :key="a.id"
           class="aa-card"
           :title="a.name"
-          :description="a.description || a.instructions || '暂无描述'"
           @click="openDesigner(a)"
         >
           <template #icon>
@@ -1316,18 +1315,21 @@ onBeforeUnmount(() => {
           </template>
 
           <template #subtitle>
-            <Tag :color="modeColor(a.mode)" style="margin-right: 4px">
+            <span>{{ fromNow(a.updatedAt) || '刚刚' }}</span>
+          </template>
+
+          <div class="aa-card-tags">
+            <Tag :color="modeColor(a.mode)">
               {{ modeLabel(a.mode) }}
             </Tag>
             <Tag
               v-if="strategyLabel(a.strategy)"
               :color="strategyColor(a.strategy)"
-              style="margin-right: 4px"
             >
               {{ strategyLabel(a.strategy) }}
             </Tag>
-            <span>· {{ fromNow(a.updatedAt) || '刚刚' }}</span>
-          </template>
+          </div>
+          <p class="aa-desc">{{ a.description || a.instructions || '暂无描述' }}</p>
 
           <template #meta>
             <span class="aa-footer-item" :title="modelLabel(a)">
@@ -1613,8 +1615,17 @@ onBeforeUnmount(() => {
   flex-shrink: 0;
   white-space: nowrap;
 }
+.aa-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+}
+.aa-card-tags :deep(.as-tag) {
+  margin: 0;
+}
 .aa-desc {
-  margin-top: 6px;
+  margin: 6px 0 0;
   font-size: 12px;
   color: var(--muted-foreground);
   line-height: 1.5;
@@ -1668,12 +1679,12 @@ onBeforeUnmount(() => {
     transform 0.1s;
 }
 .aa-emoji-btn:hover {
-  border-color: #a5b4fc;
+  border-color: color-mix(in srgb, var(--primary) 30%, var(--border));
   transform: scale(1.05);
 }
 .aa-emoji-btn--on {
-  border-color: #6366f1;
-  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 15%, transparent);
 }
 
 /* Published filter tabs */
@@ -1718,8 +1729,8 @@ onBeforeUnmount(() => {
   text-align: center;
 }
 .aa-pub-tab--on .aa-pub-count {
-  background: #eef2ff;
-  color: #4338ca;
+  background: color-mix(in srgb, var(--primary) 10%, var(--background));
+  color: var(--primary);
 }
 
 /* Background color picker */
@@ -1735,6 +1746,6 @@ onBeforeUnmount(() => {
   border-color: #9ca3af;
 }
 .aa-bg-btn--on {
-  border-color: #6366f1;
+  border-color: var(--primary);
 }
 </style>

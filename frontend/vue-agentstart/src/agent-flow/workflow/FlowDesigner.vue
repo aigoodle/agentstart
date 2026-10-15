@@ -2116,12 +2116,12 @@ defineExpose({
 }
 
 .btn-publish {
-  background: #6366f1;
+  background: var(--primary);
   color: white;
 }
 
 .btn-publish:hover {
-  background: #4f46e5;
+  background: var(--primary);
 }
 
 .btn-save {
@@ -2587,7 +2587,7 @@ defineExpose({
 }
 
 .wf-selector-node:hover {
-  background: #eef2ff;
+  background: color-mix(in srgb, var(--primary) 10%, var(--background));
 }
 
 .wf-selector-node-icon {

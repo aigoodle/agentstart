@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import UiNotice from '../../ui/components/InlineNotice.vue';
 import { ShadcnRange as AsShadcnRange } from '../../ui/components/ShadcnRange';
 import { ShadcnBoolean as AsShadcnBoolean } from '../../ui/components/ShadcnBoolean';
 
@@ -343,7 +344,7 @@ function stepFor(r: ModelParameterRule): number {
             <div v-if="r.help" class="mpd-help">{{ r.help }}</div>
           </div>
 
-          <div v-if="error" class="mpd-error">{{ error }}</div>
+          <UiNotice type="error" v-if="error" class="mpd-error">{{ error }}</UiNotice>
           <div
             v-if="testResult"
             class="mpd-test-result"
@@ -592,7 +593,7 @@ function stepFor(r: ModelParameterRule): number {
 }
 .mpd-num:focus {
   outline: none;
-  border-color: #6366f1;
+  border-color: var(--primary);
 }
 
 .mpd-text {
@@ -610,7 +611,7 @@ function stepFor(r: ModelParameterRule): number {
 }
 .mpd-text:focus {
   outline: none;
-  border-color: #6366f1;
+  border-color: var(--primary);
 }
 
 .mpd-switch {
@@ -685,12 +686,12 @@ function stepFor(r: ModelParameterRule): number {
   background: transparent;
 }
 .mpd-btn--primary {
-  background: #6366f1;
-  color: #fff;
-  border-color: #6366f1;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border-color: var(--primary);
 }
 .mpd-btn--primary:hover:not(:disabled) {
-  background: #4f46e5;
+  background: var(--primary);
 }
 .mpd-btn--danger {
   color: #dc2626;

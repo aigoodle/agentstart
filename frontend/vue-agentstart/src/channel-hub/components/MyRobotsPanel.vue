@@ -395,9 +395,9 @@ onMounted(load);
   cursor: not-allowed;
 }
 .mr-btn-primary {
-  background: #6366f1;
-  border-color: #6366f1;
-  color: #fff;
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--primary-foreground);
 }
 .mr-btn-primary:hover {
   background: #4f52e8;
@@ -418,9 +418,9 @@ onMounted(load);
   background: #333;
 }
 .dark .mr-btn-primary {
-  background: #6366f1;
-  border-color: #6366f1;
-  color: #fff;
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--primary-foreground);
 }
 .dark .mr-btn-danger {
   color: #f87171;

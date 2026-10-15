@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import UiNotice from '../../ui/components/InlineNotice.vue';
 import { Card as AsShadcnCard } from '../../ui/shadcn/card';
 
 import { Modal as ShadcnModal } from '../../ui/components/Modal';
@@ -713,9 +714,9 @@ const backLabel = computed(() => props.datasetName || '知识库');
               </div>
             </div>
             <div v-else class="kh-preview-body">
-              <div v-if="previewError" class="kh-preview-warning">
+              <UiNotice type="warning" v-if="previewError" class="kh-preview-warning">
                 ⚠️ {{ previewError }}
-              </div>
+              </UiNotice>
               <div v-if="previewParse.parser" class="kh-preview-warning kh-preview-parser">
                 解析器：{{ previewParse.parser }} · {{ previewParse.blockCount ?? 0 }} 个结构块
                 <template v-if="previewParse.pageCount"> · {{ previewParse.pageCount }} 页</template>

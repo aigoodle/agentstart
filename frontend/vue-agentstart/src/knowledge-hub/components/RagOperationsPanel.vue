@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import UiNotice from '../../ui/components/InlineNotice.vue';
 import { Card as AsShadcnCard } from '../../ui/shadcn/card';
 
 import { Button as AsShadcnButton } from '../../ui/shadcn/button';
@@ -193,7 +194,7 @@ onMounted(initialize);
         <AsShadcnButton variant="ghost" class="kh-primary" :disabled="!ready || locked" @click="savePolicy">{{ saving ? '保存中…' : '保存为默认策略' }}</AsShadcnButton>
       </div>
     </header>
-    <p v-if="error" role="alert" class="kh-error">{{ error }}</p>
+    <UiNotice type="error" v-if="error" role="alert" class="kh-error">{{ error }}</UiNotice>
     <div v-if="initializing" class="kh-empty" role="status">正在加载知识库策略…</div>
     <AsShadcnButton variant="ghost" v-else-if="!ready" @click="initialize">重新加载</AsShadcnButton>
     <div v-else class="kh-workbench">
@@ -206,7 +207,7 @@ onMounted(initialize);
           <div class="kh-actions kh-query-actions"><small>{{ query.length }}/4000 · Ctrl / ⌘ + Enter</small>
             <AsShadcnButton variant="ghost" class="kh-primary" :disabled="!hub.retrieveRag || locked || !query.trim()" @click="runQuery()">{{ running ? '检索中…' : '执行检索' }}</AsShadcnButton>
           </div>
-          <p v-if="!hub.retrieveRag" class="kh-error">当前宿主未连接 RAG 检索接口。</p>
+          <UiNotice type="error" v-if="!hub.retrieveRag" class="kh-error">当前宿主未连接 RAG 检索接口。</UiNotice>
         </AsShadcnCard>
         <AsShadcnCard class="kh-strategy-card">
           <div class="kh-card-title"><h3>检索策略</h3><span class="kh-tag">{{ dirty ? '当前草稿' : '知识库默认策略' }}</span></div>
@@ -249,7 +250,7 @@ onMounted(initialize);
     </div>
     <details class="kh-operations" @toggle="($event.target as HTMLDetailsElement).open && refreshOperations()">
       <summary>质量评测与索引运维 <small>使用当前检索策略评测，管理索引和失败任务</small></summary>
-      <p v-if="operationsError" role="alert" class="kh-error">{{ operationsError }}</p>
+      <UiNotice type="error" v-if="operationsError" role="alert" class="kh-error">{{ operationsError }}</UiNotice>
       <div class="kh-operations-grid">
         <section><h3>检索评测集</h3><p>评测复用上方策略与 Top K。</p><AsShadcnTextarea v-model="evaluationJson" rows="10" spellcheck="false" aria-label="评测集 JSON" />
           <AsShadcnButton variant="ghost" class="kh-primary" :disabled="!ready || !hub.evaluateRetrieval || operating || locked" @click="evaluate">{{ operating ? '处理中…' : '运行评测' }}</AsShadcnButton>
@@ -267,7 +268,7 @@ onMounted(initialize);
 </template>
 
 <style scoped>
-.kh-ragops { padding: 22px; display: flex; flex-direction: column; gap: 18px; flex: 1; min-height: 0; overflow-y: auto; color: var(--kh-color-text-primary); }
+.kh-ragops { padding: 20px; display: flex; flex-direction: column; gap: 18px; flex: 1; min-width: 0; min-height: 0; overflow-y: auto; box-sizing: border-box; color: var(--kh-color-text-primary); }
 .kh-ragops *, .kh-ragops *::before { box-sizing: border-box; }
 .kh-workbench-header, .kh-actions, .kh-card-title, .kh-evidence-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
 .kh-ragops h2 { margin: 0 0 5px; font-size: 21px; letter-spacing: -.4px; }
@@ -276,14 +277,14 @@ onMounted(initialize);
 .kh-actions { justify-content: flex-end; font-size: 12px; color: var(--kh-color-primary); }
 .kh-workbench { display: grid; grid-template-columns: minmax(320px, 5fr) minmax(0, 7fr); gap: 18px; align-items: start; }
 .kh-config-column { min-width: 0; display: grid; gap: 14px; }
-.kh-ragops section { min-width: 0; border: 1px solid var(--kh-color-border); border-radius: 12px; padding: 16px; display: grid; gap: 12px; background: var(--kh-color-surface); }
+.kh-ragops section, .kh-config-column > [data-slot="card"] { min-width: 0; border: 1px solid var(--kh-color-border); border-radius: 12px; padding: 16px; display: grid; gap: 12px; background: var(--kh-color-surface); }
 .kh-ragops .kh-query-card { border-color: var(--kh-color-primary); background: var(--kh-color-surface); }
 .kh-editor-fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
 .kh-ragops textarea { width: 100%; border: 1px solid var(--kh-input-border); border-radius: 8px; padding: 12px; font-family: inherit; font-size: 13px; line-height: 1.65; background: var(--kh-input-bg); color: var(--kh-color-text-primary); resize: vertical; }
 .kh-query-label { font-size: 12px; font-weight: 500; }
 .kh-query-actions { justify-content: space-between; }
-.kh-ragops button { border: 1px solid var(--kh-color-border); border-radius: 8px; background: var(--kh-color-surface); color: var(--kh-color-text-secondary); padding: 8px 13px; font-family: inherit; font-size: 12px; cursor: pointer; }
-.kh-ragops button:hover { background: var(--kh-color-surface-hover); }
+.kh-ragops button:not([data-slot]) { border: 1px solid var(--kh-color-border); border-radius: 8px; background: var(--kh-color-surface); color: var(--kh-color-text-secondary); padding: 8px 13px; font-family: inherit; font-size: 12px; cursor: pointer; }
+.kh-ragops button:not([data-slot]):hover { background: var(--kh-color-surface-hover); }
 .kh-ragops button:disabled { opacity: .45; cursor: not-allowed; }
 .kh-ragops button:focus-visible, .kh-ragops textarea:focus-visible, .kh-ragops summary:focus-visible { outline: 2px solid var(--kh-color-primary); outline-offset: 2px; }
 .kh-ragops .kh-primary { background: var(--kh-color-primary); color: var(--kh-color-primary-contrast); border-color: var(--kh-color-primary); width: max-content; }
