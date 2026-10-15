@@ -180,3 +180,7 @@ mvn -B -T1 -pl :agentstart-runtime-agentscope -am test
 各聚合模块的目录名、artifactId 和 name 保持一致；知识与上下文聚合为
 `agentstart-context`，避免与功能模块 `agentstart-knowledge` 重名。
 项目 SDK 与 Maven 导入器使用 JDK 21。
+
+## 许可证
+
+本项目采用 [Apache License 2.0](LICENSE)，允许商业使用、修改和分发，无须另行申请商业授权；使用时须遵守许可证条款。第三方材料继续适用各自的许可证。

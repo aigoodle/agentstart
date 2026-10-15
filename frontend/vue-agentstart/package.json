@@ -1,6 +1,7 @@
 {
   "name": "vue-agent-start",
   "version": "0.2.0",
+  "license": "Apache-2.0",
   "description": "Unified spring-agent-start UI kit — provider hub, knowledge hub, agent studio, and workflow designer combined behind a single entry point, plus one framework-neutral SDK (createAgentStartClient) every component talks to the backend through. Replaces the previous four packages (@agent-start/model-provider-hub, @agent-start/knowledge-hub, @agent-start/agent-studio, @agent-start/agent-flow).",
   "keywords": [
     "vue",
