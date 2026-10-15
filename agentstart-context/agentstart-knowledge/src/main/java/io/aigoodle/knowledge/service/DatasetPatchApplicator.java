@@ -1,8 +1,8 @@
 package io.aigoodle.knowledge.service;
 
 import io.aigoodle.common.util.JsonUtils;
-import io.aigoodle.knowledge.entity.DatasetEntity;
 import io.aigoodle.knowledge.config.RetrievalConfig;
+import io.aigoodle.knowledge.entity.DatasetEntity;
 import io.aigoodle.knowledge.enums.IndexingTechnique;
 
 /** Applies the fields supplied by a dataset settings patch. */
@@ -15,7 +15,10 @@ final class DatasetPatchApplicator {
                 patch.getIndexingTechnique() == null ? dataset.getIndexingTechnique() : patch.getIndexingTechnique();
         String resultingEmbeddingModelId =
                 patch.getEmbeddingModelId() == null ? dataset.getEmbeddingModelId() : patch.getEmbeddingModelId();
-        DatasetDefinitionFactory.requireEmbeddingModelFor(resultingTechnique, resultingEmbeddingModelId);
+        if (patch.getEmbeddingModelId() != null
+                || (dataset.getDocumentCount() != null && dataset.getDocumentCount() > 0)) {
+            DatasetDefinitionFactory.requireEmbeddingModelFor(resultingTechnique, resultingEmbeddingModelId);
+        }
 
         if (patch.getName() != null && !patch.getName().isBlank()) {
             dataset.setName(patch.getName());

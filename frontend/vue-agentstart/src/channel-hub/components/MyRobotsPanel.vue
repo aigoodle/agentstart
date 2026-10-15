@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { confirmAction } from '../../ui/components/modalService';
 /**
  * 「我的机器人」面板 —— 卡片列表 + 定义/编辑/删除。
  *
@@ -82,13 +83,13 @@ function openEdit(robot: MyRobot) {
 }
 
 async function remove(robot: MyRobot) {
-  if (!confirm(`删除机器人「${robot.name}」?`)) return;
+  if (!await confirmAction(`删除机器人「${robot.name}」?`)) return;
   try {
     await client.channels.deleteChannelConnection(robot.id, props.tenantId);
     message.success(`已删除机器人「${robot.name}」`);
     await load();
   } catch (e: any) {
-    error.value = e?.message ?? '删除失败';
+    message.error(e?.message ?? '删除失败');
   }
 }
 

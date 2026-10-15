@@ -462,7 +462,7 @@ const backLabel = computed(() => props.datasetName || '知识库');
                         type="number"
                         class="kh-input"
                       />
-                      <span class="kh-suffix">characters</span>
+                      <span class="kh-suffix">字符</span>
                     </div>
                   </div>
                   <div class="kh-field">
@@ -473,7 +473,7 @@ const backLabel = computed(() => props.datasetName || '知识库');
                         type="number"
                         class="kh-input"
                       />
-                      <span class="kh-suffix">characters</span>
+                      <span class="kh-suffix">字符</span>
                     </div>
                   </div>
                 </div>
@@ -564,7 +564,7 @@ const backLabel = computed(() => props.datasetName || '知识库');
                             class="kh-input"
                             @click.stop
                           />
-                          <span class="kh-suffix">characters</span>
+                          <span class="kh-suffix">字符</span>
                         </div>
                       </div>
                     </div>
@@ -609,7 +609,7 @@ const backLabel = computed(() => props.datasetName || '知识库');
                         class="kh-input"
                         @click.stop
                       />
-                      <span class="kh-suffix">characters</span>
+                      <span class="kh-suffix">字符</span>
                     </div>
                   </div>
                 </div>
@@ -957,13 +957,19 @@ const backLabel = computed(() => props.datasetName || '知识库');
 .kh-source-row {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
+  gap: 8px;
 }
 .kh-source {
   display: flex;
+  width: 100%;
+  height: auto;
+  min-height: 52px;
+  min-width: 0;
+  justify-content: flex-start;
+  white-space: normal;
   align-items: center;
-  gap: 10px;
-  padding: 14px 16px;
+  gap: 8px;
+  padding: 8px 10px;
   background: var(--kh-color-surface);
   border: 1px solid var(--kh-color-border);
   border-radius: 10px;
@@ -986,6 +992,7 @@ const backLabel = computed(() => props.datasetName || '知识库');
   cursor: not-allowed;
 }
 .kh-source-icon {
+  flex-shrink: 0;
   width: 32px;
   height: 32px;
   display: flex;
@@ -997,6 +1004,10 @@ const backLabel = computed(() => props.datasetName || '知识库');
   color: var(--kh-color-primary-strong);
 }
 .kh-source-label {
+  flex: 1;
+  min-width: 0;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
   font-size: 14px;
   color: var(--kh-color-text-primary);
 }

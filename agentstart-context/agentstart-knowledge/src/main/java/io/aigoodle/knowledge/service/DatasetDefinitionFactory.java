@@ -18,7 +18,6 @@ final class DatasetDefinitionFactory {
         IndexingTechnique indexingTechnique = request.getIndexingTechnique() == null
                 ? IndexingTechnique.HIGH_QUALITY
                 : request.getIndexingTechnique();
-        requireEmbeddingModelFor(indexingTechnique, request.getEmbeddingModelId());
 
         DatasetEntity dataset = new DatasetEntity();
         dataset.setTenantId(defaultTenant(request.getTenantId()));

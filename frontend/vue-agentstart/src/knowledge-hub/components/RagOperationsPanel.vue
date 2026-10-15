@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { message } from '../../ui/message';
 import UiNotice from '../../ui/components/InlineNotice.vue';
 import { Card as AsShadcnCard } from '../../ui/shadcn/card';
 
@@ -21,7 +22,6 @@ const initializing = ref(false);
 const running = ref(false);
 const saving = ref(false);
 const operating = ref(false);
-const saved = ref(false);
 const persistedPolicy = ref('');
 const error = ref('');
 const operationsError = ref('');
@@ -112,7 +112,7 @@ async function savePolicy() {
   error.value = validationError();
   if (error.value || locked.value || !ready.value) return;
   const draft: RagPolicy = JSON.parse(JSON.stringify(policy.value));
-  saving.value = true; saved.value = false;
+  saving.value = true;
   try {
     const dataset = await props.hub.loadDataset(props.datasetId);
     const current = dataset.retrievalConfigJson ? JSON.parse(dataset.retrievalConfigJson) : {};
@@ -127,8 +127,8 @@ async function savePolicy() {
       rerankPoolSize: draft.rerank.candidateLimit,
       neighborWindow: draft.context.neighborWindow,
     } });
-    persistedPolicy.value = JSON.stringify(draft); saved.value = true; emit('saved');
-  } catch (e) { error.value = e instanceof Error ? e.message : String(e); }
+    persistedPolicy.value = JSON.stringify(draft); message.success('默认策略已保存'); emit('saved');
+  } catch (e) { message.error(e instanceof Error ? e.message : String(e)); }
   finally { saving.value = false; }
 }
 
@@ -166,8 +166,8 @@ async function refreshOperations() {
 }
 async function operate(action: () => Promise<unknown>) {
   operating.value = true; operationsError.value = '';
-  try { await action(); await refreshOperations(); }
-  catch (e) { operationsError.value = e instanceof Error ? e.message : String(e); }
+  try { await action(); message.success('操作成功'); await refreshOperations(); }
+  catch (e) { message.error(e instanceof Error ? e.message : String(e)); }
   finally { operating.value = false; }
 }
 async function evaluate() {
@@ -190,7 +190,6 @@ onMounted(initialize);
       <div><h2>RAG 运行</h2><p>配置检索策略，输入问题，查看知识库返回的证据。</p></div>
       <div class="kh-actions">
         <span v-if="dirty" class="kh-draft">策略有未保存的修改</span>
-        <span v-else-if="saved" role="status">默认策略已保存</span>
         <AsShadcnButton variant="ghost" class="kh-primary" :disabled="!ready || locked" @click="savePolicy">{{ saving ? '保存中…' : '保存为默认策略' }}</AsShadcnButton>
       </div>
     </header>

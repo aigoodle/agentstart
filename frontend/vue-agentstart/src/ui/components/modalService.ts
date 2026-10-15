@@ -10,7 +10,7 @@ function show(options: Options, info: boolean) {
   const open = ref(true), loading = ref(false);
   const app = createApp(defineComponent({
     setup() {
-      const cancel = () => { (options.onCancel as (() => void) | undefined)?.(); open.value = false; };
+      const cancel = () => { if (loading.value) return; (options.onCancel as (() => void) | undefined)?.(); open.value = false; };
       const ok = async () => {
         if (loading.value) return;
         loading.value = true;
@@ -21,7 +21,9 @@ function show(options: Options, info: boolean) {
       const dispose = () => { app.unmount(); root.remove(); };
       return () => h(Modal, {
         ...options, open: open.value, title: String(options.title ?? (info ? '提示' : '确认操作')),
-        confirmLoading: loading.value, maskClosable: options.maskClosable ?? false,
+        confirmLoading: loading.value, closable: !loading.value, keyboard: !loading.value,
+        okButtonProps: { ...(options.okType === 'danger' ? { danger: true } : {}), ...(options.okButtonProps as Options ?? {}) },
+        cancelButtonProps: { disabled: loading.value }, maskClosable: options.maskClosable ?? false,
         onCancel: cancel, onOk: ok, onAfterClose: dispose,
       }, {
         default: () => options.content as VNodeChild,
@@ -32,3 +34,15 @@ function show(options: Options, info: boolean) {
   app.mount(root);
 }
 export const modalService = { confirm: (options: Options) => show(options, false), info: (options: Options) => show(options, true) };
+
+/** Await the shared shadcn Dialog before performing a destructive action. */
+export function confirmAction(content: string): Promise<boolean> {
+  if (typeof document === 'undefined') return Promise.resolve(false);
+  return new Promise(resolve => {
+    modalService.confirm({
+      title: '确认删除', content, okText: '删除', cancelText: '取消',
+      okButtonProps: { danger: true },
+      onOk: () => resolve(true), onCancel: () => resolve(false),
+    });
+  });
+}

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { message } from '../../ui/message';
+import { confirmAction } from '../../ui/components/modalService';
 import { Input as AsShadcnInput } from '../../ui/shadcn/input';
 import { Button as AsShadcnButton } from '../../ui/shadcn/button';
 
@@ -34,8 +36,6 @@ const credentials = ref<Record<string, unknown>>({});
 const config = ref<Record<string, unknown>>({});
 const saving = ref(false);
 const testing = ref(false);
-const testMessage = ref('');
-const error = ref('');
 const isPlugin = computed(() => props.connector?.metadata?.kind === 'PLUGIN');
 const pluginSchemas = computed(() => splitPluginConfiguration(parseJsonSchema(props.connector?.configurationSchema)));
 
@@ -46,8 +46,6 @@ watch(
       props.connection?.name ?? `${props.connector?.name ?? 'Connector'} 连接`;
     credentials.value = {};
     config.value = {};
-    error.value = '';
-    testMessage.value = '';
   },
   { immediate: true },
 );
@@ -69,7 +67,7 @@ async function save() {
     emit('saved');
     emit('update:open', false);
   } catch (e: any) {
-    error.value = e?.message ?? '保存失败';
+    message.error(e?.message ?? '保存失败');
   } finally {
     saving.value = false;
   }
@@ -83,20 +81,21 @@ async function testConnection() {
       props.connection.id,
       props.tenantId,
     );
-    testMessage.value = result.message;
+    message[result.success ? 'success' : 'error'](result.message || (result.success ? '连接验证通过' : '连接验证失败'));
   } catch (e: any) {
-    error.value = e?.message ?? '验证失败';
+    message.error(e?.message ?? '验证失败');
   } finally {
     testing.value = false;
   }
 }
 
 async function remove() {
-  if (!props.connection || !confirm(`删除连接「${props.connection.name}」？`)) {
+  const connection = props.connection;
+  if (!connection || !await confirmAction(`删除连接「${connection.name}」？`)) {
     return;
   }
   await props.client.connectors.deleteConnection(
-    props.connection.id,
+    connection.id,
     props.tenantId,
   );
   emit('saved');
@@ -138,11 +137,6 @@ async function remove() {
             <JsonSchemaForm v-model="config" :schema="isPlugin ? pluginSchemas.configuration : undefined"
               :allow-advanced="!isPlugin" :ui-schema="connector?.metadata?.configurationUiSchema" />
           </div>
-
-          <p v-if="testMessage" class="ccm-note is-success">
-            {{ testMessage }}
-          </p>
-          <p v-if="error" class="ccm-note is-danger">{{ error }}</p>
         </main>
 
         <template #footer>

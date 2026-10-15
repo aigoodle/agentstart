@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { confirmAction } from '../ui/components/modalService';
 import { Button as AsShadcnButton } from '../ui/shadcn/button';
 
 import {computed, onMounted, ref} from 'vue';
@@ -149,7 +150,7 @@ async function save() {
 }
 
 async function remove(tool: ToolCatalogItem) {
-  if (!window.confirm(`确定删除“${tool.name}”吗？`)) return;
+  if (!await confirmAction(`确定删除“${tool.name}”吗？`)) return;
   try {
     await client.tools.deleteCustom(tool.name);
     message.success('工具已删除');

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { message } from '../../ui/message';
+import { confirmAction } from '../../ui/components/modalService';
 import UiNotice from '../../ui/components/InlineNotice.vue';
 import { ShadcnRange as AsShadcnRange } from '../../ui/components/ShadcnRange';
 import { ShadcnBoolean as AsShadcnBoolean } from '../../ui/components/ShadcnBoolean';
@@ -184,7 +186,7 @@ async function save() {
     emit('saved');
     emit('update:open', false);
   } catch (e: any) {
-    error.value = e?.message ?? String(e);
+    message.error(e?.message ?? String(e));
   } finally {
     saving.value = false;
   }
@@ -198,14 +200,15 @@ async function onSetDefault() {
 }
 
 async function onDelete() {
-  if (!props.model) return;
+  const model = props.model;
+  if (!model) return;
   if (
-    !confirm(
-      `确认删除「${props.model.providerName} / ${props.model.modelName}」？依赖它的知识库/智能体运行时会失败。`,
+    !await confirmAction(
+      `确认删除「${model.providerName} / ${model.modelName}」？依赖它的知识库/智能体运行时会失败。`,
     )
   )
     return;
-  await deleteModel(props.model.id);
+  await deleteModel(model.id);
   emit('deleted');
   emit('update:open', false);
 }

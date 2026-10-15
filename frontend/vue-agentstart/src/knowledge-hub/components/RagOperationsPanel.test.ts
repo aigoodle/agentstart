@@ -1,8 +1,10 @@
 import { mount, flushPromises } from '@vue/test-utils';
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { defaultRagPolicy, type DatasetDetailHub } from '../types';
 import RagOperationsPanel from './RagOperationsPanel.vue';
 import RagPolicyEditor from './RagPolicyEditor.vue';
+import { message } from '../../ui/message';
+vi.mock('../../ui/message', () => ({ message: { success: vi.fn(), error: vi.fn() } }));
 
 function setup(withPolicy = true) {
   const policy = defaultRagPolicy();
@@ -19,6 +21,7 @@ function setup(withPolicy = true) {
 }
 
 describe('Unified RAG workbench', () => {
+  beforeEach(() => vi.clearAllMocks());
   it('uses one edited policy for both retrieval and persistence and renders the same run results', async () => {
     const { wrapper, policy, updateDataset, retrieveRag, retrieve } = setup();
     await flushPromises();
@@ -39,7 +42,8 @@ describe('Unified RAG workbench', () => {
     await flushPromises();
     expect(updateDataset).toHaveBeenCalledWith('ds', { retrievalConfig: expect.objectContaining({ customSetting: 'keep', method: 'VECTOR', topK: 4, scoreThreshold: .65, ragPolicy: edited }) });
     expect(wrapper.emitted('saved')).toHaveLength(1);
-    expect(wrapper.text()).toContain('默认策略已保存');
+    expect(message.success).toHaveBeenCalledWith('默认策略已保存');
+    expect(wrapper.text()).not.toContain('默认策略已保存');
     wrapper.unmount();
   });
 
@@ -100,7 +104,9 @@ describe('Unified RAG workbench', () => {
     updateDataset.mockRejectedValueOnce(new Error('Save failed'));
     await wrapper.find('header .kh-primary').trigger('click');
     await flushPromises();
-    expect(wrapper.find('[role=alert]').text()).toContain('Save failed');
+    expect(message.error).toHaveBeenCalledWith('Save failed');
+    expect(message.success).not.toHaveBeenCalled();
+    expect(wrapper.text()).not.toContain('Save failed');
     expect(wrapper.emitted('saved')).toBeUndefined();
     wrapper.unmount();
   });

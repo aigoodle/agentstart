@@ -105,6 +105,7 @@ describe('MyRobotsPanel', () => {
     );
     // 保存后刷新列表
     expect(client.channels.listChannelConnections).toHaveBeenCalledTimes(2);
+    await new Promise(resolve => setTimeout(resolve, 100));
   });
 
   it('edits an existing robot through update()', async () => {
@@ -134,7 +135,8 @@ describe('MyRobotsPanel', () => {
   });
 
   it('deletes a robot after confirmation', async () => {
-    vi.stubGlobal('confirm', vi.fn(() => true));
+    const nativeConfirm = vi.fn();
+    vi.stubGlobal('confirm', nativeConfirm);
     const client = makeClient();
     const wrapper = mountPanel(client);
     await flushPromises();
@@ -145,7 +147,13 @@ describe('MyRobotsPanel', () => {
       .trigger('click');
     await flushPromises();
 
+    expect(client.channels.deleteChannelConnection).not.toHaveBeenCalled();
+    expect(document.querySelector('.as-modal')?.textContent).toContain('售后小助手');
+    document.querySelector<HTMLButtonElement>('.as-modal__footer button:last-child')!.click();
+    await flushPromises();
+    expect(nativeConfirm).not.toHaveBeenCalled();
     expect(client.channels.deleteChannelConnection).toHaveBeenCalledWith('robot-1', 'tenant-a');
     expect(client.channels.listChannelConnections).toHaveBeenCalledTimes(2);
+    await new Promise(resolve => setTimeout(resolve, 100));
   });
 });

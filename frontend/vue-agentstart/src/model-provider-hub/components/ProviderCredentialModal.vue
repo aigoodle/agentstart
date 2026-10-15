@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { message } from '../../ui/message';
 import UiNotice from '../../ui/components/InlineNotice.vue';
 import { Input as AsShadcnInput } from '../../ui/shadcn/input';
 
@@ -83,7 +84,7 @@ async function save() {
     emit('update:open', false);
   } catch (e: any) {
     // Backend returns the vendor's error text on 401 — surface it verbatim.
-    error.value = e?.message ?? String(e);
+    message.error(e?.message ?? String(e));
   } finally {
     saving.value = false;
   }
@@ -190,19 +191,12 @@ async function save() {
   z-index: 1000;
 }
 .pcm-modal { max-height: 88vh; }
-.dark .pcm-modal {
-  background: #1f1f1f;
-  color: #f3f4f6;
-}
 .pcm-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 14px 20px;
   border-bottom: 1px solid var(--border);
-}
-.dark .pcm-header {
-  border-bottom-color: #2d2d2d;
 }
 .pcm-title {
   display: flex;
@@ -262,9 +256,6 @@ async function save() {
   font-weight: 500;
   color: var(--foreground);
 }
-.dark .pcm-label {
-  color: var(--muted-foreground);
-}
 .pcm-req {
   color: #dc2626;
 }
@@ -278,18 +269,14 @@ async function save() {
 .pcm-input {
   padding: 8px 10px;
   font-size: 13px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--input);
   border-radius: 6px;
-  background: var(--background);
+  background: transparent;
   color: var(--foreground);
-}
-.dark .pcm-input {
-  background: #2d2d2d;
-  border-color: #3d3d3d;
-  color: #f3f4f6;
 }
 .pcm-input:focus {
   outline: none;
-  border-color: var(--primary);
+  border-color: var(--ring);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--ring) 25%, transparent);
 }
 </style>

@@ -342,7 +342,7 @@ function humanSize(bytes: number): string {
   <Modal
     :open="open"
     title="创建知识库"
-    :width="1200"
+    :width="800"
     @update:open="close"
   >
     <div class="kh-wizard-content">
@@ -500,7 +500,7 @@ function humanSize(bytes: number): string {
                         type="number"
                         class="kh-input"
                       />
-                      <span class="kh-suffix">characters</span>
+                      <span class="kh-suffix">字符</span>
                     </div>
                   </div>
                   <div class="kh-field">
@@ -511,7 +511,7 @@ function humanSize(bytes: number): string {
                         type="number"
                         class="kh-input"
                       />
-                      <span class="kh-suffix">characters</span>
+                      <span class="kh-suffix">字符</span>
                     </div>
                   </div>
                 </div>
@@ -593,7 +593,7 @@ function humanSize(bytes: number): string {
                             class="kh-input"
                             @click.stop
                           />
-                          <span class="kh-suffix">characters</span>
+                          <span class="kh-suffix">字符</span>
                         </div>
                       </div>
                     </div>
@@ -632,7 +632,7 @@ function humanSize(bytes: number): string {
                         class="kh-input"
                         @click.stop
                       />
-                      <span class="kh-suffix">characters</span>
+                      <span class="kh-suffix">字符</span>
                     </div>
                   </div>
                 </div>
@@ -678,20 +678,7 @@ function humanSize(bytes: number): string {
                   调用嵌入模型处理文档以实现更精确的检索，可以帮助 LLM 生成高质量的答案。
                 </div>
               </AsShadcnButton>
-              <AsShadcnButton variant="ghost"
-                type="button"
-                class="kh-index-card"
-                :class="{ 'kh-index-card-active': indexingTechnique === 'ECONOMY' }"
-                @click="indexingTechnique = 'ECONOMY'"
-              >
-                <div class="kh-index-head">
-                  <span class="kh-index-icon" style="background: var(--kh-color-primary-soft); color: var(--kh-color-primary-strong)">💰</span>
-                  <span>经济</span>
-                </div>
-                <div class="kh-index-desc">
-                  每个数据块使用 10 个关键词进行检索，不会消耗任何 tokens。你会得到较低的检索准确性。
-                </div>
-              </AsShadcnButton>
+
             </div>
 
             <div class="kh-tip">
@@ -977,13 +964,19 @@ function humanSize(bytes: number): string {
 .kh-source-row {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
+  gap: 8px;
 }
 .kh-source {
   display: flex;
+  width: 100%;
+  height: auto;
+  min-height: 52px;
+  min-width: 0;
+  justify-content: flex-start;
+  white-space: normal;
   align-items: center;
-  gap: 10px;
-  padding: 14px 16px;
+  gap: 8px;
+  padding: 8px 10px;
   background: var(--kh-color-surface);
   border: 1px solid var(--kh-color-border);
   border-radius: 10px;
@@ -1006,6 +999,7 @@ function humanSize(bytes: number): string {
   cursor: not-allowed;
 }
 .kh-source-icon {
+  flex-shrink: 0;
   width: 32px;
   height: 32px;
   display: flex;
@@ -1017,6 +1011,10 @@ function humanSize(bytes: number): string {
   color: var(--kh-color-primary-strong);
 }
 .kh-source-label {
+  flex: 1;
+  min-width: 0;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
   font-size: 14px;
   color: var(--kh-color-text-primary);
 }

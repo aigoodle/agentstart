@@ -1,11 +1,119 @@
 # AgentStart
 
-参考 AgentScope 重构的 Java AI 应用平台。已从旧项目迁移并按职责重构，验证范围和运行记录见 [迁移计划](MIGRATION.md)。
+**面向 Java / Spring 生态的 AI 应用开发与集成平台。**
 
-- Java 21，Maven 3.9+。
-- Maven 坐标：`io.aigoodle:agentstart:0.1.0-SNAPSHOT`。
-- Spring Boot 4.1.1、Spring AI 2.0.1；各职责模块已迁入，验证记录见迁移计划。
-- 原有 `frontend/` 保留，不参与 Maven 构建。
+AgentStart 将模型接入、智能体、可视化工作流、知识库检索、工具扩展、消息渠道与自动化触发整合到统一平台，帮助团队完成从应用构建、在线调试到发布接入的完整流程。
+
+业务团队可以通过可视化界面配置对话助手和业务流程；开发团队可以通过模块化 Java SDK、Spring Boot Starter、HTTP API 与 Vue 组件库，将 AI 能力集成到现有系统中。平台支持独立服务部署，也支持按需组合模块，由宿主系统提供用户、租户与权限上下文。
+
+[核心能力](#核心能力) · [产品界面](#产品界面) · [应用构建流程](#应用构建流程) · [本地运行](#本地运行) · [项目结构](#项目结构) · [开发文档](#开发文档)
+
+## 核心能力
+
+| 能力 | 平台支持 | 应用价值 |
+| --- | --- | --- |
+| 应用工坊 | 对话、Agent、Workflow、Chatflow、文本生成；草稿与发布版本管理 | 在统一入口创建、管理和交付不同类型的 AI 应用 |
+| 可视化编排 | 节点画布、变量引用、条件分支、模型调用、HTTP 请求、直接回复与在线调试 | 将业务规则、模型推理和外部操作组织成可维护的流程 |
+| 智能体运行时 | ReAct、Function Calling；NATIVE 与 AgentScope 运行适配 | 按任务需要组合模型、工具与上下文，执行多步骤任务 |
+| 知识库与 RAG | 文档解析、分块、索引、召回编排、融合、重排与证据处理 | 为企业知识问答和业务助手提供检索上下文 |
+| 模型管理 | 供应商凭证、模型目录、模型启用、默认模型与 OpenAI 兼容接入 | 集中管理模型资源，按应用需求选择模型能力 |
+| 工具与生态扩展 | 工具执行网关、MCP、连接器、技能和业务插件 | 将外部服务与业务操作接入智能体和工作流 |
+| 消息渠道 | 企业微信、QQBot、飞书、钉钉、Email、Webhook | 将应用接入团队已有的沟通与消息入口 |
+| 自动化触发 | 定时任务、消息监听、Webhook 与业务事件；触发历史与手动触发 | 让应用响应消息、按计划执行或由业务事件驱动 |
+| 状态与治理 | 工作流检查点与恢复、Agent 状态存储、审批恢复、工具权限与调用预算 | 为持续运行和受控执行提供基础能力 |
+| 计量与集成 | 模型调用计量、费用聚合、趋势查询；HTTP 与流式 API | 支持运行分析，以及与现有业务系统连接 |
+
+### 面向 Java 业务系统的集成方式
+
+- **独立平台**：通过 `agentstart-server` 启动服务，配合管理前端完成配置、编排和调试。
+- **嵌入式后端**：使用 Spring Boot Starter 和所需功能模块，在现有 Java 应用中装配 AI 能力。
+- **嵌入式前端**：使用 Vue 3 组件库，将应用工坊、知识库、模型管理等页面嵌入宿主系统。
+- **API 接入**：通过管理 API、业务 API 及 OpenAI / Dify 兼容对话与流式 API 对接调用方；具体覆盖范围以接口实现为准。
+
+## 产品界面
+
+以下为当前系统界面。截图中的应用、模型名称、数量与连接状态为示例环境数据；实际可用能力取决于已安装模块、供应商配置和渠道账号授权。
+
+### 应用工坊：统一管理 AI 应用
+
+应用工坊集中展示应用类型、执行模式、关联模型与发布状态，支持搜索、类型筛选，以及草稿和已发布应用的分类查看。团队可以从同一入口构建多轮对话、工具调用智能体、业务工作流和文本生成应用。
+
+![AgentStart 应用工坊：应用列表、类型筛选与发布状态](iamges/Screenshot/app-main.png)
+
+### 可视化编排：连接模型推理与业务流程
+
+通过节点画布组织模型调用、条件分支、HTTP 请求和回复节点；在配置面板中设置提示词、输入变量、对话记忆与结构化输出。内置对话调试窗口支持边编排边验证交互效果，完成调试后保存并发布应用。
+
+截图以智慧校园助手为例，展示意图识别、条件路由、不同模型节点与业务请求的组合方式。应用侧同时提供访问 API、日志与标注、监测及数据权限设置入口。
+
+![AgentStart 可视化编排：条件分支、模型节点、结构化输出与对话调试](iamges/Screenshot/workflow-edit.png)
+
+### 知识库：将业务文档转化为检索上下文
+
+知识库集中管理文档资产与分块索引，提供新建知识库、导入文档、上传文件和搜索入口，展示文档数与分块数。后端将知识入库与 RAG 检索分层：知识模块负责解析、分块与索引，RAG 管线负责查询规划、召回、融合、重排和证据处理，供对话、工作流与 Agent 检索工具复用。
+
+适用于员工手册、招生指南、产品说明、内部制度和系统操作文档等知识场景。
+
+![AgentStart 知识库：知识资产列表、文档数量与分块数量](iamges/Screenshot/dataset-main.png)
+
+### 模型管理：统一配置供应商与模型资源
+
+模型供应商页面统一管理供应商凭证、模型目录和系统默认模型，提供推理、Embedding、Rerank、语音识别、语音合成、图片与视频生成等模型类别的配置入口。各类别的实际调用能力由对应供应商和适配模块提供。
+
+界面提供 Qwen、DeepSeek、OpenAI、Kimi、智谱、火山方舟、Ollama、SiliconFlow 及自定义 OpenAI 兼容接口等接入入口，便于按业务需求配置云端服务或兼容服务。
+
+![AgentStart 模型供应商：默认模型设置与供应商接入入口](iamges/Screenshot/model-config.png)
+
+在单个供应商下，可以重新拉取目录、手动添加模型、筛选启用状态并维护凭证。模型目录与运行调用分离，供应商配置或目录同步后无需通过重启更新预置目录。
+
+![AgentStart 供应商模型管理：模型目录、启用开关与凭证维护](iamges/Screenshot/model-config-list.png)
+
+### 渠道接入：将应用带到业务沟通入口
+
+消息渠道页面集中展示 Email、QQBot、Webhook、企业微信智能机器人、钉钉机器人与飞书机器人，提供账号接入和消息查看入口，并展示账号数、消息数和运行状态。
+
+渠道模块负责消息接入、可信身份、应用路由与可靠投递。通过账号配置与应用绑定，可以将同一平台的智能体和工作流用于不同业务沟通场景。
+
+![AgentStart 消息渠道：渠道目录、账号接入与消息状态](iamges/Screenshot/channel-main.png)
+
+### 触发器：让 AI 应用自动响应与执行
+
+触发器管理支持按应用或用户查看任务，集中维护消息监听、定时任务、Webhook 和业务事件触发。列表展示目标流程、启用状态、触发次数及上次触发时间，并提供历史查看、手动触发与删除操作。
+
+可用于定时统计、业务提醒、机器人消息处理，以及外部事件驱动的工作流执行。
+
+![AgentStart 触发器管理：定时任务、消息监听、执行状态与触发历史入口](iamges/Screenshot/triggers-list.png)
+
+## 应用构建流程
+
+1. **接入模型**：配置供应商凭证，启用所需模型，并设置系统默认模型。
+2. **准备知识与工具**：按场景导入业务文档，配置检索资源、工具、MCP 服务或连接器。
+3. **创建应用**：在应用工坊选择应用类型，配置模型、提示词、上下文和执行模式。
+4. **编排与调试**：为业务流程添加节点、变量和条件路由，在调试窗口验证输入输出。
+5. **发布与接入**：发布应用版本，通过 API 或消息渠道提供服务；按需配置自动触发。
+6. **跟踪与迭代**：结合运行日志、触发历史与模型调用计量调整应用配置。
+
+## 典型场景
+
+| 场景 | 能力组合 | 示例 |
+| --- | --- | --- |
+| 企业知识助手 | 知识库 + RAG + 多轮对话 | 制度查询、员工手册问答、产品使用咨询 |
+| 业务办理助手 | 意图识别 + 条件路由 + 工具 / HTTP 请求 | 操作指引、业务查询、审批流程协助 |
+| 智慧校园助手 | 招生知识库 + Chatflow + 业务连接 | 招生咨询、校内系统使用指引、信息查询 |
+| 团队机器人 | Agent / Workflow + 消息渠道 | 企业微信、飞书、钉钉与 QQ 消息应答 |
+| 定时业务自动化 | 触发器 + Workflow + 消息发送 | 统计汇总、周期提醒、定时通知 |
+| 内容与工具助手 | 模型调用 + 技能 / 插件 + 工具网关 | 文本生成、多步骤工具调用、业务内容处理 |
+
+以上为可基于平台能力搭建的应用方向，具体业务逻辑、数据权限和外部系统连接需按项目配置。
+
+## 技术基础
+
+- **后端**：Java 21、Maven 3.9+、Spring Boot、Spring AI，支持 AgentScope 运行适配。
+- **前端**：Vue 3 组件库与管理演示项目，独立 React 对话前端；支持明暗主题与科技感外观。
+- **数据与状态**：PostgreSQL、Redis；向量存储适配包括 pgvector、Elasticsearch、Milvus。
+- **模块组织**：基础设施、执行引擎、知识与上下文、业务集成、接入层与独立服务；模型提供商、存储与渠道按模块扩展。
+
+Maven 坐标为 `io.aigoodle:agentstart:0.1.0-SNAPSHOT`。具体依赖版本以根 `pom.xml` 为准，前端独立构建，不参与 Maven 聚合。
 
 ## 项目结构
 
@@ -84,7 +192,7 @@ Java 版本、编码和构建插件集中在根 POM，分组内功能模块通�
 | `agentstart-spring-boot-starter` | Spring Boot 自动配置与按需装配入口。 |
 | `agentstart-server` | 独立服务启动模块。 |
 
-## 边界
+## 运行时与集成边界
 
 工作流负责流程调度与恢复；AgentScope Runtime 负责 Agent 内部执行与恢复。
 RAG 管线统一供工作流、对话和 Agent 检索工具使用；知识模块管理入库与索引。
@@ -127,6 +235,15 @@ completion 可独立于 web 使用，共享 `agentstart-api` 的错误响应协�
 
 ## 本地运行
 
+### 环境准备
+
+准备 JDK 21、Maven 3.9+、与前端 Vite 版本兼容的 Node.js 和 pnpm，以及可连接的 PostgreSQL、Redis。
+在 `agentstart-server/.env.local` 中配置本地数据库、Redis 与所需密钥。服务启动时加载各模块数据库建表脚本，配置入口见 `agentstart-server/src/main/resources/application.yml`。
+
+演示服务提供本地演示身份；接入业务系统时，应通过宿主的登录会话或 SSO 提供可信用户与租户上下文，并配置独立密钥。
+
+### 启动后端
+
 在仓库根目录构建并启动后台，脚本读取 `agentstart-server/.env.local`，支持引号和注释；不会执行 env 中的 shell 命令，也不会打印凭证。数据库和 Redis 地址使用该文件配置。
 
 ```bash
@@ -134,12 +251,25 @@ mvn -pl agentstart-server -am package -DskipTests
 python3 scripts/run-server.py
 ```
 
+### 启动管理前端
+
+首次运行，先构建 Vue 组件库：
+
+```bash
+cd frontend/vue-agentstart
+pnpm install --frozen-lockfile
+pnpm build
+```
+
 另开终端启动真实后端 demo；Vite 默认使用 5173，`VITE_PORT` 可覆盖（当前本地配置为 5178）。端口被占用时以终端输出的地址为准。
 
 ```bash
 cd frontend/agentstart-demo
+pnpm install --frozen-lockfile
 MOCK=false pnpm dev --host 127.0.0.1
 ```
+
+### 启动对话前端
 
 应用编辑页的对话预览使用独立 React 聊天前端，还需启动：
 
@@ -150,7 +280,7 @@ pnpm dev --host 127.0.0.1
 ```
 
 聊天前端默认端口 5073，由 demo 的 `/chat/` 代理嵌入；两个前端均支持 `VITE_AGENT_API_TARGET` 配置后台地址。
-组件库样式来自构建产物，首次启动 demo 前在 `frontend/vue-agentstart` 执行 `pnpm install --frozen-lockfile` 和 `pnpm build`。
+组件库样式来自构建产物，修改组件库后需重新构建以更新 demo 引用的样式。
 
 后台默认端口 18090，前端通过 `/api/agent-start` 代理访问。`VITE_AGENT_API_TARGET` 可设置其他后台地址。使用 Ctrl+C 停止各服务。
 
@@ -180,6 +310,22 @@ mvn -B -T1 -pl :agentstart-runtime-agentscope -am test
 各聚合模块的目录名、artifactId 和 name 保持一致；知识与上下文聚合为
 `agentstart-context`，避免与功能模块 `agentstart-knowledge` 重名。
 项目 SDK 与 Maven 导入器使用 JDK 21。
+
+## 开发文档
+
+| 文档 | 内容 |
+| --- | --- |
+| [Vue 组件库](frontend/vue-agentstart/README.md) | 组件安装、全局配置与宿主集成 |
+| [前端外观配置](frontend/vue-agentstart/APPEARANCE.md) | 主题切换、科技感外观与 CSS 变量 |
+| [渠道集成](frontend/vue-agentstart/CHANNEL-HUB.md) | 渠道组件与接入说明 |
+| [连接器集成](frontend/vue-agentstart/CONNECTOR-HUB.md) | 外部系统连接组件说明 |
+| [对话前端](frontend/react-antdx-chat/README.md) | 独立聊天界面与开发说明 |
+| [AgentScope SDK](agentstart-engine/agentstart-agentscope-sdk/README.md) | SDK 分发与依赖集成 |
+| [迁移与验证记录](MIGRATION.md) | 模块迁移、架构调整及历史验证范围 |
+
+### 文档参考
+
+延伸阅读：[Dify 官方文档](https://docs.dify.ai/)。AgentStart 的能力说明以本仓库实现和当前界面为依据。
 
 ## 许可证
 

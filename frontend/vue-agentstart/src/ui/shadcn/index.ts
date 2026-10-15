@@ -89,3 +89,5 @@ export { default as UiAvatar } from './avatar/Avatar.vue';
 export { default as UiAvatarFallback } from './avatar/AvatarFallback.vue';
 export { default as UiAvatarImage } from './avatar/AvatarImage.vue';
 export { default as UiToaster } from './sonner/Sonner.vue';
+
+export { default as UiSpinner } from './spinner/Spinner.vue';

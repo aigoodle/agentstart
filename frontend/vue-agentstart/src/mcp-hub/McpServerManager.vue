@@ -158,8 +158,7 @@ async function save() {
     message.success(form.value.id ? 'MCP 服务已更新' : 'MCP 服务已创建');
     await load();
   } catch (exception: any) {
-    error.value = exception?.message ?? '保存失败';
-    message.error(error.value);
+    message.error(exception?.message ?? '保存失败');
   } finally {
     saving.value = false;
   }
@@ -175,8 +174,7 @@ function remove(row: McpServerConfig) {
         message.success('MCP 服务已删除');
         await load();
       } catch (exception: any) {
-        error.value = exception?.message ?? '删除失败';
-        message.error(error.value);
+        message.error(exception?.message ?? '删除失败');
         throw exception;
       }
     },

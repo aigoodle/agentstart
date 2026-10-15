@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { message } from '../ui/message';
 import { Input as AsShadcnInput } from '../ui/shadcn/input';
 import { Button as AsShadcnButton } from '../ui/shadcn/button';
 
@@ -76,7 +77,7 @@ async function toggle(p: ConnectorDefinition) {
     await client.connectors.setInstallationEnabled(i.id, !i.enabled, props.tenantId);
     await load();
   } catch (e: any) {
-    error.value = e?.message ?? '更新失败';
+    message.error(e?.message ?? '更新失败');
   }
 }
 

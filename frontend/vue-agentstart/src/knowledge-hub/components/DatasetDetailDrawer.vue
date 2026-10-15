@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { Button as AsShadcnButton } from '../../ui/shadcn/button';
 import { Textarea as AsShadcnTextarea } from '../../ui/shadcn/textarea';
+import { Alert, AlertTitle, AlertDescription } from '../../ui/shadcn/alert';
+import { Info } from '@lucide/vue';
 
 /**
  * DatasetDetailDrawer — self-contained full-screen drawer that hosts the whole
  * dataset-detail experience without navigating away.
  *
- * Sliding in from the LEFT (occupies ~88vw so the workspace stays roomy), it
+ * Sliding in from the LEFT (occupies the full viewport so the workspace stays roomy), it
  * contains:
  *   - DatasetSidebar on the left (4 nav items switch content in-place)
  *   - Right pane switches between DocumentTable / stub / RecallTestingPanelV2
@@ -37,6 +39,7 @@ import type { RetrievalMethod } from '../types/retrieval';
 import AddDocumentsWizard from './AddDocumentsWizard.vue';
 import DatasetSettingsPanel from './DatasetSettingsPanel.vue';
 import DatasetSidebar from './DatasetSidebar.vue';
+import DatasetBasicInfoModal from './DatasetBasicInfoModal.vue';
 import DocumentChunksView from './DocumentChunksView.vue';
 import DocumentTable from './DocumentTable.vue';
 import RagOperationsPanel from './RagOperationsPanel.vue';
@@ -63,6 +66,11 @@ const emit = defineEmits<{
 
 // ---------- state
 const dataset = ref<DatasetSummary | null>(null);
+const basicInfoOpen = ref(false);
+function onBasicInfoSaved(updated: DatasetSummary) {
+  dataset.value = updated;
+  emit('refresh-list');
+}
 const documents = ref<DocumentRow[]>([]);
 const documentsLoading = ref(false);
 
@@ -90,6 +98,7 @@ const editorSaving = ref(false);
 watch(
   () => [props.open, props.datasetId] as const,
   async ([isOpen, id]) => {
+    basicInfoOpen.value = false;
     if (!isOpen || !id) {
       dataset.value = null;
       documents.value = [];
@@ -188,6 +197,10 @@ function close() {
 // popping the native file picker straight away, mirroring the create-flow.
 const addWizardOpen = ref(false);
 function pickFiles() {
+  if (!dataset.value?.embeddingModelId) {
+    void onNav('settings');
+    return;
+  }
   addWizardOpen.value = true;
 }
 async function onAddWizardConfirm(payload: {
@@ -516,6 +529,9 @@ const sidebarData = computed(() => ({
   id: props.datasetId ?? '',
   name: dataset.value?.name ?? '加载中...',
   description: dataset.value?.description,
+  icon: dataset.value?.icon,
+  iconBg: dataset.value?.iconBg,
+  indexingTechnique: dataset.value?.indexingTechnique,
   documentCount: documents.value.length,
   segmentCount: dataset.value?.segmentCount ?? 0,
 }));
@@ -526,7 +542,7 @@ const sidebarData = computed(() => ({
     :open="open"
     class="kh-dataset-drawer"
     placement="left"
-    width="88vw"
+    width="100vw"
     :closable="false"
     :body-style="{ padding: '0', overflow: 'hidden' }"
     @update:open="emit('update:open', $event)"
@@ -566,6 +582,7 @@ const sidebarData = computed(() => ({
           :active="tab"
           @nav="onNav"
           @copy-api="onCopyApi"
+          @edit-info="basicInfoOpen = !!dataset"
         />
 
         <div class="kh-drawer-main">
@@ -593,6 +610,16 @@ const sidebarData = computed(() => ({
               />
             </template>
             <template v-else>
+              <Alert v-if="tab === 'documents' && dataset && !dataset.embeddingModelId" role="status" class="kh-upload-config-hint">
+                <div class="kh-upload-config-content">
+                  <Info :size="20" class="kh-upload-config-icon" aria-hidden="true" />
+                  <div class="kh-upload-config-text">
+                    <AlertTitle>请先配置 Embedding 模型</AlertTitle>
+                    <AlertDescription>请先在知识库设置中选择并保存 Embedding 模型，再添加文档。</AlertDescription>
+                  </div>
+                  <AsShadcnButton variant="outline" size="sm" @click="onNav('settings')">配置模型</AsShadcnButton>
+                </div>
+              </Alert>
               <DocumentTable
                 v-if="tab === 'documents'"
                 :documents="documents"
@@ -625,6 +652,9 @@ const sidebarData = computed(() => ({
             </template>
           </div>
         </div>
+
+        <DatasetBasicInfoModal :open="basicInfoOpen" :dataset="dataset" :save="hub.updateDataset"
+          @update:open="basicInfoOpen = $event" @saved="onBasicInfoSaved" />
 
         <!-- Add-documents wizard (3-step, upload → 分段配置 → 完成). The
              preview-chunks callback runs through the hub so what the user
@@ -694,8 +724,19 @@ const sidebarData = computed(() => ({
 </template>
 
 <style scoped>
+.kh-upload-config-hint {
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto 16px;
+  background: var(--kh-color-primary-soft);
+  border-color: color-mix(in srgb, var(--kh-color-primary) 25%, transparent);
+}
+.kh-upload-config-content { display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; }
+.kh-upload-config-icon { flex-shrink: 0; color: var(--kh-color-primary-strong); }
+.kh-upload-config-text { min-width: 0; }
+.kh-upload-config-text :deep([data-slot="alert-description"]) { color: var(--kh-color-text-secondary); line-height: 1.6; }
 .kh-dataset-drawer {
-  max-width: 1600px;
+  max-width: 100vw;
 }
 .kh-drawer-shell {
   width: 100%;

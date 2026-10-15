@@ -2,10 +2,12 @@ import { flushPromises, mount } from '@vue/test-utils';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import ProviderHubShell from './ProviderHubShell.vue';
 import ProviderCredentialModal from './ProviderCredentialModal.vue';
+import { message } from '../../ui/message';
+vi.mock('../../ui/message', () => ({ message: { success: vi.fn(), error: vi.fn() } }));
 
 const api = vi.hoisted(() => ({
   listProviders: vi.fn(), listModels: vi.fn().mockResolvedValue([]),
-  refreshCatalog: vi.fn(),
+  refreshCatalog: vi.fn(), synchronizeBuiltinCatalog: vi.fn(),
   getProviderCatalog: vi.fn().mockResolvedValue([]), saveProviderCredential: vi.fn().mockResolvedValue({}),
 }));
 vi.mock('../composables/useProviderHub', () => ({
@@ -24,6 +26,54 @@ const provider = {
 let wrapper: ReturnType<typeof mount>;
 afterEach(() => { wrapper?.unmount(); document.body.innerHTML = ''; vi.clearAllMocks(); });
 describe('provider management interactions', () => {
+  it.each([true, false])('shows catalog synchronization feedback in a toast (success: %s)', async (success) => {
+    api.listProviders.mockResolvedValue([provider]);
+    if (success) api.synchronizeBuiltinCatalog.mockResolvedValueOnce(undefined);
+    else api.synchronizeBuiltinCatalog.mockRejectedValueOnce(new Error('同步服务不可用'));
+    wrapper = mount(ProviderHubShell, {
+      global: { stubs: { DefaultModelsPanel: true, ProviderCredentialModal: true, ModelParameterDrawer: true } },
+    });
+    await flushPromises();
+    const button = wrapper.findAll('button').find(button => button.text() === '同步预置目录')!;
+    await button.trigger('click');
+    await flushPromises();
+    expect(api.synchronizeBuiltinCatalog).toHaveBeenCalledOnce();
+    if (success) expect(message.success).toHaveBeenCalledWith('预置目录已同步；远程模型请在供应商中手动拉取。');
+    else expect(message.error).toHaveBeenCalledWith('同步服务不可用');
+    expect(wrapper.text()).not.toContain('预置目录已同步');
+    expect(wrapper.text()).not.toContain('同步服务不可用');
+    expect(button.attributes('disabled')).toBeUndefined();
+  });
+
+  it('covers existing content with a shadcn loading overlay throughout synchronization', async () => {
+    let finishLoading!: (providers: typeof provider[]) => void;
+    api.listProviders.mockReturnValueOnce(new Promise(resolve => { finishLoading = resolve; }));
+    let complete!: () => void;
+    api.synchronizeBuiltinCatalog.mockReturnValueOnce(new Promise<void>(resolve => { complete = resolve; }));
+    wrapper = mount(ProviderHubShell, {
+      global: { stubs: { DefaultModelsPanel: true, ProviderCredentialModal: true, ModelParameterDrawer: true } },
+    });
+    await wrapper.vm.$nextTick();
+    expect(wrapper.attributes('aria-busy')).toBe('true');
+    expect(wrapper.find('.phs-loading-overlay [data-slot="spinner"]').exists()).toBe(true);
+    finishLoading([provider]);
+    await flushPromises();
+    expect(wrapper.find('.phs-loading-overlay').exists()).toBe(false);
+    const button = wrapper.findAll('button').find(button => button.text() === '同步预置目录')!;
+    await button.trigger('click');
+    expect(wrapper.attributes('aria-busy')).toBe('true');
+    expect(wrapper.find('.phs-content').attributes('inert')).toBeDefined();
+    expect(wrapper.find('.phs-loading-overlay [data-slot="card"]').text()).toContain('正在同步预置目录');
+    expect(wrapper.find('.phs-section').exists()).toBe(true);
+    expect(button.attributes('disabled')).toBeDefined();
+    complete();
+    await flushPromises();
+    expect(wrapper.attributes('aria-busy')).toBe('false');
+    expect(wrapper.find('.phs-content').attributes('inert')).toBeUndefined();
+    expect(wrapper.find('.phs-loading-overlay').exists()).toBe(false);
+    expect(wrapper.find('.phs-loading').exists()).toBe(false);
+  });
+
   it('filters vision capabilities separately from image and video generation types', async () => {
     api.listProviders.mockResolvedValue([provider]);
     api.getProviderCatalog.mockResolvedValue([
@@ -104,8 +154,8 @@ describe('provider management interactions', () => {
     expect(tags[2]!.textContent).toContain('🎬');
     const icons = document.querySelectorAll<HTMLElement>('.phs-row-icon');
     expect(icons[1]!.textContent?.trim()).toBe('🎬');
-    expect(tags[2]!.style.background).toBe(icons[1]!.style.background);
-    expect(tags[1]!.style.color).not.toBe(tags[2]!.style.color);
+    expect(tags[2]!.style.getPropertyValue('--phs-type-color')).toBe(icons[1]!.style.getPropertyValue('--phs-type-color'));
+    expect(tags[1]!.style.getPropertyValue('--phs-type-color')).not.toBe(tags[2]!.style.getPropertyValue('--phs-type-color'));
     tags[2]!.click(); await flushPromises();
     expect(document.querySelectorAll('.phs-row')).toHaveLength(1);
     expect(document.querySelector('.phs-row-name')?.textContent).toContain('video-model');

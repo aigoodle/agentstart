@@ -35,6 +35,7 @@ const emit = defineEmits<{
   (e: 'create'): void;
   (e: 'open', dataset: DatasetCardItem): void;
   (e: 'settings', dataset: DatasetCardItem): void;
+  (e: 'edit-info', dataset: DatasetCardItem): void;
   (e: 'delete', dataset: DatasetCardItem): void;
 }>();
 
@@ -147,6 +148,7 @@ function onMenuDelete(d: DatasetCardItem) {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" @click.stop>
             <DropdownMenuItem @select="onMenuOpen(d)">📂 {{ t('card.open') }}</DropdownMenuItem>
+            <DropdownMenuItem @select="closeMenu(); emit('edit-info', d)">✎ 编辑基本信息</DropdownMenuItem>
             <DropdownMenuItem @select="onMenuSettings(d)">⚙ {{ t('card.settings') }}</DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem class="text-destructive" @select="onMenuDelete(d)">🗑 {{ t('card.delete') }}</DropdownMenuItem>

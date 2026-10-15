@@ -1833,7 +1833,8 @@ function variableTypeLabel(type: AgentVariable['type']): string {
              顶部 header 可拖动（避开按钮/输入/iframe），位置写入 localStorage。
              变量清单：flow 模式从 designerRef 的 START 节点抽；非 flow 走
              variables 列表（当前不会走这个分支，保留兼容）。 -->
-        <Teleport to="body">
+        <!-- Keep debug content inside the modal sheet so its focus trap and
+             pointer-event boundary include the panel and its iframe. -->
           <transition name="dr-debug-pop">
             <div
             v-if="debugPanelOpen && (isWorkflowMode || chatConfig?.src)"
@@ -1910,7 +1911,6 @@ function variableTypeLabel(type: AgentVariable['type']): string {
             </template>
             </div>
           </transition>
-        </Teleport>
       </div>
   </Drawer>
 </template>
@@ -2389,7 +2389,7 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   position: fixed; /* 用 fixed 让坐标以视口为准，跨 iframe / scroll 都稳定 */
   top: 80px;
   right: 24px;
-  /* 面板 Teleport 到 body 后使用全局浮层级别，确保高于抽屉标题栏。 */
+  /* 在抽屉内部覆盖标题栏，随抽屉一起参与全局层级排序。 */
   z-index: 1300;
   width: min(460px, 92vw); /* 与 ChatIframePanel 一致；展开执行过程时才加倍 */
   height: 86vh;

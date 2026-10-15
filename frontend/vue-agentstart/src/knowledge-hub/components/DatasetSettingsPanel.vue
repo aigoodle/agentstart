@@ -321,6 +321,7 @@ function save() {
           </div>
           <div v-else class="kh-settings-sub-label">了解更多关于分段模式。</div>
         </label>
+        <div class="kh-settings-chunk-content">
         <div
           class="kh-settings-cards"
           :class="{ 'kh-settings-cards-locked': chunkModeLocked }"
@@ -367,7 +368,7 @@ function save() {
                   class="kh-input"
                   placeholder="1024"
                 />
-                <span class="kh-suffix">characters</span>
+                <span class="kh-suffix">字符</span>
               </div>
             </div>
             <div class="kh-field">
@@ -379,7 +380,7 @@ function save() {
                   class="kh-input"
                   placeholder="50"
                 />
-                <span class="kh-suffix">characters</span>
+                <span class="kh-suffix">字符</span>
               </div>
             </div>
           </div>
@@ -393,7 +394,7 @@ function save() {
                   class="kh-input"
                   placeholder="1024"
                 />
-                <span class="kh-suffix">characters</span>
+                <span class="kh-suffix">字符</span>
               </div>
             </div>
             <div class="kh-field">
@@ -405,7 +406,7 @@ function save() {
                   class="kh-input"
                   placeholder="512"
                 />
-                <span class="kh-suffix">characters</span>
+                <span class="kh-suffix">字符</span>
               </div>
             </div>
             <div class="kh-field">
@@ -418,18 +419,15 @@ function save() {
           </div>
           <div class="kh-settings-inline-checks">
             <label class="kh-check">
-              <AsShadcnBoolean type="checkbox" v-model="form.removeExtraWhitespace" />
+              <AsShadcnBoolean type="checkbox" v-model="form.removeExtraWhitespace" aria-label="替换掉连续的空格、换行符和制表符" />
               <span>替换掉连续的空格、换行符和制表符</span>
             </label>
           </div>
         </template>
+        </div>
       </div>
 
-      <!-- 索引模式 — locked once documents are ingested. HIGH_QUALITY vs
-           ECONOMY changes the retrieval pipeline (vector store vs keyword
-           inverted index), and the backend does not re-embed on switch — so
-           allowing the toggle post-ingest would leave chunks stranded in the
-           wrong store. Mirrors the chunk-mode lock behaviour. -->
+      <!-- 当前后端使用向量索引。 -->
       <div class="kh-settings-row">
         <label class="kh-settings-label">
           索引模式
@@ -465,43 +463,7 @@ function save() {
               调用嵌入模型处理文档以实现更精确的检索，可以帮助 LLM 生成高质量的答案。
             </div>
           </AsShadcnCard>
-          <AsShadcnCard
-            class="kh-mode-card"
-            :class="{
-              'kh-mode-card-active': form.indexingTechnique === 'ECONOMY',
-              'kh-mode-card-disabled':
-                chunkModeLocked && form.indexingTechnique !== 'ECONOMY',
-            }"
-            @click="!chunkModeLocked && (form.indexingTechnique = 'ECONOMY')"
-          >
-            <div class="kh-mode-card-head">
-              <span class="kh-mode-card-icon" style="color: var(--kh-color-primary-strong)">💰</span>
-              <span class="kh-mode-card-title">经济</span>
-              <span
-                v-if="chunkModeLocked && form.indexingTechnique === 'ECONOMY'"
-                class="kh-mode-card-lock"
-              >
-                🔒 已锁定
-              </span>
-            </div>
-            <div class="kh-mode-card-desc">
-              每个数据块使用 10 个关键词进行检索，不消耗任何 tokens，你会得到较低的检索准确性。
-            </div>
-            <div
-              v-if="form.indexingTechnique === 'ECONOMY' && !chunkModeLocked"
-              class="kh-keyword-row"
-            >
-              <label class="kh-keyword-lbl">关键词数量</label>
-              <AsShadcnRange
-                v-model.number="form.keywordCount"
-                type="range"
-                min="1"
-                max="20"
-                class="kh-keyword-slider"
-              />
-              <span class="kh-keyword-val">{{ form.keywordCount ?? 10 }}</span>
-            </div>
-          </AsShadcnCard>
+
         </div>
       </div>
 
@@ -528,12 +490,10 @@ function save() {
             启用后，将会自动为新添加的文档生成摘要。已有的文档也可以手动使用。
           </div>
         </label>
-        <label class="inline-flex items-center">
-          <AsShadcnBoolean appearance="switch" type="checkbox" v-model="form.autoSummary" />
+        <label class="kh-settings-summary-toggle">
+          <AsShadcnBoolean appearance="switch" type="checkbox" v-model="form.autoSummary" aria-label="摘要自动生成" />
+          <span class="kh-switch-lbl">{{ form.autoSummary ? '已启用' : '已禁用' }}</span>
         </label>
-        <span class="kh-switch-lbl">
-          {{ form.autoSummary ? '已启用' : '已禁用' }}
-        </span>
       </div>
 
       <!-- 检索设置 — shared RetrievalMethodPicker so wizard / settings /
@@ -572,6 +532,8 @@ function save() {
 
 <style scoped>
 .kh-settings {
+  container: dataset-settings / inline-size;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -602,7 +564,7 @@ function save() {
 
 .kh-settings-row {
   display: grid;
-  grid-template-columns: 140px 1fr;
+  grid-template-columns: 140px minmax(0, 1fr);
   gap: 20px;
   align-items: flex-start;
 }
@@ -656,36 +618,59 @@ function save() {
   flex-shrink: 0;
 }
 
+/* Mode cards and their controls share the right-hand content column. */
+.kh-settings-chunk-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+.kh-settings-summary-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+}
 /* Per-chunk-mode parameter panels shown below the mode card row. */
 .kh-settings-inline-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
   gap: 12px;
-  margin-top: 10px;
 }
 .kh-settings-inline-checks {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  margin-top: 12px;
+  gap: 8px;
 }
 .kh-input-suffix {
-  position: relative;
   display: flex;
   align-items: center;
+  min-width: 0;
+  border: 1px solid var(--input);
+  border-radius: 8px;
+  background: var(--background);
+}
+.kh-input-suffix:focus-within {
+  border-color: var(--ring);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--ring) 25%, transparent);
 }
 .kh-input-suffix .kh-input {
-  padding-right: 74px;
+  min-width: 0;
+  padding-right: 12px;
   width: 100%;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
 }
 .kh-input-suffix .kh-suffix {
-  position: absolute;
-  right: 10px;
+  flex-shrink: 0;
+  padding-right: 12px;
   font-size: 11px;
   color: var(--kh-color-text-muted);
   pointer-events: none;
 }
 .kh-field {
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -702,10 +687,15 @@ function save() {
   color: var(--kh-color-text-secondary);
   cursor: pointer;
 }
-.kh-check input {
-  width: 15px;
-  height: 15px;
-  accent-color: var(--kh-color-primary);
+.kh-check :deep(.as-boolean-field) {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  min-height: 20px;
+}
+.kh-check > span {
+  min-width: 0;
+  line-height: 20px;
 }
 
 /* Mode cards */
@@ -819,7 +809,6 @@ function save() {
   display: none;
 }
 .kh-switch-lbl {
-  margin-left: 8px;
   font-size: 12px;
   color: var(--kh-color-text-tertiary);
 }
@@ -873,13 +862,16 @@ function save() {
   margin-top: 24px;
   margin-left: auto;
   padding: 12px 20px;
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--popover);
+  background: color-mix(in srgb, var(--popover) 95%, transparent);
+  color: var(--popover-foreground);
   backdrop-filter: blur(6px);
-  border-top: 1px solid var(--kh-color-divider);
+  border: 1px solid var(--border);
   border-radius: 10px;
   display: flex;
   gap: 10px;
-  box-shadow: 0 -4px 12px rgba(15, 23, 42, 0.05);
+  box-shadow: 0 -4px 12px color-mix(in srgb, var(--foreground) 6%, transparent);
+  z-index: 1;
 }
 .kh-btn {
   padding: 6px 20px;
@@ -894,7 +886,8 @@ function save() {
   color: var(--kh-color-primary-contrast);
 }
 .kh-btn-primary:disabled {
-  background: var(--kh-color-border);
+  background: var(--muted);
+  color: var(--muted-foreground);
   cursor: not-allowed;
 }
 .kh-btn-secondary {
@@ -905,14 +898,11 @@ function save() {
   background: var(--kh-color-surface-sunken);
 }
 
-/* Fix alignment of the remaining process-cleanup checkbox — the input's
-   baseline was drifting below the label text on Windows Chrome. */
-.kh-check {
-  align-items: flex-start;
-  line-height: 1.4;
-}
-.kh-check input {
-  flex-shrink: 0;
-  margin-top: 1px;
+@container dataset-settings (max-width: 560px) {
+  .kh-settings-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+  .kh-settings-label { padding-top: 0; }
 }
 </style>

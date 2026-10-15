@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { confirmAction } from '../ui/components/modalService';
 import Pagination from '../ui/components/Pagination.vue';
 import { ShadcnBoolean as AsShadcnBoolean } from '../ui/components/ShadcnBoolean';
 
@@ -111,12 +112,12 @@ function openCreate() {
 }
 
 async function save() {
-  if (!form.name.trim() || !form.targetId.trim()) return void (error.value = '请填写名称和目标 ID');
+  if (!form.name.trim() || !form.targetId.trim()) return void (message.error('请填写名称和目标 ID'));
   let config: Record<string, unknown>;
   try {
     config = JSON.parse(configText.value || '{}');
   } catch {
-    return void (error.value = '配置必须是合法 JSON');
+    return void (message.error('配置必须是合法 JSON'));
   }
   saving.value = true;
   error.value = '';
@@ -126,7 +127,7 @@ async function save() {
     flash('触发器已创建');
     await load();
   } catch (e: any) {
-    error.value = e?.message ?? '创建失败';
+    message.error(e?.message ?? '创建失败');
   } finally {
     saving.value = false;
   }
@@ -138,19 +139,19 @@ async function toggle(row: TriggerWire) {
     row.enabled = !row.enabled;
     flash(row.enabled ? '已启用' : '已停用');
   } catch (e: any) {
-    error.value = e?.message ?? '状态更新失败';
+    message.error(e?.message ?? '状态更新失败');
   }
 }
 
 async function remove(row: TriggerWire) {
-  if (!confirm(`确定删除触发器“${row.name}”吗？`)) return;
+  if (!await confirmAction(`确定删除触发器“${row.name}”吗？`)) return;
   try {
     await client.triggers.remove(row.id);
     if (rows.value.length === 1 && page.value > 1) page.value--;
     flash('已删除');
     await load();
   } catch (e: any) {
-    error.value = e?.message ?? '删除失败';
+    message.error(e?.message ?? '删除失败');
   }
 }
 
@@ -159,7 +160,7 @@ async function fire(row: TriggerWire) {
     await client.triggers.fire(row.id, {});
     flash('触发请求已提交');
   } catch (e: any) {
-    error.value = e?.message ?? '触发失败';
+    message.error(e?.message ?? '触发失败');
   }
 }
 
@@ -175,7 +176,7 @@ async function loadHistory() {
   try {
     invocations.value = await client.triggers.invocations(current.value.id);
   } catch (e: any) {
-    error.value = e?.message ?? '历史加载失败';
+    message.error(e?.message ?? '历史加载失败');
   } finally {
     historyLoading.value = false;
   }
@@ -187,7 +188,7 @@ async function replay(item: TriggerInvocationWire) {
     flash('已提交重放');
     await loadHistory();
   } catch (e: any) {
-    error.value = e?.message ?? '重放失败';
+    message.error(e?.message ?? '重放失败');
   }
 }
 
@@ -253,7 +254,7 @@ onMounted(load);
         <Button type="primary" @click="openCreate">＋ 创建触发器</Button>
       </div>
     </div>
-    <div v-if="error" class="th-alert"><b>操作失败</b><span>{{ error }}</span>
+    <div v-if="error" class="th-alert"><b>加载失败</b><span>{{ error }}</span>
       <AsShadcnButton variant="ghost" @click="error=''">×</AsShadcnButton>
     </div>
     <nav class="th-categories" aria-label="触发器分类">

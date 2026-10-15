@@ -13,6 +13,7 @@ import { Button as AsShadcnButton } from '../../ui/shadcn/button';
  * delegated to the host so the sidebar stays presentational.
  */
 import { computed, ref } from 'vue';
+import { Pencil, Copy, Download, Trash2 } from '@lucide/vue';
 
 import type { DatasetTab } from '../types';
 
@@ -143,20 +144,20 @@ function onDelete() {
 
         <!-- Quick action tiles -->
         <div class="kh-ip-actions">
-          <AsShadcnButton variant="ghost" class="kh-ip-action" @click="onEdit">
-            <span class="kh-ip-action-icon">✎</span>
+          <AsShadcnButton variant="ghost" class="kh-ip-action kh-ip-action-primary" @click="onEdit">
+            <span class="kh-ip-action-icon"><Pencil :size="16" aria-hidden="true" /></span>
             <span>编辑信息</span>
           </AsShadcnButton>
           <AsShadcnButton variant="ghost" class="kh-ip-action" @click="onDuplicate">
-            <span class="kh-ip-action-icon">⧉</span>
+            <span class="kh-ip-action-icon"><Copy :size="16" aria-hidden="true" /></span>
             <span>复制</span>
           </AsShadcnButton>
           <AsShadcnButton variant="ghost" class="kh-ip-action" @click="onExport">
-            <span class="kh-ip-action-icon">⇩</span>
+            <span class="kh-ip-action-icon"><Download :size="16" aria-hidden="true" /></span>
             <span>导出</span>
           </AsShadcnButton>
           <AsShadcnButton variant="ghost" class="kh-ip-action kh-ip-action-danger" @click="onDelete">
-            <span class="kh-ip-action-icon">🗑</span>
+            <span class="kh-ip-action-icon"><Trash2 :size="16" aria-hidden="true" /></span>
             <span>删除</span>
           </AsShadcnButton>
         </div>
@@ -183,7 +184,7 @@ function onDelete() {
             </div>
             <div class="kh-ip-stat">
               <div class="kh-ip-stat-val">{{ dataset.segmentCount ?? 0 }}</div>
-              <div class="kh-ip-stat-lbl">关联应用</div>
+              <div class="kh-ip-stat-lbl">片段</div>
             </div>
             <div v-if="createdAgo" class="kh-ip-stat">
               <div class="kh-ip-stat-val">{{ createdAgo }}</div>
@@ -372,7 +373,7 @@ function onDelete() {
 }
 
 /* ---- Basic-info popover (mirrors AppDesignDrawer's brand panel) ---- */
-.kh-info-panel { display: flex; flex-direction: column; gap: 12px; text-align: left; }
+.kh-info-panel { width: 340px; max-width: calc(100vw - 32px); display: flex; flex-direction: column; gap: 12px; text-align: left; }
 @keyframes kh-info-fade {
   from {
     opacity: 0;
@@ -443,21 +444,22 @@ function onDelete() {
 /* Quick action tiles */
 .kh-ip-actions {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 6px;
 }
 .kh-ip-action {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  padding: 10px 4px;
+  flex-direction: row;
+  height: auto;
+  min-height: 44px;
+  justify-content: flex-start;
+  gap: 8px;
+  padding: 10px 12px;
   border: 1px solid var(--kh-color-divider);
   background: var(--kh-color-surface-sunken);
   border-radius: 10px;
   color: var(--kh-color-text-secondary);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
   cursor: pointer;
   transition:
@@ -467,6 +469,12 @@ function onDelete() {
     transform 0.15s ease,
     box-shadow 0.15s ease;
 }
+.kh-ip-action-primary {
+  color: var(--kh-color-primary-strong);
+  background: var(--kh-color-primary-soft);
+  border-color: color-mix(in srgb, var(--kh-color-primary) 25%, transparent);
+}
+.kh-ip-action:focus-visible { outline: 2px solid var(--kh-color-primary); outline-offset: 2px; }
 .kh-ip-action:hover {
   border-color: color-mix(in srgb, var(--kh-color-primary) 38%, transparent);
   background: var(--kh-color-primary-soft);

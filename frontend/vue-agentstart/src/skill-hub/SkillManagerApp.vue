@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { confirmAction } from '../ui/components/modalService';
 import { Button as AsShadcnButton } from '../ui/shadcn/button';
 
 import { computed, onMounted, reactive, ref } from 'vue';
@@ -22,7 +23,7 @@ function parseTools(json?: string) { try { const value=JSON.parse(json ?? '[]');
 async function load() { busy.value=true; try { rows.value=await client.skills.list(); } catch(e:any){message.error(e?.message ?? 'Skill 列表加载失败');} finally{busy.value=false;} }
 async function save() { const code=form.code.trim(); if(!code||!form.name.trim()||!form.instructions.trim())return void message.warning('请填写编码、名称和 Skill 指令'); if(!/^[A-Za-z][A-Za-z0-9_-]{1,99}$/.test(code))return void message.warning('Skill 编码必须以字母开头，并包含 2–100 个字母、数字、下划线或连字符'); saving.value=true; const body={ code, name:form.name.trim(), description:form.description.trim(), instructions:form.instructions.trim(), status:form.status, toolNames:form.toolNamesText.split(/[\n,]/).map(v=>v.trim()).filter(Boolean) }; try { selectedId.value?await client.skills.update(selectedId.value,body):await client.skills.create(body); editing.value=false; await load(); message.success(selectedId.value?'Skill 已更新':'Skill 已创建'); } catch(e:any){message.error(e?.message ?? 'Skill 保存失败');} finally{saving.value=false;} }
 async function setStatus(status: SkillStatus) { if(!selected.value)return; await client.skills.setStatus(selected.value.id,status); await load(); const fresh=rows.value.find(v=>v.id===selected.value?.id); if(fresh)edit(fresh); message.success(status==='PUBLISHED'?'Skill 已发布':'Skill 已停用'); }
-async function remove(skill: SkillEntity | undefined = selected.value) { if(!skill || !confirm(`确定删除 Skill「${skill.name}」？`))return; await client.skills.remove(skill.id); if(selectedId.value===skill.id){editing.value=false; reset();} await load(); message.success('Skill 已删除'); }
+async function remove(skill: SkillEntity | undefined = selected.value) { if(!skill || !await confirmAction(`确定删除 Skill「${skill.name}」？`))return; await client.skills.remove(skill.id); if(selectedId.value===skill.id){editing.value=false; reset();} await load(); message.success('Skill 已删除'); }
 onMounted(load);
 </script>
 <template>

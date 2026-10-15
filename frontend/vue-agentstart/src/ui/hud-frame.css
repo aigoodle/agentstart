@@ -62,3 +62,19 @@
   --as-hud-modal-glow: var(--as-frame-glow);
   --as-hud-glow: var(--as-frame-glow);
 }
+/* Modal-style segmented rails, painted inside the sheet to respect its cutout. */
+:root[data-visual='tech'] .as-sheet-hud__rails {
+  position: absolute; inset: 0; z-index: 10; pointer-events: none;
+  background:
+    repeating-linear-gradient(90deg, var(--as-frame-hot) 0 2px, transparent 2px 7px) 28% 1px / 12% 3px no-repeat,
+    repeating-linear-gradient(90deg, var(--as-frame-hot) 0 2px, transparent 2px 7px) 72% 1px / 12% 3px no-repeat,
+    repeating-linear-gradient(90deg, var(--as-frame-hot) 0 2px, transparent 2px 7px) 28% calc(100% - 1px) / 12% 3px no-repeat,
+    repeating-linear-gradient(90deg, var(--as-frame-hot) 0 2px, transparent 2px 7px) 72% calc(100% - 1px) / 12% 3px no-repeat,
+    repeating-linear-gradient(0deg, var(--as-frame-hot) 0 2px, transparent 2px 7px) 1px 30% / 3px 12% no-repeat,
+    repeating-linear-gradient(0deg, var(--as-frame-hot) 0 2px, transparent 2px 7px) 1px 70% / 3px 12% no-repeat,
+    repeating-linear-gradient(0deg, var(--as-frame-hot) 0 2px, transparent 2px 7px) calc(100% - 1px) 30% / 3px 12% no-repeat,
+    repeating-linear-gradient(0deg, var(--as-frame-hot) 0 2px, transparent 2px 7px) calc(100% - 1px) 70% / 3px 12% no-repeat;
+  opacity: .7;
+}
+
+[data-visual="normal"] .as-sheet-hud__rails { display: none; }

@@ -343,7 +343,7 @@ function changePageSize(s: number) {
           </div>
           <div class="kh-meta-row">
             <span class="kh-meta-key">字符数</span>
-            <span class="kh-meta-val">{{ fmtNum(metadata.totalChars) }} characters</span>
+            <span class="kh-meta-val">{{ fmtNum(metadata.totalChars) }} 字符</span>
           </div>
           <div class="kh-meta-row">
             <span class="kh-meta-key">平均分段大小</span>

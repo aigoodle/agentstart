@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { message } from '../../ui/message';
+import { confirmAction } from '../../ui/components/modalService';
 import { ShadcnBoolean as AsShadcnBoolean } from '../../ui/components/ShadcnBoolean';
 
 import { Button as AsShadcnButton } from '../../ui/shadcn/button';
@@ -41,7 +43,6 @@ const formOpen = ref(false);
 const saving = ref(false);
 const installing = ref(false);
 const error = ref('');
-const notice = ref('');
 const platformKey = computed(() =>
   String(props.channel?.metadata?.platformId ?? props.channel?.channelId ?? '').toLowerCase(),
 );
@@ -67,7 +68,6 @@ function blankForm() {
 function openCreate() {
   blankForm();
   error.value = '';
-  notice.value = '';
   formOpen.value = true;
 }
 
@@ -107,7 +107,6 @@ watch(
   ([open]) => {
     if (!open) return;
     error.value = '';
-    notice.value = '';
     blankForm();
     formOpen.value = false;
   },
@@ -135,7 +134,7 @@ async function save() {
     emit('saved');
     formOpen.value = false;
   } catch (e: any) {
-    error.value = e?.message ?? '保存失败';
+    message.error(e?.message ?? '保存失败');
   } finally {
     saving.value = false;
   }
@@ -145,15 +144,15 @@ async function test(row: ChannelConnection) {
   error.value = '';
   try {
     await props.client.channels.testChannelConnection(row.id, props.tenantId);
-    notice.value = `账号「${row.name}」连通性测试通过`;
+    message.success(`账号「${row.name}」连通性测试通过`);
     emit('saved');
   } catch (e: any) {
-    error.value = e?.message ?? '测试失败';
+    message.error(e?.message ?? '测试失败');
   }
 }
 
 async function remove(row: ChannelConnection) {
-  if (!window.confirm(`删除 ${row.name}？`)) return;
+  if (!await confirmAction(`删除 ${row.name}？`)) return;
   await props.client.channels.deleteChannelConnection(row.id, props.tenantId);
   emit('saved');
 }
@@ -161,7 +160,7 @@ async function remove(row: ChannelConnection) {
 async function install() {
   const channel = props.channel;
   if (!channel) return;
-  error.value = `请在后端引入 ${channel.channelId} 原生渠道(Channel)Starter 后重启服务`;
+  message.info(`请在后端引入 ${channel.channelId} 原生渠道(Channel)Starter 后重启服务`);
 }
 
 const callbackIssueOf = (row: ChannelConnection) =>
@@ -195,9 +194,9 @@ async function copyCallbackPath(row: ChannelConnection) {
   const path = callbackPathOf(row);
   try {
     await navigator.clipboard.writeText(`${window.location.origin}${path}`);
-    notice.value = `已复制账号「${row.name}」的完整回调地址`;
+    message.success(`已复制账号「${row.name}」的完整回调地址`);
   } catch {
-    notice.value = `回调路径：${path}`;
+    message.warning(`复制失败，请手动复制回调地址：${path}`, 8);
   }
 }
 </script>
@@ -231,7 +230,6 @@ async function copyCallbackPath(row: ChannelConnection) {
 
         <main class="cad-main">
           <div v-if="error" class="cad-alert">{{ error }}</div>
-          <div v-else-if="notice" class="cad-note">{{ notice }}</div>
 
           <!-- 未安装：引导安装 -->
           <template v-if="!channel?.installed">

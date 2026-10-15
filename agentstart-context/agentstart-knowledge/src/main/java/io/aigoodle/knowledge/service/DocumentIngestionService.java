@@ -134,6 +134,8 @@ final class DocumentIngestionService {
     KnowledgeDocumentEntity ingest(
             String tenantId, String datasetId, String name, String sourceType, ParsedDocument parsedDocument) {
         DatasetEntity dataset = datasetService.require(tenantId, datasetId);
+        DatasetDefinitionFactory.requireEmbeddingModelFor(
+                dataset.getIndexingTechnique(), dataset.getEmbeddingModelId());
         String extractedText = parsedDocument == null ? "" : parsedDocument.text();
         KnowledgeDocumentEntity document =
                 createDocument(dataset, name, sourceType, extractedText, DocumentStatus.PARSING);
@@ -203,6 +205,8 @@ final class DocumentIngestionService {
     private KnowledgeDocumentEntity enqueue(
             String tenantId, String datasetId, String name, String sourceType, ParsedDocument parsedDocument) {
         DatasetEntity dataset = datasetService.require(tenantId, datasetId);
+        DatasetDefinitionFactory.requireEmbeddingModelFor(
+                dataset.getIndexingTechnique(), dataset.getEmbeddingModelId());
         String extractedText = parsedDocument == null ? "" : parsedDocument.text();
         String checksum = sha256(extractedText.getBytes(java.nio.charset.StandardCharsets.UTF_8));
         KnowledgeDocumentEntity duplicate = documentMapper.selectOne(
@@ -295,6 +299,8 @@ final class DocumentIngestionService {
 
     KnowledgeDocumentEntity reparse(String tenantId, String datasetId, String documentId, byte[] sourceBytes) {
         DatasetEntity dataset = datasetService.require(tenantId, datasetId);
+        DatasetDefinitionFactory.requireEmbeddingModelFor(
+                dataset.getIndexingTechnique(), dataset.getEmbeddingModelId());
         KnowledgeDocumentEntity document = documentMapper.selectOne(
                 new com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper<KnowledgeDocumentEntity>()
                         .eq(KnowledgeDocumentEntity::getTenantId, dataset.getTenantId())

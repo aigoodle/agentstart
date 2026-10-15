@@ -134,6 +134,68 @@ class ServerStartupIntegrationTest {
     }
 
     @Test
+    void emptyDatasetSupportsLegacyCreationAndMetadataLifecycle() {
+        for (String technique : new String[] {"ECONOMY", "HIGH_QUALITY"}) {
+            byte[] body = client.post()
+                    .uri("/agent-start/datasets")
+                    .bodyValue(Map.of("name", "小智AI机器人使用手册", "indexingTechnique", technique))
+                    .exchange()
+                    .expectStatus()
+                    .isOk()
+                    .expectBody()
+                    .jsonPath("$.data.indexingTechnique")
+                    .isEqualTo("HIGH_QUALITY")
+                    .jsonPath("$.data.documentCount")
+                    .isEqualTo(0)
+                    .returnResult()
+                    .getResponseBody();
+            String id = JsonUtils.readTree(new String(body, StandardCharsets.UTF_8))
+                    .path("data")
+                    .path("id")
+                    .asText();
+            client.get()
+                    .uri("/agent-start/datasets/" + id)
+                    .exchange()
+                    .expectStatus()
+                    .isOk()
+                    .expectBody()
+                    .jsonPath("$.data.name")
+                    .isEqualTo("小智AI机器人使用手册");
+            client.put()
+                    .uri("/agent-start/datasets/" + id)
+                    .bodyValue(Map.of("name", "使用手册（更新）", "description", "待导入文档"))
+                    .exchange()
+                    .expectStatus()
+                    .isOk()
+                    .expectBody()
+                    .jsonPath("$.data.name")
+                    .isEqualTo("使用手册（更新）");
+            client.post()
+                    .uri("/agent-start/datasets/" + id + "/documents/text")
+                    .bodyValue(Map.of("name", "manual", "text", "Configure an embedding model first."))
+                    .exchange()
+                    .expectStatus()
+                    .is4xxClientError()
+                    .expectBody()
+                    .jsonPath("$.code")
+                    .isEqualTo("embedding_model_required");
+            client.get()
+                    .uri("/agent-start/datasets/" + id + "/documents")
+                    .exchange()
+                    .expectStatus()
+                    .isOk()
+                    .expectBody()
+                    .jsonPath("$.data")
+                    .isEmpty();
+            client.delete()
+                    .uri("/agent-start/datasets/" + id)
+                    .exchange()
+                    .expectStatus()
+                    .isOk();
+        }
+    }
+
+    @Test
     void reactiveMultipartUploadAndPreviewUseTheExistingApiProtocol() {
         httpMapper.readValue(
                 "{\"providerName\":\"fake\",\"modelName\":\"hash-embed\",\"modelType\":\"TEXT_EMBEDDING\"}",
@@ -163,13 +225,7 @@ class ServerStartupIntegrationTest {
                 .asText();
         byte[] created = client.post()
                 .uri("/agent-start/datasets")
-                .bodyValue(Map.of(
-                        "name",
-                        "multipart-regression",
-                        "embeddingModelId",
-                        embeddingId,
-                        "indexingTechnique",
-                        "HIGH_QUALITY"))
+                .bodyValue(Map.of("name", "multipart-regression", "indexingTechnique", "HIGH_QUALITY"))
                 .exchange()
                 .expectStatus()
                 .isOk()
@@ -182,6 +238,15 @@ class ServerStartupIntegrationTest {
                 .path("data")
                 .path("id")
                 .asText();
+        client.put()
+                .uri("/agent-start/datasets/" + datasetId)
+                .bodyValue(Map.of("embeddingModelId", embeddingId))
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody()
+                .jsonPath("$.data.embeddingModelId")
+                .isEqualTo(embeddingId);
         var upload = multipart("upload.txt", "A small document for reactive upload.");
         client.post()
                 .uri("/agent-start/datasets/" + datasetId + "/documents/upload")

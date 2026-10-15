@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { Spinner } from '../../ui/shadcn/spinner';
+import { Card as LoadingCard } from '../../ui/shadcn/card';
+import { message } from '../../ui/message';
+import { confirmAction } from '../../ui/components/modalService';
 import UiNotice from '../../ui/components/InlineNotice.vue';
 import { ShadcnBoolean as AsShadcnBoolean } from '../../ui/components/ShadcnBoolean';
 
@@ -56,17 +60,16 @@ const localModels = ref<ModelEntity[]>([]);
 const loading = ref(false);
 const search = ref('');
 const syncing = ref(false);
-const syncMessage = ref('');
+const busy = computed(() => loading.value || syncing.value);
 
 async function synchronizeCatalog() {
   syncing.value = true;
-  syncMessage.value = '';
   try {
     await synchronizeBuiltinCatalog();
     await refresh();
-    syncMessage.value = '预置目录已同步；远程模型请在供应商中手动拉取。';
+    message.success('预置目录已同步；远程模型请在供应商中手动拉取。');
   } catch (error) {
-    syncMessage.value = error instanceof Error ? error.message : '同步失败，请重试';
+    message.error(error instanceof Error ? error.message : '同步失败，请重试');
   } finally {
     syncing.value = false;
   }
@@ -238,7 +241,7 @@ async function onCredentialSaved() {
 
 async function clearCredential(p: ProviderView) {
   if (
-    !confirm(
+    !await confirmAction(
       `确认删除 ${p.label} 的 API Key？已启用的模型 / 默认模型 / 自定义模型条目会一起清除，下次重新添加从零开始。`,
     )
   )
@@ -436,7 +439,7 @@ async function submitManualAdd() {
     await refresh();
     emit('change');
   } catch (e: any) {
-    manualAddError.value = e?.message ?? String(e);
+    message.error(e?.message ?? String(e));
   } finally {
     manualAddSaving.value = false;
   }
@@ -599,8 +602,8 @@ function modelTypeTagStyle(type: string) {
   const color = colors[type] ?? '#64748b';
   return {
     '--phs-type-color': color,
-    color,
-    background: `color-mix(in srgb, ${color} 10%, var(--as-bg, #fff))`,
+    color: `color-mix(in srgb, ${color} 65%, var(--foreground))`,
+    background: `color-mix(in srgb, ${color} 12%, var(--background))`,
   };
 }
 
@@ -657,7 +660,8 @@ function capabilityTags(
 </script>
 
 <template>
-  <div class="phs-root">
+  <div class="phs-root" :aria-busy="busy">
+    <div class="phs-content" :inert="busy">
     <!-- 页面头部：使用共用样式类 -->
     <div class="as-page-header">
       <div class="as-page-header-main">
@@ -692,7 +696,7 @@ function capabilityTags(
         </div>
       </div>
       <div class="as-page-header-controls">
-        <Button :disabled="syncing" @click="synchronizeCatalog">
+        <Button type="primary" :loading="syncing" :disabled="busy" @click="synchronizeCatalog">
           {{ syncing ? '同步中…' : '同步预置目录' }}
         </Button>
         <div class="phs-search-wrap">
@@ -721,7 +725,6 @@ function capabilityTags(
     </div>
 
     <!-- Section 0 · 系统默认模型 -->
-    <p v-if="syncMessage" role="status">{{ syncMessage }}</p>
     <DefaultModelsPanel
       ref="defaultsPanel"
       :tenant-id="tenantId"
@@ -893,14 +896,9 @@ function capabilityTags(
             :width="800"
             centered
             class="phs-model-modal"
+            :title="`${p.label} · 模型管理`"
             @cancel="closePopover"
           >
-            <template #title>
-              <div class="phs-modal-title">
-                <ProviderIcon :name="p.name" :size="28" v-bind="providerIconProps(p)" />
-                <span>{{ p.label }} · 模型管理</span>
-              </div>
-            </template>
             <div class="phs-popover-inner">
               <div class="phs-catalog-toolbar">
                 <span class="phs-catalog-summary">
@@ -921,6 +919,7 @@ function capabilityTags(
                     <AsShadcnButton variant="ghost"
                       class="phs-filter-tab"
                       :class="{ 'phs-filter-tab--on': enabledFilter === 'all' }"
+                      :aria-pressed="enabledFilter === 'all'"
                       @click="enabledFilter = 'all'"
                     >
                       全部 <span class="phs-filter-count">{{ countBy(p.name, 'all') }}</span>
@@ -928,6 +927,7 @@ function capabilityTags(
                     <AsShadcnButton variant="ghost"
                       class="phs-filter-tab"
                       :class="{ 'phs-filter-tab--on': enabledFilter === 'enabled' }"
+                      :aria-pressed="enabledFilter === 'enabled'"
                       @click="enabledFilter = 'enabled'"
                     >
                       已启用 <span class="phs-filter-count">{{ countBy(p.name, 'enabled') }}</span>
@@ -935,6 +935,7 @@ function capabilityTags(
                     <AsShadcnButton variant="ghost"
                       class="phs-filter-tab"
                       :class="{ 'phs-filter-tab--on': enabledFilter === 'disabled' }"
+                      :aria-pressed="enabledFilter === 'disabled'"
                       @click="enabledFilter = 'disabled'"
                     >
                       未启用 <span class="phs-filter-count">{{ countBy(p.name, 'disabled') }}</span>
@@ -1137,8 +1138,7 @@ function capabilityTags(
       </div>
     </div>
 
-    <div v-if="loading" class="phs-loading">加载中…</div>
-    <div v-else-if="providers.length === 0" class="phs-empty">
+    <div v-if="!busy && providers.length === 0" class="phs-empty">
       没有可用的供应商
     </div>
 
@@ -1212,11 +1212,20 @@ function capabilityTags(
           </Button>
         </template>
     </Modal>
+    </div>
+    <div v-if="busy" class="phs-loading-overlay">
+      <LoadingCard class="phs-loading-card" role="status" aria-live="polite" aria-atomic="true">
+        <Spinner class="size-5 text-primary" aria-hidden="true" role="presentation" />
+        <span>{{ syncing ? '正在同步预置目录…' : '正在加载供应商…' }}</span>
+      </LoadingCard>
+    </div>
   </div>
 </template>
 
 <style scoped>
 .phs-root {
+  position: relative;
+  min-height: 320px;
   container: provider-hub / inline-size;
   display: flex;
   flex-direction: column;
@@ -1230,6 +1239,28 @@ function capabilityTags(
   .phs-root {
     padding: 12px 16px;
   }
+}
+.phs-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.phs-loading-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  background: color-mix(in srgb, var(--background) 75%, transparent);
+  border-radius: var(--radius);
+  cursor: wait;
+}
+.phs-loading-card {
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 24px;
+  font-size: 13px;
 }
 /* 搜索框样式 */
 .phs-search-wrap {
@@ -1249,9 +1280,9 @@ function capabilityTags(
   height: 36px;
   padding: 0 12px 0 32px;
   font-size: 13px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--input);
   border-radius: 8px;
-  background: var(--background);
+  background: transparent;
   color: var(--foreground);
   transition:
     border-color 0.15s ease,
@@ -1262,13 +1293,8 @@ function capabilityTags(
 }
 .phs-search:focus {
   outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 15%, transparent);
-}
-.dark .phs-search {
-  background: #2d2d2d;
-  color: #f3f4f6;
-  border-color: #3d3d3d;
+  border-color: var(--ring);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring) 25%, transparent);
 }
 .phs-section {
   display: flex;
@@ -1280,9 +1306,6 @@ function capabilityTags(
   font-weight: 600;
   color: var(--foreground);
   margin-bottom: 4px;
-}
-.dark .phs-section-title {
-  color: var(--muted-foreground);
 }
 
 /* -------- compact configured providers -------- */
@@ -1435,17 +1458,14 @@ function capabilityTags(
   flex-direction: column;
   gap: 10px;
 }
-.dark .phs-filter-bar {
-  border-bottom-color: #2d2d2d;
-}
 .phs-filter-group {
   display: flex;
   gap: 4px;
   flex-wrap: wrap;
 }
 .phs-filter-tab {
-  background: var(--muted);
-  border: 1px solid transparent;
+  background: var(--secondary);
+  border: 1px solid var(--border);
   border-radius: 6px;
   padding: 4px 10px;
   font-size: 12px;
@@ -1456,7 +1476,8 @@ function capabilityTags(
   gap: 4px;
 }
 .phs-filter-tab:hover {
-  background: var(--muted);
+  background: var(--accent);
+  color: var(--accent-foreground);
 }
 .phs-filter-tab--on {
   background: color-mix(in srgb, var(--primary) 10%, var(--background));
@@ -1464,19 +1485,8 @@ function capabilityTags(
   color: var(--primary);
   font-weight: 500;
 }
-.dark .phs-filter-tab {
-  background: #262626;
-  color: var(--muted-foreground);
-}
-.dark .phs-filter-tab:hover {
-  background: #2d2d2d;
-}
-.dark .phs-filter-tab--on {
-  background: #312e81;
-  color: color-mix(in srgb, var(--primary) 30%, var(--border));
-}
 .phs-filter-count {
-  background: rgba(255, 255, 255, 0.6);
+  background: var(--background);
   padding: 0 5px;
   border-radius: 999px;
   font-size: 10.5px;
@@ -1495,21 +1505,21 @@ function capabilityTags(
   font-size: 10px;
   font-weight: 500;
   border-radius: 4px;
-  background: #eef2ff;
-  color: #4338ca;
+  background: color-mix(in srgb, var(--primary) 12%, var(--background));
+  color: color-mix(in srgb, #4338ca 65%, var(--foreground));
   letter-spacing: 0.5px;
 }
 .phs-cap[data-color='green'] {
-  background: #ecfdf5;
-  color: #059669;
+  background: color-mix(in srgb, #059669 12%, var(--background));
+  color: color-mix(in srgb, #059669 65%, var(--foreground));
 }
 .phs-cap[data-color='orange'] {
-  background: #fff7ed;
-  color: #c2410c;
+  background: color-mix(in srgb, #c2410c 12%, var(--background));
+  color: color-mix(in srgb, #c2410c 65%, var(--foreground));
 }
 .phs-cap[data-color='purple'] {
-  background: #faf5ff;
-  color: #7c3aed;
+  background: color-mix(in srgb, #7c3aed 12%, var(--background));
+  color: color-mix(in srgb, #7c3aed 65%, var(--foreground));
 }
 
 .phs-btn {
@@ -1541,10 +1551,10 @@ function capabilityTags(
   background: var(--primary);
 }
 .phs-btn-danger {
-  color: #dc2626;
+  color: var(--destructive);
 }
 .phs-btn-danger:hover {
-  background: #fef2f2;
+  background: color-mix(in srgb, var(--destructive) 10%, var(--background));
 }
 
 /* -------- compact provider catalog -------- */
@@ -1598,7 +1608,6 @@ function capabilityTags(
   .phs-configured-grid, .phs-installable-grid { grid-template-columns: minmax(0, 1fr); }
 }
 
-.phs-loading,
 .phs-empty {
   padding: 40px 0;
   text-align: center;
@@ -1613,7 +1622,6 @@ function capabilityTags(
   max-width: calc(100vw - 16px);
   padding: 6px;
 }
-.phs-modal-title { display: flex; align-items: center; gap: 8px; }
 .phs-popover-inner { display: flex; flex-direction: column; min-width: 0; }
 .phs-catalog-toolbar {
   display: flex;
@@ -1624,7 +1632,7 @@ function capabilityTags(
   padding-bottom: 14px;
 }
 .phs-catalog-summary { font-size: 12px; color: var(--as-text-secondary, #667085); }
-.phs-catalog-summary strong { color: #059669; font-size: 15px; }
+.phs-catalog-summary strong { color: color-mix(in srgb, #059669 65%, var(--foreground)); font-size: 15px; }
 .phs-popover-actions { display: flex; align-items: center; gap: 8px; }
 .phs-popover-body {
   height: min(52vh, 520px);
@@ -1666,27 +1674,16 @@ function capabilityTags(
   border-color: var(--border);
 }
 .phs-row--on {
-  background: #f5f7ff;
-  border-color: #dfe3ff;
-  box-shadow: inset 2px 0 0 #6366f1;
-}
-.dark .phs-row {
-  background: #1f1f1f;
-  border-color: #2d2d2d;
-}
-.dark .phs-row:hover {
-  background: #262626;
-}
-.dark .phs-row--on {
-  background: #312e81;
-  border-color: #6366f1;
+  background: color-mix(in srgb, var(--primary) 7%, var(--background));
+  border-color: color-mix(in srgb, var(--primary) 25%, var(--border));
+  box-shadow: inset 2px 0 0 var(--primary);
 }
 .phs-row-icon {
   width: 24px;
   height: 24px;
   border-radius: 6px;
-  background: #eef2ff;
-  color: #4338ca;
+  background: color-mix(in srgb, var(--primary) 12%, var(--background));
+  color: color-mix(in srgb, #4338ca 65%, var(--foreground));
   font-size: 12px;
   display: inline-flex;
   align-items: center;
@@ -1694,16 +1691,16 @@ function capabilityTags(
   flex-shrink: 0;
 }
 .phs-row-icon[data-color='green'] {
-  background: #ecfdf5;
-  color: #059669;
+  background: color-mix(in srgb, #059669 12%, var(--background));
+  color: color-mix(in srgb, #059669 65%, var(--foreground));
 }
 .phs-row-icon[data-color='orange'] {
-  background: #fff7ed;
-  color: #c2410c;
+  background: color-mix(in srgb, #c2410c 12%, var(--background));
+  color: color-mix(in srgb, #c2410c 65%, var(--foreground));
 }
 .phs-row-icon[data-color='purple'] {
-  background: #faf5ff;
-  color: #7c3aed;
+  background: color-mix(in srgb, #7c3aed 12%, var(--background));
+  color: color-mix(in srgb, #7c3aed 65%, var(--foreground));
 }
 .phs-row-name {
   flex: 1;
@@ -1717,35 +1714,32 @@ function capabilityTags(
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.dark .phs-row-name {
-  color: #f3f4f6;
-}
 .phs-row-cap {
   flex-shrink: 0;
   padding: 1px 5px;
   font-size: 9.5px;
   font-weight: 500;
   border-radius: 4px;
-  background: #eef2ff;
-  color: #4338ca;
+  background: color-mix(in srgb, var(--primary) 12%, var(--background));
+  color: color-mix(in srgb, #4338ca 65%, var(--foreground));
   letter-spacing: 0.1px;
   white-space: nowrap;
 }
 .phs-row-cap[data-color='green'] {
-  background: #ecfdf5;
-  color: #059669;
+  background: color-mix(in srgb, #059669 12%, var(--background));
+  color: color-mix(in srgb, #059669 65%, var(--foreground));
 }
 .phs-row-cap[data-color='orange'] {
-  background: #fff7ed;
-  color: #c2410c;
+  background: color-mix(in srgb, #c2410c 12%, var(--background));
+  color: color-mix(in srgb, #c2410c 65%, var(--foreground));
 }
 .phs-row-cap[data-color='purple'] {
-  background: #faf5ff;
-  color: #7c3aed;
+  background: color-mix(in srgb, #7c3aed 12%, var(--background));
+  color: color-mix(in srgb, #7c3aed 65%, var(--foreground));
 }
 .phs-row-cap[data-color='blue'] {
-  background: #dbeafe;
-  color: #1e40af;
+  background: color-mix(in srgb, #2563eb 12%, var(--background));
+  color: color-mix(in srgb, #1e40af 65%, var(--foreground));
 }
 .phs-row-cap--ctx {
   background: var(--muted);
@@ -1754,16 +1748,16 @@ function capabilityTags(
     ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
 }
 .phs-row-cap--custom {
-  background: #fef3c7;
-  color: #b45309;
+  background: color-mix(in srgb, #b45309 12%, var(--background));
+  color: color-mix(in srgb, #b45309 65%, var(--foreground));
 }
 .phs-row-cap--remote {
-  background: #dcfce7;
-  color: #15803d;
+  background: color-mix(in srgb, #15803d 12%, var(--background));
+  color: color-mix(in srgb, #15803d 65%, var(--foreground));
 }
 .phs-row-cap--default {
-  background: #dbeafe;
-  color: #1e40af;
+  background: color-mix(in srgb, #2563eb 12%, var(--background));
+  color: color-mix(in srgb, #1e40af 65%, var(--foreground));
 }
 .phs-row-gear {
   background: transparent;
@@ -1778,8 +1772,8 @@ function capabilityTags(
   flex-shrink: 0;
 }
 .phs-row-gear:hover {
-  background: #eef2ff;
-  color: #6366f1;
+  background: color-mix(in srgb, var(--primary) 12%, var(--background));
+  color: color-mix(in srgb, #6366f1 65%, var(--foreground));
 }
 
 /* Pill row — legacy compact list style, kept for potential future use */
@@ -1797,18 +1791,8 @@ function capabilityTags(
   background: var(--muted);
 }
 .phs-pill--on {
-  background: #eef2ff;
+  background: color-mix(in srgb, var(--primary) 12%, var(--background));
   border-color: #a5b4fc;
-}
-.dark .phs-pill {
-  background: #262626;
-}
-.dark .phs-pill:hover {
-  background: #2d2d2d;
-}
-.dark .phs-pill--on {
-  background: #312e81;
-  border-color: #6366f1;
 }
 .phs-pill-name {
   flex: 1;
@@ -1821,9 +1805,6 @@ function capabilityTags(
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.dark .phs-pill-name {
-  color: #f3f4f6;
-}
 .phs-pill-meta {
   display: flex;
   gap: 4px;
@@ -1832,24 +1813,24 @@ function capabilityTags(
   padding: 0 6px;
   font-size: 10px;
   border-radius: 999px;
-  background: #dbeafe;
-  color: #1e40af;
+  background: color-mix(in srgb, #2563eb 12%, var(--background));
+  color: color-mix(in srgb, #1e40af 65%, var(--foreground));
 }
 .phs-pill-badge--default {
-  background: #dbeafe;
-  color: #1e40af;
+  background: color-mix(in srgb, #2563eb 12%, var(--background));
+  color: color-mix(in srgb, #1e40af 65%, var(--foreground));
 }
 .phs-pill-badge--feat {
-  background: #f5f3ff;
-  color: #6d28d9;
+  background: color-mix(in srgb, #6d28d9 12%, var(--background));
+  color: color-mix(in srgb, #6d28d9 65%, var(--foreground));
 }
 .phs-pill-badge--custom {
-  background: #fef3c7;
-  color: #b45309;
+  background: color-mix(in srgb, #b45309 12%, var(--background));
+  color: color-mix(in srgb, #b45309 65%, var(--foreground));
 }
 .phs-pill-badge--remote {
-  background: #dcfce7;
-  color: #15803d;
+  background: color-mix(in srgb, #15803d 12%, var(--background));
+  color: color-mix(in srgb, #15803d 65%, var(--foreground));
 }
 .phs-pill-gear {
   background: transparent;
@@ -1862,8 +1843,8 @@ function capabilityTags(
   flex-shrink: 0;
 }
 .phs-pill-gear:hover {
-  background: #eef2ff;
-  color: #6366f1;
+  background: color-mix(in srgb, var(--primary) 12%, var(--background));
+  color: color-mix(in srgb, #6366f1 65%, var(--foreground));
 }
 
 /* toggle switch */
@@ -1906,10 +1887,6 @@ function capabilityTags(
   display: flex;
   flex-direction: column;
 }
-.dark .phs-mini-modal {
-  background: #1f1f1f;
-  color: #f3f4f6;
-}
 .phs-mini-header {
   display: flex;
   justify-content: space-between;
@@ -1921,9 +1898,6 @@ function capabilityTags(
   font-size: 14px;
   font-weight: 600;
   color: var(--foreground);
-}
-.dark .phs-mini-title {
-  color: #f3f4f6;
 }
 .phs-mini-close {
   background: transparent;
@@ -1966,32 +1940,20 @@ function capabilityTags(
   background: var(--background);
   color: var(--foreground);
 }
-.dark .phs-mini-input {
-  background: #2d2d2d;
-  border-color: #3d3d3d;
-  color: #f3f4f6;
-}
 .phs-mini-input:focus {
   outline: none;
   border-color: var(--primary);
 }
 .phs-mini-error {
   padding: 6px 10px;
-  background: #fef2f2;
+  background: color-mix(in srgb, var(--destructive) 10%, var(--background));
   border: 1px solid #fecaca;
   border-radius: 6px;
   color: #b91c1c;
   font-size: 12px;
 }
 .phs-req {
-  color: #dc2626;
+  color: var(--destructive);
 }
 
-.dark .phs-cap {
-  color: #a5b4fc;
-  background: rgb(99 102 241 / 18%);
-}
-.dark .phs-cap[data-color='green'] { color: #86efac; background: rgb(34 197 94 / 15%); }
-.dark .phs-cap[data-color='orange'] { color: #fdba74; background: rgb(249 115 22 / 15%); }
-.dark .phs-cap[data-color='purple'] { color: #d8b4fe; background: rgb(168 85 247 / 15%); }
 </style>

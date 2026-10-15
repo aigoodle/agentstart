@@ -27,6 +27,7 @@ export const Drawer = defineComponent({
       onCloseAutoFocus: (event: Event) => event.preventDefault(),
     }, () => [
       h('div', { class: 'as-sheet-hud__chrome', 'aria-hidden': 'true' }),
+      h('div', { class: 'as-sheet-hud__rails', 'aria-hidden': 'true' }),
       h(SheetHeader, { class: ['flex flex-row items-center justify-between gap-3 border-b border-border px-5 py-2.5', props.closable && 'pr-14'] }, () => [
         h(SheetTitle, { class: !props.title && !slots.title ? 'sr-only' : 'min-w-0 flex-1 text-base leading-6 m-0' }, () => slots.title?.() ?? props.title ?? '详情'),
         slots.extra ? h('div', { class: 'flex items-center gap-2' }, slots.extra()) : null,

@@ -6,7 +6,7 @@ import { Input as UiInput } from '../shadcn/input';
 import { ShadcnSelect } from './ShadcnSelect';
 import { ShadcnBoolean } from './ShadcnBoolean';
 import { Drawer } from './Drawer';
-import { modalService } from './modalService';
+import { confirmAction, modalService } from './modalService';
 import { Modal } from './Modal';
 import { getAgentStartColorForeground } from '../color';
 
@@ -100,6 +100,21 @@ describe('shadcn controls and legacy bridges', () => {
       await new Promise(resolve => setTimeout(resolve, 100));
       expect(document.querySelector('.as-modal-root')).toBeNull();
     } finally { native.mockRestore(); }
+  });
+
+  it.each([true, false])('resolves a destructive confirmation only after the user chooses %s', async (confirmed) => {
+    const result = confirmAction('删除这个条目？');
+    const resolved = vi.fn();
+    result.then(resolved);
+    await flushPromises();
+    expect(resolved).not.toHaveBeenCalled();
+    const buttons = document.querySelectorAll<HTMLButtonElement>('.as-modal__footer button');
+    expect(buttons[1].textContent).toContain('删除');
+    buttons[confirmed ? 1 : 0].click();
+    await expect(result).resolves.toBe(confirmed);
+    await flushPromises();
+    await new Promise(resolve => setTimeout(resolve, 100));
+    expect(document.querySelector('.as-modal-root')).toBeNull();
   });
 
   it('chooses readable foreground colors for bright and dark accents', () => {

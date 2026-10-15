@@ -1,9 +1,7 @@
 package io.aigoodle.knowledge.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import io.aigoodle.common.exception.PlatformException;
 import io.aigoodle.common.util.JsonUtils;
 import io.aigoodle.knowledge.config.ProcessRule;
 import io.aigoodle.knowledge.config.RetrievalConfig;
@@ -20,9 +18,14 @@ class DatasetDefinitionFactoryTest {
                 .indexingTechnique(null)
                 .build();
 
-        assertThatThrownBy(() -> DatasetDefinitionFactory.create(request))
-                .isInstanceOf(PlatformException.class)
-                .hasMessageContaining("embedding model id");
+        DatasetEntity dataset = DatasetDefinitionFactory.create(request);
+        assertThat(dataset.getIndexingTechnique()).isEqualTo(IndexingTechnique.HIGH_QUALITY);
+        assertThat(dataset.getEmbeddingModelId()).isNull();
+        assertThat(dataset.getDocumentCount()).isZero();
+        UpdateDatasetRequest patch = new UpdateDatasetRequest();
+        patch.setName("Renamed handbook");
+        DatasetPatchApplicator.apply(dataset, patch);
+        assertThat(dataset.getName()).isEqualTo("Renamed handbook");
     }
 
     @Test

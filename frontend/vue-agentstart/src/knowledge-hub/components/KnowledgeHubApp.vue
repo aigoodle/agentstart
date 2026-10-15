@@ -37,6 +37,7 @@ import type {
 } from '../types';
 import CreateDatasetWizard from './CreateDatasetWizard.vue';
 import DatasetCardGrid from './DatasetCardGrid.vue';
+import DatasetBasicInfoModal from './DatasetBasicInfoModal.vue';
 import DatasetDetailDrawer from './DatasetDetailDrawer.vue';
 import KhDialog from './internal/KhDialog.vue';
 
@@ -70,6 +71,17 @@ const emit = defineEmits<{
 const datasets = ref<DatasetCardItem[]>([]);
 const loading = ref(false);
 const keyword = ref('');
+const basicInfoOpen = ref(false);
+const basicInfoTarget = ref<DatasetCardItem | null>(null);
+function openBasicInfo(dataset: DatasetCardItem) {
+  basicInfoTarget.value = dataset;
+  basicInfoOpen.value = true;
+}
+function onBasicInfoSaved() {
+  notifySuccess('基本信息已更新');
+  refresh();
+  emit('changed');
+}
 
 const wizardOpen = ref(false);
 const detailOpen = ref(false);
@@ -178,7 +190,7 @@ async function onEmptyPromptConfirm(name: string | undefined) {
   try {
     const created = await props.api.createDataset({
       name: trimmed,
-      indexingTechnique: 'ECONOMY',
+      indexingTechnique: 'HIGH_QUALITY',
     });
     notifySuccess(t('common.createdSuccess'));
     await refresh();
@@ -377,6 +389,7 @@ defineExpose({
             @create="openCreate"
             @open="(d: DatasetCardItem) => openDetail(d.id)"
             @settings="openSettings"
+            @edit-info="openBasicInfo"
             @delete="onDeleteCard"
           />
         </slot>
@@ -389,6 +402,7 @@ defineExpose({
         :open-create="openCreate"
         :open-detail="openDetail"
         :open-settings="openSettings"
+        :open-basic-info="openBasicInfo"
         :on-delete="onDeleteCard"
       >
         <DatasetCardGrid
@@ -397,10 +411,14 @@ defineExpose({
           @create="openCreate"
           @open="(d: DatasetCardItem) => openDetail(d.id)"
           @settings="openSettings"
+            @edit-info="openBasicInfo"
           @delete="onDeleteCard"
         />
       </slot>
     </div>
+
+    <DatasetBasicInfoModal :open="basicInfoOpen" :dataset="basicInfoTarget" :save="api.updateDataset"
+      @update:open="basicInfoOpen = $event" @saved="onBasicInfoSaved" />
 
     <!-- create wizard (left-side drawer). previewChunks runs through the api
          adapter so the step-2 preview matches real ingestion output. -->

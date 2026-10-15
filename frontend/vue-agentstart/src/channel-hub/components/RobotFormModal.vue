@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { message } from '../../ui/message';
 import { ShadcnBoolean as AsShadcnBoolean } from '../../ui/components/ShadcnBoolean';
 
 import { ShadcnSelect as AsShadcnSelect } from '../../ui/components/ShadcnSelect';
@@ -134,7 +135,7 @@ async function save() {
     emit('saved');
     emit('update:open', false);
   } catch (e: any) {
-    error.value = e?.message ?? '保存失败';
+    message.error(e?.message ?? '保存失败');
   } finally {
     saving.value = false;
   }
