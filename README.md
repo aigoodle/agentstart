@@ -38,7 +38,7 @@ AgentStart 将模型接入、智能体、可视化工作流、知识库检索、
 
 应用工坊集中展示应用类型、执行模式、关联模型与发布状态，支持搜索、类型筛选，以及草稿和已发布应用的分类查看。团队可以从同一入口构建多轮对话、工具调用智能体、业务工作流和文本生成应用。
 
-![AgentStart 应用工坊：应用列表、类型筛选与发布状态](iamges/Screenshot/app-main.png)
+![AgentStart 应用工坊：应用列表、类型筛选与发布状态](iamges/Screenshot/app-main.webp)
 
 ### 可视化编排：连接模型推理与业务流程
 
@@ -46,7 +46,7 @@ AgentStart 将模型接入、智能体、可视化工作流、知识库检索、
 
 截图以智慧校园助手为例，展示意图识别、条件路由、不同模型节点与业务请求的组合方式。应用侧同时提供访问 API、日志与标注、监测及数据权限设置入口。
 
-![AgentStart 可视化编排：条件分支、模型节点、结构化输出与对话调试](iamges/Screenshot/workflow-edit.png)
+![AgentStart 可视化编排：条件分支、模型节点、结构化输出与对话调试](iamges/Screenshot/workflow-edit.webp)
 
 ### 知识库：将业务文档转化为检索上下文
 
@@ -54,7 +54,7 @@ AgentStart 将模型接入、智能体、可视化工作流、知识库检索、
 
 适用于员工手册、招生指南、产品说明、内部制度和系统操作文档等知识场景。
 
-![AgentStart 知识库：知识资产列表、文档数量与分块数量](iamges/Screenshot/dataset-main.png)
+![AgentStart 知识库：知识资产列表、文档数量与分块数量](iamges/Screenshot/dataset-main.webp)
 
 ### 模型管理：统一配置供应商与模型资源
 
@@ -62,11 +62,11 @@ AgentStart 将模型接入、智能体、可视化工作流、知识库检索、
 
 界面提供 Qwen、DeepSeek、OpenAI、Kimi、智谱、火山方舟、Ollama、SiliconFlow 及自定义 OpenAI 兼容接口等接入入口，便于按业务需求配置云端服务或兼容服务。
 
-![AgentStart 模型供应商：默认模型设置与供应商接入入口](iamges/Screenshot/model-config.png)
+![AgentStart 模型供应商：默认模型设置与供应商接入入口](iamges/Screenshot/model-config.webp)
 
 在单个供应商下，可以重新拉取目录、手动添加模型、筛选启用状态并维护凭证。模型目录与运行调用分离，供应商配置或目录同步后无需通过重启更新预置目录。
 
-![AgentStart 供应商模型管理：模型目录、启用开关与凭证维护](iamges/Screenshot/model-config-list.png)
+![AgentStart 供应商模型管理：模型目录、启用开关与凭证维护](iamges/Screenshot/model-config-list.webp)
 
 ### 渠道接入：将应用带到业务沟通入口
 
@@ -74,7 +74,7 @@ AgentStart 将模型接入、智能体、可视化工作流、知识库检索、
 
 渠道模块负责消息接入、可信身份、应用路由与可靠投递。通过账号配置与应用绑定，可以将同一平台的智能体和工作流用于不同业务沟通场景。
 
-![AgentStart 消息渠道：渠道目录、账号接入与消息状态](iamges/Screenshot/channel-main.png)
+![AgentStart 消息渠道：渠道目录、账号接入与消息状态](iamges/Screenshot/channel-main.webp)
 
 ### 触发器：让 AI 应用自动响应与执行
 
@@ -82,7 +82,7 @@ AgentStart 将模型接入、智能体、可视化工作流、知识库检索、
 
 可用于定时统计、业务提醒、机器人消息处理，以及外部事件驱动的工作流执行。
 
-![AgentStart 触发器管理：定时任务、消息监听、执行状态与触发历史入口](iamges/Screenshot/triggers-list.png)
+![AgentStart 触发器管理：定时任务、消息监听、执行状态与触发历史入口](iamges/Screenshot/triggers-list.webp)
 
 ## 应用构建流程
 
