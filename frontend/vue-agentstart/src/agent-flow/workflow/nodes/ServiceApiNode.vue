@@ -124,7 +124,7 @@ const truncateText = (text, maxLength) => {
   border-radius: 4px;
   letter-spacing: 0.5px;
 }
-.http-method.is-get { background: #2563eb; }
+.http-method.is-get { background: var(--primary); }
 .http-method.is-post { background: #059669; }
 .http-method.is-put { background: #d97706; }
 .http-method.is-delete { background: #dc2626; }
@@ -134,7 +134,7 @@ const truncateText = (text, maxLength) => {
   flex: 1;
   min-width: 0;
   overflow: hidden;
-  color: #1f2937;
+  color: var(--foreground);
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -146,6 +146,6 @@ const truncateText = (text, maxLength) => {
 }
 
 .http-meta-value {
-  color: #1f2937;
+  color: var(--foreground);
 }
 </style>

@@ -3,7 +3,10 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import ChannelAccountDrawer from './ChannelAccountDrawer.vue';
 
+const mounted: ReturnType<typeof mount>[] = [];
+
 afterEach(() => {
+  mounted.splice(0).forEach(wrapper => wrapper.unmount());
   document.body.innerHTML = '';
 });
 
@@ -40,6 +43,7 @@ function mountDrawer() {
       },
     },
   });
+  mounted.push(wrapper);
   return { client, wrapper };
 }
 
@@ -65,6 +69,7 @@ describe('ChannelAccountDrawer employee-owned account', () => {
 
   it('saves employee credentials without binding an Agent or application', async () => {
     const { client, wrapper } = mountDrawer();
+    await flushPromises();
     await new DOMWrapper(document.body).find('.cad-add').trigger('click');
     await flushPromises();
     const dialog = document.body.querySelector('.cad-form-dialog')!;
@@ -143,7 +148,7 @@ describe('ChannelAccountDrawer employee-owned account', () => {
     await flushPromises();
 
     const dialog = document.body.querySelector('.cad-form-dialog')!;
-    expect((dialog.querySelector('input[value="visible-app-id"]') as HTMLInputElement)).toBeTruthy();
+    expect(Array.from(dialog.querySelectorAll('input')).some(input => input.value === 'visible-app-id')).toBe(true);
     const secret = dialog.querySelector('input[type="password"]') as HTMLInputElement;
     expect(secret.value).toBe('');
     expect(secret.placeholder).toBe('已配置，留空表示不修改');

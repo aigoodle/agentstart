@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import { ShadcnRange as AsShadcnRange } from '../../ui/components/ShadcnRange';
+import { ShadcnBoolean as AsShadcnBoolean } from '../../ui/components/ShadcnBoolean';
+
+import { Button as AsShadcnButton } from '../../ui/shadcn/button';
+import { Input as AsShadcnInput } from '../../ui/shadcn/input';
+
 /**
  * ModelParameterDrawer — Dify-parity per-model parameter panel.
  *
@@ -247,7 +253,7 @@ function stepFor(r: ModelParameterRule): number {
             </span>
           </div>
         </div>
-        <button class="mpd-close" @click="emit('update:open', false)">✕</button>
+        <AsShadcnButton variant="ghost" class="mpd-close" @click="emit('update:open', false)">✕</AsShadcnButton>
       </header>
 
       <div class="mpd-body">
@@ -263,20 +269,20 @@ function stepFor(r: ModelParameterRule): number {
                 <span class="mpd-mono mpd-key">{{ r.name }}</span>
                 <span v-if="r.required" class="mpd-req">*</span>
               </label>
-              <button
+              <AsShadcnButton variant="ghost"
                 v-if="touched.has(r.name)"
                 class="mpd-reset"
                 title="恢复默认"
                 @click="reset(r)"
               >
                 ↺
-              </button>
+              </AsShadcnButton>
             </div>
 
             <!-- FLOAT: slider + input number -->
             <template v-if="r.type === 'FLOAT'">
               <div class="mpd-slider-row">
-                <input
+                <AsShadcnRange
                   type="range"
                   class="mpd-slider"
                   :min="r.min ?? 0"
@@ -285,7 +291,7 @@ function stepFor(r: ModelParameterRule): number {
                   :value="Number(values[r.name] ?? r.defaultValue ?? 0)"
                   @input="(e) => onSliderInput(r, e)"
                 />
-                <input
+                <AsShadcnInput
                   type="number"
                   class="mpd-num"
                   :min="r.min"
@@ -299,7 +305,7 @@ function stepFor(r: ModelParameterRule): number {
 
             <!-- INT: number input only -->
             <template v-else-if="r.type === 'INT'">
-              <input
+              <AsShadcnInput
                 type="number"
                 class="mpd-num mpd-num--wide"
                 :min="r.min"
@@ -313,19 +319,19 @@ function stepFor(r: ModelParameterRule): number {
 
             <!-- BOOLEAN: switch -->
             <template v-else-if="r.type === 'BOOLEAN'">
-              <label class="mpd-switch">
-                <input
+              <label class="inline-flex items-center">
+                <AsShadcnBoolean
                   type="checkbox"
                   :checked="!!values[r.name]"
                   @change="(e) => onBoolChange(r, e)"
                 />
-                <span class="mpd-switch-slider" />
+
               </label>
             </template>
 
             <!-- STRING: text -->
             <template v-else>
-              <input
+              <AsShadcnInput
                 type="text"
                 class="mpd-text"
                 :placeholder="r.placeholder"
@@ -415,47 +421,47 @@ function stepFor(r: ModelParameterRule): number {
   bottom: 0;
   width: 460px;
   max-width: 92vw;
-  background: #fff;
+  background: var(--background);
   box-shadow: -8px 0 24px rgba(15, 23, 42, 0.15);
   z-index: 951;
   display: flex;
   flex-direction: column;
 }
-:global(.dark) .mpd-drawer {
+.dark .mpd-drawer {
   background: #1a1a1a;
   color: #f3f4f6;
 }
 
 .mpd-head {
   padding: 14px 18px;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
 }
-:global(.dark) .mpd-head {
+.dark .mpd-head {
   border-bottom-color: #2d2d2d;
 }
 .mpd-title {
   font-size: 15px;
   font-weight: 600;
-  color: #111827;
+  color: var(--foreground);
 }
-:global(.dark) .mpd-title {
+.dark .mpd-title {
   color: #f3f4f6;
 }
 .mpd-subtitle {
   margin-top: 2px;
   font-size: 12px;
-  color: #6b7280;
+  color: var(--muted-foreground);
   display: flex;
   align-items: center;
   gap: 6px;
   min-width: 0;
 }
 .mpd-dot {
-  color: #9ca3af;
+  color: var(--muted-foreground);
 }
 .mpd-mono {
   font-family:
@@ -479,14 +485,14 @@ function stepFor(r: ModelParameterRule): number {
   background: transparent;
   border: none;
   font-size: 16px;
-  color: #6b7280;
+  color: var(--muted-foreground);
   cursor: pointer;
   padding: 4px 8px;
   border-radius: 6px;
   flex-shrink: 0;
 }
 .mpd-close:hover {
-  background: #f3f4f6;
+  background: var(--muted);
 }
 
 .mpd-body {
@@ -501,7 +507,7 @@ function stepFor(r: ModelParameterRule): number {
 .mpd-empty {
   padding: 40px 0;
   text-align: center;
-  color: #9ca3af;
+  color: var(--muted-foreground);
   font-size: 13px;
 }
 
@@ -522,15 +528,15 @@ function stepFor(r: ModelParameterRule): number {
   gap: 6px;
   font-size: 13px;
   font-weight: 500;
-  color: #374151;
+  color: var(--foreground);
   min-width: 0;
 }
-:global(.dark) .mpd-label {
-  color: #d1d5db;
+.dark .mpd-label {
+  color: var(--muted-foreground);
 }
 .mpd-key {
   font-size: 10.5px;
-  color: #9ca3af;
+  color: var(--muted-foreground);
   font-weight: 400;
 }
 .mpd-req {
@@ -550,7 +556,7 @@ function stepFor(r: ModelParameterRule): number {
 }
 .mpd-help {
   font-size: 11.5px;
-  color: #9ca3af;
+  color: var(--muted-foreground);
   line-height: 1.5;
 }
 
@@ -568,18 +574,18 @@ function stepFor(r: ModelParameterRule): number {
   width: 70px;
   padding: 4px 8px;
   font-size: 12px;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--border);
   border-radius: 6px;
   text-align: right;
-  background: #fff;
-  color: #111827;
+  background: var(--background);
+  color: var(--foreground);
 }
 .mpd-num--wide {
   width: 100%;
   max-width: 220px;
   text-align: left;
 }
-:global(.dark) .mpd-num {
+.dark .mpd-num {
   background: #2d2d2d;
   border-color: #3d3d3d;
   color: #f3f4f6;
@@ -592,12 +598,12 @@ function stepFor(r: ModelParameterRule): number {
 .mpd-text {
   padding: 6px 10px;
   font-size: 13px;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--border);
   border-radius: 6px;
-  background: #fff;
-  color: #111827;
+  background: var(--background);
+  color: var(--foreground);
 }
-:global(.dark) .mpd-text {
+.dark .mpd-text {
   background: #2d2d2d;
   border-color: #3d3d3d;
   color: #f3f4f6;
@@ -617,31 +623,6 @@ function stepFor(r: ModelParameterRule): number {
   opacity: 0;
   width: 0;
   height: 0;
-}
-.mpd-switch-slider {
-  position: absolute;
-  inset: 0;
-  background: #cbd5e1;
-  border-radius: 999px;
-  cursor: pointer;
-  transition: 0.15s;
-}
-.mpd-switch-slider:before {
-  position: absolute;
-  content: '';
-  height: 14px;
-  width: 14px;
-  left: 2px;
-  bottom: 2px;
-  background: #fff;
-  border-radius: 50%;
-  transition: 0.15s;
-}
-.mpd-switch input:checked + .mpd-switch-slider {
-  background: #6366f1;
-}
-.mpd-switch input:checked + .mpd-switch-slider:before {
-  transform: translateX(16px);
 }
 
 .mpd-error {
@@ -668,14 +649,14 @@ function stepFor(r: ModelParameterRule): number {
 
 .mpd-foot {
   padding: 12px 18px;
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid var(--border);
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
 }
-:global(.dark) .mpd-foot {
+.dark .mpd-foot {
   border-top-color: #2d2d2d;
 }
 .mpd-foot-left,
@@ -687,14 +668,14 @@ function stepFor(r: ModelParameterRule): number {
   padding: 6px 12px;
   font-size: 12.5px;
   border-radius: 6px;
-  border: 1px solid #d1d5db;
-  background: #fff;
-  color: #374151;
+  border: 1px solid var(--border);
+  background: var(--background);
+  color: var(--foreground);
   cursor: pointer;
   white-space: nowrap;
 }
 .mpd-btn:hover:not(:disabled) {
-  background: #f9fafb;
+  background: var(--muted);
 }
 .mpd-btn:disabled {
   opacity: 0.5;

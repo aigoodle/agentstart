@@ -1,18 +1,15 @@
 import { createApp, type Plugin } from 'vue'
 import { createPinia } from 'pinia'
 
-// 组件库入口自带样式 side-effect（dist/style.css），必须先于宿主覆盖样式导入
+// 共用 shadcn UI 和主题；Vite 将链接库的源码 CSS 直接编译并支持 HMR。
 import { AgentStartPlugin } from 'vue-agent-start'
-// Vite library 构建会把 src/index.ts 的 `import './style.css'` 抽到独立的
-// dist/style.css,但不会在 dist/index.js 里保留运行时 import。
-// 必须显式加载(利用 package.json 的 "./style.css" 子路径导出),否则只有 JS 没有样式。
+// 发布包使用方仍应显式导入此路径；demo 将它解析到源码 CSS。
 import 'vue-agent-start/style.css'
 
-// 宿主 HUD 皮肤，两段都必须在库样式之后：
-// 1) 生成的强制暗色层（重映射库内写死的浅色 hex，引用 --hud-* 变量）
-// 2) 手写主题（定义 --hud-*/--as-*/--kh-* 令牌 + as-* 组件覆写，同特异性后来者胜）
-import './styles/hud-force-dark.css'
+// HUD 是独立视觉皮肤；基础控件从组件库的语义颜色令牌读取主题。
+// 不再加载通过覆盖浅色 hex 生成的 force-dark 样式。
 import './styles/hud.css'
+import './styles/shadcn.css'
 
 import App from './App.vue'
 import { router } from './router'

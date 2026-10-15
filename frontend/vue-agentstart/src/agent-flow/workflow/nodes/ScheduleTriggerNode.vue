@@ -65,8 +65,8 @@ const scheduleLabel = computed(() => {
 .schedule-trigger-node { --wf-accent: #f59e0b; --wf-accent-hover: #d97706; }
 .schedule-preview { display: flex; flex-direction: column; gap: 5px; min-width: 0; font-size: 11px; }
 .schedule-time { color: #92400e; font-weight: 600; }
-.schedule-target { display: flex; align-items: center; gap: 6px; min-width: 0; color: #4b5563; }
+.schedule-target { display: flex; align-items: center; gap: 6px; min-width: 0; color: var(--muted-foreground); }
 .schedule-target-icon { display: inline-flex; flex: none; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 5px; font-size: 12px; }
 .schedule-target-name { overflow: hidden; font-weight: 500; text-overflow: ellipsis; white-space: nowrap; }
-.schedule-target-empty { color: #9ca3af; }
+.schedule-target-empty { color: var(--muted-foreground); }
 </style>

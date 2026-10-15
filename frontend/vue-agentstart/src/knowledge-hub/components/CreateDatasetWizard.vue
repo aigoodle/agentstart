@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import { ShadcnBoolean as AsShadcnBoolean } from '../../ui/components/ShadcnBoolean';
+
+import { Button as AsShadcnButton } from '../../ui/shadcn/button';
+import { Input as AsShadcnInput } from '../../ui/shadcn/input';
+import { ShadcnSelect as AsShadcnSelect } from '../../ui/components/ShadcnSelect';
+
 /**
  * CreateDatasetWizard — Dify-parity 3-step wizard for creating a knowledge base.
  *
@@ -363,7 +369,7 @@ function humanSize(bytes: number): string {
         <div class="kh-content-narrow">
           <div class="kh-section-label">选择数据源</div>
           <div class="kh-source-row">
-            <button
+            <AsShadcnButton variant="ghost"
               v-for="s in SOURCES"
               :key="s.id"
               type="button"
@@ -382,7 +388,7 @@ function humanSize(bytes: number): string {
                 {{ s.icon }}
               </div>
               <div class="kh-source-label">{{ s.label }}</div>
-            </button>
+            </AsShadcnButton>
           </div>
 
           <div class="kh-section-label" style="margin-top: 22px">上传文本文件</div>
@@ -410,7 +416,7 @@ function humanSize(bytes: number): string {
               </template>
               。每批最多 5 个文件，每个文件不超过 15 MB。
             </div>
-            <input
+            <AsShadcnInput
               ref="fileInputRef"
               type="file"
               multiple
@@ -428,7 +434,7 @@ function humanSize(bytes: number): string {
               <span class="kh-file-icon">📄</span>
               <span class="kh-file-name">{{ f.name }}</span>
               <span class="kh-file-size">{{ humanSize(f.size) }}</span>
-              <button class="kh-file-x" @click="removeFile(i)">×</button>
+              <AsShadcnButton variant="ghost" class="kh-file-x" @click="removeFile(i)">×</AsShadcnButton>
             </div>
           </div>
 
@@ -458,8 +464,8 @@ function humanSize(bytes: number): string {
               </div>
               <div v-if="chunkMode === 'structure-aware'" class="kh-panel-body">
                 <div class="kh-grid-2">
-                  <div class="kh-field"><label>目标分段 Tokens</label><input v-model.number="chunkMaxTokens" type="number" class="kh-input" /></div>
-                  <div class="kh-field"><label>重叠 Tokens</label><input v-model.number="chunkOverlap" type="number" class="kh-input" /></div>
+                  <div class="kh-field"><label>目标分段 Tokens</label><AsShadcnInput v-model.number="chunkMaxTokens" type="number" class="kh-input" /></div>
+                  <div class="kh-field"><label>重叠 Tokens</label><AsShadcnInput v-model.number="chunkOverlap" type="number" class="kh-input" /></div>
                 </div>
                 <div class="kh-tip">适用于 Markdown、技术文档、手册以及包含表格或代码的文档。</div>
               </div>
@@ -483,12 +489,12 @@ function humanSize(bytes: number): string {
                 <div class="kh-grid-3">
                   <div class="kh-field">
                     <label>分段标识符</label>
-                    <input v-model="chunkSeparator" class="kh-input" />
+                    <AsShadcnInput v-model="chunkSeparator" class="kh-input" />
                   </div>
                   <div class="kh-field">
                     <label>分段最大长度</label>
                     <div class="kh-input-suffix">
-                      <input
+                      <AsShadcnInput
                         v-model.number="chunkMaxTokens"
                         type="number"
                         class="kh-input"
@@ -499,7 +505,7 @@ function humanSize(bytes: number): string {
                   <div class="kh-field">
                     <label>分段重叠长度</label>
                     <div class="kh-input-suffix">
-                      <input
+                      <AsShadcnInput
                         v-model.number="chunkOverlap"
                         type="number"
                         class="kh-input"
@@ -510,31 +516,31 @@ function humanSize(bytes: number): string {
                 </div>
                 <div class="kh-sub-label">文本预处理规则</div>
                 <label class="kh-check">
-                  <input type="checkbox" v-model="removeExtraWhitespace" />
+                  <AsShadcnBoolean type="checkbox" v-model="removeExtraWhitespace" />
                   <span>替换掉连续的空格、换行符和制表符</span>
                 </label>
                 <label class="kh-check">
-                  <input type="checkbox" v-model="removeUrlsEmails" />
+                  <AsShadcnBoolean type="checkbox" v-model="removeUrlsEmails" />
                   <span>删除所有 URL 和电子邮件地址</span>
                 </label>
                 <label class="kh-check">
-                  <input type="checkbox" v-model="qaMode" />
+                  <AsShadcnBoolean type="checkbox" v-model="qaMode" />
                   <span>
                     摘要自动生成
                     <span class="kh-hint-inline">使用 Q&A 分段，语言</span>
-                    <select v-model="qaLanguage" class="kh-select-inline" @click.stop>
+                    <AsShadcnSelect v-model="qaLanguage" class="kh-select-inline" @click.stop>
                       <option>Chinese Simplified</option>
                       <option>English</option>
-                    </select>
+                    </AsShadcnSelect>
                   </span>
                 </label>
                 <div class="kh-inline-actions">
-                  <button class="kh-btn-mini kh-btn-mini-primary" @click.stop="loadPreview">
+                  <AsShadcnButton variant="ghost" class="kh-btn-mini kh-btn-mini-primary" @click.stop="loadPreview">
                     ⓘ 预览块
-                  </button>
-                  <button class="kh-btn-mini" @click.stop="resetChunking">
+                  </AsShadcnButton>
+                  <AsShadcnButton variant="ghost" class="kh-btn-mini" @click.stop="resetChunking">
                     重置
-                  </button>
+                  </AsShadcnButton>
                 </div>
               </div>
             </div>
@@ -556,7 +562,7 @@ function humanSize(bytes: number): string {
               <div v-if="chunkMode === 'parent-child'" class="kh-panel-body">
                 <div class="kh-sub-label">父块用作上下文</div>
                 <div class="kh-parent-mode-row">
-                  <button
+                  <AsShadcnButton variant="ghost"
                     type="button"
                     class="kh-parent-mode-card"
                     :class="{ 'kh-parent-mode-active': parentMode === 'PARAGRAPH' }"
@@ -575,12 +581,12 @@ function humanSize(bytes: number): string {
                     <div v-if="parentMode === 'PARAGRAPH'" class="kh-grid-2" style="margin-top: 10px">
                       <div class="kh-field">
                         <label>分段标识符</label>
-                        <input v-model="parentSeparator" class="kh-input" @click.stop />
+                        <AsShadcnInput v-model="parentSeparator" class="kh-input" @click.stop />
                       </div>
                       <div class="kh-field">
                         <label>分段最大长度</label>
                         <div class="kh-input-suffix">
-                          <input
+                          <AsShadcnInput
                             v-model.number="parentMaxTokens"
                             type="number"
                             class="kh-input"
@@ -590,8 +596,8 @@ function humanSize(bytes: number): string {
                         </div>
                       </div>
                     </div>
-                  </button>
-                  <button
+                  </AsShadcnButton>
+                  <AsShadcnButton variant="ghost"
                     type="button"
                     class="kh-parent-mode-card"
                     :class="{ 'kh-parent-mode-active': parentMode === 'FULL_DOC' }"
@@ -607,19 +613,19 @@ function humanSize(bytes: number): string {
                     <div class="kh-pm-desc">
                       此模式会将文本转成全文视图，检索到匹配段后返回整个文档作为父块。适用于短文档。
                     </div>
-                  </button>
+                  </AsShadcnButton>
                 </div>
 
                 <div class="kh-sub-label" style="margin-top: 14px">子块用于检索</div>
                 <div class="kh-grid-2">
                   <div class="kh-field">
                     <label>分段标识符</label>
-                    <input v-model="childSeparator" class="kh-input" @click.stop />
+                    <AsShadcnInput v-model="childSeparator" class="kh-input" @click.stop />
                   </div>
                   <div class="kh-field">
                     <label>分段最大长度</label>
                     <div class="kh-input-suffix">
-                      <input
+                      <AsShadcnInput
                         v-model.number="childMaxTokens"
                         type="number"
                         class="kh-input"
@@ -632,21 +638,21 @@ function humanSize(bytes: number): string {
 
                 <div class="kh-sub-label" style="margin-top: 14px">文本预处理规则</div>
                 <label class="kh-check">
-                  <input type="checkbox" v-model="removeExtraWhitespace" @click.stop />
+                  <AsShadcnBoolean type="checkbox" v-model="removeExtraWhitespace" @click.stop />
                   <span>替换掉连续的空格、换行符和制表符</span>
                 </label>
                 <label class="kh-check">
-                  <input type="checkbox" v-model="removeUrlsEmails" @click.stop />
+                  <AsShadcnBoolean type="checkbox" v-model="removeUrlsEmails" @click.stop />
                   <span>删除所有 URL 和电子邮件地址</span>
                 </label>
 
                 <div class="kh-inline-actions">
-                  <button class="kh-btn-mini kh-btn-mini-primary" @click.stop="loadPreview">
+                  <AsShadcnButton variant="ghost" class="kh-btn-mini kh-btn-mini-primary" @click.stop="loadPreview">
                     ⓘ 预览块
-                  </button>
-                  <button class="kh-btn-mini" @click.stop="resetChunking">
+                  </AsShadcnButton>
+                  <AsShadcnButton variant="ghost" class="kh-btn-mini" @click.stop="resetChunking">
                     重置
-                  </button>
+                  </AsShadcnButton>
                 </div>
               </div>
             </div>
@@ -656,7 +662,7 @@ function humanSize(bytes: number): string {
                  stacking gives each card room to breathe. -->
             <div class="kh-section-label" style="margin-top: 18px">索引方式</div>
             <div class="kh-index-row">
-              <button
+              <AsShadcnButton variant="ghost"
                 type="button"
                 class="kh-index-card"
                 :class="{ 'kh-index-card-active': indexingTechnique === 'HIGH_QUALITY' }"
@@ -670,8 +676,8 @@ function humanSize(bytes: number): string {
                 <div class="kh-index-desc">
                   调用嵌入模型处理文档以实现更精确的检索，可以帮助 LLM 生成高质量的答案。
                 </div>
-              </button>
-              <button
+              </AsShadcnButton>
+              <AsShadcnButton variant="ghost"
                 type="button"
                 class="kh-index-card"
                 :class="{ 'kh-index-card-active': indexingTechnique === 'ECONOMY' }"
@@ -684,7 +690,7 @@ function humanSize(bytes: number): string {
                 <div class="kh-index-desc">
                   每个数据块使用 10 个关键词进行检索，不会消耗任何 tokens。你会得到较低的检索准确性。
                 </div>
-              </button>
+              </AsShadcnButton>
             </div>
 
             <div class="kh-tip">
@@ -692,7 +698,7 @@ function humanSize(bytes: number): string {
             </div>
 
             <div class="kh-section-label" style="margin-top: 16px">Embedding 模型</div>
-            <select v-model="embeddingModelId" class="kh-select">
+            <AsShadcnSelect v-model="embeddingModelId" class="kh-select">
               <option value="">选择一个 Embedding 模型</option>
               <option
                 v-for="m in embeddingModels"
@@ -701,7 +707,7 @@ function humanSize(bytes: number): string {
               >
                 {{ m.label }}
               </option>
-            </select>
+            </AsShadcnSelect>
 
             <div class="kh-section-label" style="margin-top: 16px">检索设置</div>
             <div class="kh-hint" style="margin-top: -4px">
@@ -782,7 +788,7 @@ function humanSize(bytes: number): string {
               <span class="kh-done-name-label">知识库名称</span>
               <div class="kh-done-name-input">
                 <span class="kh-done-name-icon">📙</span>
-                <input v-model="datasetName" class="kh-input" />
+                <AsShadcnInput v-model="datasetName" class="kh-input" />
               </div>
             </div>
 
@@ -843,31 +849,31 @@ function humanSize(bytes: number): string {
     </div>
     <template #footer>
       <template v-if="step === 1">
-            <button
+            <AsShadcnButton variant="ghost"
               class="kh-btn kh-btn-primary"
               :disabled="!step1Ready"
               @click="goToStep2"
             >
               下一步 →
-            </button>
+            </AsShadcnButton>
                 </template>
       <template v-if="step === 2">
-              <button class="kh-btn kh-btn-secondary" @click="step = 1">
+              <AsShadcnButton variant="ghost" class="kh-btn kh-btn-secondary" @click="step = 1">
                 ← 上一步
-              </button>
-              <button
+              </AsShadcnButton>
+              <AsShadcnButton variant="ghost"
                 class="kh-btn kh-btn-primary"
                 :disabled="!embeddingModelId && indexingTechnique === 'HIGH_QUALITY'"
                 @click="submitCreate"
               >
                 保存并处理 →
-              </button>
+              </AsShadcnButton>
                   </template>
       <template v-if="step === 3">
-              <button class="kh-btn kh-btn-secondary">◈ Access the API</button>
-              <button class="kh-btn kh-btn-primary" @click="close">
+              <AsShadcnButton variant="ghost" class="kh-btn kh-btn-secondary">◈ Access the API</AsShadcnButton>
+              <AsShadcnButton variant="ghost" class="kh-btn kh-btn-primary" @click="close">
                 前往文档 →
-              </button>
+              </AsShadcnButton>
                   </template>
     </template>
   </Modal>

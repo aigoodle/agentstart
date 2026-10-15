@@ -1,5 +1,8 @@
 <script setup lang="ts">
 // @ts-nocheck — legacy flow-designer code, pre-dates strict typing; cleanup tracked separately.
+
+import { Select as ASelect, Button as AButton, Input as AInput, InputNumber as AInputNumber } from '../../../ui';
+
 import { h } from 'vue';
 
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons-vue';
@@ -169,9 +172,9 @@ const removeFilter = (index: number) => {
   padding: 12px;
   text-align: center;
   font-size: 12px;
-  color: #9ca3af;
+  color: var(--muted-foreground);
   background: var(--wf-config-surface-hover, #f9fafb);
-  border: 1px dashed #e5e7eb;
+  border: 1px dashed var(--border);
   border-radius: 6px;
 }
 

@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { Input as AsShadcnInput } from '../ui/shadcn/input';
+import { Button as AsShadcnButton } from '../ui/shadcn/button';
+
 import {computed, onMounted, ref} from 'vue';
 import {createAgentStartClient} from '../client';
 import {useAgentStartClient} from '../client/vue';
@@ -11,7 +14,7 @@ import type {
   ConnectorDefinition,
   ConnectorInstallation
 } from '../connector-hub/types';
-import { Button, Card } from '../ui';
+import { Button, Card, Tag } from '../ui';
 
 const props = withDefaults(defineProps<{ tenantId?: string; title?: string }>(), {title: '插件管理'});
 const global = useAgentStartConfig();
@@ -108,8 +111,8 @@ onMounted(() => load());
       </div>
 
       <div class="as-page-header-controls">
-        <div class="ph-search as-management-search"><span>⌕</span><input v-model="query"
-                                                                         placeholder="搜索插件名称、描述或插件 ID"></div>
+        <div class="ph-search as-management-search"><span>⌕</span><AsShadcnInput v-model="query"
+                                                                         placeholder="搜索插件名称、描述或插件 ID"/></div>
         <Button type="primary" :loading="syncing" @click="load(true)">↻ 同步插件目录</Button>
       </div>
     </div>
@@ -125,13 +128,13 @@ onMounted(() => load());
     </section>
     <section class="ph-toolbar as-management-toolbar">
       <div class="ph-categories as-management-segments">
-        <button v-for="item in categories" :key="item" :class="{active:category===item}" @click="category=item">
+        <AsShadcnButton variant="ghost" v-for="item in categories" :key="item" :class="{active:category===item}" @click="category=item">
           {{ item === 'ALL' ? '全部' : item }}
-        </button>
+        </AsShadcnButton>
       </div>
     </section>
     <div v-if="error" class="ph-alert"><b>加载失败</b><span>{{ error }}</span>
-      <button @click="load()">重试</button>
+      <AsShadcnButton variant="ghost" @click="load()">重试</AsShadcnButton>
     </div>
     <div v-if="loading" class="ph-loading"><span></span>
       <p>正在读取插件目录…</p></div>
@@ -152,9 +155,7 @@ onMounted(() => load());
           <div class="ph-icon">{{ p.icon || '🧩' }}</div>
         </template>
         <template #badge>
-          <span class="ph-status" :class="{online:installationOf(p)?.enabled}">
-            <i></i>{{ installationOf(p)?.enabled ? '已启用' : '未启用' }}
-          </span>
+          <Tag :color="installationOf(p)?.enabled ? 'green' : undefined">{{ installationOf(p)?.enabled ? '已启用' : '未启用' }}</Tag>
         </template>
         <template #default>
           <div class="ph-badges">
@@ -166,7 +167,7 @@ onMounted(() => load());
             <div v-for="a in p.actions" :key="a.id">
               <span><b>{{ a.name }}</b><small>{{ a.description || a.id }}</small></span>
               <em :class="String(a.riskLevel).toLowerCase()">{{ a.riskLevel || 'READ' }}</em>
-              <button :disabled="!installationOf(p)?.enabled" @click="testAction(p,a)">试运行</button>
+              <AsShadcnButton variant="ghost" :disabled="!installationOf(p)?.enabled" @click="testAction(p,a)">试运行</AsShadcnButton>
             </div>
           </div>
         </template>
@@ -180,10 +181,10 @@ onMounted(() => load());
           </div>
         </template>
         <template #actions>
-          <div class="ph-card-buttons">
-            <button class="ghost" @click="toggle(p)">{{ installationOf(p)?.enabled ? '停用' : '启用' }}</button>
-            <button class="primary" @click="configure(p)">{{ connectionOf(p) ? '管理连接' : '立即配置' }}</button>
-          </div>
+
+            <Button size="small" @click="toggle(p)">{{ installationOf(p)?.enabled ? '停用' : '启用' }}</Button>
+            <Button size="small" type="primary" @click="configure(p)">{{ connectionOf(p) ? '管理连接' : '立即配置' }}</Button>
+
         </template>
       </Card>
     </section>
@@ -201,18 +202,18 @@ onMounted(() => load());
   --soft: #f8fafc;
   --line: #e5e7eb;
   --text: #172033;
-  --muted: #667085;
-  --primary: #635bff;
+  --plugin-muted: #667085;
+  --plugin-primary: #635bff;
   padding: 24px;
   color: var(--text)
 }
 
-:global(.dark) .ph {
+.dark .ph {
   --panel: #1f1f1f;
   --soft: #262626;
   --line: #353535;
   --text: #f5f5f5;
-  --muted: #a3a3a3
+  --plugin-muted: #a3a3a3
 }
 
 .ph-hero {
@@ -223,16 +224,16 @@ onMounted(() => load());
   padding: 26px 28px;
   border: 1px solid #ddd9ff;
   border-radius: 16px;
-  background: linear-gradient(120deg, #f7f5ff 0%, #fff 58%, #eff8ff 100%)
+  background: linear-gradient(120deg, #f7f5ff 0%, var(--background) 58%, #eff8ff 100%)
 }
 
-:global(.dark) .ph-hero {
+.dark .ph-hero {
   border-color: #39345f;
   background: linear-gradient(120deg, #25213b, #1f1f1f 58%, #172b36)
 }
 
 .ph-kicker {
-  color: var(--primary);
+  color: var(--plugin-primary);
   font-size: 11px;
   font-weight: 750;
   letter-spacing: .14em
@@ -246,7 +247,7 @@ onMounted(() => load());
 .ph-hero p {
   max-width: 760px;
   margin: 0;
-  color: var(--muted);
+  color: var(--plugin-muted);
   line-height: 1.7
 }
 
@@ -258,7 +259,7 @@ onMounted(() => load());
 .ph-primary, .ph-card .primary {
   border: 0;
   color: #fff;
-  background: var(--primary);
+  background: var(--plugin-primary);
   box-shadow: 0 5px 14px #635bff35
 }
 
@@ -296,7 +297,7 @@ onMounted(() => load());
 }
 
 .ph-stats span {
-  color: var(--muted);
+  color: var(--plugin-muted);
   font-size: 12px
 }
 
@@ -340,7 +341,7 @@ onMounted(() => load());
   padding: 6px 12px;
   border: 0;
   border-radius: 6px;
-  color: var(--muted);
+  color: var(--plugin-muted);
   background: transparent;
   font-size: 12px
 }
@@ -357,21 +358,12 @@ onMounted(() => load());
   gap: 16px
 }
 
-.ph-card {
-  min-height: 355px;
-  padding: 20px;
-}
 
-.ph-card header {
-  display: flex;
-  align-items: center;
-  gap: 12px
-}
 
 .ph-icon {
   display: grid;
-  width: 46px;
-  height: 46px;
+  width: 40px;
+  height: 40px;
   flex: 0 0 auto;
   place-items: center;
   border-radius: 11px;
@@ -390,7 +382,7 @@ onMounted(() => load());
 }
 
 .ph-title code {
-  color: var(--muted);
+  color: var(--plugin-muted);
   font-size: 11px
 }
 
@@ -400,7 +392,7 @@ onMounted(() => load());
   gap: 5px;
   padding: 4px 8px;
   border-radius: 999px;
-  color: var(--muted);
+  color: var(--plugin-muted);
   background: var(--soft);
   font-size: 11px
 }
@@ -424,7 +416,7 @@ onMounted(() => load());
 .ph-desc {
   min-height: 44px;
   margin: 15px 0 12px;
-  color: var(--muted);
+  color: var(--plugin-muted);
   font-size: 13px;
   line-height: 1.65
 }
@@ -438,7 +430,7 @@ onMounted(() => load());
   padding: 3px 7px;
   border: 1px solid var(--line);
   border-radius: 5px;
-  color: var(--muted);
+  color: var(--plugin-muted);
   font-size: 10px
 }
 
@@ -469,7 +461,7 @@ onMounted(() => load());
 
 .ph-actions-list small {
   overflow: hidden;
-  color: var(--muted);
+  color: var(--plugin-muted);
   font-size: 10px;
   text-overflow: ellipsis;
   white-space: nowrap
@@ -508,15 +500,6 @@ onMounted(() => load());
   cursor: not-allowed
 }
 
-.ph-card footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-top: auto;
-  padding-top: 15px;
-  border-top: 1px solid var(--line)
-}
 
 .ph-connection {
   display: flex;
@@ -552,7 +535,7 @@ onMounted(() => load());
 .ph-connection small {
   overflow: hidden;
   max-width: 220px;
-  color: var(--muted);
+  color: var(--plugin-muted);
   font-size: 9px;
   text-overflow: ellipsis;
   white-space: nowrap
@@ -612,7 +595,7 @@ onMounted(() => load());
 
 .ph-empty p, .ph-loading p {
   margin: 0;
-  color: var(--muted)
+  color: var(--plugin-muted)
 }
 
 .ph-loading span {
@@ -620,7 +603,7 @@ onMounted(() => load());
   width: 22px;
   height: 22px;
   border: 2px solid #ddd9ff;
-  border-top-color: var(--primary);
+  border-top-color: var(--plugin-primary);
   border-radius: 50%;
   animation: spin .8s linear infinite
 }
@@ -658,10 +641,6 @@ onMounted(() => load());
     grid-template-columns:1fr
   }
 
-  .ph-card footer {
-    align-items: flex-start;
-    flex-direction: column
-  }
 }
 
 .ph.as-management {
@@ -669,8 +648,8 @@ onMounted(() => load());
   --soft: var(--as-mgmt-soft);
   --line: var(--as-mgmt-line);
   --text: var(--as-mgmt-text);
-  --muted: var(--as-mgmt-muted);
-  --primary: var(--as-primary);
+  --plugin-muted: var(--as-mgmt-muted);
+  --plugin-primary: var(--as-primary);
   padding: 20px
 }
 
@@ -696,9 +675,7 @@ onMounted(() => load());
   gap: 12px
 }
 
-.ph.as-management .ph-card {
-  border-radius: 12px
-}
+
 
 @media (max-width: 760px) {
   .ph.as-management {

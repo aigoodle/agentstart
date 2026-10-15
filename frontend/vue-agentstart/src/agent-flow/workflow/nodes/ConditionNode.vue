@@ -199,14 +199,14 @@ const conditionCount = computed(() => props.data.cases?.length || 0);
   flex: 1 1 auto;
   min-width: 0;
   font-size: 11px;
-  color: #1f2937;
+  color: var(--foreground);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .condition-case-placeholder {
-  color: #9ca3af;
+  color: var(--muted-foreground);
   font-style: italic;
 }
 

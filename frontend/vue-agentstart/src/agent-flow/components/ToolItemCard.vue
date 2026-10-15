@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Button as AButton, Switch as ASwitch } from '../../ui';
+
 import { h, ref } from 'vue';
 
 import {
@@ -94,16 +96,16 @@ function removeTool(index: number) {
 
 .wf-tools-hint {
   font-size: 11px;
-  color: #9ca3af;
+  color: var(--muted-foreground);
 }
 
 .wf-tools-empty {
   padding: 16px;
   text-align: center;
   font-size: 12px;
-  color: #9ca3af;
-  background: #f9fafb;
-  border: 1px dashed #e5e7eb;
+  color: var(--muted-foreground);
+  background: var(--muted);
+  border: 1px dashed var(--border);
   border-radius: 6px;
 }
 
@@ -118,8 +120,8 @@ function removeTool(index: number) {
   align-items: center;
   justify-content: space-between;
   padding: 6px 10px;
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
+  background: var(--background);
+  border: 1px solid var(--border);
   border-radius: 6px;
   transition: border-color 0.15s;
 }
@@ -149,7 +151,7 @@ function removeTool(index: number) {
 .wf-tools-item-name {
   font-size: 12px;
   font-weight: 500;
-  color: #1f2937;
+  color: var(--foreground);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

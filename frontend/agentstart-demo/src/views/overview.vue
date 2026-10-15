@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { UiCard as AsShadcnCard } from 'vue-agent-start';
+
+import { UiButton } from 'vue-agent-start'
 import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useTheme } from '../composables/useTheme'
@@ -138,39 +141,39 @@ function barTip(b: TrendBucket): string {
     </div>
 
     <section class="ov-kpis">
-      <div class="hud-panel ov-kpi">
+      <AsShadcnCard class="hud-panel ov-kpi">
         <span class="hud-label">总调用次数</span>
         <span class="ov-kpi-num hud-mono">{{ total ? fmtInt(total.calls) : '——' }}</span>
         <span class="ov-kpi-sub">近 24 小时全部模型请求</span>
-      </div>
-      <div class="hud-panel ov-kpi">
+      </AsShadcnCard>
+      <AsShadcnCard class="hud-panel ov-kpi">
         <span class="hud-label">错误次数</span>
         <span class="ov-kpi-num hud-mono" :class="{ 'ov-kpi-num--danger': (total?.errors ?? 0) > 0 }">
           {{ total ? fmtInt(total.errors) : '——' }}
         </span>
         <span class="ov-kpi-sub">错误率 {{ errorRate }}%</span>
-      </div>
-      <div class="hud-panel ov-kpi">
+      </AsShadcnCard>
+      <AsShadcnCard class="hud-panel ov-kpi">
         <span class="hud-label">Token 消耗</span>
         <span class="ov-kpi-num hud-mono">{{ total ? fmtTokens(total.totalTokens) : '——' }}</span>
         <span class="ov-kpi-sub">
           提示 {{ total ? fmtTokens(total.promptTokens) : '—' }} · 补全 {{ total ? fmtTokens(total.completionTokens) : '—' }}
         </span>
-      </div>
-      <div class="hud-panel ov-kpi">
+      </AsShadcnCard>
+      <AsShadcnCard class="hud-panel ov-kpi">
         <span class="hud-label">平均延迟</span>
         <span class="ov-kpi-num hud-mono">{{ total ? fmtMs(total.avgLatencyMs) : '——' }}</span>
         <span class="ov-kpi-sub">端到端首包平均耗时</span>
-      </div>
-      <div class="hud-panel ov-kpi">
+      </AsShadcnCard>
+      <AsShadcnCard class="hud-panel ov-kpi">
         <span class="hud-label">累计成本</span>
         <span class="ov-kpi-num hud-mono">{{ total ? fmtCost(total.costMicros) : '——' }}</span>
         <span class="ov-kpi-sub">按供应商定价折算</span>
-      </div>
+      </AsShadcnCard>
     </section>
 
     <section class="ov-main">
-      <div class="hud-panel ov-trend">
+      <AsShadcnCard class="hud-panel ov-trend">
         <header class="ov-head">
           <h2 class="hud-title">调用趋势 · 近 24 小时</h2>
           <div class="ov-legend">
@@ -191,9 +194,9 @@ function barTip(b: TrendBucket): string {
           </div>
           <div v-if="trend.length === 0" class="ov-chart-empty hud-label">暂无趋势数据</div>
         </div>
-      </div>
+      </AsShadcnCard>
 
-      <aside class="hud-panel ov-status">
+      <AsShadcnCard class="hud-panel ov-status">
         <header class="ov-head">
           <h2 class="hud-title">系统状态</h2>
         </header>
@@ -229,11 +232,11 @@ function barTip(b: TrendBucket): string {
             </span>
           </li>
         </ul>
-      </aside>
+      </AsShadcnCard>
     </section>
 
     <section class="ov-entities">
-      <button
+      <UiButton variant="ghost"
         v-for="c in counts"
         :key="c.key"
         type="button"
@@ -243,10 +246,10 @@ function barTip(b: TrendBucket): string {
         <span class="ov-entity-num hud-mono">{{ c.value }}</span>
         <span class="hud-label">{{ c.label }}</span>
         <span class="ov-entity-go">进入 ›</span>
-      </button>
+      </UiButton>
     </section>
 
-    <section class="hud-panel ov-recent">
+    <AsShadcnCard class="hud-panel ov-recent">
       <header class="ov-head">
         <h2 class="hud-title">最近模型调用</h2>
         <span class="hud-label">LLMOps · 实时流水</span>
@@ -282,7 +285,7 @@ function barTip(b: TrendBucket): string {
           </tr>
         </tbody>
       </table>
-    </section>
+    </AsShadcnCard>
   </div>
 </template>
 

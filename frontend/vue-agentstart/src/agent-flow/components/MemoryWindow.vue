@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Switch as ASwitch, Slider as ASlider, InputNumber as AInputNumber, Select as ASelect } from '../../ui';
+
 const memory: any = defineModel();
 
 const OPTIONS: any[] = [
@@ -74,7 +76,7 @@ const OPTIONS: any[] = [
 
 .wf-mem-toggle-label {
   font-size: 12px;
-  color: #4b5563;
+  color: var(--muted-foreground);
 }
 
 .wf-mem-slider {
@@ -98,7 +100,7 @@ const OPTIONS: any[] = [
 .wf-mem-role label {
   flex: none;
   font-size: 11px;
-  color: #6b7280;
+  color: var(--muted-foreground);
   min-width: 56px;
 }
 </style>

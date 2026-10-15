@@ -1,3 +1,4 @@
+import { Label } from '../shadcn/label';
 import { defineComponent, h } from 'vue';
 
 export const Form = defineComponent({
@@ -24,7 +25,7 @@ export const FormItem = defineComponent({
   setup: (props, { slots }) => () => h('label', {
     class: ['as-form-item', props.validateStatus && `as-form-item--${props.validateStatus}`],
   }, [
-    props.label ? h('span', { class: 'as-form-item__label' }, [props.required ? h('i', '*') : null, props.label]) : null,
+    props.label ? h(Label, { as: 'span', class: 'as-form-item__label' }, () => [props.required ? h('i', '*') : null, props.label]) : null,
     h('span', { class: 'as-form-item__control' }, [
       slots.default?.(),
       props.help ? h('small', { class: 'as-form-item__help' }, props.help) : null,

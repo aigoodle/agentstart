@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { Input as AsShadcnInput } from '../../ui/shadcn/input';
+import { Button as AsShadcnButton } from '../../ui/shadcn/button';
+
 import { computed, ref, watch } from 'vue';
 
 import type { AgentStartClient } from '../../client';
@@ -116,7 +119,7 @@ async function remove() {
         <main class="ccm-main">
           <label class="ccm-field">
             <span>连接名称</span>
-            <input v-model="name" class="ccm-input" />
+            <AsShadcnInput v-model="name" class="ccm-input" />
           </label>
 
           <div class="ccm-group">
@@ -143,31 +146,31 @@ async function remove() {
         </main>
 
         <template #footer>
-          <button
+          <AsShadcnButton variant="ghost"
             v-if="connection"
             class="ccm-btn ccm-btn-danger as-modal__footer-leading"
             @click="remove"
           >
             删除
-          </button>
-          <button
+          </AsShadcnButton>
+          <AsShadcnButton variant="ghost"
             v-if="connection"
             class="ccm-btn"
             :disabled="testing"
             @click="testConnection"
           >
             {{ testing ? '验证中…' : '验证已保存配置' }}
-          </button>
-          <button class="ccm-btn" @click="emit('update:open', false)">
+          </AsShadcnButton>
+          <AsShadcnButton variant="ghost" class="ccm-btn" @click="emit('update:open', false)">
             取消
-          </button>
-          <button
+          </AsShadcnButton>
+          <AsShadcnButton variant="ghost"
             class="ccm-btn ccm-btn-primary"
             :disabled="saving || !name"
             @click="save"
           >
             {{ saving ? '保存中…' : '保存连接' }}
-          </button>
+          </AsShadcnButton>
         </template>
   </Modal>
 </template>
@@ -184,7 +187,7 @@ async function remove() {
   z-index: 1200;
 }
 .ccm-modal { max-height: 88vh; }
-:global(.dark) .ccm-modal {
+.dark .ccm-modal {
   background: #1f1f1f;
 }
 
@@ -213,12 +216,12 @@ async function remove() {
   justify-content: space-between;
   gap: 12px;
   padding: 14px 20px;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
 }
 .ccm-title {
   font-size: 15px;
   font-weight: 600;
-  color: #111827;
+  color: var(--foreground);
 }
 .ccm-close {
   flex-shrink: 0;
@@ -230,7 +233,7 @@ async function remove() {
   border: 0;
   background: none;
   font-size: 14px;
-  color: #9ca3af;
+  color: var(--muted-foreground);
   border-radius: 6px;
   cursor: pointer;
   transition:
@@ -238,14 +241,14 @@ async function remove() {
     color 0.15s ease;
 }
 .ccm-close:hover {
-  background: #f3f4f6;
-  color: #111827;
+  background: var(--muted);
+  color: var(--foreground);
 }
-:global(.dark) .ccm-header,
-:global(.dark) .ccm-title {
+.dark .ccm-header,
+.dark .ccm-title {
   color: #f3f4f6;
 }
-:global(.dark) .ccm-close:hover {
+.dark .ccm-close:hover {
   background: #2d2d2d;
   color: #f3f4f6;
 }
@@ -263,15 +266,15 @@ async function remove() {
   gap: 7px;
   font-size: 13px;
   font-weight: 500;
-  color: #374151;
+  color: var(--foreground);
 }
 .ccm-input {
   padding: 8px 10px;
   font-size: 13px;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--border);
   border-radius: 6px;
-  background: #fff;
-  color: #111827;
+  background: var(--background);
+  color: var(--foreground);
   transition:
     border-color 0.15s ease,
     box-shadow 0.15s ease;
@@ -289,26 +292,26 @@ async function remove() {
   margin: 0;
   font-size: 13px;
   font-weight: 600;
-  color: #374151;
+  color: var(--foreground);
 }
 .ccm-group p {
   margin: 0;
   font-size: 12px;
-  color: #6b7280;
+  color: var(--muted-foreground);
 }
-:global(.dark) .ccm-field {
-  color: #d1d5db;
+.dark .ccm-field {
+  color: var(--muted-foreground);
 }
-:global(.dark) .ccm-input {
+.dark .ccm-input {
   background: #2d2d2d;
   border-color: #3d3d3d;
   color: #f3f4f6;
 }
-:global(.dark) .ccm-group h4 {
-  color: #d1d5db;
+.dark .ccm-group h4 {
+  color: var(--muted-foreground);
 }
-:global(.dark) .ccm-group p {
-  color: #9ca3af;
+.dark .ccm-group p {
+  color: var(--muted-foreground);
 }
 
 /* -------- 提示（成功 / 错误） -------- */
@@ -328,12 +331,12 @@ async function remove() {
   background: #fef2f2;
   border: 1px solid #fecaca;
 }
-:global(.dark) .ccm-note.is-success {
+.dark .ccm-note.is-success {
   color: #34d399;
   background: rgba(16, 185, 129, 0.15);
   border-color: rgba(16, 185, 129, 0.35);
 }
-:global(.dark) .ccm-note.is-danger {
+.dark .ccm-note.is-danger {
   color: #fca5a5;
   background: rgba(220, 38, 38, 0.15);
   border-color: rgba(220, 38, 38, 0.35);
@@ -344,9 +347,9 @@ async function remove() {
   padding: 7px 16px;
   font-size: 13px;
   font-weight: 500;
-  color: #374151;
-  background: #fff;
-  border: 1px solid #d1d5db;
+  color: var(--foreground);
+  background: var(--background);
+  border: 1px solid var(--border);
   border-radius: 6px;
   cursor: pointer;
   transition:
@@ -354,7 +357,7 @@ async function remove() {
     border-color 0.15s ease;
 }
 .ccm-btn:hover {
-  background: #f3f4f6;
+  background: var(--muted);
 }
 .ccm-btn:disabled {
   opacity: 0.5;
@@ -375,26 +378,26 @@ async function remove() {
 .ccm-btn-danger:hover {
   background: #fef2f2;
 }
-:global(.dark) .ccm-btn {
+.dark .ccm-btn {
   background: #2d2d2d;
   border-color: #3d3d3d;
   color: #f3f4f6;
 }
-:global(.dark) .ccm-btn:hover {
+.dark .ccm-btn:hover {
   background: #3d3d3d;
 }
-:global(.dark) .ccm-btn-primary {
+.dark .ccm-btn-primary {
   background: #6366f1;
   border-color: #6366f1;
 }
-:global(.dark) .ccm-btn-primary:hover {
+.dark .ccm-btn-primary:hover {
   background: #818cf8;
 }
-:global(.dark) .ccm-btn-danger {
+.dark .ccm-btn-danger {
   color: #f87171;
   border-color: rgba(220, 38, 38, 0.4);
 }
-:global(.dark) .ccm-btn-danger:hover {
+.dark .ccm-btn-danger:hover {
   background: rgba(220, 38, 38, 0.15);
 }
 </style>

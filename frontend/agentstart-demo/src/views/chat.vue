@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { UiButton } from 'vue-agent-start'
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { AgentChatPage } from 'vue-agent-start'
@@ -12,9 +13,9 @@ const agentId = computed(() => String(route.params.id ?? ''))
 <template>
   <div class="view-fill chat-view">
     <div class="chat-topbar">
-      <button type="button" class="chat-back" @click="router.push({ name: 'AgentApps' })">
+      <UiButton variant="ghost" type="button" class="chat-back" @click="router.push({ name: 'AgentApps' })">
         ‹ 返回应用列表
-      </button>
+      </UiButton>
       <span class="chat-sep">/</span>
       <span class="hud-label">对话调试</span>
       <span class="hud-mono chat-agent">{{ agentId }}</span>

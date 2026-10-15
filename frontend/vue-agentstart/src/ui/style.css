@@ -49,8 +49,8 @@
   --as-hud-line: color-mix(in srgb, var(--as-theme-primary) 72%, transparent);
   --as-hud-hot: color-mix(in srgb, var(--as-theme-primary) 88%, white 12%);
   --as-hud-glow: color-mix(in srgb, var(--as-theme-primary) 48%, transparent);
-  --as-control-height: 32px;
-  --as-control-height-sm: 24px;
+  --as-control-height: 36px;
+  --as-control-height-sm: 32px;
   --as-control-height-lg: 40px;
   --as-font-size: 14px;
   --as-line-height: 1.5714285714;
@@ -87,8 +87,8 @@
     outline-offset: 2px;
   }
   .as-btn:disabled { @apply cursor-not-allowed border-[#d9d9d9] bg-black/[.04] text-black/25; }
-  .as-btn--primary { @apply border-[var(--as-primary)] bg-[var(--as-primary)] text-white; }
-  .as-btn--primary:hover { @apply border-[var(--as-primary-hover)] bg-[var(--as-primary-hover)] text-white; }
+  .as-btn--primary { @apply border-[var(--as-primary)] bg-[var(--as-primary)] text-[var(--primary-foreground)]; }
+  .as-btn--primary:hover { @apply border-[var(--as-primary-hover)] bg-[var(--as-primary-hover)] text-[var(--primary-foreground)]; }
   .as-btn--text, .as-btn--link { @apply border-transparent bg-transparent shadow-none; }
   .as-btn--link { @apply px-1 text-[var(--as-primary)]; }
   .as-btn--danger { @apply text-[var(--as-danger)]; }

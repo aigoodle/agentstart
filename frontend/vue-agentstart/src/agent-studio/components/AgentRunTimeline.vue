@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { ShadcnSelect as AsShadcnSelect } from '../../ui/components/ShadcnSelect';
+import { Button as AsShadcnButton } from '../../ui/shadcn/button';
+
 import { computed, onBeforeUnmount, ref, watch } from 'vue';
 import type {
   AgentRunClient,
@@ -204,18 +207,18 @@ defineExpose({ refresh: load, cancel: cancelRun, snapshot, events });
         <div v-for="approval in pendingApprovals" :key="approval.approvalId" class="approval-item">
           <div class="approval-item-head">
             <strong>{{ approval.toolName }}</strong>
-            <select v-if="(pendingApprovals?.length ?? 0) > 1" v-model="approvalDecisions[approval.approvalId]" :disabled="acting">
+            <AsShadcnSelect v-if="(pendingApprovals?.length ?? 0) > 1" v-model="approvalDecisions[approval.approvalId]" :disabled="acting">
               <option value="APPROVE">通过</option>
               <option value="DENY">拒绝</option>
-            </select>
+            </AsShadcnSelect>
           </div>
           <pre>{{ approval.toolInput }}</pre>
         </div>
         <template v-if="pendingApprovals?.length === 1">
-          <button :disabled="acting" @click="decide('APPROVE')">通过</button>
-          <button :disabled="acting" @click="decide('DENY')">拒绝</button>
+          <AsShadcnButton variant="ghost" :disabled="acting" @click="decide('APPROVE')">通过</AsShadcnButton>
+          <AsShadcnButton variant="ghost" :disabled="acting" @click="decide('DENY')">拒绝</AsShadcnButton>
         </template>
-        <button v-else :disabled="acting" @click="submitApprovalDecisions">提交审批决定</button>
+        <AsShadcnButton variant="ghost" v-else :disabled="acting" @click="submitApprovalDecisions">提交审批决定</AsShadcnButton>
       </div>
     </slot>
 
@@ -246,7 +249,7 @@ defineExpose({ refresh: load, cancel: cancelRun, snapshot, events });
     </ol>
     <aside v-if="showInspector && selectedEvent" class="event-inspector">
       <slot name="inspector" :event="selectedEvent" :payload="selectedPayload" :close="() => selectedSequence = undefined">
-        <header><strong>运行状态检查</strong><button aria-label="关闭检查器" @click="selectedSequence = undefined">×</button></header>
+        <header><strong>运行状态检查</strong><AsShadcnButton variant="ghost" aria-label="关闭检查器" @click="selectedSequence = undefined">×</AsShadcnButton></header>
         <dl>
           <div><dt>序号</dt><dd>#{{ selectedEvent.sequence }}</dd></div>
           <div><dt>类型</dt><dd>{{ eventLabel(selectedEvent.type) }}</dd></div>
@@ -263,9 +266,9 @@ defineExpose({ refresh: load, cancel: cancelRun, snapshot, events });
 
     <footer>
       <slot name="actions" :snapshot="snapshot" :cancel="cancelRun" :refresh="load" :acting="acting">
-        <button v-if="snapshot && ['CREATED', 'RUNNING', 'WAITING_APPROVAL'].includes(snapshot.status)"
-                :disabled="acting" @click="cancelRun">取消运行</button>
-        <button v-if="!loading" :disabled="acting" @click="load">刷新</button>
+        <AsShadcnButton variant="ghost" v-if="snapshot && ['CREATED', 'RUNNING', 'WAITING_APPROVAL'].includes(snapshot.status)"
+                :disabled="acting" @click="cancelRun">取消运行</AsShadcnButton>
+        <AsShadcnButton variant="ghost" v-if="!loading" :disabled="acting" @click="load">刷新</AsShadcnButton>
         <span v-if="loading">正在同步…</span>
       </slot>
     </footer>
@@ -273,42 +276,42 @@ defineExpose({ refresh: load, cancel: cancelRun, snapshot, events });
 </template>
 
 <style scoped>
-.agent-run-timeline { display:grid; gap:12px; color:#1f2937; font-size:13px }
+.agent-run-timeline { display:grid; gap:12px; color: var(--foreground); font-size:13px }
 header, header>div, li>div, footer { display:flex; align-items:center; gap:10px }
 header { justify-content:space-between }
-header code { margin-left:8px; color:#64748b }
-header small { margin-left:8px; color:#94a3b8 }
-.status { border-radius:999px; padding:3px 9px; background:#e2e8f0; font-weight:600 }
-.status[data-status="COMPLETED"] { background:#dcfce7; color:#166534 }
-.status[data-status="FAILED"], .status[data-status="TIMED_OUT"] { background:#fee2e2; color:#991b1b }
-.status[data-status="WAITING_APPROVAL"] { background:#fef3c7; color:#92400e }
+header code { margin-left:8px; color: var(--muted-foreground) }
+header small { margin-left:8px; color: var(--muted-foreground) }
+.status { border-radius:999px; padding:3px 9px; background: var(--muted); font-weight:600 }
+.status[data-status="COMPLETED"] { background: #dcfce7; color: #166534 }
+.status[data-status="FAILED"], .status[data-status="TIMED_OUT"] { background: #fee2e2; color: #991b1b }
+.status[data-status="WAITING_APPROVAL"] { background: #fef3c7; color: #92400e }
 ol { display:grid; gap:8px; margin:0; padding:0; list-style:none }
-li { border-left:2px solid #cbd5e1; padding:6px 10px; cursor:pointer; outline:none }
-li:hover { background:#f8fafc }
-li.selected, li:focus-visible { border-left-color:#2563eb; background:#eff6ff }
-li time { margin-left:auto; color:#94a3b8 }
+li { border-left: 2px solid #cbd5e1; padding:6px 10px; cursor:pointer; outline: none }
+li:hover { background: var(--muted) }
+li.selected, li:focus-visible { border-left-color: var(--primary); background: #eff6ff }
+li time { margin-left:auto; color: var(--muted-foreground) }
 .timeline-workspace { display:grid; gap:12px; min-width:0 }
 .timeline-workspace.has-inspector { grid-template-columns:minmax(0,1fr) minmax(260px,38%) }
-.event-inspector { align-self:start; position:sticky; top:8px; min-width:0; padding:12px; border:1px solid #cbd5e1; border-radius:8px; background:#fff }
+.event-inspector { align-self:start; position:sticky; top:8px; min-width:0; padding:12px; border: 1px solid #cbd5e1; border-radius:8px; background: var(--background) }
 .event-inspector header { display:flex; justify-content:space-between }
-.event-inspector header button { margin:0; padding:0 6px; border:0; font-size:18px }
+.event-inspector header button { margin:0; padding:0 6px; border: 0; font-size:18px }
 .event-inspector dl { display:grid; gap:7px; margin:12px 0 }
 .event-inspector dl div { display:grid; grid-template-columns:52px minmax(0,1fr); gap:8px }
-.event-inspector dt { color:#64748b }
+.event-inspector dt { color: var(--muted-foreground) }
 .event-inspector dd { min-width:0; margin:0; overflow-wrap:anywhere }
-pre { overflow:auto; margin:6px 0 0; padding:8px; border-radius:6px; background:#f8fafc; white-space:pre-wrap }
-.approval { padding:12px; border:1px solid #f59e0b; border-radius:8px; background:#fffbeb }
-.approval-item { margin-top:8px; padding-top:8px; border-top:1px solid #fde68a }
+pre { overflow:auto; margin:6px 0 0; padding:8px; border-radius:6px; background: var(--muted); white-space:pre-wrap }
+.approval { padding:12px; border: 1px solid #f59e0b; border-radius:8px; background: #fffbeb }
+.approval-item { margin-top:8px; padding-top:8px; border-top: 1px solid #fde68a }
 .approval-item-head { display:flex; align-items:center; justify-content:space-between; gap:12px }
-.run-details { padding:10px; border:1px solid #e2e8f0; border-radius:8px; background:#fff }
+.run-details { padding:10px; border: 1px solid var(--border); border-radius:8px; background: var(--background) }
 .run-details summary { cursor:pointer; font-weight:600 }
 .run-details dl { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:8px; margin:10px 0 }
 .run-details dl div { min-width:0 }
-.run-details dt { color:#64748b; font-size:11px }
+.run-details dt { color: var(--muted-foreground); font-size:11px }
 .run-details dd { overflow:hidden; margin:2px 0 0; text-overflow:ellipsis; white-space:nowrap }
-.empty { margin:0; padding:16px; color:#94a3b8; text-align:center }
-button { margin-right:8px; padding:5px 10px; border:1px solid #cbd5e1; border-radius:6px; background:white; cursor:pointer }
+.empty { margin:0; padding:16px; color: var(--muted-foreground); text-align:center }
+button { margin-right:8px; padding:5px 10px; border: 1px solid #cbd5e1; border-radius:6px; background: white; cursor:pointer }
 button:disabled { cursor:not-allowed; opacity:.5 }
-.error { color:#b91c1c }
+.error { color: #b91c1c }
 @media (max-width:720px) { .timeline-workspace.has-inspector { grid-template-columns:1fr } .event-inspector { position:static } }
 </style>

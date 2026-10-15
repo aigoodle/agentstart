@@ -24,13 +24,13 @@ describe('setAgentStartAppearance', () => {
     expect(document.documentElement.classList.contains('dark')).toBe(false);
   });
 
-  it('maps one primary color to base, knowledge and HUD tokens', () => {
+  it('sets the semantic accent and compatibility tokens', () => {
     setAgentStartAppearance({ primaryColor: '#722ed1' });
 
     const style = document.documentElement.style;
-    expect(style.getPropertyValue('--color-as-primary')).toBe('#722ed1');
-    expect(style.getPropertyValue('--as-theme-primary')).toBe('#722ed1');
-    expect(style.getPropertyValue('--kh-color-primary')).toBe('#722ed1');
+    expect(style.getPropertyValue('--primary')).toBe('#722ed1');
+    expect(style.getPropertyValue('--ring')).toBe('#722ed1');
+    expect(style.getPropertyValue('--primary-foreground')).toBe('#ffffff');
   });
 
   it('supports a custom appearance scope', () => {
@@ -42,6 +42,6 @@ describe('setAgentStartAppearance', () => {
 
     expect(target.dataset.theme).toBe('dark');
     expect(target.dataset.visual).toBe('normal');
-    expect(target.style.getPropertyValue('--as-theme-primary')).toBe('rebeccapurple');
+    expect(target.style.getPropertyValue('--primary')).toBe('rebeccapurple');
   });
 });

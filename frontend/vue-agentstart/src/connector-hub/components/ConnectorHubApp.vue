@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { Button as AsShadcnButton } from '../../ui/shadcn/button';
+import { Input as AsShadcnInput } from '../../ui/shadcn/input';
+import { ShadcnSelect as AsShadcnSelect } from '../../ui/components/ShadcnSelect';
+
 import { computed, onMounted, ref } from 'vue';
 
 import { createAgentStartClient, type AgentStartClient } from '../../client';
@@ -8,7 +12,7 @@ import {
   type AgentStartHeaders,
   useAgentStartConfig,
 } from '../../config';
-import { Card } from '../../ui';
+import { Button, Card, Tag } from '../../ui';
 import type {
   ConnectorAction,
   ConnectorConnection,
@@ -195,28 +199,28 @@ onMounted(load);
       </div>
 
       <div class="as-page-header-controls">
-        <button class="ch-btn ch-btn-primary" @click="refresh">
+        <AsShadcnButton variant="ghost" class="ch-btn ch-btn-primary" @click="refresh">
           刷新并同步
-        </button>
+        </AsShadcnButton>
       </div>
     </div>
 
     <!-- 页签 -->
     <nav class="ch-tabs">
-      <button
+      <AsShadcnButton variant="ghost"
         class="ch-tab"
         :class="{ 'is-active': tab === 'connectors' }"
         @click="tab = 'connectors'"
       >
         业务连接器
-      </button>
-      <button
+      </AsShadcnButton>
+      <AsShadcnButton variant="ghost"
         class="ch-tab"
         :class="{ 'is-active': tab === 'executions' }"
         @click="openAudits"
       >
         执行审计
-      </button>
+      </AsShadcnButton>
     </nav>
 
     <div v-if="error" class="ch-alert">{{ error }}</div>
@@ -224,14 +228,14 @@ onMounted(load);
     <!-- 连接器目录 -->
     <template v-if="tab === 'connectors'">
       <div class="ch-filters">
-        <input
+        <AsShadcnInput
           v-model="search"
           class="ch-input ch-search"
           placeholder="搜索连接器、描述或 ID"
         />
-        <select v-model="source" class="ch-input ch-select">
+        <AsShadcnSelect v-model="source" class="ch-input ch-select">
           <option v-for="s in sources" :key="s">{{ s }}</option>
-        </select>
+        </AsShadcnSelect>
         <span class="ch-count">{{ filtered.length }} 个连接器</span>
       </div>
 
@@ -271,7 +275,7 @@ onMounted(load);
           </div>
 
           <div class="ch-action-list">
-            <button
+            <AsShadcnButton variant="ghost"
               v-for="a in c.actions.slice(0, 4)"
               :key="a.id"
               class="ch-action"
@@ -281,18 +285,18 @@ onMounted(load);
               <small :class="['ch-risk', riskClass(a.riskLevel)]">
                 {{ a.riskLevel || 'WRITE' }}
               </small>
-              </button>
+              </AsShadcnButton>
             </div>
           </template>
 
           <template #actions>
-            <button class="ch-btn" @click="details(c)">查看详情</button>
-            <button class="ch-btn" @click="openConnection(c)">
+            <Button size="small" @click="details(c)">查看详情</Button>
+            <Button size="small" @click="openConnection(c)">
               + 新建连接
-            </button>
-            <button class="ch-btn" @click="toggle(c)">
+            </Button>
+            <Button size="small" @click="toggle(c)">
               {{ installationOf(c)?.enabled ? '禁用' : '启用' }}
-            </button>
+            </Button>
           </template>
         </Card>
       </div>
@@ -301,7 +305,7 @@ onMounted(load);
     <!-- 执行审计 -->
     <div v-else class="ch-audit">
       <div class="ch-audit-toolbar">
-        <button class="ch-btn" @click="loadExecutions">刷新执行记录</button>
+        <AsShadcnButton variant="ghost" class="ch-btn" @click="loadExecutions">刷新执行记录</AsShadcnButton>
       </div>
       <div v-if="executions.length === 0" class="ch-state">暂无 Connector 执行记录</div>
       <table v-else>
@@ -370,14 +374,14 @@ onMounted(load);
   gap: 20px;
   box-sizing: border-box;
   padding: 20px 24px;
-  color: #111827;
+  color: var(--foreground);
 }
 @media (max-width: 640px) {
   .ch-root {
     padding: 12px 16px;
   }
 }
-:global(.dark) .ch-root {
+.dark .ch-root {
   color: #f3f4f6;
 }
 
@@ -389,8 +393,8 @@ onMounted(load);
   gap: 12px;
   flex-wrap: wrap;
   padding: 16px 20px;
-  background: #fff;
-  border: 1px solid #e5e7eb;
+  background: var(--background);
+  border: 1px solid var(--border);
   border-radius: 12px;
   box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
 }
@@ -419,33 +423,33 @@ onMounted(load);
   font-weight: 600;
   letter-spacing: 0.2px;
   line-height: 1.3;
-  color: #111827;
+  color: var(--foreground);
 }
 .ch-toolbar-subtitle {
   margin: 3px 0 0;
   font-size: 13px;
-  color: #6b7280;
+  color: var(--muted-foreground);
   line-height: 1.5;
 }
-:global(.dark) .ch-toolbar {
+.dark .ch-toolbar {
   background: #1f1f1f;
   border-color: #2d2d2d;
 }
-:global(.dark) .ch-toolbar-logo {
+.dark .ch-toolbar-logo {
   background: linear-gradient(135deg, #818cf8, #6366f1);
 }
-:global(.dark) .ch-toolbar-title {
+.dark .ch-toolbar-title {
   color: #f3f4f6;
 }
-:global(.dark) .ch-toolbar-subtitle {
-  color: #9ca3af;
+.dark .ch-toolbar-subtitle {
+  color: var(--muted-foreground);
 }
 
 /* -------- 页签 -------- */
 .ch-tabs {
   display: flex;
   gap: 4px;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
 }
 .ch-tab {
   appearance: none;
@@ -455,28 +459,28 @@ onMounted(load);
   margin-bottom: -1px;
   font-size: 14px;
   font-weight: 500;
-  color: #6b7280;
+  color: var(--muted-foreground);
   border-bottom: 2px solid transparent;
   cursor: pointer;
   transition: color 0.15s ease;
 }
 .ch-tab:hover {
-  color: #111827;
+  color: var(--foreground);
 }
 .ch-tab.is-active {
   color: #4f46e5;
   border-bottom-color: #4f46e5;
 }
-:global(.dark) .ch-tabs {
+.dark .ch-tabs {
   border-bottom-color: #2d2d2d;
 }
-:global(.dark) .ch-tab {
-  color: #9ca3af;
+.dark .ch-tab {
+  color: var(--muted-foreground);
 }
-:global(.dark) .ch-tab:hover {
+.dark .ch-tab:hover {
   color: #f3f4f6;
 }
-:global(.dark) .ch-tab.is-active {
+.dark .ch-tab.is-active {
   color: #818cf8;
   border-bottom-color: #818cf8;
 }
@@ -490,7 +494,7 @@ onMounted(load);
   border: 1px solid #fecaca;
   border-radius: 8px;
 }
-:global(.dark) .ch-alert {
+.dark .ch-alert {
   color: #fca5a5;
   background: rgba(220, 38, 38, 0.15);
   border-color: rgba(220, 38, 38, 0.35);
@@ -507,10 +511,10 @@ onMounted(load);
   height: 36px;
   padding: 0 12px;
   font-size: 13px;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--border);
   border-radius: 8px;
-  background: #fff;
-  color: #111827;
+  background: var(--background);
+  color: var(--foreground);
   transition:
     border-color 0.15s ease,
     box-shadow 0.15s ease;
@@ -525,7 +529,7 @@ onMounted(load);
   max-width: 100%;
 }
 .ch-search::placeholder {
-  color: #9ca3af;
+  color: var(--muted-foreground);
 }
 .ch-select {
   cursor: pointer;
@@ -533,15 +537,15 @@ onMounted(load);
 .ch-count {
   margin-left: auto;
   font-size: 13px;
-  color: #6b7280;
+  color: var(--muted-foreground);
 }
-:global(.dark) .ch-input {
+.dark .ch-input {
   background: #2d2d2d;
   border-color: #3d3d3d;
   color: #f3f4f6;
 }
-:global(.dark) .ch-count {
-  color: #9ca3af;
+.dark .ch-count {
+  color: var(--muted-foreground);
 }
 
 /* -------- 加载中 / 空状态 -------- */
@@ -549,7 +553,7 @@ onMounted(load);
   padding: 48px 0;
   text-align: center;
   font-size: 13px;
-  color: #9ca3af;
+  color: var(--muted-foreground);
 }
 
 /* -------- 连接器卡片网格 -------- */
@@ -558,10 +562,7 @@ onMounted(load);
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 14px;
 }
-.ch-card {
-  gap: 12px;
-  min-height: 0;
-}
+
 .ch-icon {
   font-size: 22px;
 }
@@ -575,12 +576,12 @@ onMounted(load);
   padding: 2px 8px;
   font-size: 11px;
   border-radius: 10px;
-  background: #f3f4f6;
-  color: #374151;
+  background: var(--muted);
+  color: var(--foreground);
 }
-:global(.dark) .ch-badges span {
+.dark .ch-badges span {
   background: #2d2d2d;
-  color: #d1d5db;
+  color: var(--muted-foreground);
 }
 
 /* -------- Action 快捷测试列表 -------- */
@@ -596,9 +597,9 @@ onMounted(load);
   padding: 7px 10px;
   font-size: 13px;
   text-align: left;
-  color: #111827;
-  background: #fafafa;
-  border: 1px solid #e5e7eb;
+  color: var(--foreground);
+  background: var(--muted);
+  border: 1px solid var(--border);
   border-radius: 8px;
   cursor: pointer;
   transition:
@@ -609,12 +610,12 @@ onMounted(load);
   border-color: #a5b4fc;
   background: #eef2ff;
 }
-:global(.dark) .ch-action {
+.dark .ch-action {
   background: #191919;
   border-color: #2d2d2d;
   color: #f3f4f6;
 }
-:global(.dark) .ch-action:hover {
+.dark .ch-action:hover {
   border-color: #6366f1;
   background: rgba(99, 102, 241, 0.12);
 }
@@ -631,33 +632,26 @@ onMounted(load);
 .ch-risk.is-destructive {
   color: #dc2626;
 }
-:global(.dark) .ch-risk.is-read {
+.dark .ch-risk.is-read {
   color: #34d399;
 }
-:global(.dark) .ch-risk.is-write {
+.dark .ch-risk.is-write {
   color: #fbbf24;
 }
-:global(.dark) .ch-risk.is-destructive {
+.dark .ch-risk.is-destructive {
   color: #f87171;
 }
 
-.ch-card:deep(.as-management-card__content) {
-  display: grid;
-  gap: 12px;
-}
-.ch-card:deep(.as-management-card__actions) {
-  width: 100%;
-  justify-content: flex-end;
-}
+
 
 /* -------- 按钮 -------- */
 .ch-btn {
   padding: 7px 14px;
   font-size: 13px;
   font-weight: 500;
-  color: #374151;
-  background: #fff;
-  border: 1px solid #d1d5db;
+  color: var(--foreground);
+  background: var(--background);
+  border: 1px solid var(--border);
   border-radius: 6px;
   cursor: pointer;
   transition:
@@ -665,7 +659,7 @@ onMounted(load);
     border-color 0.15s ease;
 }
 .ch-btn:hover {
-  background: #f3f4f6;
+  background: var(--muted);
 }
 .ch-btn:disabled {
   opacity: 0.5;
@@ -679,19 +673,19 @@ onMounted(load);
 .ch-btn-primary:hover {
   background: #4f46e5;
 }
-:global(.dark) .ch-btn {
+.dark .ch-btn {
   background: #2d2d2d;
   border-color: #3d3d3d;
   color: #f3f4f6;
 }
-:global(.dark) .ch-btn:hover {
+.dark .ch-btn:hover {
   background: #3d3d3d;
 }
-:global(.dark) .ch-btn-primary {
+.dark .ch-btn-primary {
   background: #6366f1;
   border-color: #6366f1;
 }
-:global(.dark) .ch-btn-primary:hover {
+.dark .ch-btn-primary:hover {
   background: #818cf8;
 }
 
@@ -712,24 +706,24 @@ onMounted(load);
 }
 .ch-pill.is-off,
 .ch-pill.is-neutral {
-  color: #6b7280;
-  background: #f3f4f6;
+  color: var(--muted-foreground);
+  background: var(--muted);
 }
 .ch-pill.is-danger {
   color: #dc2626;
   background: #fef2f2;
 }
-:global(.dark) .ch-pill.is-on,
-:global(.dark) .ch-pill.is-success {
+.dark .ch-pill.is-on,
+.dark .ch-pill.is-success {
   color: #34d399;
   background: rgba(16, 185, 129, 0.15);
 }
-:global(.dark) .ch-pill.is-off,
-:global(.dark) .ch-pill.is-neutral {
-  color: #9ca3af;
+.dark .ch-pill.is-off,
+.dark .ch-pill.is-neutral {
+  color: var(--muted-foreground);
   background: #2d2d2d;
 }
-:global(.dark) .ch-pill.is-danger {
+.dark .ch-pill.is-danger {
   color: #f87171;
   background: rgba(220, 38, 38, 0.15);
 }
@@ -737,16 +731,16 @@ onMounted(load);
 /* -------- 执行审计表格 -------- */
 .ch-audit {
   overflow: auto;
-  background: #fff;
-  border: 1px solid #e5e7eb;
+  background: var(--background);
+  border: 1px solid var(--border);
   border-radius: 12px;
 }
-.ch-audit-toolbar { padding: 12px; border-bottom: 1px solid #e5e7eb; }
+.ch-audit-toolbar { padding: 12px; border-bottom: 1px solid var(--border); }
 .ch-audit-switch, .ch-audit-filters { display: flex; gap: 8px; flex-wrap: wrap; }
 .ch-audit-filters { margin-top: 10px; }
 .ch-audit-filters .ch-input { min-width: 120px; flex: 1; }
 .ch-audit-details { min-width: 220px; max-width: 420px; overflow-wrap: anywhere; }
-.ch-muted { margin-top: 3px; color: #9ca3af; font-size: 11px; }
+.ch-muted { margin-top: 3px; color: var(--muted-foreground); font-size: 11px; }
 .ch-audit table {
   width: 100%;
   border-collapse: collapse;
@@ -757,44 +751,44 @@ onMounted(load);
   padding: 10px 14px;
   font-size: 12px;
   font-weight: 600;
-  color: #6b7280;
-  background: #f9fafb;
-  border-bottom: 1px solid #e5e7eb;
+  color: var(--muted-foreground);
+  background: var(--muted);
+  border-bottom: 1px solid var(--border);
   white-space: nowrap;
 }
 .ch-audit td {
   padding: 10px 14px;
-  border-bottom: 1px solid #f3f4f6;
-  color: #374151;
+  border-bottom: 1px solid var(--border);
+  color: var(--foreground);
   vertical-align: top;
 }
 .ch-audit tbody tr:last-child td {
   border-bottom: 0;
 }
 .ch-audit tbody tr:hover td {
-  background: #f9fafb;
+  background: var(--muted);
 }
 .ch-error-cell {
   color: #dc2626;
   max-width: 260px;
 }
-:global(.dark) .ch-audit {
+.dark .ch-audit {
   background: #1f1f1f;
   border-color: #2d2d2d;
 }
-:global(.dark) .ch-audit th {
+.dark .ch-audit th {
   background: #191919;
   border-bottom-color: #2d2d2d;
-  color: #9ca3af;
+  color: var(--muted-foreground);
 }
-:global(.dark) .ch-audit td {
+.dark .ch-audit td {
   border-bottom-color: #2d2d2d;
-  color: #d1d5db;
+  color: var(--muted-foreground);
 }
-:global(.dark) .ch-audit tbody tr:hover td {
+.dark .ch-audit tbody tr:hover td {
   background: #191919;
 }
-:global(.dark) .ch-error-cell {
+.dark .ch-error-cell {
   color: #f87171;
 }
 </style>

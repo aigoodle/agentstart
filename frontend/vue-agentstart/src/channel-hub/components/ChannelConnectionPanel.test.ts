@@ -1,9 +1,13 @@
-import { DOMWrapper, flushPromises, mount } from '@vue/test-utils';
+import { DOMWrapper, flushPromises, mount as mountVue } from '@vue/test-utils';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import ChannelConnectionPanel from './ChannelConnectionPanel.vue';
 
+const mounted: ReturnType<typeof mountVue>[] = [];
+const mount: typeof mountVue = ((...args: any[]) => { const wrapper = (mountVue as any)(...args); mounted.push(wrapper); return wrapper; }) as typeof mountVue;
+
 afterEach(() => {
+  mounted.splice(0).forEach(wrapper => { if (!wrapper.vm.$.isUnmounted) wrapper.unmount(); });
   document.body.innerHTML = '';
 });
 
@@ -144,8 +148,8 @@ describe('ChannelConnectionPanel', () => {
     expect(messageButton.exists()).toBe(true);
     await messageButton.trigger('click');
     await flushPromises();
-    expect(wrapper.text()).toContain('消息观察 · 钉钉');
-    expect(wrapper.text()).toContain('该通道暂无消息');
+    expect(body().text()).toContain('消息观察 · 钉钉');
+    expect(body().text()).toContain('该通道暂无消息');
     wrapper.unmount();
   });
 
@@ -169,13 +173,13 @@ describe('ChannelConnectionPanel', () => {
     await wrapper.findAll('button').find(button => button.text() === '消息')!.trigger('click');
     await flushPromises();
 
-    expect(wrapper.text()).toContain('最新会话');
-    expect(wrapper.text()).toContain('加载更多会话');
-    await wrapper.find('.cmd-load-more').trigger('click');
+    expect(body().text()).toContain('最新会话');
+    expect(body().text()).toContain('加载更多会话');
+    await body().find('.cmd-load-more').trigger('click');
     await flushPromises();
 
-    expect(wrapper.text()).toContain('最新会话');
-    expect(wrapper.text()).toContain('较早会话');
+    expect(body().text()).toContain('最新会话');
+    expect(body().text()).toContain('较早会话');
     expect(client.channels.pageChannelConversations.mock.calls[1][0]).toMatchObject({ cursor: 'next-1' });
     wrapper.unmount();
   });
@@ -209,19 +213,19 @@ describe('ChannelConnectionPanel', () => {
     await flushPromises();
     await wrapper.findAll('button').find(button => button.text() === '消息')!.trigger('click');
     await flushPromises();
-    await wrapper.find('.cmd-conversation .cmd-op').trigger('click');
+    await body().find('.cmd-conversation .cmd-op').trigger('click');
     await flushPromises();
 
-    expect(wrapper.text()).toContain('最新一页');
-    expect(wrapper.text()).toContain('加载更早消息');
+    expect(body().text()).toContain('最新一页');
+    expect(body().text()).toContain('加载更早消息');
     expect(client.channels.pageChannelEvents).toHaveBeenNthCalledWith(1, {
       connectionId: undefined, conversationId: 'conversation-1', cursor: undefined, limit: 50,
     });
-    await wrapper.find('.cmd-load-more-messages').trigger('click');
+    await body().find('.cmd-load-more-messages').trigger('click');
     await flushPromises();
 
-    expect(wrapper.text()).toContain('最新一页');
-    expect(wrapper.text()).toContain('更早一页');
+    expect(body().text()).toContain('最新一页');
+    expect(body().text()).toContain('更早一页');
     expect(client.channels.pageChannelEvents).toHaveBeenNthCalledWith(2, {
       connectionId: undefined, conversationId: 'conversation-1', cursor: 'event-cursor-1', limit: 50,
     });
@@ -258,16 +262,16 @@ describe('ChannelConnectionPanel', () => {
     await flushPromises();
     await wrapper.findAll('button').find(button => button.text() === '消息')!.trigger('click');
     await flushPromises();
-    const viewButtons = wrapper.findAll('.cmd-conversation').map((row) => row.find('.cmd-op'));
+    const viewButtons = body().findAll('.cmd-conversation').map((row) => row.find('.cmd-op'));
     await viewButtons[0].trigger('click');
     await viewButtons[1].trigger('click');
     await flushPromises();
-    expect(wrapper.text()).toContain('当前会话消息');
+    expect(body().text()).toContain('当前会话消息');
 
     resolveFirst({ items: [event('event-a', 'conversation-a', '过期会话消息')], hasMore: false });
     await flushPromises();
-    expect(wrapper.text()).toContain('当前会话消息');
-    expect(wrapper.text()).not.toContain('过期会话消息');
+    expect(body().text()).toContain('当前会话消息');
+    expect(body().text()).not.toContain('过期会话消息');
     wrapper.unmount();
   });
 });

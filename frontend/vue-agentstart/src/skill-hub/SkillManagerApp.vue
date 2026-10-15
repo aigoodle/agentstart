@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Button as AsShadcnButton } from '../ui/shadcn/button';
+
 import { computed, onMounted, reactive, ref } from 'vue';
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons-vue';
 import { createAgentStartClient, type SkillEntity, type SkillStatus } from '../client';
@@ -46,7 +48,7 @@ onMounted(load);
     </div>
 
     <header class="as-management-toolbar">
-      <div class="as-management-segments"><button v-for="item in ([['ALL','全部'],['DRAFT','草稿'],['PUBLISHED','已发布'],['DISABLED','已停用']] as const)" :key="item[0]" :class="{active:statusFilter===item[0]}" @click="statusFilter=item[0]">{{ item[1] }}</button></div>
+      <div class="as-management-segments"><AsShadcnButton variant="ghost" v-for="item in ([['ALL','全部'],['DRAFT','草稿'],['PUBLISHED','已发布'],['DISABLED','已停用']] as const)" :key="item[0]" :class="{active:statusFilter===item[0]}" @click="statusFilter=item[0]">{{ item[1] }}</AsShadcnButton></div>
     </header>
     <Spin :spinning="busy">
       <div v-if="!busy&&!visibleRows.length" class="as-management-empty"><Empty description="暂无符合条件的 Skill" /></div>
@@ -59,7 +61,6 @@ onMounted(load);
           :subtitle="row.code"
           :description="row.description || '暂无 Skill 简介'"
           @click="edit(row)"
-          @keydown.enter="edit(row)"
         >
           <template #icon>S</template>
           <template #badge>
@@ -72,10 +73,10 @@ onMounted(load);
             </div>
           </template>
           <template #actions>
-            <div class="skill-card-actions">
+
               <Button size="small" @click.stop="edit(row)"><EditOutlined />编辑</Button>
               <Button size="small" danger @click.stop="remove(row)"><DeleteOutlined />删除</Button>
-            </div>
+
           </template>
         </Card>
       </div>
@@ -105,35 +106,13 @@ onMounted(load);
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
 }
 
-.skill-card {
-  position: relative;
-  display: flex;
-  min-height: 164px;
-  flex-direction: column;
-  padding: 14px;
-  overflow: hidden;
-  cursor: pointer;
-}
 
 .skill-card:hover,
 .skill-card:focus-visible {
   z-index: 1;
 }
 
-.skill-card .as-management-card__description {
-  min-height: 36px;
-  margin: 8px 0;
-  line-height: 18px;
-}
 
-.skill-card footer {
-  gap: 8px;
-  margin: 6px -14px -14px;
-  padding: 7px 14px;
-  border-top: 1px solid var(--as-mgmt-line);
-  color: var(--as-mgmt-muted);
-  font-size: 11px;
-}
 
 .skill-meta,
 .skill-card-actions,
@@ -190,10 +169,6 @@ onMounted(load);
     max-width: none;
   }
 
-  .skill-card footer {
-    align-items: flex-start;
-    flex-direction: column;
-  }
 
   .skill-card-actions {
     align-self: flex-end;

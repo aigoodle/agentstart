@@ -16,9 +16,9 @@ defineExpose({ showModal: () => {}, hideModal: () => {} });
 .agent-flow-stub {
   display: inline-block;
   padding: 4px 8px;
-  border: 1px dashed #d1d5db;
+  border: 1px dashed var(--border);
   border-radius: 4px;
-  color: #6b7280;
+  color: var(--muted-foreground);
   font-size: 12px;
 }
 </style>

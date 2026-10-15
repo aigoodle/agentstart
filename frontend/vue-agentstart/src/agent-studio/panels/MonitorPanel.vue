@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Card as AsShadcnCard } from '../../ui/shadcn/card';
+
 /**
  * MonitorPanel — content for {@code AppDesignDrawer}'s "监测" tab.
  *
@@ -405,7 +407,7 @@ const usageTiles = computed(() => {
 
     <!-- Recent-call trend + records share one row to keep the dashboard compact. -->
     <section class="monitor-section monitor-call-grid">
-      <div class="monitor-call-card">
+      <AsShadcnCard class="monitor-call-card">
         <div class="monitor-call-head">
           <div class="monitor-section-title">
             <span class="monitor-section-dot" />
@@ -431,9 +433,9 @@ const usageTiles = computed(() => {
           color="var(--as-primary, #6366f1)"
           :height="230"
         />
-      </div>
+      </AsShadcnCard>
 
-      <div class="monitor-call-card monitor-call-table-card">
+      <AsShadcnCard class="monitor-call-card monitor-call-table-card">
         <div class="monitor-section-title">
           <span class="monitor-section-dot" />
           当前应用最近 10 条模型调用
@@ -472,7 +474,7 @@ const usageTiles = computed(() => {
           </template>
         </Table>
 
-      </div>
+      </AsShadcnCard>
     </section>
     </template>
   </div>

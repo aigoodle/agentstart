@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import { ShadcnSelect as AsShadcnSelect } from './ShadcnSelect';
+import { ShadcnBoolean as AsShadcnBoolean } from './ShadcnBoolean';
+import { Textarea as AsShadcnTextarea } from '../shadcn/textarea';
+import { Input as AsShadcnInput } from '../shadcn/input';
+import { Button as AsShadcnButton } from '../shadcn/button';
+
 import { computed, ref, watch } from 'vue';
 
 import type { JsonSchema } from '../../connector-hub/types';
@@ -107,7 +113,7 @@ function placeholder(name: string, schema: JsonSchema) {
           :auto-load-default="false"
           @update:model-value="setField(name, field, $event)"
         />
-        <select
+        <AsShadcnSelect
           v-else-if="field.enum"
           :value="value[name]"
           @change="
@@ -118,8 +124,8 @@ function placeholder(name: string, schema: JsonSchema) {
           <option v-for="item in field.enum" :key="String(item)" :value="item">
             {{ item }}
           </option>
-        </select>
-        <input
+        </AsShadcnSelect>
+        <AsShadcnBoolean
           v-else-if="field.type === 'boolean'"
           type="checkbox"
           :checked="Boolean(value[name])"
@@ -127,7 +133,7 @@ function placeholder(name: string, schema: JsonSchema) {
             setField(name, field, ($event.target as HTMLInputElement).checked)
           "
         />
-        <textarea
+        <AsShadcnTextarea
           v-else-if="
             ui.fields?.[name]?.widget === 'textarea' || field.format === 'textarea' ||
             field.type === 'object' ||
@@ -149,7 +155,7 @@ function placeholder(name: string, schema: JsonSchema) {
           :placeholder="ui.fields?.[name]?.placeholder || field.description || `输入${field.title || name}，或选择上游参数`"
           @update:model-value="setField(name, field, $event)"
         />
-        <input
+        <AsShadcnInput
           v-else
           :type="inputType(name, field)"
           :placeholder="placeholder(name, field)"
@@ -163,7 +169,7 @@ function placeholder(name: string, schema: JsonSchema) {
       </label>
     </div>
     <div v-else-if="advanced || (isOpen && allowAdvanced)" class="jsf-json-wrap">
-      <textarea
+      <AsShadcnTextarea
         v-model="jsonText"
         class="jsf-json"
         spellcheck="false"
@@ -172,14 +178,14 @@ function placeholder(name: string, schema: JsonSchema) {
       <div v-if="jsonError" class="jsf-error">{{ jsonError }}</div>
     </div>
     <div v-else class="jsf-empty">{{ emptyText }}</div>
-    <button
+    <AsShadcnButton variant="ghost"
       v-if="allowAdvanced && !isOpen"
       type="button"
       class="jsf-mode"
       @click="advanced = !advanced"
     >
       {{ advanced ? '返回表单模式' : 'JSON 高级模式' }}
-    </button>
+    </AsShadcnButton>
   </div>
 </template>
 
@@ -195,7 +201,7 @@ function placeholder(name: string, schema: JsonSchema) {
 .jsf-field {
   display: grid;
   gap: 6px;
-  color: #374151;
+  color: var(--foreground);
   font-size: 13px;
   font-weight: 500;
 }
@@ -204,7 +210,7 @@ function placeholder(name: string, schema: JsonSchema) {
   font-weight: 600;
 }
 .jsf-field small {
-  color: #9ca3af;
+  color: var(--muted-foreground);
   font-size: 12px;
   font-weight: 400;
   line-height: 1.4;
@@ -219,9 +225,9 @@ function placeholder(name: string, schema: JsonSchema) {
   box-sizing: border-box;
   padding: 8px 10px;
   font-size: 13px;
-  color: #111827;
-  background: #fff;
-  border: 1px solid #d1d5db;
+  color: var(--foreground);
+  background: var(--background);
+  border: 1px solid var(--border);
   border-radius: 6px;
   transition:
     border-color 0.15s ease,
@@ -279,28 +285,28 @@ function placeholder(name: string, schema: JsonSchema) {
 }
 .jsf-empty {
   padding: 12px;
-  color: #6b7280;
-  background: #f9fafb;
-  border: 1px dashed #d1d5db;
+  color: var(--muted-foreground);
+  background: var(--muted);
+  border: 1px dashed var(--border);
   border-radius: 6px;
   font-size: 12px;
   line-height: 1.5;
 }
-:global(.dark) .jsf-field {
-  color: #d1d5db;
+.dark .jsf-field {
+  color: var(--muted-foreground);
 }
-:global(.dark) .jsf-field input:not([type='checkbox']),
-:global(.dark) .jsf-field select,
-:global(.dark) .jsf-field textarea,
-:global(.dark) .jsf-json {
+.dark .jsf-field input:not([type='checkbox']),
+.dark .jsf-field select,
+.dark .jsf-field textarea,
+.dark .jsf-json {
   background: #2d2d2d;
   border-color: #3d3d3d;
   color: #f3f4f6;
 }
-:global(.dark) .jsf-mode {
+.dark .jsf-mode {
   color: #818cf8;
 }
-:global(.dark) .jsf-error {
+.dark .jsf-error {
   color: #f87171;
 }
 </style>

@@ -35,6 +35,7 @@ export const menuGroups: MenuGroup[] = [
     group: '总控',
     items: [
       { path: '/overview', title: '总览驾驶舱', icon: DashboardOutlined },
+      { path: '/ui', title: 'UI 组件', icon: AppstoreOutlined },
     ],
   },
   {
@@ -72,6 +73,7 @@ export const menuGroups: MenuGroup[] = [
 
 const routes: RouteRecordRaw[] = [
   { path: '/', redirect: '/overview' },
+  { name: 'UiComponents', path: '/ui', component: () => import('../views/ui.vue'), meta: { title: 'UI 组件', group: '总控' } },
   {
     name: 'Overview',
     path: '/overview',

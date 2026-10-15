@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { ShadcnSelect as AsShadcnSelect } from '../../ui/components/ShadcnSelect';
+
 import { ref, watch } from 'vue';
 
 import type { AgentStartClient } from '../../client';
@@ -57,7 +59,7 @@ watch(
 </script>
 
 <template>
-  <select
+  <AsShadcnSelect
     :value="modelValue"
     :disabled="!agentId || loading"
     aria-label="Agent 版本"
@@ -69,5 +71,5 @@ watch(
     <option v-for="version in versions" :key="version.id" :value="version.id">
       {{ labelOf(version) }}
     </option>
-  </select>
+  </AsShadcnSelect>
 </template>

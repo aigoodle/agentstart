@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { Drawer as ShadcnDrawer } from '../../ui/components/Drawer';
+import { Button as AsShadcnButton } from '../../ui/shadcn/button';
+
 import type {
   ConnectorAction,
   ConnectorConnection,
@@ -33,9 +36,9 @@ function riskClass(level?: string) {
 </script>
 
 <template>
-  <Transition name="cdd">
-    <div v-if="open" class="cdd-mask" @click.self="emit('update:open', false)">
-      <aside class="cdd-drawer">
+  <ShadcnDrawer :open="open" class="cdd-drawer" width="min(560px, 96vw)" :closable="false"
+    :body-style="{ padding: 0, display: 'flex', flexDirection: 'column', minHeight: 0 }"
+    @update:open="emit('update:open', $event)">
         <header class="cdd-header">
           <div class="cdd-header-info">
             <span class="cdd-icon">{{ connector?.icon || '🔌' }}</span>
@@ -47,9 +50,9 @@ function riskClass(level?: string) {
               </small>
             </div>
           </div>
-          <button class="cdd-close" @click="emit('update:open', false)">
+          <AsShadcnButton variant="ghost" class="cdd-close" @click="emit('update:open', false)">
             ✕
-          </button>
+          </AsShadcnButton>
         </header>
 
         <main class="cdd-main">
@@ -64,17 +67,17 @@ function riskClass(level?: string) {
           <section class="cdd-section">
             <div class="cdd-section-head">
               <h3>连接配置</h3>
-              <button
+              <AsShadcnButton variant="ghost"
                 class="cdd-btn cdd-btn-primary"
                 @click="emit('connection')"
               >
                 + 新建连接
-              </button>
+              </AsShadcnButton>
             </div>
             <div v-if="connections.length === 0" class="cdd-empty">
               尚未配置连接
             </div>
-            <button
+            <AsShadcnButton variant="ghost"
               v-for="c in connections"
               :key="c.id"
               class="cdd-row"
@@ -87,12 +90,12 @@ function riskClass(level?: string) {
               <span class="cdd-row-side">
                 {{ c.credentialsConfigured ? '凭证已配置' : '未配置凭证' }} ›
               </span>
-            </button>
+            </AsShadcnButton>
           </section>
 
           <section class="cdd-section">
             <h3 class="cdd-section-title">Actions</h3>
-            <button
+            <AsShadcnButton variant="ghost"
               v-for="a in connector?.actions || []"
               :key="a.id"
               class="cdd-row"
@@ -105,18 +108,17 @@ function riskClass(level?: string) {
               <span :class="['cdd-risk', riskClass(a.riskLevel)]">
                 {{ a.riskLevel || 'WRITE' }} · 测试 ›
               </span>
-            </button>
+            </AsShadcnButton>
           </section>
         </main>
 
         <footer class="cdd-footer">
-          <button class="cdd-btn" @click="emit('toggle')">
+          <AsShadcnButton variant="ghost" class="cdd-btn" @click="emit('toggle')">
             {{ installation?.enabled ? '禁用 Connector' : '启用 Connector' }}
-          </button>
+          </AsShadcnButton>
         </footer>
-      </aside>
-    </div>
-  </Transition>
+
+  </ShadcnDrawer>
 </template>
 
 <style scoped>
@@ -136,10 +138,10 @@ function riskClass(level?: string) {
   display: grid;
   grid-template-rows: auto 1fr auto;
   overflow: auto;
-  background: #fff;
+  background: var(--background);
   box-shadow: -6px 0 22px rgba(15, 23, 42, 0.14);
 }
-:global(.dark) .cdd-drawer {
+.dark .cdd-drawer {
   background: #1f1f1f;
 }
 
@@ -168,7 +170,7 @@ function riskClass(level?: string) {
   align-items: center;
   gap: 12px;
   padding: 16px 20px;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
 }
 .cdd-header-info {
   display: flex;
@@ -194,11 +196,11 @@ function riskClass(level?: string) {
 }
 .cdd-header-text b {
   font-size: 15px;
-  color: #111827;
+  color: var(--foreground);
 }
 .cdd-header-text small {
   font-size: 12px;
-  color: #9ca3af;
+  color: var(--muted-foreground);
 }
 .cdd-close {
   flex-shrink: 0;
@@ -210,7 +212,7 @@ function riskClass(level?: string) {
   border: 0;
   background: none;
   font-size: 14px;
-  color: #9ca3af;
+  color: var(--muted-foreground);
   border-radius: 6px;
   cursor: pointer;
   transition:
@@ -218,19 +220,19 @@ function riskClass(level?: string) {
     color 0.15s ease;
 }
 .cdd-close:hover {
-  background: #f3f4f6;
-  color: #111827;
+  background: var(--muted);
+  color: var(--foreground);
 }
-:global(.dark) .cdd-header {
+.dark .cdd-header {
   border-bottom-color: #2d2d2d;
 }
-:global(.dark) .cdd-icon {
+.dark .cdd-icon {
   background: rgba(99, 102, 241, 0.15);
 }
-:global(.dark) .cdd-header-text b {
+.dark .cdd-header-text b {
   color: #f3f4f6;
 }
-:global(.dark) .cdd-close:hover {
+.dark .cdd-close:hover {
   background: #2d2d2d;
   color: #f3f4f6;
 }
@@ -245,11 +247,11 @@ function riskClass(level?: string) {
 .cdd-desc {
   margin: 0;
   font-size: 13px;
-  color: #6b7280;
+  color: var(--muted-foreground);
   line-height: 1.6;
 }
-:global(.dark) .cdd-desc {
-  color: #9ca3af;
+.dark .cdd-desc {
+  color: var(--muted-foreground);
 }
 
 .cdd-meta {
@@ -260,13 +262,13 @@ function riskClass(level?: string) {
 .cdd-meta span {
   padding: 3px 10px;
   font-size: 12px;
-  color: #374151;
-  background: #f3f4f6;
+  color: var(--foreground);
+  background: var(--muted);
   border-radius: 10px;
 }
-:global(.dark) .cdd-meta span {
+.dark .cdd-meta span {
   background: #2d2d2d;
-  color: #d1d5db;
+  color: var(--muted-foreground);
 }
 
 .cdd-section {
@@ -283,11 +285,11 @@ function riskClass(level?: string) {
   margin: 0;
   font-size: 13px;
   font-weight: 600;
-  color: #374151;
+  color: var(--foreground);
 }
-:global(.dark) .cdd-section h3,
-:global(.dark) .cdd-section-title {
-  color: #d1d5db;
+.dark .cdd-section h3,
+.dark .cdd-section-title {
+  color: var(--muted-foreground);
 }
 
 /* -------- 行式条目（连接 / Action） -------- */
@@ -298,8 +300,8 @@ function riskClass(level?: string) {
   gap: 10px;
   padding: 10px 12px;
   text-align: left;
-  background: #fff;
-  border: 1px solid #e5e7eb;
+  background: var(--background);
+  border: 1px solid var(--border);
   border-radius: 8px;
   cursor: pointer;
   transition:
@@ -308,7 +310,7 @@ function riskClass(level?: string) {
 }
 .cdd-row:hover {
   border-color: #a5b4fc;
-  background: #fafafa;
+  background: var(--muted);
 }
 .cdd-row-main {
   display: grid;
@@ -318,30 +320,30 @@ function riskClass(level?: string) {
 .cdd-row-main b {
   font-size: 13px;
   font-weight: 600;
-  color: #111827;
+  color: var(--foreground);
 }
 .cdd-row-main small {
   font-size: 12px;
-  color: #9ca3af;
+  color: var(--muted-foreground);
 }
 .cdd-row-side {
   flex-shrink: 0;
   font-size: 12px;
-  color: #6b7280;
+  color: var(--muted-foreground);
 }
-:global(.dark) .cdd-row {
+.dark .cdd-row {
   background: #2d2d2d;
   border-color: #3d3d3d;
 }
-:global(.dark) .cdd-row:hover {
+.dark .cdd-row:hover {
   border-color: #6366f1;
   background: #333;
 }
-:global(.dark) .cdd-row-main b {
+.dark .cdd-row-main b {
   color: #f3f4f6;
 }
-:global(.dark) .cdd-row-side {
-  color: #9ca3af;
+.dark .cdd-row-side {
+  color: var(--muted-foreground);
 }
 
 /* -------- 风险等级 -------- */
@@ -359,13 +361,13 @@ function riskClass(level?: string) {
 .cdd-risk.is-destructive {
   color: #dc2626;
 }
-:global(.dark) .cdd-risk.is-read {
+.dark .cdd-risk.is-read {
   color: #34d399;
 }
-:global(.dark) .cdd-risk.is-write {
+.dark .cdd-risk.is-write {
   color: #fbbf24;
 }
-:global(.dark) .cdd-risk.is-destructive {
+.dark .cdd-risk.is-destructive {
   color: #f87171;
 }
 
@@ -374,11 +376,11 @@ function riskClass(level?: string) {
   padding: 20px;
   text-align: center;
   font-size: 13px;
-  color: #9ca3af;
-  border: 1px dashed #e5e7eb;
+  color: var(--muted-foreground);
+  border: 1px dashed var(--border);
   border-radius: 8px;
 }
-:global(.dark) .cdd-empty {
+.dark .cdd-empty {
   border-color: #3d3d3d;
 }
 
@@ -387,9 +389,9 @@ function riskClass(level?: string) {
   padding: 7px 14px;
   font-size: 13px;
   font-weight: 500;
-  color: #374151;
-  background: #fff;
-  border: 1px solid #d1d5db;
+  color: var(--foreground);
+  background: var(--background);
+  border: 1px solid var(--border);
   border-radius: 6px;
   cursor: pointer;
   transition:
@@ -397,7 +399,7 @@ function riskClass(level?: string) {
     border-color 0.15s ease;
 }
 .cdd-btn:hover {
-  background: #f3f4f6;
+  background: var(--muted);
 }
 .cdd-btn-primary {
   color: #fff;
@@ -407,19 +409,19 @@ function riskClass(level?: string) {
 .cdd-btn-primary:hover {
   background: #4f46e5;
 }
-:global(.dark) .cdd-btn {
+.dark .cdd-btn {
   background: #2d2d2d;
   border-color: #3d3d3d;
   color: #f3f4f6;
 }
-:global(.dark) .cdd-btn:hover {
+.dark .cdd-btn:hover {
   background: #3d3d3d;
 }
-:global(.dark) .cdd-btn-primary {
+.dark .cdd-btn-primary {
   background: #6366f1;
   border-color: #6366f1;
 }
-:global(.dark) .cdd-btn-primary:hover {
+.dark .cdd-btn-primary:hover {
   background: #818cf8;
 }
 
@@ -428,9 +430,9 @@ function riskClass(level?: string) {
   display: flex;
   justify-content: flex-end;
   padding: 14px 20px;
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid var(--border);
 }
-:global(.dark) .cdd-footer {
+.dark .cdd-footer {
   border-top-color: #2d2d2d;
 }
 </style>

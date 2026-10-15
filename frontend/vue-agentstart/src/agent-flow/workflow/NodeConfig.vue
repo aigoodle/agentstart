@@ -1,4 +1,11 @@
 <script setup>
+import { ShadcnRange as AsShadcnRange } from '../../ui/components/ShadcnRange';
+
+import { Input as AsShadcnInput } from '../../ui/shadcn/input';
+import { Textarea as AsShadcnTextarea } from '../../ui/shadcn/textarea';
+import { ShadcnSelect as AsShadcnSelect } from '../../ui/components/ShadcnSelect';
+import { Button as AsShadcnButton } from '../../ui/shadcn/button';
+
 import { reactive, ref, watch } from 'vue';
 
 import Icon from './Icon.vue';
@@ -91,7 +98,7 @@ const removeCondition = (index) => {
       <div class="section-title">基本信息</div>
       <div class="form-group">
         <label>节点名称</label>
-        <input
+        <AsShadcnInput
           v-model="localData.label"
           @input="updateData"
           class="form-input"
@@ -100,13 +107,13 @@ const removeCondition = (index) => {
       </div>
       <div class="form-group">
         <label>节点描述</label>
-        <textarea
+        <AsShadcnTextarea
           v-model="localData.description"
           @input="updateData"
           class="form-textarea"
           placeholder="输入节点描述"
           rows="2"
-        ></textarea>
+        ></AsShadcnTextarea>
       </div>
     </div>
 
@@ -115,7 +122,7 @@ const removeCondition = (index) => {
       <div class="section-title">模型配置</div>
       <div class="form-group">
         <label>模型选择</label>
-        <select
+        <AsShadcnSelect
           v-model="localData.config.model"
           @change="updateData"
           class="form-select"
@@ -125,11 +132,11 @@ const removeCondition = (index) => {
           <option value="gpt-4-turbo">GPT-4 Turbo</option>
           <option value="claude-3-sonnet">Claude 3 Sonnet</option>
           <option value="claude-3-opus">Claude 3 Opus</option>
-        </select>
+        </AsShadcnSelect>
       </div>
       <div class="form-group">
         <label>温度 ({{ localData.config.temperature }})</label>
-        <input
+        <AsShadcnRange
           type="range"
           min="0"
           max="2"
@@ -141,7 +148,7 @@ const removeCondition = (index) => {
       </div>
       <div class="form-group">
         <label>最大令牌数</label>
-        <input
+        <AsShadcnInput
           type="number"
           v-model="localData.config.max_tokens"
           @input="updateData"
@@ -152,13 +159,13 @@ const removeCondition = (index) => {
       </div>
       <div class="form-group">
         <label>系统提示词</label>
-        <textarea
+        <AsShadcnTextarea
           v-model="localData.config.prompt"
           @input="updateData"
           class="form-textarea"
           placeholder="输入系统提示词..."
           rows="4"
-        ></textarea>
+        ></AsShadcnTextarea>
       </div>
     </div>
 
@@ -167,7 +174,7 @@ const removeCondition = (index) => {
       <div class="section-title">HTTP 配置</div>
       <div class="form-group">
         <label>请求方法</label>
-        <select
+        <AsShadcnSelect
           v-model="localData.config.method"
           @change="updateData"
           class="form-select"
@@ -177,11 +184,11 @@ const removeCondition = (index) => {
           <option value="PUT">PUT</option>
           <option value="DELETE">DELETE</option>
           <option value="PATCH">PATCH</option>
-        </select>
+        </AsShadcnSelect>
       </div>
       <div class="form-group">
         <label>请求 URL</label>
-        <input
+        <AsShadcnInput
           v-model="localData.config.url"
           @input="updateData"
           class="form-input"
@@ -196,21 +203,21 @@ const removeCondition = (index) => {
             :key="index"
             class="header-item"
           >
-            <input
+            <AsShadcnInput
               v-model="headerKeys[index]"
               @input="updateHeaders"
               class="header-key"
               placeholder="键"
             />
-            <input
+            <AsShadcnInput
               v-model="localData.config.headers[key]"
               @input="updateData"
               class="header-value"
               placeholder="值"
             />
-            <button @click="removeHeader(key)" class="remove-btn">×</button>
+            <AsShadcnButton variant="ghost" @click="removeHeader(key)" class="remove-btn">×</AsShadcnButton>
           </div>
-          <button @click="addHeader" class="add-btn">+ 添加请求头</button>
+          <AsShadcnButton variant="ghost" @click="addHeader" class="add-btn">+ 添加请求头</AsShadcnButton>
         </div>
       </div>
       <div
@@ -218,13 +225,13 @@ const removeCondition = (index) => {
         v-if="['POST', 'PUT', 'PATCH'].includes(localData.config.method)"
       >
         <label>请求体</label>
-        <textarea
+        <AsShadcnTextarea
           v-model="localData.config.body"
           @input="updateData"
           class="form-textarea"
           placeholder="JSON 格式的请求体..."
           rows="4"
-        ></textarea>
+        ></AsShadcnTextarea>
       </div>
     </div>
 
@@ -233,7 +240,7 @@ const removeCondition = (index) => {
       <div class="section-title">代码配置</div>
       <div class="form-group">
         <label>编程语言</label>
-        <select
+        <AsShadcnSelect
           v-model="localData.config.language"
           @change="updateData"
           class="form-select"
@@ -243,17 +250,17 @@ const removeCondition = (index) => {
           <option value="typescript">TypeScript</option>
           <option value="java">Java</option>
           <option value="go">Go</option>
-        </select>
+        </AsShadcnSelect>
       </div>
       <div class="form-group">
         <label>代码内容</label>
-        <textarea
+        <AsShadcnTextarea
           v-model="localData.config.code"
           @input="updateData"
           class="form-textarea code-editor"
           placeholder="输入代码..."
           rows="10"
-        ></textarea>
+        ></AsShadcnTextarea>
       </div>
     </div>
 
@@ -262,7 +269,7 @@ const removeCondition = (index) => {
       <div class="section-title">知识检索配置</div>
       <div class="form-group">
         <label>数据集</label>
-        <select
+        <AsShadcnSelect
           v-model="localData.config.dataset"
           @change="updateData"
           class="form-select"
@@ -271,11 +278,11 @@ const removeCondition = (index) => {
           <option value="knowledge-base-1">知识库 1</option>
           <option value="knowledge-base-2">知识库 2</option>
           <option value="faq-dataset">FAQ 数据集</option>
-        </select>
+        </AsShadcnSelect>
       </div>
       <div class="form-group">
         <label>Top K</label>
-        <input
+        <AsShadcnInput
           type="number"
           v-model="localData.config.top_k"
           @input="updateData"
@@ -286,7 +293,7 @@ const removeCondition = (index) => {
       </div>
       <div class="form-group">
         <label>查询表达式</label>
-        <input
+        <AsShadcnInput
           v-model="localData.config.query"
           @input="updateData"
           class="form-input"
@@ -304,15 +311,15 @@ const removeCondition = (index) => {
           :key="index"
           class="condition-item"
         >
-          <input
+          <AsShadcnInput
             v-model="condition.expression"
             @input="updateData"
             class="form-input"
             placeholder="条件表达式"
           />
-          <button @click="removeCondition(index)" class="remove-btn">×</button>
+          <AsShadcnButton variant="ghost" @click="removeCondition(index)" class="remove-btn">×</AsShadcnButton>
         </div>
-        <button @click="addCondition" class="add-btn">+ 添加条件</button>
+        <AsShadcnButton variant="ghost" @click="addCondition" class="add-btn">+ 添加条件</AsShadcnButton>
       </div>
     </div>
 
@@ -321,22 +328,22 @@ const removeCondition = (index) => {
       <div class="section-title">回复配置</div>
       <div class="form-group">
         <label>回复内容</label>
-        <textarea
+        <AsShadcnTextarea
           v-model="localData.config.text"
           @input="updateData"
           class="form-textarea"
           placeholder="输入回复内容..."
           rows="4"
-        ></textarea>
+        ></AsShadcnTextarea>
       </div>
     </div>
 
     <!-- 操作按钮 -->
     <div class="config-actions">
-      <button @click="$emit('delete')" class="btn btn-danger">
+      <AsShadcnButton variant="ghost" @click="$emit('delete')" class="btn btn-danger">
         <Icon name="close" />
         删除节点
-      </button>
+      </AsShadcnButton>
     </div>
   </div>
 </template>
@@ -350,7 +357,7 @@ const removeCondition = (index) => {
 .config-section {
   margin-bottom: 24px;
   padding-bottom: 16px;
-  border-bottom: 1px solid #f3f4f6;
+  border-bottom: 1px solid var(--border);
 }
 
 .config-section:last-child {
@@ -360,7 +367,7 @@ const removeCondition = (index) => {
 .section-title {
   font-size: 14px;
   font-weight: 600;
-  color: #374151;
+  color: var(--foreground);
   margin-bottom: 12px;
 }
 
@@ -372,7 +379,7 @@ const removeCondition = (index) => {
   display: block;
   font-size: 12px;
   font-weight: 500;
-  color: #374151;
+  color: var(--foreground);
   margin-bottom: 6px;
 }
 
@@ -381,7 +388,7 @@ const removeCondition = (index) => {
 .form-textarea {
   width: 100%;
   padding: 8px 12px;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--border);
   border-radius: 6px;
   font-size: 13px;
   transition: border-color 0.2s;
@@ -412,10 +419,10 @@ const removeCondition = (index) => {
 
 .headers-editor,
 .conditions-editor {
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border);
   border-radius: 6px;
   padding: 12px;
-  background: #f9fafb;
+  background: var(--muted);
 }
 
 .header-item,
@@ -435,7 +442,7 @@ const removeCondition = (index) => {
 .header-value {
   flex: 1;
   padding: 6px 8px;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--border);
   border-radius: 4px;
   font-size: 12px;
 }
@@ -459,9 +466,9 @@ const removeCondition = (index) => {
 }
 
 .add-btn {
-  background: #f3f4f6;
-  color: #374151;
-  border: 1px dashed #d1d5db;
+  background: var(--muted);
+  color: var(--foreground);
+  border: 1px dashed var(--border);
   border-radius: 4px;
   padding: 8px 12px;
   font-size: 12px;
@@ -471,14 +478,14 @@ const removeCondition = (index) => {
 }
 
 .add-btn:hover {
-  background: #e5e7eb;
+  background: var(--muted);
   border-color: #9ca3af;
 }
 
 .config-actions {
   margin-top: 24px;
   padding-top: 16px;
-  border-top: 1px solid #f3f4f6;
+  border-top: 1px solid var(--border);
 }
 
 .btn {

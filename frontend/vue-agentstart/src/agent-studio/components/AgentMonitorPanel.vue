@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import { Card as AsShadcnCard } from '../../ui/shadcn/card';
+
+import { ShadcnSelect as AsShadcnSelect } from '../../ui/components/ShadcnSelect';
+import { Button as AsShadcnButton } from '../../ui/shadcn/button';
+
 /**
  * 监测 tab — 2-column grid of metric cards, each backed by a SparkChart.
  * Matches Snipaste_09-01-41 (全部会话 / 活跃用户数 / 平均会话互动数 / Token 输出速度 /
@@ -31,7 +36,7 @@ const period = ref('过去 7 天');
     <header class="mon-top">
       <h2 class="mon-top-title">监测</h2>
       <div class="mon-top-right">
-        <select
+        <AsShadcnSelect
           class="mon-select"
           :value="period"
           @change="(e) => { period = (e.target as HTMLSelectElement).value; emit('change-period', period); }"
@@ -39,15 +44,15 @@ const period = ref('过去 7 天');
           <option>过去 7 天</option>
           <option>过去 30 天</option>
           <option>过去 90 天</option>
-        </select>
-        <button
+        </AsShadcnSelect>
+        <AsShadcnButton variant="ghost"
           type="button"
           class="mon-btn"
           @click="emit('refresh')"
           title="刷新"
         >
           ⟳
-        </button>
+        </AsShadcnButton>
       </div>
     </header>
 
@@ -57,7 +62,7 @@ const period = ref('过去 7 天');
         暂无监测数据
       </div>
       <div v-else class="mon-grid">
-        <div v-for="m in metrics" :key="m.id" class="mon-card">
+        <AsShadcnCard v-for="m in metrics" :key="m.id" class="mon-card">
           <div class="mon-card-head">
             <div class="mon-card-title">
               {{ m.title }}
@@ -78,7 +83,7 @@ const period = ref('过去 7 天');
               :height="120"
             />
           </div>
-        </div>
+        </AsShadcnCard>
       </div>
     </div>
   </div>
@@ -96,14 +101,14 @@ const period = ref('过去 7 天');
   align-items: center;
   justify-content: space-between;
   padding: 12px 24px;
-  border-bottom: 1px solid #e5e7eb;
-  background: #fff;
+  border-bottom: 1px solid var(--border);
+  background: var(--background);
 }
 .mon-top-title {
   margin: 0;
   font-size: 15px;
   font-weight: 600;
-  color: #0f172a;
+  color: var(--foreground);
 }
 .mon-top-right {
   display: flex;
@@ -112,11 +117,11 @@ const period = ref('过去 7 天');
 }
 .mon-select {
   padding: 5px 8px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
   border-radius: 6px;
-  background: #fff;
+  background: var(--background);
   font-size: 12px;
-  color: #0f172a;
+  color: var(--foreground);
   outline: none;
 }
 .mon-select:focus {
@@ -126,25 +131,25 @@ const period = ref('过去 7 天');
   width: 28px;
   height: 28px;
   padding: 0;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
   border-radius: 6px;
-  background: #fff;
-  color: #475569;
+  background: var(--background);
+  color: var(--muted-foreground);
   cursor: pointer;
 }
 .mon-btn:hover {
-  background: #f1f5f9;
+  background: var(--muted);
 }
 .mon-body {
   flex: 1;
   overflow-y: auto;
   padding: 20px 24px;
-  background: #f8fafc;
+  background: var(--muted);
 }
 .mon-loading {
   padding: 60px;
   text-align: center;
-  color: #94a3b8;
+  color: var(--muted-foreground);
   font-size: 13px;
 }
 .mon-grid {
@@ -154,8 +159,8 @@ const period = ref('过去 7 天');
 }
 .mon-card {
   padding: 14px 18px 12px;
-  background: #fff;
-  border: 1px solid #e5e7eb;
+  background: var(--background);
+  border: 1px solid var(--border);
   border-radius: 12px;
 }
 .mon-card-head {
@@ -165,18 +170,18 @@ const period = ref('过去 7 天');
 }
 .mon-card-title {
   font-size: 13px;
-  color: #334155;
+  color: var(--foreground);
   font-weight: 500;
 }
 .mon-help {
   margin-left: 4px;
-  color: #94a3b8;
+  color: var(--muted-foreground);
   font-size: 10px;
   cursor: help;
 }
 .mon-card-period {
   font-size: 10px;
-  color: #94a3b8;
+  color: var(--muted-foreground);
 }
 .mon-card-value {
   margin-top: 6px;
@@ -187,16 +192,16 @@ const period = ref('过去 7 天');
 .mon-card-num {
   font-size: 26px;
   font-weight: 600;
-  color: #0f172a;
+  color: var(--foreground);
 }
 .mon-card-unit {
   font-size: 12px;
-  color: #64748b;
+  color: var(--muted-foreground);
 }
 .mon-card-sub {
   margin-top: 2px;
   font-size: 11px;
-  color: #94a3b8;
+  color: var(--muted-foreground);
 }
 .mon-card-chart {
   margin-top: 8px;

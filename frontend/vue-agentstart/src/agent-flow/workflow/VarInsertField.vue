@@ -370,8 +370,8 @@ watch(
   align-items: stretch;
   width: 100%;
   min-height: 24px;
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
+  background: var(--background);
+  border: 1px solid var(--border);
   border-radius: 4px;
   transition: border-color 0.15s, box-shadow 0.15s;
 }
@@ -412,7 +412,7 @@ watch(
   min-width: 0;
   padding: 2px 6px;
   line-height: 1.6;
-  color: #1f2937;
+  color: var(--foreground);
   outline: none;
   overflow-x: auto;
   overflow-y: hidden;
@@ -422,7 +422,7 @@ watch(
 
 .wf-vi-input:empty::before {
   content: attr(data-placeholder);
-  color: #9ca3af;
+  color: var(--muted-foreground);
   pointer-events: none;
 }
 
@@ -432,7 +432,7 @@ watch(
   justify-content: center;
   flex: none;
   width: 22px;
-  color: #9ca3af;
+  color: var(--muted-foreground);
   background: transparent;
   cursor: pointer;
   transition: color 0.12s, background 0.12s;
@@ -456,7 +456,7 @@ watch(
   margin: 0 1px;
   font-size: 12px;
   line-height: 1.4;
-  color: #1f2937;
+  color: var(--foreground);
   background: #eef2ff;
   border: 1px solid #c7d2fe;
   border-radius: 4px;
@@ -485,7 +485,7 @@ watch(
   text-transform: uppercase;
 }
 
-.wf-vi-pill[data-type='string'] .wf-vi-pill-icon { background: #3b82f6; }
+.wf-vi-pill[data-type='string'] .wf-vi-pill-icon { background: var(--primary); }
 .wf-vi-pill[data-type='number'] .wf-vi-pill-icon { background: #f59e0b; }
 .wf-vi-pill[data-type='boolean'] .wf-vi-pill-icon { background: #10b981; }
 .wf-vi-pill[data-type='array'] .wf-vi-pill-icon { background: #a855f7; }

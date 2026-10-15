@@ -1,4 +1,12 @@
 <script setup lang="ts">
+import { Card as AsShadcnCard } from '../../ui/shadcn/card';
+
+import { Modal as ShadcnModal } from '../../ui/components/Modal';
+import { ShadcnBoolean as AsShadcnBoolean } from '../../ui/components/ShadcnBoolean';
+
+import { Button as AsShadcnButton } from '../../ui/shadcn/button';
+import { Input as AsShadcnInput } from '../../ui/shadcn/input';
+
 /**
  * AddDocumentsWizard — 3-step wizard for adding documents to an existing
  * dataset, mirroring the CreateDatasetWizard UX so the user experience of
@@ -293,8 +301,8 @@ const backLabel = computed(() => props.datasetName || '知识库');
 </script>
 
 <template>
-  <Teleport to="body" :disabled="!open">
-    <div v-if="open" class="kh-wizard-mask" @click.self="close">
+  <ShadcnModal :open="open" title="添加文件" headless centered :footer="false" :closable="false"
+    width="min(1180px, calc(100vw - 32px))" :body-style="{ padding: 0 }" @cancel="close">
       <div class="kh-wizard-shell">
         <!-- top bar (modal-style: title + stepper + close ×) -->
         <div class="kh-topbar">
@@ -319,7 +327,7 @@ const backLabel = computed(() => props.datasetName || '知识库');
               <span v-if="i < steps.length - 1" class="kh-step-dash" />
             </div>
           </div>
-          <button class="kh-close" aria-label="close" @click="close">×</button>
+          <AsShadcnButton variant="ghost" class="kh-close" aria-label="close" @click="close">×</AsShadcnButton>
         </div>
 
         <!-- STEP 1: 选择数据源 -->
@@ -327,7 +335,7 @@ const backLabel = computed(() => props.datasetName || '知识库');
           <div class="kh-content-narrow">
             <div class="kh-section-label">选择数据源</div>
             <div class="kh-source-row">
-              <button
+              <AsShadcnButton variant="ghost"
                 v-for="s in SOURCES"
                 :key="s.id"
                 type="button"
@@ -343,7 +351,7 @@ const backLabel = computed(() => props.datasetName || '知识库');
                   {{ s.icon }}
                 </div>
                 <div class="kh-source-label">{{ s.label }}</div>
-              </button>
+              </AsShadcnButton>
             </div>
 
             <div class="kh-section-label" style="margin-top: 22px">上传文本文件</div>
@@ -371,7 +379,7 @@ const backLabel = computed(() => props.datasetName || '知识库');
                 </template>
                 。每批最多 5 个文件，每个文件不超过 15 MB。
               </div>
-              <input
+              <AsShadcnInput
                 ref="fileInputRef"
                 type="file"
                 multiple
@@ -385,18 +393,18 @@ const backLabel = computed(() => props.datasetName || '知识库');
                 <span class="kh-file-icon">📄</span>
                 <span class="kh-file-name">{{ f.name }}</span>
                 <span class="kh-file-size">{{ humanSize(f.size) }}</span>
-                <button class="kh-file-x" @click="removeFile(i)">×</button>
+                <AsShadcnButton variant="ghost" class="kh-file-x" @click="removeFile(i)">×</AsShadcnButton>
               </div>
             </div>
 
             <div class="kh-step1-actions">
-              <button
+              <AsShadcnButton variant="ghost"
                 class="kh-btn kh-btn-primary"
                 :disabled="!step1Ready"
                 @click="goToStep2"
               >
                 下一步 →
-              </button>
+              </AsShadcnButton>
             </div>
           </div>
         </div>
@@ -416,8 +424,8 @@ const backLabel = computed(() => props.datasetName || '知识库');
               </div>
               <div v-if="chunkMode === 'structure-aware'" class="kh-panel-body">
                 <div class="kh-grid-2">
-                  <div class="kh-field"><label>目标分段 Tokens</label><input v-model.number="chunkMaxTokens" type="number" class="kh-input" /></div>
-                  <div class="kh-field"><label>重叠 Tokens</label><input v-model.number="chunkOverlap" type="number" class="kh-input" /></div>
+                  <div class="kh-field"><label>目标分段 Tokens</label><AsShadcnInput v-model.number="chunkMaxTokens" type="number" class="kh-input" /></div>
+                  <div class="kh-field"><label>重叠 Tokens</label><AsShadcnInput v-model.number="chunkOverlap" type="number" class="kh-input" /></div>
                 </div>
               </div>
             </div>
@@ -443,12 +451,12 @@ const backLabel = computed(() => props.datasetName || '知识库');
                 <div class="kh-grid-3">
                   <div class="kh-field">
                     <label>分段标识符</label>
-                    <input v-model="chunkSeparator" class="kh-input" />
+                    <AsShadcnInput v-model="chunkSeparator" class="kh-input" />
                   </div>
                   <div class="kh-field">
                     <label>分段最大长度</label>
                     <div class="kh-input-suffix">
-                      <input
+                      <AsShadcnInput
                         v-model.number="chunkMaxTokens"
                         type="number"
                         class="kh-input"
@@ -459,7 +467,7 @@ const backLabel = computed(() => props.datasetName || '知识库');
                   <div class="kh-field">
                     <label>分段重叠长度</label>
                     <div class="kh-input-suffix">
-                      <input
+                      <AsShadcnInput
                         v-model.number="chunkOverlap"
                         type="number"
                         class="kh-input"
@@ -470,23 +478,23 @@ const backLabel = computed(() => props.datasetName || '知识库');
                 </div>
                 <div class="kh-sub-label">文本预处理规则</div>
                 <label class="kh-check">
-                  <input v-model="removeExtraWhitespace" type="checkbox" />
+                  <AsShadcnBoolean v-model="removeExtraWhitespace" type="checkbox" />
                   <span>替换掉连续的空格、换行符和制表符</span>
                 </label>
                 <label class="kh-check">
-                  <input v-model="removeUrlsEmails" type="checkbox" />
+                  <AsShadcnBoolean v-model="removeUrlsEmails" type="checkbox" />
                   <span>删除所有 URL 和电子邮件地址</span>
                 </label>
                 <div class="kh-inline-actions">
-                  <button
+                  <AsShadcnButton variant="ghost"
                     class="kh-btn-mini kh-btn-mini-primary"
                     @click.stop="loadPreview"
                   >
                     ⓘ 预览块
-                  </button>
-                  <button class="kh-btn-mini" @click.stop="resetChunking">
+                  </AsShadcnButton>
+                  <AsShadcnButton variant="ghost" class="kh-btn-mini" @click.stop="resetChunking">
                     重置
-                  </button>
+                  </AsShadcnButton>
                 </div>
               </div>
             </div>
@@ -513,7 +521,7 @@ const backLabel = computed(() => props.datasetName || '知识库');
               <div v-if="chunkMode === 'parent-child'" class="kh-panel-body">
                 <div class="kh-sub-label">父块用作上下文</div>
                 <div class="kh-parent-mode-row">
-                  <button
+                  <AsShadcnButton variant="ghost"
                     type="button"
                     class="kh-parent-mode-card"
                     :class="{
@@ -540,7 +548,7 @@ const backLabel = computed(() => props.datasetName || '知识库');
                     >
                       <div class="kh-field">
                         <label>分段标识符</label>
-                        <input
+                        <AsShadcnInput
                           v-model="parentSeparator"
                           class="kh-input"
                           @click.stop
@@ -549,7 +557,7 @@ const backLabel = computed(() => props.datasetName || '知识库');
                       <div class="kh-field">
                         <label>分段最大长度</label>
                         <div class="kh-input-suffix">
-                          <input
+                          <AsShadcnInput
                             v-model.number="parentMaxTokens"
                             type="number"
                             class="kh-input"
@@ -559,8 +567,8 @@ const backLabel = computed(() => props.datasetName || '知识库');
                         </div>
                       </div>
                     </div>
-                  </button>
-                  <button
+                  </AsShadcnButton>
+                  <AsShadcnButton variant="ghost"
                     type="button"
                     class="kh-parent-mode-card"
                     :class="{
@@ -580,7 +588,7 @@ const backLabel = computed(() => props.datasetName || '知识库');
                     <div class="kh-pm-desc">
                       此模式会将文本转成全文视图，检索到匹配段后返回整个文档作为父块。适用于短文档。
                     </div>
-                  </button>
+                  </AsShadcnButton>
                 </div>
 
                 <div class="kh-sub-label" style="margin-top: 14px">
@@ -589,12 +597,12 @@ const backLabel = computed(() => props.datasetName || '知识库');
                 <div class="kh-grid-2">
                   <div class="kh-field">
                     <label>分段标识符</label>
-                    <input v-model="childSeparator" class="kh-input" @click.stop />
+                    <AsShadcnInput v-model="childSeparator" class="kh-input" @click.stop />
                   </div>
                   <div class="kh-field">
                     <label>分段最大长度</label>
                     <div class="kh-input-suffix">
-                      <input
+                      <AsShadcnInput
                         v-model.number="childMaxTokens"
                         type="number"
                         class="kh-input"
@@ -606,15 +614,15 @@ const backLabel = computed(() => props.datasetName || '知识库');
                 </div>
 
                 <div class="kh-inline-actions">
-                  <button
+                  <AsShadcnButton variant="ghost"
                     class="kh-btn-mini kh-btn-mini-primary"
                     @click.stop="loadPreview"
                   >
                     ⓘ 预览块
-                  </button>
-                  <button class="kh-btn-mini" @click.stop="resetChunking">
+                  </AsShadcnButton>
+                  <AsShadcnButton variant="ghost" class="kh-btn-mini" @click.stop="resetChunking">
                     重置
-                  </button>
+                  </AsShadcnButton>
                 </div>
               </div>
             </div>
@@ -622,7 +630,7 @@ const backLabel = computed(() => props.datasetName || '知识库');
             <div class="kh-section-label" style="margin-top: 18px">
               索引方式（沿用当前配置）
             </div>
-            <div class="kh-readonly-card">
+            <AsShadcnCard class="kh-readonly-card">
               <span class="kh-readonly-icon">⭐</span>
               <div>
                 <div class="kh-readonly-title">
@@ -636,12 +644,12 @@ const backLabel = computed(() => props.datasetName || '知识库');
                   }}
                 </div>
               </div>
-            </div>
+            </AsShadcnCard>
 
             <div class="kh-section-label" style="margin-top: 16px">
               检索方式（沿用当前配置）
             </div>
-            <div class="kh-readonly-card">
+            <AsShadcnCard class="kh-readonly-card">
               <span class="kh-readonly-icon">
                 {{
                   retrievalMethodDisplay === 'VECTOR'
@@ -665,19 +673,19 @@ const backLabel = computed(() => props.datasetName || '知识库');
                   可以在知识库的"设置"标签中调整检索方式。
                 </div>
               </div>
-            </div>
+            </AsShadcnCard>
 
             <div class="kh-step-actions">
-              <button class="kh-btn kh-btn-secondary" @click="step = 1">
+              <AsShadcnButton variant="ghost" class="kh-btn kh-btn-secondary" @click="step = 1">
                 ← 上一步
-              </button>
-              <button
+              </AsShadcnButton>
+              <AsShadcnButton variant="ghost"
                 class="kh-btn kh-btn-primary"
                 :disabled="files.length === 0"
                 @click="submit"
               >
                 保存并处理 →
-              </button>
+              </AsShadcnButton>
             </div>
           </div>
 
@@ -790,15 +798,14 @@ const backLabel = computed(() => props.datasetName || '知识库');
             </div>
 
             <div class="kh-done-actions">
-              <button class="kh-btn kh-btn-primary" @click="close">
+              <AsShadcnButton variant="ghost" class="kh-btn kh-btn-primary" @click="close">
                 前往文档 →
-              </button>
+              </AsShadcnButton>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </Teleport>
+  </ShadcnModal>
 </template>
 
 <style scoped>

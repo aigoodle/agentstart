@@ -135,8 +135,8 @@ function clear(e: MouseEvent) {
   width: 100%;
   min-height: 24px;
   padding: 2px 6px;
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
+  background: var(--background);
+  border: 1px solid var(--border);
   border-radius: 4px;
   cursor: pointer;
   transition: border-color 0.15s, box-shadow 0.15s;
@@ -147,7 +147,7 @@ function clear(e: MouseEvent) {
 }
 
 .wf-vsf-filled {
-  background: #f9fafb;
+  background: var(--muted);
 }
 
 .wf-vsf-borderless {
@@ -162,12 +162,12 @@ function clear(e: MouseEvent) {
 .wf-vsf-small { min-height: 24px; font-size: 13px; }
 .wf-vsf-middle { min-height: 32px; font-size: 14px; }
 .wf-vsf-large { min-height: 40px; font-size: 15px; }
-.wf-vsf-placeholder { flex:1; min-width:0; color:#9ca3af; }
-.wf-vsf-selector-icon { display:inline-flex; align-items:center; justify-content:center; flex:none; width:22px; color:#94a3b8; }
-.wf-vsf:hover .wf-vsf-selector-icon { color:#4f46e5; }
+.wf-vsf-placeholder { flex:1; min-width:0; color: var(--muted-foreground); }
+.wf-vsf-selector-icon { display:inline-flex; align-items:center; justify-content:center; flex:none; width:22px; color: var(--muted-foreground); }
+.wf-vsf:hover .wf-vsf-selector-icon { color: #4f46e5; }
 
 .wf-vsf-placeholder {
-  color: #9ca3af;
+  color: var(--muted-foreground);
   font-size: 12px;
 }
 
@@ -178,7 +178,7 @@ function clear(e: MouseEvent) {
   padding: 0 3px 0 2px;
   font-size: 12px;
   line-height: 1.4;
-  color: #1f2937;
+  color: var(--foreground);
   background: #eef2ff;
   border: 1px solid #c7d2fe;
   border-radius: 4px;
@@ -199,7 +199,7 @@ function clear(e: MouseEvent) {
   text-transform: uppercase;
 }
 
-.wf-vsf-pill[data-type='string'] .wf-vsf-pill-icon { background: #3b82f6; }
+.wf-vsf-pill[data-type='string'] .wf-vsf-pill-icon { background: var(--primary); }
 .wf-vsf-pill[data-type='number'] .wf-vsf-pill-icon { background: #f59e0b; }
 .wf-vsf-pill[data-type='boolean'] .wf-vsf-pill-icon { background: #10b981; }
 .wf-vsf-pill[data-type='array'] .wf-vsf-pill-icon { background: #a855f7; }

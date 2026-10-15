@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { UiInput } from 'vue-agent-start'
 import { computed, onBeforeUnmount, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
@@ -123,7 +124,7 @@ function isActive(path: string, activePath?: string): boolean {
 
         <div class="hud-search" :class="{ focused: searchFocused }">
           <SearchOutlined />
-          <input
+          <UiInput
             v-model="search"
             placeholder="搜索功能模块…"
             @focus="searchFocused = true"

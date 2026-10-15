@@ -10,6 +10,7 @@ import java.util.Arrays;
 public enum ModelType {
     LLM("llm"),
     VIDEO("video"),
+    IMAGE("image"),
     TEXT_EMBEDDING("text-embedding"),
     RERANK("rerank"),
     SPEECH2TEXT("speech2text"),

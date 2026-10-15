@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import { Input as AInput, Button as AButton, Select as ASelect, Checkbox as ACheckbox, Switch as ASwitch, Space as AInputGroup, InputNumber as AInputNumber } from '../../../ui';
+
+import { Card as AsShadcnCard } from '../../../ui/shadcn/card';
+
+import { Button as AsShadcnButton } from '../../../ui/shadcn/button';
+
 import { computed, h, onMounted, ref, watch } from 'vue';
 import { ArrowDownOutlined, ArrowUpOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons-vue';
 import PromptEditor from '@/components/PromptEditor.vue';
@@ -155,7 +161,7 @@ const addOption = (field: FormField) => {
   <div class="wf-config-section">
     <WfField title="表单生成方式" required>
       <div class="human-mode-list">
-        <button
+        <AsShadcnButton variant="ghost"
           v-for="mode in FORM_MODES"
           :key="mode.value"
           type="button"
@@ -165,7 +171,7 @@ const addOption = (field: FormField) => {
         >
           <span class="human-mode-check">{{ formState.formMode === mode.value ? '✓' : '' }}</span>
           <span>{{ mode.label }}</span>
-        </button>
+        </AsShadcnButton>
       </div>
       <div class="human-help">AI 模式的 JSON Schema 格式、组件白名单和输出约束由后台自动补充。</div>
     </WfField>
@@ -193,7 +199,7 @@ const addOption = (field: FormField) => {
       <template #operations><a-button :icon="h(PlusOutlined)" size="small" type="primary" @click="addField">添加控件</a-button></template>
       <div v-if="!fields.length" class="human-empty">点击“添加控件”，配置输入框、下拉框或其他表单项</div>
       <div class="human-field-list">
-        <div v-for="(field, index) in fields" :key="index" class="human-field-card">
+        <AsShadcnCard v-for="(field, index) in fields" :key="index" class="human-field-card">
           <div class="human-field-toolbar">
             <span class="human-field-index">{{ index + 1 }}</span>
             <a-button :icon="h(ArrowUpOutlined)" size="small" type="text" :disabled="index === 0" @click="moveField(index, -1)" />
@@ -215,7 +221,7 @@ const addOption = (field: FormField) => {
             <a-button size="small" type="dashed" block @click="addOption(field)">+ 添加下拉选项</a-button>
           </div>
           <a-checkbox v-model:checked="field.required">必填</a-checkbox>
-        </div>
+        </AsShadcnCard>
       </div>
     </WfField>
   </div>
@@ -223,10 +229,10 @@ const addOption = (field: FormField) => {
   <div class="wf-config-section">
     <WfField title="呈现方式" required>
       <div class="human-mode-list">
-        <button v-for="mode in PRESENTATIONS" :key="mode.value" type="button" class="human-mode-button"
+        <AsShadcnButton variant="ghost" v-for="mode in PRESENTATIONS" :key="mode.value" type="button" class="human-mode-button"
           :class="{ 'is-active': formState.presentationMode === mode.value }" @click="formState.presentationMode = mode.value">
           <span class="human-mode-check">{{ formState.presentationMode === mode.value ? '✓' : '' }}</span><span>{{ mode.label }}</span>
-        </button>
+        </AsShadcnButton>
       </div>
       <div class="human-help">自动适配会按连接器能力依次使用原生交互、网页表单和纯文本。</div>
     </WfField>
@@ -253,7 +259,7 @@ const addOption = (field: FormField) => {
 </template>
 
 <style scoped>
-.human-empty { padding: 18px 10px; text-align: center; font-size: 12px; color: #9ca3af; background: var(--wf-config-surface-hover, #f9fafb); border: 1px dashed #d1d5db; border-radius: 8px; }
+.human-empty { padding: 18px 10px; text-align: center; font-size: 12px; color: var(--muted-foreground); background: var(--wf-config-surface-hover, #f9fafb); border: 1px dashed var(--border); border-radius: 8px; }
 .human-field-list { display: flex; flex-direction: column; gap: 10px; }
 .human-field-card { padding: 10px; background: var(--wf-config-surface-hover, #f9fafb); border: 1px solid #eef0f3; border-radius: 8px; }
 .human-field-toolbar { display: flex; align-items: center; justify-content: flex-end; margin-bottom: 8px; }
@@ -264,12 +270,12 @@ const addOption = (field: FormField) => {
 .human-timeout { display: flex; margin-top: 8px; }
 .human-channel-fields { display: grid; width: 100%; gap: 8px; }
 .human-channel-fields :deep(.ant-select), .human-channel-fields :deep(.ant-input) { width: 100%; min-width: 0; }
-.human-help { margin-top: 6px; color: #9ca3af; font-size: 11px; }
+.human-help { margin-top: 6px; color: var(--muted-foreground); font-size: 11px; }
 .human-ai-tip { margin: -2px 16px 14px; padding: 9px 11px; color: #7c3aed; font-size: 12px; background: #f5f3ff; border-radius: 7px; }
 .human-mode-list { display: flex; flex-wrap: wrap; gap: 6px; }
-.human-mode-button { display: inline-flex; align-items: center; min-width: 0; padding: 5px 9px; color: #64748b; background: var(--wf-config-surface, #fff); border: 1px solid #e2e8f0; border-radius: 7px; cursor: pointer; font-size: 12px; line-height: 18px; transition: all .18s ease; }
+.human-mode-button { display: inline-flex; align-items: center; min-width: 0; padding: 5px 9px; color: var(--muted-foreground); background: var(--wf-config-surface, #fff); border: 1px solid var(--border); border-radius: 7px; cursor: pointer; font-size: 12px; line-height: 18px; transition: all .18s ease; }
 .human-mode-button:hover { color: #7c3aed; border-color: #c4b5fd; background: #faf9ff; }
 .human-mode-button.is-active { color: #6d28d9; border-color: #8b5cf6; background: #f5f3ff; box-shadow: 0 0 0 2px rgb(139 92 246 / 10%); }
 .human-mode-check { flex: 0 0 15px; height: 15px; margin-right: 5px; line-height: 15px; text-align: center; color: #fff; background: #8b5cf6; border-radius: 50%; font-size: 10px; }
-.human-mode-button:not(.is-active) .human-mode-check { background: #e2e8f0; }
+.human-mode-button:not(.is-active) .human-mode-check { background: var(--muted); }
 </style>

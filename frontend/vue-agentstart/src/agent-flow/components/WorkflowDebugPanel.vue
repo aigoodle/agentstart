@@ -1,4 +1,13 @@
 <script setup lang="ts">
+import { Card as AsShadcnCard } from '../../ui/shadcn/card';
+
+import { ShadcnBoolean as AsShadcnBoolean } from '../../ui/components/ShadcnBoolean';
+
+import { Button as AsShadcnButton } from '../../ui/shadcn/button';
+import { ShadcnSelect as AsShadcnSelect } from '../../ui/components/ShadcnSelect';
+import { Textarea as AsShadcnTextarea } from '../../ui/shadcn/textarea';
+import { Input as AsShadcnInput } from '../../ui/shadcn/input';
+
 /**
  * WorkflowDebugPanel — 工作流试运行调试面板（单列紧凑布局）。
  *
@@ -393,7 +402,7 @@ onBeforeUnmount(() => {
         <strong>{{ title }}</strong>
         <span class="wdp-subtitle">逐节点查看执行输入与输出</span>
       </div>
-      <button v-if="closable" class="wdp-icon-btn" title="关闭" @click="emit('close')">×</button>
+      <AsShadcnButton variant="ghost" v-if="closable" class="wdp-icon-btn" title="关闭" @click="emit('close')">×</AsShadcnButton>
     </header>
 
     <div class="wdp-body">
@@ -405,28 +414,28 @@ onBeforeUnmount(() => {
         <div v-if="variables.length" class="wdp-form">
           <label v-for="item in variables" :key="item.name" class="wdp-field">
             <span>{{ item.label || item.name }} <i v-if="item.required">*</i></span>
-            <select
+            <AsShadcnSelect
               v-if="item.options?.length"
               :value="values[item.name]"
               @change="setValue(item, ($event.target as HTMLSelectElement).value)"
             >
               <option value="">请选择</option>
               <option v-for="option in item.options" :key="option.value" :value="option.value">{{ option.label }}</option>
-            </select>
-            <input
+            </AsShadcnSelect>
+            <AsShadcnBoolean
               v-else-if="item.type === 'boolean'"
               type="checkbox"
               :checked="Boolean(values[item.name])"
               @change="setValue(item, ($event.target as HTMLInputElement).checked)"
             />
-            <textarea
+            <AsShadcnTextarea
               v-else-if="item.type === 'object' || item.type === 'array'"
               :value="pretty(values[item.name])"
               rows="3"
               placeholder="请输入 JSON"
               @input="setValue(item, ($event.target as HTMLTextAreaElement).value)"
             />
-            <input
+            <AsShadcnInput
               v-else
               :type="item.type === 'number' || item.type === 'integer' ? 'number' : 'text'"
               :value="values[item.name] as any"
@@ -439,17 +448,17 @@ onBeforeUnmount(() => {
         <div v-else class="wdp-empty-input">开始节点未定义输入参数，可直接执行。</div>
 
         <div class="wdp-actions">
-          <button class="wdp-run" :disabled="running || missingRequired.length > 0" @click="execute">
+          <AsShadcnButton variant="ghost" class="wdp-run" :disabled="running || missingRequired.length > 0" @click="execute">
             {{ running ? '执行中…' : '▶ 执行工作流' }}
-          </button>
-          <button v-if="streamActive" class="wdp-stop" title="中止本次流式执行" @click="stop">■ 停止</button>
-          <button v-if="streamActive && activeRunId" class="wdp-reset" :disabled="controlBusy" @click="pause">Ⅱ 暂停</button>
-          <button
+          </AsShadcnButton>
+          <AsShadcnButton variant="ghost" v-if="streamActive" class="wdp-stop" title="中止本次流式执行" @click="stop">■ 停止</AsShadcnButton>
+          <AsShadcnButton variant="ghost" v-if="streamActive && activeRunId" class="wdp-reset" :disabled="controlBusy" @click="pause">Ⅱ 暂停</AsShadcnButton>
+          <AsShadcnButton variant="ghost"
             v-if="result || requestError || abortNotice || liveSteps.length"
             class="wdp-reset"
             :disabled="running"
             @click="reset"
-          >清空结果</button>
+          >清空结果</AsShadcnButton>
         </div>
       </div>
 
@@ -467,19 +476,19 @@ onBeforeUnmount(() => {
 
         <div v-if="abortNotice" class="wdp-aborted">已手动停止执行，以下为停止前已完成节点的结果。</div>
         <div v-if="requestError" class="wdp-error">{{ requestError }}</div>
-        <div v-if="result?.status === 'WAITING'" class="wdp-wait-card">
+        <AsShadcnCard v-if="result?.status === 'WAITING'" class="wdp-wait-card">
           <strong>{{ result.waitRequest?.type === 'APPROVAL' ? '等待审批' : result.waitRequest?.type === 'SLEEP_UNTIL' ? '定时等待中' : '等待恢复输入' }}</strong>
           <small v-if="result.waitingNodeId">节点：{{ stepTitle({ nodeId: result.waitingNodeId }, 0) }}</small>
           <small v-if="result.waitRequest?.correlationKey">Correlation Key：<code>{{ result.waitRequest.correlationKey }}</code></small>
           <small v-if="result.waitRequest?.expiresAt">截止：{{ result.waitRequest.expiresAt }}</small>
           <small v-if="result.waitRequest?.wakeAt">自动唤醒：{{ result.waitRequest.wakeAt }}</small>
-          <div v-if="result.waitRequest?.type === 'APPROVAL'" class="wdp-actions"><button class="wdp-run" :disabled="controlBusy" @click="submitWait(true)">批准</button><button class="wdp-stop" :disabled="controlBusy" @click="submitWait(false)">拒绝</button></div>
+          <div v-if="result.waitRequest?.type === 'APPROVAL'" class="wdp-actions"><AsShadcnButton variant="ghost" class="wdp-run" :disabled="controlBusy" @click="submitWait(true)">批准</AsShadcnButton><AsShadcnButton variant="ghost" class="wdp-stop" :disabled="controlBusy" @click="submitWait(false)">拒绝</AsShadcnButton></div>
           <template v-else-if="result.waitRequest?.type !== 'SLEEP_UNTIL'">
-            <textarea v-model="waitPayload" rows="5" placeholder='恢复载荷 JSON，例如 {"response":"确认"}' />
-            <button class="wdp-run" :disabled="controlBusy" @click="submitWait()">提交并恢复</button>
+            <AsShadcnTextarea v-model="waitPayload" rows="5" placeholder='恢复载荷 JSON，例如 {"response":"确认"}' />
+            <AsShadcnButton variant="ghost" class="wdp-run" :disabled="controlBusy" @click="submitWait()">提交并恢复</AsShadcnButton>
           </template>
-        </div>
-        <div v-if="result?.status === 'PAUSED'" class="wdp-wait-card"><strong>运行已暂停</strong><button class="wdp-run" :disabled="controlBusy" @click="resume">继续执行</button></div>
+        </AsShadcnCard>
+        <AsShadcnCard v-if="result?.status === 'PAUSED'" class="wdp-wait-card"><strong>运行已暂停</strong><AsShadcnButton variant="ghost" class="wdp-run" :disabled="controlBusy" @click="resume">继续执行</AsShadcnButton></AsShadcnCard>
         <div
           v-if="!running && !result && !requestError && !abortNotice && liveSteps.length === 0"
           class="wdp-placeholder"
@@ -492,13 +501,13 @@ onBeforeUnmount(() => {
             class="wdp-step"
             :class="{ failed: step.failed }"
           >
-            <button class="wdp-step-head" @click="expanded[String(index)] = !expanded[String(index)]">
+            <AsShadcnButton variant="ghost" class="wdp-step-head" @click="expanded[String(index)] = !expanded[String(index)]">
               <span class="wdp-dot">{{ step.failed ? '!' : '✓' }}</span>
               <span class="wdp-step-name">{{ stepTitle(step, index) }}</span>
               <code>{{ stepType(step) }}</code>
               <span class="wdp-duration">{{ step.elapsedMillis ?? step.duration ?? 0 }} ms</span>
               <span>{{ expanded[String(index)] ? '⌃' : '⌄' }}</span>
-            </button>
+            </AsShadcnButton>
             <div v-if="expanded[String(index)]" class="wdp-step-detail">
               <div class="wdp-io"><b>输入</b><pre v-if="stepInputs(step) !== undefined">{{ pretty(stepInputs(step)) }}</pre><p v-else>当前执行接口未返回该节点输入。</p></div>
               <div class="wdp-io"><b>输出</b><pre>{{ pretty(stepOutputs(step)) || '{}' }}</pre></div>
@@ -528,16 +537,16 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
-.wdp-shell{display:flex;flex-direction:column;width:100%;height:100%;overflow:hidden;border:1px solid #e5e7eb;border-radius:12px;background:#fff;box-shadow:0 18px 48px rgb(15 23 42/.18);color:#1f2937}.wdp-head{display:flex;align-items:center;justify-content:space-between;min-height:46px;padding:0 14px;border-bottom:1px solid #eef0f3;background:#fff}.wdp-head>div{display:flex;align-items:baseline;gap:8px}.wdp-subtitle{font-size:12px;color:#94a3b8}.wdp-icon-btn{border:0;background:transparent;font-size:23px;color:#64748b;cursor:pointer}.wdp-body{flex:1;min-height:0;overflow-y:auto}.wdp-input-section,.wdp-process-section{padding:14px;min-width:0}.wdp-input-section{border-bottom:1px solid #eef0f3}.wdp-section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;font-size:13px;font-weight:650}.wdp-required,.wdp-failed{color:#dc2626}.wdp-success{color:#16a34a}.wdp-form{display:grid;gap:10px}.wdp-field{display:grid;gap:5px;font-size:12px;color:#475569}.wdp-field i{font-style:normal;color:#dc2626}.wdp-field input:not([type=checkbox]),.wdp-field select,.wdp-field textarea{box-sizing:border-box;width:100%;padding:8px 10px;border:1px solid #dbe1e8;border-radius:7px;background:#fff;font:inherit;color:#111827;outline:none}.wdp-field input:focus,.wdp-field select:focus,.wdp-field textarea:focus{border-color:#6366f1;box-shadow:0 0 0 2px rgb(99 102 241/.1)}.wdp-field small,.wdp-empty-input{font-size:11px;color:#94a3b8}.wdp-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}.wdp-run,.wdp-reset,.wdp-stop{padding:8px 14px;border-radius:7px;border:1px solid #dbe1e8;cursor:pointer}.wdp-run{flex:1;border-color:#4f46e5;background:#4f46e5;color:#fff;font-weight:600}.wdp-run:disabled{cursor:not-allowed;opacity:.5}.wdp-stop{border-color:#dc2626;background:#fff;color:#dc2626;font-weight:600}.wdp-reset{background:#fff;color:#475569}.wdp-running-chip{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:400;color:#6366f1}.wdp-running,.wdp-placeholder,.wdp-error,.wdp-aborted{padding:12px;border-radius:8px;font-size:12px}.wdp-running,.wdp-placeholder{background:#f8fafc;color:#64748b}.wdp-error{background:#fef2f2;color:#b91c1c}.wdp-aborted{margin-bottom:8px;background:#fffbeb;color:#b45309}.wdp-spinner{display:inline-block;width:11px;height:11px;border:2px solid #c7d2fe;border-top-color:#4f46e5;border-radius:50%;animation:wdp-spin .8s linear infinite}.wdp-timeline{display:grid;gap:8px}.wdp-step{position:relative;border:1px solid #e5e7eb;border-radius:9px;overflow:hidden}.wdp-step.failed{border-color:#fecaca}.wdp-step-head{display:flex;width:100%;align-items:center;gap:8px;padding:10px;border:0;background:#fafafa;text-align:left;cursor:pointer}.wdp-step-pending{border-style:dashed;border-color:#c7d2fe;background:#fafbff}.wdp-step-pending .wdp-step-head{background:transparent;cursor:default}.wdp-dot{display:inline-grid;place-items:center;width:19px;height:19px;border-radius:50%;background:#dcfce7;color:#15803d;font-size:11px}.failed .wdp-dot{background:#fee2e2;color:#dc2626}.wdp-dot-pending{background:#eef2ff;animation:wdp-pulse 1s ease-in-out infinite}.wdp-step-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;font-weight:600}.wdp-step-head code,.wdp-final code{font-size:10px;color:#64748b}.wdp-duration{font-size:10px;color:#94a3b8}.wdp-step-detail{display:grid;gap:10px;padding:10px;border-top:1px solid #eef0f3}.wdp-io b{display:block;margin-bottom:5px;font-size:11px;color:#64748b}.wdp-io pre,.wdp-final pre{max-height:220px;margin:0;overflow:auto;padding:9px;border-radius:7px;background:#0f172a;color:#e2e8f0;font:11px/1.55 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre-wrap;word-break:break-word}.wdp-io p,.wdp-meta{margin:0;font-size:11px;color:#94a3b8}.wdp-final{margin-top:14px}.wdp-final .wdp-section-head{margin-bottom:8px}@keyframes wdp-spin{to{transform:rotate(360deg)}}@keyframes wdp-pulse{0%,100%{opacity:1}50%{opacity:.3}}
-.wdp-waiting{color:#d97706}.wdp-wait-card{display:grid;gap:8px;margin-bottom:10px;padding:12px;border:1px solid #fde68a;border-radius:8px;background:#fffbeb;color:#92400e;font-size:12px}.wdp-wait-card small{display:block}.wdp-wait-card textarea{box-sizing:border-box;width:100%;padding:8px;border:1px solid #fcd34d;border-radius:6px;font:11px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace}
-:global(.dark) .wdp-shell,:global(.dark) .wdp-head{background:#18181b;border-color:#3f3f46;color:#f4f4f5}
-:global(.dark) .wdp-body{background:#18181b}
-:global(.dark) .wdp-head,:global(.dark) .wdp-input-section,:global(.dark) .wdp-step-detail{border-color:#3f3f46}
-:global(.dark) .wdp-field{color:#d4d4d8}
-:global(.dark) .wdp-field input:not([type=checkbox]),:global(.dark) .wdp-field select,:global(.dark) .wdp-field textarea{border-color:#52525b;background:#27272a;color:#f4f4f5}
-:global(.dark) .wdp-placeholder,:global(.dark) .wdp-running{background:#27272a;color:#a1a1aa}
-:global(.dark) .wdp-step{border-color:#3f3f46;background:#202023}
-:global(.dark) .wdp-step-head{background:#27272a;color:#f4f4f5}
-:global(.dark) .wdp-step-pending,:global(.dark) .wdp-step-pending .wdp-step-head{background:#202023}
-:global(.dark) .wdp-reset,:global(.dark) .wdp-stop{background:#27272a}
+.wdp-shell{display:flex;flex-direction:column;width:100%;height:100%;overflow:hidden;border: 1px solid var(--border);border-radius:12px;background: var(--background);box-shadow:0 18px 48px rgb(15 23 42/.18);color: var(--foreground)}.wdp-head{display:flex;align-items:center;justify-content:space-between;min-height:46px;padding:0 14px;border-bottom: 1px solid #eef0f3;background: var(--background)}.wdp-head>div{display:flex;align-items:baseline;gap:8px}.wdp-subtitle{font-size:12px;color: var(--muted-foreground)}.wdp-icon-btn{border: 0;background: transparent;font-size:23px;color: var(--muted-foreground);cursor:pointer}.wdp-body{flex:1;min-height:0;overflow-y:auto}.wdp-input-section,.wdp-process-section{padding:14px;min-width:0}.wdp-input-section{border-bottom: 1px solid #eef0f3}.wdp-section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;font-size:13px;font-weight:650}.wdp-required,.wdp-failed{color: #dc2626}.wdp-success{color: #16a34a}.wdp-form{display:grid;gap:10px}.wdp-field{display:grid;gap:5px;font-size:12px;color: var(--muted-foreground)}.wdp-field i{font-style:normal;color: #dc2626}.wdp-field input:not([type=checkbox]),.wdp-field select,.wdp-field textarea{box-sizing:border-box;width:100%;padding:8px 10px;border: 1px solid #dbe1e8;border-radius:7px;background: var(--background);font:inherit;color: var(--foreground);outline: none}.wdp-field input:focus,.wdp-field select:focus,.wdp-field textarea:focus{border-color: #6366f1;box-shadow:0 0 0 2px rgb(99 102 241/.1)}.wdp-field small,.wdp-empty-input{font-size:11px;color: var(--muted-foreground)}.wdp-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}.wdp-run,.wdp-reset,.wdp-stop{padding:8px 14px;border-radius:7px;border: 1px solid #dbe1e8;cursor:pointer}.wdp-run{flex:1;border-color: #4f46e5;background: #4f46e5;color: #fff;font-weight:600}.wdp-run:disabled{cursor:not-allowed;opacity:.5}.wdp-stop{border-color: #dc2626;background: var(--background);color: #dc2626;font-weight:600}.wdp-reset{background: var(--background);color: var(--muted-foreground)}.wdp-running-chip{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:400;color: #6366f1}.wdp-running,.wdp-placeholder,.wdp-error,.wdp-aborted{padding:12px;border-radius:8px;font-size:12px}.wdp-running,.wdp-placeholder{background: var(--muted);color: var(--muted-foreground)}.wdp-error{background: #fef2f2;color: #b91c1c}.wdp-aborted{margin-bottom:8px;background: #fffbeb;color: #b45309}.wdp-spinner{display:inline-block;width:11px;height:11px;border: 2px solid #c7d2fe;border-top-color: #4f46e5;border-radius:50%;animation:wdp-spin .8s linear infinite}.wdp-timeline{display:grid;gap:8px}.wdp-step{position:relative;border: 1px solid var(--border);border-radius:9px;overflow:hidden}.wdp-step.failed{border-color: #fecaca}.wdp-step-head{display:flex;width:100%;align-items:center;gap:8px;padding:10px;border: 0;background: var(--muted);text-align:left;cursor:pointer}.wdp-step-pending{border-style:dashed;border-color: #c7d2fe;background: #fafbff}.wdp-step-pending .wdp-step-head{background: transparent;cursor:default}.wdp-dot{display:inline-grid;place-items:center;width:19px;height:19px;border-radius:50%;background: #dcfce7;color: #15803d;font-size:11px}.failed .wdp-dot{background: #fee2e2;color: #dc2626}.wdp-dot-pending{background: #eef2ff;animation:wdp-pulse 1s ease-in-out infinite}.wdp-step-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;font-weight:600}.wdp-step-head code,.wdp-final code{font-size:10px;color: var(--muted-foreground)}.wdp-duration{font-size:10px;color: var(--muted-foreground)}.wdp-step-detail{display:grid;gap:10px;padding:10px;border-top: 1px solid #eef0f3}.wdp-io b{display:block;margin-bottom:5px;font-size:11px;color: var(--muted-foreground)}.wdp-io pre,.wdp-final pre{max-height:220px;margin:0;overflow:auto;padding:9px;border-radius:7px;background: #0f172a;color: var(--muted-foreground);font:11px/1.55 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre-wrap;word-break:break-word}.wdp-io p,.wdp-meta{margin:0;font-size:11px;color: var(--muted-foreground)}.wdp-final{margin-top:14px}.wdp-final .wdp-section-head{margin-bottom:8px}@keyframes wdp-spin{to{transform:rotate(360deg)}}@keyframes wdp-pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.wdp-waiting{color: #d97706}.wdp-wait-card{display:grid;gap:8px;margin-bottom:10px;padding:12px;border: 1px solid #fde68a;border-radius:8px;background: #fffbeb;color: #92400e;font-size:12px}.wdp-wait-card small{display:block}.wdp-wait-card textarea{box-sizing:border-box;width:100%;padding:8px;border: 1px solid #fcd34d;border-radius:6px;font:11px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace}
+.dark .wdp-shell,.dark .wdp-head{background: #18181b;border-color: #3f3f46;color: #f4f4f5}
+.dark .wdp-body{background: #18181b}
+.dark .wdp-head,.dark .wdp-input-section,.dark .wdp-step-detail{border-color: #3f3f46}
+.dark .wdp-field{color: var(--muted-foreground)}
+.dark .wdp-field input:not([type=checkbox]),.dark .wdp-field select,.dark .wdp-field textarea{border-color: #52525b;background: #27272a;color: #f4f4f5}
+.dark .wdp-placeholder,.dark .wdp-running{background: #27272a;color: #a1a1aa}
+.dark .wdp-step{border-color: #3f3f46;background: #202023}
+.dark .wdp-step-head{background: #27272a;color: #f4f4f5}
+.dark .wdp-step-pending,.dark .wdp-step-pending .wdp-step-head{background: #202023}
+.dark .wdp-reset,.dark .wdp-stop{background: #27272a}
 </style>

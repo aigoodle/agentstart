@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { RadioGroup as ARadioGroup, RadioButton as ARadioButton, Input as AInput } from '../../ui';
+
 import VarSelectField from './VarSelectField.vue';
 
 defineProps({
@@ -96,6 +98,6 @@ const formState: any = defineModel();
 .wf-auth-label {
   font-size: 11px;
   font-weight: 500;
-  color: #6b7280;
+  color: var(--muted-foreground);
 }
 </style>

@@ -243,14 +243,15 @@ export function providerBg(name: string): string {
 }
 
 export function modelTypeLabel(t: ModelType | string): string {
+  if (t === 'VISION') return '视觉理解 · Vision';
   if (t === 'LLM') return 'LLM';
   if (t === 'TEXT_EMBEDDING') return 'TEXT EMBEDDING';
   if (t === 'RERANK') return 'RERANK';
   if (t === 'SPEECH2TEXT') return 'SPEECH2TEXT';
   if (t === 'TTS') return 'TTS';
   if (t === 'MODERATION') return 'MODERATION';
-  if (t === 'IMAGE') return 'IMAGE';
-  if (t === 'VIDEO') return '视频生成';
+  if (t === 'IMAGE') return '图片生成 · IMAGE';
+  if (t === 'VIDEO') return '视频生成 · VIDEO';
   return String(t);
 }
 
@@ -258,7 +259,7 @@ export function modelTypeColor(t: ModelType | string): string {
   if (t === 'LLM') return 'blue';
   if (t === 'TEXT_EMBEDDING') return 'green';
   if (t === 'RERANK') return 'orange';
-  if (t === 'VIDEO') return 'purple';
+  if (t === 'VIDEO' || t === 'VISION') return 'purple';
   if (t === 'SPEECH2TEXT' || t === 'TTS') return 'purple';
   return 'default';
 }

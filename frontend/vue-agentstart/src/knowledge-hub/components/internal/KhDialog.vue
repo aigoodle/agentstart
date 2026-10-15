@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { Input as AsShadcnInput } from '../../../ui/shadcn/input';
+import { Button as AsShadcnButton } from '../../../ui/shadcn/button';
+
 /**
  * KhDialog — the module's internal modal primitive. Confirm + prompt in one.
  *
@@ -86,7 +89,7 @@ function onKey(e: KeyboardEvent) {
     @keydown="onKey"
   >
         <div v-if="content" class="khd-content">{{ content }}</div>
-        <input
+        <AsShadcnInput
           v-if="hasPrompt"
           ref="inputRef"
           v-model="inputValue"
@@ -94,17 +97,17 @@ function onKey(e: KeyboardEvent) {
           :placeholder="promptPlaceholder"
         />
         <template #footer>
-          <button class="khd-btn khd-btn-secondary" @click="onCancel">
+          <AsShadcnButton variant="ghost" class="khd-btn khd-btn-secondary" @click="onCancel">
             {{ cancelText ?? t('common.cancel') }}
-          </button>
-          <button
+          </AsShadcnButton>
+          <AsShadcnButton variant="ghost"
             class="khd-btn"
             :class="danger ? 'khd-btn-danger' : 'khd-btn-primary'"
             :disabled="hasPrompt && !inputValue.trim()"
             @click="onOk"
           >
             {{ okText ?? t('common.ok') }}
-          </button>
+          </AsShadcnButton>
         </template>
   </Modal>
 </template>

@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { Button as AsShadcnButton } from '../../ui/shadcn/button';
+import { Textarea as AsShadcnTextarea } from '../../ui/shadcn/textarea';
+
 /**
  * RecallTestingPanelV2 — Dify-parity 召回测试 tab (screenshot 5).
  *
@@ -108,7 +111,7 @@ function replay(h: RecentQuery) {
             <!-- 混合检索 icon button — opens the popover-style 检索设置 card.
                  The button is only the anchor; the card is Teleport'd to <body>
                  in RetrievalConfigPopover so it can float over anything. -->
-            <button
+            <AsShadcnButton variant="ghost"
               ref="methodBtnRef"
               class="kh-recall-mode-btn"
               @click="toggleConfig"
@@ -116,9 +119,9 @@ function replay(h: RecentQuery) {
               <span class="kh-recall-mode-icon">{{ methodIcon }}</span>
               <span>{{ methodLabel }}</span>
               <span class="kh-recall-mode-caret">▾</span>
-            </button>
+            </AsShadcnButton>
           </div>
-          <textarea
+          <AsShadcnTextarea
             v-model="query"
             class="kh-recall-textarea"
             placeholder="请输入文本，建议使用简短的陈述句。"
@@ -128,13 +131,13 @@ function replay(h: RecentQuery) {
             <span class="kh-recall-char-count">
               {{ charCount }}/500
             </span>
-            <button
+            <AsShadcnButton variant="ghost"
               class="kh-btn kh-btn-primary"
               :disabled="!canRun || loading"
               @click="run"
             >
               测试
-            </button>
+            </AsShadcnButton>
           </div>
         </div>
 

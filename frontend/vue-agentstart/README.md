@@ -10,7 +10,7 @@ pnpm add vue-agent-start
 
 宿主项目只需要提供 Vue、Pinia、Vue Router 和图标包等轻量 peer dependencies，具体版本范围见 `package.json`。组件库不再依赖或捆绑 Ant Design Vue。
 
-组件库内置了一套接近 Ant Design 交互密度的自有 UI 基座，包括按钮、输入框、选择器、开关、卡片、表单、Modal、Drawer、表格、提示消息等。内部样式由 Tailwind CSS v4 在发布阶段编译，使用方不需要安装或配置 Tailwind。安装 `AgentStartPlugin` 时会自动注册；也可以单独安装：
+组件库的 UI 基座使用本地 shadcn-vue 源码和 Reka UI，覆盖按钮、输入框、选择器、开关、卡片、表单、Dialog、Sheet、表格、Tooltip、Popover、Tabs 和 Sonner 消息等。现有 `Button/Input/Select/Modal/Drawer` 和 `A*` 全局组件通过适配层保留调用方式。内部样式由 Tailwind CSS v4 在发布阶段编译，使用方不需要安装或配置 Tailwind。安装 `AgentStartPlugin` 时会自动注册；也可以单独安装：
 
 ```ts
 import { AgentStartUi } from 'vue-agent-start';
@@ -19,7 +19,7 @@ import 'vue-agent-start/style.css';
 app.use(AgentStartUi);
 ```
 
-主题通过 `--as-*` CSS 变量覆盖。构建入口不包含 Tailwind Preflight，因此不会重置宿主项目的原生标签，也不会修改 Element Plus、Naive UI 或其他组件库主题。
+主题使用 shadcn 语义令牌，并与现有 `--as-*` CSS 变量同步。构建入口不包含 Tailwind Preflight，因此不会重置宿主项目的原生标签，也不会修改 Element Plus、Naive UI 或其他组件库主题。
 
 组件库同时内置明亮/暗黑、普通/科技感两组外观开关，Drawer、Modal 和通用 `.hud-panel` 的 HUD 外框及导轨也包含在发布样式中，不依赖 demo 项目。完整参数、运行时切换及 CSS 变量说明见 [APPEARANCE.md](./APPEARANCE.md)。
 
@@ -185,3 +185,45 @@ const models = await client.models.list();
 组件提供 `header`、`approval`、`event`、`empty`、`actions` slots，宿主可以接入自己的 RBAC、
 审批流程、审计展示和设计系统。模板 ref 暴露 `refresh()`、`cancel()`、`snapshot` 和 `events`。
 组件不会要求浏览器选择可信租户，租户身份仍由宿主认证上下文在服务端确定。
+
+## shadcn-vue UI
+
+新页面推荐直接组合 `Ui*` 组件，现有页面可以继续使用适配 API：
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue';
+import { UiButton, UiCard, UiCardContent, UiInput, UiNativeSelect, Modal } from 'vue-agent-start';
+const name = ref('');
+const provider = ref(1);
+const open = ref(false);
+</script>
+
+<template>
+  <UiCard><UiCardContent>
+    <UiInput v-model="name" placeholder="名称" />
+    <UiNativeSelect v-model="provider" :options="[{ value: 1, label: 'OpenAI' }]" />
+    <UiButton @click="open = true">编辑</UiButton>
+  </UiCardContent></UiCard>
+  <Modal v-model:open="open" title="编辑设置">{{ name }}</Modal>
+</template>
+```
+
+`UiSelect` 是原生 shadcn 组合式 Root，应搭配 `UiSelectTrigger/UiSelectContent/UiSelectItem`。
+`UiNativeSelect` 是面向旧页面的选择器，支持 options、原 `<option>` 插槽、数字值、multiple、tags 和原生 change 事件。
+现有 `Select` 仍使用 `v-model:value`，其 change 回调收到选中值。
+`UiInput/UiTextarea` 支持 `v-model`；现有 `Input/Textarea` 支持 `v-model:value`。
+
+源码位于 `src/ui/shadcn`，`components.json` 使用独立的 `@ui` 别名，避免占用工作流的 `@`。
+添加组件时使用 `pnpm dlx shadcn-vue@latest add <name>`，审核生成代码并沿用语义令牌。
+新增页面不要再复制原生按钮、输入框、弹窗或下拉框的完整实现。
+演示项目 `/ui` 页面覆盖表单、按钮、数字选择、tags、动态表单、嵌套 Dialog/Sheet 和主题切换。
+
+`message.success/error/warning/info/loading` 由 Sonner 渲染；`Modal.confirm/info` 由 Dialog 渲染，不再调用浏览器原生提示框。
+
+组件库内部显式绑定本地 shadcn 适配组件，不受宿主 `A*` 全局组件注册影响；全局注册入口继续保留供旧页面使用。
+
+### 公共目录 Card
+
+应用、知识库、渠道、MCP、工具、技能、插件、连接器和模型目录统一使用 `src/ui` 导出的 `Card`，底层组合 shadcn-vue Card。
+结构、密度、主题及插槽边界见 [公共 Card 约定](src/ui/README.md)。页面不得重新覆盖公共 Card 的内部布局。

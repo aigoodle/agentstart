@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Input as AsShadcnInput } from '../../ui/shadcn/input';
+
 /**
  * CredentialForm — schema-driven form for provider credentials.
  *
@@ -39,7 +41,7 @@ function set(name: string, value: unknown) {
         <span v-if="f.required" class="ph-req">*</span>
         <span v-if="f.secret" class="ph-secret">密文</span>
       </label>
-      <input
+      <AsShadcnInput
         v-if="f.secret"
         type="password"
         class="ph-input"
@@ -48,7 +50,7 @@ function set(name: string, value: unknown) {
         :placeholder="editMode ? '留空 = 保持不变' : (f.placeholder ?? '')"
         @input="(e) => set(f.name, (e.target as HTMLInputElement).value)"
       />
-      <input
+      <AsShadcnInput
         v-else
         type="text"
         class="ph-input"
@@ -77,7 +79,7 @@ function set(name: string, value: unknown) {
   gap: 6px;
   font-size: 13px;
   font-weight: 500;
-  color: #374151;
+  color: var(--foreground);
 }
 .ph-req {
   color: #dc2626;
@@ -92,7 +94,7 @@ function set(name: string, value: unknown) {
 .ph-input {
   padding: 6px 10px;
   font-size: 13px;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--border);
   border-radius: 6px;
   transition: border-color 0.15s ease;
 }

@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, useAttrs, useSlots, type CSSProperties } from 'vue';
+import { Card as ShadcnCard, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '../shadcn/card';
+import { computed, useAttrs, type CSSProperties } from 'vue';
 
 defineOptions({ name: 'AsCard', inheritAttrs: false });
 
@@ -13,7 +14,7 @@ interface Props {
   disabled?: boolean;
   compact?: boolean;
   footerDivider?: boolean;
-  variant?: 'default' | 'management';
+  variant?: 'default' | 'management' | 'create';
   bodyStyle?: CSSProperties;
   bodyClass?: string | string[] | Record<string, boolean>;
 }
@@ -29,76 +30,44 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const attrs = useAttrs();
-const slots = useSlots();
-const isManagement = computed(() => props.variant === 'management');
-const isInteractive = computed(() => props.interactive ?? isManagement.value);
+const isInteractive = computed(() => props.interactive ?? !!attrs.onClick);
 
 function onClickCapture(event: MouseEvent) {
   if (!props.disabled) return;
   event.preventDefault();
   event.stopImmediatePropagation();
 }
+function onKeydown(event: KeyboardEvent) {
+  if (!isInteractive.value || props.disabled || event.target !== event.currentTarget) return;
+  if (event.key === 'Enter' || event.key === ' ') {
+    event.preventDefault();
+    (event.currentTarget as HTMLElement).click();
+  }
+}
 </script>
 
 <template>
-  <article
-    v-if="isManagement"
-    v-bind="attrs"
-    class="as-management-card"
-    :class="[
-      attrs.class,
-      {
-        'as-management-card--compact': compact,
-        'as-management-card--interactive': isInteractive && !disabled,
-        'as-management-card--disabled': disabled,
-        'as-management-card--footer-plain': !footerDivider,
-        'as-management-card--borderless': !bordered,
-      },
-    ]"
-    :tabindex="isInteractive && !disabled ? 0 : undefined"
-    :aria-disabled="disabled || undefined"
-    @click.capture="onClickCapture"
-  >
-    <header v-if="title || $slots.title || $slots.subtitle || $slots.icon || $slots.badge" class="as-management-card__head">
-      <div v-if="$slots.icon" class="as-management-card__icon"><slot name="icon" /></div>
-      <div class="as-management-card__title">
-        <h3><slot name="title">{{ title }}</slot></h3>
-        <small v-if="$slots.subtitle || subtitle"><slot name="subtitle">{{ subtitle }}</slot></small>
+  <ShadcnCard v-bind="attrs" :class="['as-ui-card', attrs.class, !bordered && 'border-0', compact && 'as-ui-card--compact', (hoverable || isInteractive) && 'transition-shadow hover:shadow-md', disabled && 'opacity-50 pointer-events-none']" :data-card-variant="variant" :data-card-density="compact ? 'compact' : 'normal'" :tabindex="isInteractive && !disabled ? 0 : undefined" :aria-disabled="disabled || undefined" @click.capture="onClickCapture" @keydown="onKeydown">
+    <CardContent v-if="variant === 'create'" class="as-ui-card__create">
+      <span class="as-ui-card__create-icon" aria-hidden="true"><slot name="icon">+</slot></span>
+      <CardTitle><slot name="title">{{ title }}</slot></CardTitle>
+      <CardDescription>{{ subtitle || description }}</CardDescription>
+    </CardContent>
+    <CardHeader v-else-if="title || $slots.title || $slots.icon || $slots.badge || $slots.extra" class="as-ui-card__header flex flex-row items-start gap-3">
+      <div v-if="$slots.icon" class="as-ui-card__icon flex size-10 shrink-0 items-center justify-center rounded-lg bg-muted"><slot name="icon" /></div>
+      <div class="min-w-0 flex-1 space-y-1">
+        <CardTitle><slot name="title">{{ title }}</slot></CardTitle>
+        <CardDescription v-if="subtitle || $slots.subtitle"><slot name="subtitle">{{ subtitle }}</slot></CardDescription>
       </div>
-      <div v-if="$slots.badge" class="as-management-card__badge"><slot name="badge" /></div>
-    </header>
-    <div v-if="$slots.description || description" class="as-management-card__description">
-      <slot name="description">{{ description }}</slot>
-    </div>
-    <div v-if="$slots.default" class="as-management-card__content" :class="bodyClass" :style="bodyStyle"><slot /></div>
-    <footer v-if="$slots.meta || $slots.actions" class="as-management-card__footer">
-      <div v-if="$slots.meta" class="as-management-card__meta"><slot name="meta" /></div>
-      <div v-if="$slots.actions" class="as-management-card__actions"><slot name="actions" /></div>
-    </footer>
-  </article>
-
-  <section
-    v-else
-    v-bind="attrs"
-    class="as-card"
-    :class="[
-      attrs.class,
-      {
-        'as-card--borderless': !bordered,
-        'as-card--hoverable': hoverable,
-        'as-card--interactive': isInteractive && !disabled,
-        'as-card--disabled': disabled,
-      },
-    ]"
-    :tabindex="isInteractive && !disabled ? 0 : undefined"
-    :aria-disabled="disabled || undefined"
-    @click.capture="onClickCapture"
-  >
-    <header v-if="title || $slots.title || $slots.extra" class="as-card__head">
-      <div class="as-card__title"><slot name="title">{{ title }}</slot></div>
-      <div v-if="$slots.extra" class="as-card__extra"><slot name="extra" /></div>
-    </header>
-    <div class="as-card__body" :class="bodyClass" :style="bodyStyle"><slot /></div>
-    <footer v-if="$slots.actions" class="as-card__actions"><slot name="actions" /></footer>
-  </section>
+      <div v-if="$slots.badge || $slots.extra" class="as-ui-card__badge flex shrink-0 items-center gap-2"><slot name="badge" /><slot name="extra" /></div>
+    </CardHeader>
+    <CardContent v-if="variant !== 'create' && (description || $slots.description || $slots.default)" :class="['as-ui-card__content', bodyClass]" :style="bodyStyle">
+      <CardDescription v-if="description || $slots.description" class="as-ui-card__description"><slot name="description">{{ description }}</slot></CardDescription>
+      <slot />
+    </CardContent>
+    <CardFooter v-if="$slots.meta || $slots.actions" :class="['as-ui-card__footer mt-auto', footerDivider && 'border-t']">
+      <div v-if="$slots.meta" class="as-ui-card__meta text-xs text-muted-foreground"><slot name="meta" /></div>
+      <div v-if="$slots.actions" class="as-ui-card__actions"><slot name="actions" /></div>
+    </CardFooter>
+  </ShadcnCard>
 </template>

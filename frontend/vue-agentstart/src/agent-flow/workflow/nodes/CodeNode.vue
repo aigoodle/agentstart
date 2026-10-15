@@ -126,7 +126,7 @@ const truncateCode = (code, maxLength) => {
 
 .code-lines {
   font-size: 10px;
-  color: #6b7280;
+  color: var(--muted-foreground);
 }
 
 .code-preview-body {
@@ -135,7 +135,7 @@ const truncateCode = (code, maxLength) => {
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
   font-size: 11px;
   line-height: 1.4;
-  color: #1f2937;
+  color: var(--foreground);
   white-space: pre-wrap;
   word-break: break-all;
 }

@@ -1,6 +1,7 @@
 import { fileURLToPath, URL } from 'node:url'
 
 import vue from '@vitejs/plugin-vue'
+import tailwindcss from '@tailwindcss/vite'
 import { defineConfig, loadEnv } from 'vite'
 
 import { agentStartMock } from './mock/plugin.js'
@@ -21,7 +22,7 @@ const vueAgentStartSkillSource = `${libRoot}/src/skill-hub/index.ts`
 const vueAgentStartToolSource = `${libRoot}/src/tool-hub/index.ts`
 const vueAgentStartTriggerSource = `${libRoot}/src/trigger-hub/index.ts`
 const vueAgentStartAigoodleSource = `${libRoot}/src/aigoodle.ts`
-const vueAgentStartStyleSource = `${libRoot}/dist/style.css` // 使用构建后的 CSS（已处理 Tailwind @apply）
+const vueAgentStartStyleSource = `${libRoot}/src/style.css` // Tailwind 在演示项目中直接编译库源码，样式支持 HMR
 const vueAgentStartFlowSource = `${libRoot}/src/agent-flow`
 
 // https://vite.dev/config/
@@ -34,7 +35,7 @@ export default defineConfig(({ mode }) => {
   const devPort = Number(env.VITE_PORT) || 5173
 
   return {
-    plugins: [vue(), ...(useMock ? [agentStartMock()] : [])],
+    plugins: [tailwindcss(), vue(), ...(useMock ? [agentStartMock()] : [])],
     define: {
       __USE_MOCK__: JSON.stringify(useMock),
     },
@@ -52,6 +53,8 @@ export default defineConfig(({ mode }) => {
         '@vue-flow/controls',
         '@vue-flow/node-resizer',
         'vue-draggable-next',
+        'reka-ui',
+        '@vueuse/core',
       ],
       // 直接解析 vue-agent-start 的源码，无需每次重新构建库
       // 使用数组格式 + 正则表达式，确保精确匹配
@@ -72,6 +75,7 @@ export default defineConfig(({ mode }) => {
         { find: /^vue-agent-start\/aigoodle$/, replacement: vueAgentStartAigoodleSource },
         { find: /^vue-agent-start$/, replacement: vueAgentStartSource },
         // vue-agent-start 内部别名（legacy agent-flow 模块使用）
+        { find: /^@ui\/(.*)$/, replacement: `${libRoot}/src/ui/$1` },
         { find: /^@\/(.*)$/, replacement: `${vueAgentStartFlowSource}/$1` },
       ],
     },

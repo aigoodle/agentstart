@@ -113,7 +113,7 @@ const aggregated = computed(() => props.data?.output?.[0]?.children ?? []);
   flex: 1;
   min-width: 0;
   overflow: hidden;
-  color: #4b5563;
+  color: var(--muted-foreground);
   text-overflow: ellipsis;
   white-space: nowrap;
 }

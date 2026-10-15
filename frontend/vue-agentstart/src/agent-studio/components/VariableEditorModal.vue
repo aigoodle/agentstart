@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import { ShadcnBoolean as AsShadcnBoolean } from '../../ui/components/ShadcnBoolean';
+
+import { Input as AsShadcnInput } from '../../ui/shadcn/input';
+import { Button as AsShadcnButton } from '../../ui/shadcn/button';
+import { Textarea as AsShadcnTextarea } from '../../ui/shadcn/textarea';
+
 /**
  * VariableEditorModal — 应用配置的「变量」新增/编辑弹窗。
  *
@@ -119,7 +125,7 @@ defineExpose({ open: openModal, close: closeModal });
               变量名
               <span class="vem-required">*</span>
             </label>
-            <input
+            <AsShadcnInput
               v-model="form.name"
               class="vem-input"
               :class="{ 'vem-input-error': errors.name }"
@@ -136,7 +142,7 @@ defineExpose({ open: openModal, close: closeModal });
 
           <div class="vem-field">
             <label class="vem-label">显示名</label>
-            <input
+            <AsShadcnInput
               v-model="form.label"
               class="vem-input"
               placeholder="用户看到的中文标题（留空则用变量名）"
@@ -146,7 +152,7 @@ defineExpose({ open: openModal, close: closeModal });
           <div class="vem-field">
             <label class="vem-label">类型</label>
             <div class="vem-type-grid">
-              <button
+              <AsShadcnButton variant="ghost"
                 v-for="t in TYPES"
                 :key="t.value"
                 type="button"
@@ -155,13 +161,13 @@ defineExpose({ open: openModal, close: closeModal });
               >
                 <span class="vem-type-name">{{ t.label }}</span>
                 <span class="vem-type-hint">{{ t.hint }}</span>
-              </button>
+              </AsShadcnButton>
             </div>
           </div>
 
           <div class="vem-field">
             <label class="vem-label">默认值</label>
-            <input
+            <AsShadcnInput
               v-model="form.defaultValue"
               class="vem-input"
               placeholder="留空表示无默认值"
@@ -170,7 +176,7 @@ defineExpose({ open: openModal, close: closeModal });
 
           <div class="vem-field">
             <label class="vem-label">描述</label>
-            <textarea
+            <AsShadcnTextarea
               v-model="form.description"
               class="vem-textarea"
               placeholder="给填写者的说明"
@@ -179,8 +185,8 @@ defineExpose({ open: openModal, close: closeModal });
           </div>
 
           <label class="vem-switch-row">
-            <input v-model="form.required" type="checkbox" />
-            <span class="vem-switch-slider" />
+            <AsShadcnBoolean appearance="switch" v-model="form.required" type="checkbox" />
+
             <span class="vem-switch-text">
               <span class="vem-switch-title">必填</span>
               <span class="vem-switch-desc">
@@ -237,12 +243,12 @@ defineExpose({ open: openModal, close: closeModal });
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--border);
 }
 .vem-title {
   font-size: 15px;
   font-weight: 600;
-  color: #0f172a;
+  color: var(--foreground);
 }
 .vem-close {
   width: 24px;
@@ -250,14 +256,14 @@ defineExpose({ open: openModal, close: closeModal });
   padding: 0;
   border: none;
   background: transparent;
-  color: #94a3b8;
+  color: var(--muted-foreground);
   font-size: 14px;
   cursor: pointer;
   border-radius: 4px;
 }
 .vem-close:hover {
-  background: #f1f5f9;
-  color: #475569;
+  background: var(--muted);
+  color: var(--muted-foreground);
 }
 
 .vem-body {
@@ -276,7 +282,7 @@ defineExpose({ open: openModal, close: closeModal });
 .vem-label {
   font-size: 12px;
   font-weight: 500;
-  color: #334155;
+  color: var(--foreground);
 }
 .vem-required {
   color: #ef4444;
@@ -287,9 +293,9 @@ defineExpose({ open: openModal, close: closeModal });
   width: 100%;
   padding: 8px 12px;
   font-size: 13px;
-  color: #0f172a;
-  background: #fff;
-  border: 1px solid #d1d5db;
+  color: var(--foreground);
+  background: var(--background);
+  border: 1px solid var(--border);
   border-radius: 8px;
   font-family: inherit;
   transition:
@@ -314,12 +320,12 @@ defineExpose({ open: openModal, close: closeModal });
 }
 .vem-hint {
   font-size: 11px;
-  color: #94a3b8;
+  color: var(--muted-foreground);
   line-height: 1.5;
 }
 .vem-hint code {
   padding: 1px 5px;
-  background: #f1f5f9;
+  background: var(--muted);
   color: #4338ca;
   border-radius: 4px;
   font-size: 11px;
@@ -340,8 +346,8 @@ defineExpose({ open: openModal, close: closeModal });
   align-items: flex-start;
   gap: 2px;
   padding: 8px 10px;
-  background: #fff;
-  border: 1px solid #e5e7eb;
+  background: var(--background);
+  border: 1px solid var(--border);
   border-radius: 8px;
   cursor: pointer;
   text-align: left;
@@ -352,7 +358,7 @@ defineExpose({ open: openModal, close: closeModal });
 }
 .vem-type-chip:hover {
   border-color: #c7d2fe;
-  background: #f8fafc;
+  background: var(--muted);
 }
 .vem-type-chip.on {
   background: #eef2ff;
@@ -361,14 +367,14 @@ defineExpose({ open: openModal, close: closeModal });
 .vem-type-name {
   font-size: 12px;
   font-weight: 600;
-  color: #334155;
+  color: var(--foreground);
 }
 .vem-type-chip.on .vem-type-name {
   color: #4338ca;
 }
 .vem-type-hint {
   font-size: 10px;
-  color: #94a3b8;
+  color: var(--muted-foreground);
 }
 
 /* Custom switch — repurpose the drawer's dr-switch look for a full row. */
@@ -377,8 +383,8 @@ defineExpose({ open: openModal, close: closeModal });
   align-items: center;
   gap: 10px;
   padding: 10px 12px;
-  background: #f8fafc;
-  border: 1px solid #e5e7eb;
+  background: var(--muted);
+  border: 1px solid var(--border);
   border-radius: 8px;
   cursor: pointer;
 }
@@ -386,32 +392,6 @@ defineExpose({ open: openModal, close: closeModal });
   position: absolute;
   opacity: 0;
   pointer-events: none;
-}
-.vem-switch-slider {
-  position: relative;
-  width: 32px;
-  height: 18px;
-  background: #cbd5e1;
-  border-radius: 999px;
-  transition: background 0.15s;
-  flex-shrink: 0;
-}
-.vem-switch-slider::before {
-  content: '';
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 14px;
-  height: 14px;
-  background: #fff;
-  border-radius: 50%;
-  transition: transform 0.15s;
-}
-.vem-switch-row input:checked + .vem-switch-slider {
-  background: #6366f1;
-}
-.vem-switch-row input:checked + .vem-switch-slider::before {
-  transform: translateX(14px);
 }
 .vem-switch-text {
   display: flex;
@@ -421,11 +401,11 @@ defineExpose({ open: openModal, close: closeModal });
 .vem-switch-title {
   font-size: 12px;
   font-weight: 500;
-  color: #334155;
+  color: var(--foreground);
 }
 .vem-switch-desc {
   font-size: 11px;
-  color: #94a3b8;
+  color: var(--muted-foreground);
 }
 
 .vem-btn {
@@ -449,11 +429,11 @@ defineExpose({ open: openModal, close: closeModal });
 }
 .vem-btn-ghost {
   background: transparent;
-  color: #64748b;
+  color: var(--muted-foreground);
 }
 .vem-btn-ghost:hover {
-  background: #f1f5f9;
-  color: #0f172a;
+  background: var(--muted);
+  color: var(--foreground);
 }
 .vem-btn-primary {
   background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);

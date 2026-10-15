@@ -1,11 +1,12 @@
 <script setup lang="ts">
+import { UiButton } from 'vue-agent-start'
 import { useTheme } from '../composables/useTheme'
 
 const { isDark, toggle } = useTheme()
 </script>
 
 <template>
-  <button
+  <UiButton variant="ghost"
     class="hud-theme-toggle"
     type="button"
     :title="isDark ? '切换到明亮模式' : '切换到暗黑模式'"
@@ -44,7 +45,7 @@ const { isDark, toggle } = useTheme()
     <span class="hud-theme-label">
       {{ isDark ? 'DARK' : 'LIGHT' }}
     </span>
-  </button>
+  </UiButton>
 </template>
 
 <style scoped>

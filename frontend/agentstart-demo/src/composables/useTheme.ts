@@ -1,3 +1,4 @@
+import { setAgentStartAppearance } from 'vue-agent-start'
 import { computed, reactive, watch } from 'vue'
 
 export type Theme = 'dark' | 'light'
@@ -33,8 +34,8 @@ if (import.meta.hot) {
 
 watch(theme, (value) => {
   if (typeof document === 'undefined') return
-  document.documentElement.classList.toggle('dark', value === 'dark')
-  document.documentElement.dataset.theme = value
+  setAgentStartAppearance({ theme: value })
+  document.documentElement.style.colorScheme = value
 }, { immediate: true })
 
 watch(() => state.mode, (value) => {

@@ -1,11 +1,12 @@
 <script setup lang="ts">
+import { UiButton } from 'vue-agent-start'
 import { useVisualMode } from '../composables/useVisualMode'
 
 const { isTech, toggle } = useVisualMode()
 </script>
 
 <template>
-  <button
+  <UiButton variant="ghost"
     class="visual-mode-toggle"
     type="button"
     :title="isTech ? '切换到普通模式' : '切换到科技模式'"
@@ -14,7 +15,7 @@ const { isTech, toggle } = useVisualMode()
   >
     <span class="visual-mode-icon" :class="{ tech: isTech }" aria-hidden="true"></span>
     <span class="visual-mode-label">{{ isTech ? '科技模式' : '普通模式' }}</span>
-  </button>
+  </UiButton>
 </template>
 
 <style scoped>

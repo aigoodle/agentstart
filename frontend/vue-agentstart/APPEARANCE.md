@@ -62,7 +62,7 @@ setAgentStartAppearance(
 ```css
 :root {
   --color-as-primary: #00ccff;
-  --as-theme-primary: #00ccff;
+  --primary: #00ccff;
 }
 ```
 
@@ -81,7 +81,7 @@ Drawer 四周边框、Modal 切角边框、通用 `.hud-panel` 和对应导轨�
 }
 ```
 
-建议宿主优先设置 `primaryColor` 或 `--as-theme-primary`，只有需要精确设计系统对齐时才分别覆盖 HUD 变量。
+建议宿主优先设置 `primaryColor` 或 `--primary`，只有需要精确设计系统对齐时才分别覆盖 HUD 变量。
 
 ## 通用 HUD Panel
 
@@ -106,3 +106,33 @@ Drawer 四周边框、Modal 切角边框、通用 `.hud-panel` 和对应导轨�
 - 组件库负责组件布局、普通模式、科技模式、明暗基础令牌和 HUD 边框。
 - 宿主负责选择参数、保存用户偏好，以及按品牌需要覆盖公开变量。
 - 演示项目仅展示设置面板和偏好持久化，不是组件库的运行依赖。
+
+## shadcn 语义令牌规范
+
+所有 shadcn 组件从同一组令牌读取颜色，不按页面分别写配色：
+
+| 令牌 | 用途 | 兼容变量 |
+| --- | --- | --- |
+| `--background` / `--foreground` | 表面与正文 | `--as-bg` / `--as-text` |
+| `--card` / `--card-foreground` | 卡片 | `--as-card-bg` / `--as-text` |
+| `--popover` / `--popover-foreground` | 下拉、菜单、提示浮层 | `--as-bg` / `--as-text` |
+| `--primary` / `--primary-foreground` | 主要操作及文字 | `--as-primary` / `--as-primary-foreground` |
+| `--muted` / `--muted-foreground` | 次级表面与说明文字 | `--as-bg-layout` / `--as-text-secondary` |
+| `--border` / `--input` / `--ring` | 分隔线、控件边框、焦点环 | `--as-border-secondary` / `--as-border` / `--as-primary` |
+| `--destructive` | 危险操作 | `--as-danger` |
+
+令牌使用完整 CSS 颜色（例如 `#ffffff`、`oklch(...)`），不使用旧版 `hsl` 分量格式。
+主色通过 API 设置为 hex 时，保留色相并在必要时降低亮度，使白色按钮文字达到至少 4.7:1 对比度。演示主题选择器使用同一转换；自定义 CSS 主色时需同步设置 `--primary-foreground`。
+字号、间距和圆角由 shadcn 基础组件统一控制；页面 CSS 只承担业务布局。
+HUD 四角和导轨属于 `visual` 皮肤，不改变 Dialog/Sheet 的焦点约束和 Escape 行为。
+
+明亮／暗黑模式同时更新 `data-theme`、`.dark` 和 `color-scheme`。
+宿主负责保存 `light | dark | system` 偏好；`system` 通过 `matchMedia('(prefers-color-scheme: dark)')` 实时解析后传给 `setAgentStartAppearance`。
+Dialog 与 Sheet 共用按打开顺序递增的层级；Select/Popover/Dropdown/Tooltip 弹层位于它们之上。
+
+演示项目的 Tailwind Vite 插件直接编译链接库的源码样式，修改样式即可 HMR，无需先构建 dist。
+发布包仍提供编译完成的 `style.css`，接入方无需 Tailwind，也不会加载 Preflight。
+
+主题颜色由 `src/ui/shadcn.css` 的 `:root` / `.dark` 语义变量定义。
+`theme-compat.css` 将旧 as / kh 变量映射到这些变量，旧变量不再决定 shadcn 的颜色。
+演示主色选择器仅更新 `--primary`、`--primary-foreground` 和 `--ring`，不再生成按页面覆盖的 CSS。

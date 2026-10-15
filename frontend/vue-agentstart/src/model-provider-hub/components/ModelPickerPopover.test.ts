@@ -51,11 +51,9 @@ describe('ModelPickerPopover', () => {
     await trigger.trigger('click');
     await nextTick();
     expect(document.querySelector('.ph-mp')).not.toBeNull();
-    const settingsPanel = document.querySelector<HTMLElement>('.as-popover__panel--bottomLeft');
+    const settingsPanel = document.querySelector<HTMLElement>('.as-popover-popup');
     expect(settingsPanel).not.toBeNull();
-    expect(settingsPanel?.style.left).toBe('120px');
-    expect(settingsPanel?.style.top).toBe('184px');
-    expect(settingsPanel?.style.width).toBe('320px');
+    expect(settingsPanel?.style.width).toBe('var(--reka-popover-trigger-width)');
 
     (document.querySelector('.ph-mp-model-card') as HTMLElement).click();
     await nextTick();

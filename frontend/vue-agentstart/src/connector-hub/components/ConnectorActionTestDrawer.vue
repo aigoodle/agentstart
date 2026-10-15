@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { Drawer as ShadcnDrawer } from '../../ui/components/Drawer';
+import { Button as AsShadcnButton } from '../../ui/shadcn/button';
+
 import { ref, watch } from 'vue';
 
 import type { AgentStartClient } from '../../client';
@@ -56,40 +59,35 @@ async function run() {
 </script>
 
 <template>
-  <Transition name="catd">
-    <div
-      v-if="open"
-      class="catd-mask"
-      @click.self="emit('update:open', false)"
-    >
-      <aside class="catd-drawer">
+  <ShadcnDrawer :open="open" class="catd-drawer" width="min(520px, 92vw)" :closable="false"
+    :body-style="{ padding: 0, display: 'flex', flexDirection: 'column', minHeight: 0 }"
+    @update:open="emit('update:open', $event)">
         <header class="catd-header">
           <div class="catd-header-text">
             <b>测试 · {{ action?.name }}</b>
             <small>{{ connector?.name }}</small>
           </div>
-          <button class="catd-close" @click="emit('update:open', false)">
+          <AsShadcnButton variant="ghost" class="catd-close" @click="emit('update:open', false)">
             ✕
-          </button>
+          </AsShadcnButton>
         </header>
 
         <main class="catd-main">
           <JsonSchemaForm v-model="args" :schema="action?.inputSchema" :ui-schema="action?.metadata?.uiSchema" />
-          <button
+          <AsShadcnButton variant="ghost"
             class="catd-run"
             :disabled="running"
             @click="run"
           >
             {{ running ? '执行中…' : '执行 Action' }}
-          </button>
+          </AsShadcnButton>
           <pre
             v-if="result"
             :class="['catd-result', { 'is-bad': !result.success }]"
           >{{ JSON.stringify(result, null, 2) }}</pre>
         </main>
-      </aside>
-    </div>
-  </Transition>
+
+  </ShadcnDrawer>
 </template>
 
 <style scoped>
@@ -108,10 +106,10 @@ async function run() {
   width: min(520px, 92vw);
   display: flex;
   flex-direction: column;
-  background: #fff;
+  background: var(--background);
   box-shadow: -6px 0 22px rgba(15, 23, 42, 0.14);
 }
-:global(.dark) .catd-drawer {
+.dark .catd-drawer {
   background: #1f1f1f;
 }
 
@@ -140,7 +138,7 @@ async function run() {
   align-items: center;
   gap: 12px;
   padding: 16px 20px;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
 }
 .catd-header-text {
   display: grid;
@@ -149,11 +147,11 @@ async function run() {
 }
 .catd-header-text b {
   font-size: 15px;
-  color: #111827;
+  color: var(--foreground);
 }
 .catd-header-text small {
   font-size: 12px;
-  color: #9ca3af;
+  color: var(--muted-foreground);
 }
 .catd-close {
   flex-shrink: 0;
@@ -165,7 +163,7 @@ async function run() {
   border: 0;
   background: none;
   font-size: 14px;
-  color: #9ca3af;
+  color: var(--muted-foreground);
   border-radius: 6px;
   cursor: pointer;
   transition:
@@ -173,16 +171,16 @@ async function run() {
     color 0.15s ease;
 }
 .catd-close:hover {
-  background: #f3f4f6;
-  color: #111827;
+  background: var(--muted);
+  color: var(--foreground);
 }
-:global(.dark) .catd-header {
+.dark .catd-header {
   border-bottom-color: #2d2d2d;
 }
-:global(.dark) .catd-header-text b {
+.dark .catd-header-text b {
   color: #f3f4f6;
 }
-:global(.dark) .catd-close:hover {
+.dark .catd-close:hover {
   background: #2d2d2d;
   color: #f3f4f6;
 }
@@ -216,7 +214,7 @@ async function run() {
   opacity: 0.6;
   cursor: not-allowed;
 }
-:global(.dark) .catd-run:hover {
+.dark .catd-run:hover {
   background: #818cf8;
 }
 
@@ -240,12 +238,12 @@ async function run() {
   background: #fef2f2;
   border-color: #fecaca;
 }
-:global(.dark) .catd-result {
+.dark .catd-result {
   color: #34d399;
   background: rgba(16, 185, 129, 0.12);
   border-color: rgba(16, 185, 129, 0.3);
 }
-:global(.dark) .catd-result.is-bad {
+.dark .catd-result.is-bad {
   color: #fca5a5;
   background: rgba(220, 38, 38, 0.12);
   border-color: rgba(220, 38, 38, 0.3);

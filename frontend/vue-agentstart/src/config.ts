@@ -1,6 +1,7 @@
 import { inject, type InjectionKey } from 'vue';
 
 import type { MaybePromise } from './client';
+import { getAgentStartColorForeground, getAgentStartAccessiblePrimary } from './ui/color';
 import { AgentStartUi } from './ui';
 
 export type AgentStartHeaders =
@@ -57,25 +58,20 @@ export function setAgentStartAppearance(
   const root = target ?? (typeof document === 'undefined' ? undefined : document.documentElement);
   if (!root) return;
 
+  root.dataset.agentStartTheme = '';
   if (appearance.theme) {
     root.dataset.theme = appearance.theme;
+    root.style.colorScheme = appearance.theme;
     // A number of existing product components support Tailwind's conventional
     // `.dark` ancestor in addition to data-theme, so keep both contracts synced.
     root.classList.toggle('dark', appearance.theme === 'dark');
   }
   if (appearance.visual) root.dataset.visual = appearance.visual;
   if (appearance.primaryColor) {
-    const color = appearance.primaryColor;
-    root.style.setProperty('--color-as-primary', color);
-    root.style.setProperty('--color-as-primary-hover', `color-mix(in srgb, ${color} 82%, white)`);
-    root.style.setProperty('--color-as-primary-active', `color-mix(in srgb, ${color} 82%, black)`);
-    root.style.setProperty('--as-theme-primary', color);
-    root.style.setProperty('--kh-color-primary', color);
-    root.style.setProperty('--kh-color-primary-strong', `color-mix(in srgb, ${color} 82%, black)`);
-    root.style.setProperty('--kh-color-primary-soft', `color-mix(in srgb, ${color} 12%, transparent)`);
-    root.style.setProperty('--kh-color-primary-outline', `color-mix(in srgb, ${color} 35%, transparent)`);
-    root.style.setProperty('--kh-color-info', color);
-    root.style.setProperty('--kh-color-info-soft', `color-mix(in srgb, ${color} 12%, transparent)`);
+    const color = getAgentStartAccessiblePrimary(appearance.primaryColor);
+    root.style.setProperty('--primary', color);
+    root.style.setProperty('--ring', color);
+    root.style.setProperty('--primary-foreground', getAgentStartColorForeground(color));
   }
 }
 

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { ShadcnSelect as AsShadcnSelect } from '../../ui/components/ShadcnSelect';
+
 import { onMounted, ref, watch } from 'vue';
 
 import { useKnowledge } from '../composables/useKnowledge';
@@ -46,7 +48,7 @@ onMounted(async () => {
     uses a native multi-select so any Vue 3 app can host it. Style it via the
     class hooks below.
   -->
-  <select
+  <AsShadcnSelect
     v-model="selected"
     :multiple="multiple"
     class="knowledge-hub-picker w-full rounded border px-2 py-1"
@@ -55,7 +57,7 @@ onMounted(async () => {
       {{ d.name }}
       <span v-if="d.documentCount">· {{ d.documentCount }} 文档</span>
     </option>
-  </select>
+  </AsShadcnSelect>
 </template>
 
 <style scoped>

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Button as AsShadcnButton } from '../../ui/shadcn/button';
+
 /**
  * ApiKeyManager — Dify-style "API 密钥" modal.
  *
@@ -153,7 +155,7 @@ const dataSource = computed(() => props.keys ?? []);
               <Tooltip :title="canCopy(record.token) ? '新密钥，仅本次可复制' : '密钥已隐藏，无法再次查看'" placement="topLeft">
                 <span class="akm-token-mono">{{ mask(record.token) }}</span>
               </Tooltip>
-              <button
+              <AsShadcnButton variant="ghost"
                 v-if="canCopy(record.token)"
                 type="button"
                 class="akm-icon-btn"
@@ -161,7 +163,7 @@ const dataSource = computed(() => props.keys ?? []);
                 @click="copy(record.token)"
               >
                 <CopyOutlined />
-              </button>
+              </AsShadcnButton>
             </div>
           </template>
           <template v-else-if="column.key === 'createdAt'">
@@ -226,22 +228,22 @@ const dataSource = computed(() => props.keys ?? []);
 .akm-token-mono {
   font-family: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
   font-size: 12px;
-  color: #0f172a;
+  color: var(--foreground);
 }
 .akm-icon-btn {
   border: none;
   background: transparent;
   padding: 2px 4px;
   cursor: pointer;
-  color: #64748b;
+  color: var(--muted-foreground);
   border-radius: 4px;
 }
 .akm-icon-btn:hover {
-  background: #f1f5f9;
+  background: var(--muted);
   color: #4338ca;
 }
 .akm-dim {
-  color: #64748b;
+  color: var(--muted-foreground);
   font-size: 12px;
 }
 </style>

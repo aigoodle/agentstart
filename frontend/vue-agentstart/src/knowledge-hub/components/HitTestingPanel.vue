@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { Textarea as AsShadcnTextarea } from '../../ui/shadcn/textarea';
+import { ShadcnSelect as AsShadcnSelect } from '../../ui/components/ShadcnSelect';
+import { Button as AsShadcnButton } from '../../ui/shadcn/button';
+
 import { ref } from 'vue';
 
 import { useKnowledge } from '../composables/useKnowledge';
@@ -46,27 +50,27 @@ async function run() {
 
 <template>
   <div class="knowledge-hub-panel space-y-2">
-    <textarea
+    <AsShadcnTextarea
       v-model="query"
       :rows="2"
       placeholder="输入检索问题"
       class="w-full rounded border px-2 py-1"
-    ></textarea>
+    ></AsShadcnTextarea>
     <div class="flex items-center justify-between">
       <label class="text-sm">
-        <select v-model="method" class="rounded border px-1 py-0.5">
+        <AsShadcnSelect v-model="method" class="rounded border px-1 py-0.5">
           <option value="HYBRID">混合</option>
           <option value="VECTOR">仅向量</option>
           <option value="FULL_TEXT">仅关键词</option>
-        </select>
+        </AsShadcnSelect>
       </label>
-      <button
+      <AsShadcnButton variant="ghost"
         :disabled="loading"
         class="rounded bg-blue-500 px-3 py-1 text-white disabled:opacity-50"
         @click="run"
       >
         {{ loading ? '检索中...' : '检索' }}
-      </button>
+      </AsShadcnButton>
     </div>
     <div v-if="error" class="text-sm text-red-500">❌ {{ error }}</div>
     <RetrievedList :hits="hits" />

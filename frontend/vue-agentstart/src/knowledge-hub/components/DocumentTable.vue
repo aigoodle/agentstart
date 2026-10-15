@@ -1,4 +1,13 @@
 <script setup lang="ts">
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '../../ui/shadcn/table';
+import { Switch as UiSwitch } from '../../ui/shadcn/switch';
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '../../ui/shadcn/dropdown-menu';
+import { ShadcnBoolean as AsShadcnBoolean } from '../../ui/components/ShadcnBoolean';
+
+import { ShadcnSelect as AsShadcnSelect } from '../../ui/components/ShadcnSelect';
+import { Input as AsShadcnInput } from '../../ui/shadcn/input';
+import { Button as AsShadcnButton } from '../../ui/shadcn/button';
+
 /**
  * DocumentTable — the 文档 tab of the dataset detail (screenshot 4).
  *
@@ -107,139 +116,117 @@ function statusLabel(s: DocumentRow['status'], enabled: boolean): string {
     <!-- toolbar -->
     <div class="kh-doctab-toolbar">
       <div class="kh-doctab-left">
-        <select v-model="filter" class="kh-doctab-select">
+        <AsShadcnSelect v-model="filter" class="kh-doctab-select">
           <option value="ALL">全部</option>
           <option value="AVAILABLE">可用</option>
           <option value="FAILED">失败</option>
-        </select>
+        </AsShadcnSelect>
         <div class="kh-doctab-search">
           <span class="kh-doctab-search-icon">🔍</span>
-          <input
+          <AsShadcnInput
             v-model="search"
             class="kh-doctab-search-input"
             placeholder="搜索"
           />
         </div>
-        <select v-model="sort" class="kh-doctab-select">
+        <AsShadcnSelect v-model="sort" class="kh-doctab-select">
           <option value="-uploaded">排序：上传时间 ↓</option>
           <option value="uploaded">排序：上传时间 ↑</option>
           <option value="name">排序：名称</option>
-        </select>
+        </AsShadcnSelect>
       </div>
       <div class="kh-doctab-right">
-        <button class="kh-btn kh-btn-secondary" @click="emit('edit-metadata')">
+        <AsShadcnButton variant="outline" size="sm" @click="emit('edit-metadata')">
           ≡ 元数据
-        </button>
-        <button class="kh-btn kh-btn-primary" @click="emit('add-file')">
+        </AsShadcnButton>
+        <AsShadcnButton variant="default" size="sm" @click="emit('add-file')">
           + 添加文件
-        </button>
+        </AsShadcnButton>
       </div>
     </div>
 
     <!-- table -->
-    <div class="kh-doctab-table" :aria-busy="loading">
-      <div class="kh-doctab-thead">
-        <div class="kh-col kh-col-check">
-          <input type="checkbox" />
-        </div>
-        <div class="kh-col kh-col-num">#</div>
-        <div class="kh-col kh-col-name">名称</div>
-        <div class="kh-col kh-col-mode">分段模式</div>
-        <div class="kh-col kh-col-num2">字数</div>
-        <div class="kh-col kh-col-num2">召回次数</div>
-        <div class="kh-col kh-col-time">上传时间 ↓</div>
-        <div class="kh-col kh-col-status">状态</div>
-        <div class="kh-col kh-col-actions">操作</div>
-      </div>
+    <div class="kh-doctab-table" :aria-busy="loading"><Table class="min-w-[900px]">
+      <TableHeader><TableRow>
+        <TableHead class="kh-col kh-col-check">
+          <AsShadcnBoolean type="checkbox" />
+        </TableHead>
+        <TableHead class="kh-col kh-col-num">#</TableHead>
+        <TableHead class="kh-col kh-col-name">名称</TableHead>
+        <TableHead class="kh-col kh-col-mode">分段模式</TableHead>
+        <TableHead class="kh-col kh-col-num2">字数</TableHead>
+        <TableHead class="kh-col kh-col-num2">召回次数</TableHead>
+        <TableHead class="kh-col kh-col-time">上传时间 ↓</TableHead>
+        <TableHead class="kh-col kh-col-status">状态</TableHead>
+        <TableHead class="kh-col kh-col-actions">操作</TableHead>
+      </TableRow></TableHeader><TableBody>
 
-      <div v-if="loading" class="kh-doctab-loading" role="status">
+      <TableRow v-if="loading" role="status"><TableCell :colspan="9" class="h-24 text-center text-muted-foreground">
         <span class="kh-doctab-loading-spinner" aria-hidden="true" />
         <span>加载中...</span>
-      </div>
-      <div v-if="!loading && filtered.length === 0" class="kh-doctab-empty">
+      </TableCell></TableRow>
+      <TableRow v-if="!loading && filtered.length === 0"><TableCell :colspan="9" class="h-24 text-center text-muted-foreground">
         📄 还没有文档。点击右上角"添加文件"上传。
-      </div>
+      </TableCell></TableRow>
 
-      <div
+      <TableRow
         v-for="(d, i) in filtered"
         :key="d.id"
         class="kh-doctab-row"
         @click="emit('open', d)"
       >
-        <div class="kh-col kh-col-check" @click.stop>
-          <input type="checkbox" />
-        </div>
-        <div class="kh-col kh-col-num">{{ i + 1 }}</div>
-        <div class="kh-col kh-col-name">
+        <TableCell class="kh-col kh-col-check" @click.stop>
+          <AsShadcnBoolean type="checkbox" />
+        </TableCell>
+        <TableCell class="kh-col kh-col-num">{{ i + 1 }}</TableCell>
+        <TableCell class="kh-col kh-col-name">
           <span class="kh-doc-icon">📄</span>
           <span class="kh-doc-name">{{ d.name }}</span>
-        </div>
-        <div class="kh-col kh-col-mode">
+        </TableCell>
+        <TableCell class="kh-col kh-col-mode">
           <span class="kh-mode-chip">{{ d.chunkMode ?? '通用' }}</span>
           <small v-if="d.parserName" class="kh-parser-chip">{{ d.parserName }} · {{ d.blockCount ?? 0 }} blocks</small>
-        </div>
-        <div class="kh-col kh-col-num2">{{ fmtNum(d.wordCount) }}</div>
-        <div class="kh-col kh-col-num2">{{ d.hitCount ?? 0 }}</div>
-        <div class="kh-col kh-col-time">{{ fmt(d.uploadedAt) }}</div>
-        <div class="kh-col kh-col-status">
+        </TableCell>
+        <TableCell class="kh-col kh-col-num2">{{ fmtNum(d.wordCount) }}</TableCell>
+        <TableCell class="kh-col kh-col-num2">{{ d.hitCount ?? 0 }}</TableCell>
+        <TableCell class="kh-col kh-col-time">{{ fmt(d.uploadedAt) }}</TableCell>
+        <TableCell class="kh-col kh-col-status">
           <span class="kh-status-dot" :style="{ background: statusColor(d.status) }" />
           <span>{{ statusLabel(d.status, d.enabled) }}</span>
-        </div>
-        <div class="kh-col kh-col-actions" @click.stop>
-          <label class="kh-switch" :title="d.enabled ? '已启用 · 点击停用' : '已停用 · 点击启用'">
-            <input
-              type="checkbox"
-              :checked="d.enabled"
-              @change="toggle(d)"
-            />
-            <span class="kh-switch-slider" />
-          </label>
-          <button
-            class="kh-more-btn"
-            @click="openMenuFor = openMenuFor === d.id ? null : d.id"
-          >
-            ⋯
-          </button>
-          <div
-            v-if="openMenuFor === d.id"
-            class="kh-more-menu"
-            @click.stop
-          >
-            <div class="kh-more-item" @click="emit('open', d); openMenuFor = null">
-              查看片段
-            </div>
-            <div v-if="d.parserName" class="kh-more-item" @click="emit('reparse', d); openMenuFor = null">
-              重新解析原文件
-            </div>
-            <div v-if="d.parserName" class="kh-more-item" @click="emit('view-parsed', d); openMenuFor = null">
-              查看解析结构
-            </div>
-            <div class="kh-more-item kh-more-danger" @click="emit('delete', d); openMenuFor = null">
-              删除
-            </div>
+        </TableCell>
+        <TableCell class="kh-col kh-col-actions" @click.stop>
+          <div class="flex items-center gap-2">
+            <UiSwitch :model-value="d.enabled" :aria-label="`${d.name} 启用状态`" @update:model-value="toggle(d)" />
+            <DropdownMenu>
+              <DropdownMenuTrigger as-child><AsShadcnButton variant="ghost" size="icon-sm" :aria-label="`${d.name} 更多操作`">⋯</AsShadcnButton></DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem @select="emit('open', d)">查看片段</DropdownMenuItem>
+                <DropdownMenuItem v-if="d.parserName" @select="emit('reparse', d)">重新解析原文件</DropdownMenuItem>
+                <DropdownMenuItem v-if="d.parserName" @select="emit('view-parsed', d)">查看解析结构</DropdownMenuItem>
+                <DropdownMenuItem class="text-destructive" @select="emit('delete', d)">删除</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
-        </div>
-      </div>
-    </div>
+        </TableCell>
+      </TableRow>
+    </TableBody></Table></div>
 
     <!-- footer pagination -->
     <div class="kh-doctab-foot">
       <div class="kh-doctab-pager">
-        <button class="kh-pager-btn" @click="goPage(page - 1)">‹</button>
+        <AsShadcnButton variant="outline" size="sm" :disabled="page <= 1" @click="goPage(page - 1)">‹</AsShadcnButton>
         <span class="kh-pager-page">{{ page }} / {{ totalPages }}</span>
-        <button class="kh-pager-btn" @click="goPage(page + 1)">›</button>
+        <AsShadcnButton variant="outline" size="sm" :disabled="page >= totalPages" @click="goPage(page + 1)">›</AsShadcnButton>
       </div>
       <div class="kh-pager-center">{{ page }}</div>
       <div class="kh-pager-sizes">
-        <button
+        <AsShadcnButton :variant="pageSize === s ? 'default' : 'ghost'" size="sm"
           v-for="s in [10, 25, 50]"
           :key="s"
-          class="kh-pager-size"
-          :class="{ 'kh-pager-size-active': pageSize === s }"
           @click="emit('update:pageSize', s)"
         >
           {{ s }}
-        </button>
+        </AsShadcnButton>
       </div>
     </div>
   </div>
@@ -318,32 +305,10 @@ function statusLabel(s: DocumentRow['status'], enabled: boolean): string {
   border-color: var(--kh-color-primary);
 }
 
-.kh-btn {
-  padding: 6px 12px;
-  border: 1px solid var(--kh-color-border);
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 500;
-  cursor: pointer;
-}
-.kh-btn-primary {
-  background: var(--kh-color-primary);
-  color: var(--kh-color-primary-contrast);
-  border-color: var(--kh-color-primary);
-  box-shadow: 0 2px 4px var(--kh-color-primary-outline);
-}
-.kh-btn-primary:hover {
-  background: var(--kh-color-primary-strong);
-  border-color: var(--kh-color-primary-strong);
-  transform: translateY(-1px);
-}
-.kh-btn-secondary {
-  background: var(--kh-color-surface);
-  color: var(--kh-color-text-secondary);
-}
-.kh-btn-secondary:hover {
-  background: var(--kh-color-surface-hover);
-}
+
+
+
+
 
 /* Table */
 .kh-doctab-table {
@@ -378,33 +343,10 @@ function statusLabel(s: DocumentRow['status'], enabled: boolean): string {
 @keyframes kh-doctab-spin {
   to { transform: rotate(360deg); }
 }
-.kh-doctab-thead,
-.kh-doctab-row {
-  display: grid;
-  grid-template-columns: 32px 32px 2fr 120px 80px 90px 140px 80px 100px;
-  align-items: center;
-  padding: 0 10px;
-  gap: 0;
-}
-.kh-doctab-thead {
-  height: 40px;
-  background: var(--kh-color-surface-sunken);
-  border-bottom: 1px solid var(--kh-color-border);
-  font-size: 11px;
-  color: var(--kh-color-text-tertiary);
-  font-weight: 500;
-}
-.kh-doctab-row {
-  height: 44px;
-  border-bottom: 1px solid var(--kh-color-divider);
-  font-size: 12px;
-  color: var(--kh-color-text-secondary);
-  cursor: pointer;
-  transition: background 0.15s;
-}
-.kh-doctab-row:hover {
-  background: var(--kh-color-surface-hover);
-}
+
+
+
+
 .kh-col {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -413,11 +355,7 @@ function statusLabel(s: DocumentRow['status'], enabled: boolean): string {
 .kh-col-num {
   color: var(--kh-color-text-muted);
 }
-.kh-col-name {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
+
 .kh-doc-icon {
   color: var(--kh-color-primary);
 }
@@ -435,23 +373,14 @@ function statusLabel(s: DocumentRow['status'], enabled: boolean): string {
   font-size: 11px;
 }
 .kh-parser-chip { display: block; margin-top: 3px; color: var(--kh-color-text-tertiary); font-size: 10px; }
-.kh-col-status {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
+
 .kh-status-dot {
   width: 6px;
   height: 6px;
   border-radius: 50%;
   display: inline-block;
 }
-.kh-col-actions {
-  position: relative;
-  display: flex;
-  gap: 6px;
-  align-items: center;
-}
+
 
 /* Switch */
 .kh-switch {
@@ -464,69 +393,12 @@ function statusLabel(s: DocumentRow['status'], enabled: boolean): string {
 .kh-switch input {
   display: none;
 }
-.kh-switch-slider {
-  position: absolute;
-  inset: 0;
-  background: var(--kh-color-border-hover);
-  border-radius: 9px;
-  transition: background 0.15s;
-}
-.kh-switch-slider::before {
-  content: '';
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 14px;
-  height: 14px;
-  background: var(--kh-color-surface);
-  border-radius: 50%;
-  transition: transform 0.15s;
-}
-.kh-switch input:checked + .kh-switch-slider {
-  background: var(--kh-color-primary);
-}
-.kh-switch input:checked + .kh-switch-slider::before {
-  transform: translateX(14px);
-}
 
-.kh-more-btn {
-  padding: 0 6px;
-  border: none;
-  border-radius: 4px;
-  background: transparent;
-  font-size: 16px;
-  color: var(--kh-color-text-tertiary);
-  cursor: pointer;
-  line-height: 1;
-}
-.kh-more-btn:hover {
-  background: var(--kh-color-surface-hover);
-}
-.kh-more-menu {
-  position: absolute;
-  right: 0;
-  top: 24px;
-  z-index: 20;
-  min-width: 140px;
-  padding: 4px;
-  background: var(--kh-color-surface-raised);
-  border: 1px solid var(--kh-color-border);
-  border-radius: 6px;
-  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.1);
-}
-.kh-more-item {
-  padding: 6px 10px;
-  border-radius: 4px;
-  font-size: 12px;
-  color: var(--kh-color-text-secondary);
-  cursor: pointer;
-}
-.kh-more-item:hover {
-  background: var(--kh-color-surface-hover);
-}
-.kh-more-danger {
-  color: var(--kh-color-danger);
-}
+
+
+
+
+
 
 .kh-doctab-empty {
   padding: 40px 20px;
@@ -550,17 +422,8 @@ function statusLabel(s: DocumentRow['status'], enabled: boolean): string {
   font-size: 12px;
   color: var(--kh-color-text-tertiary);
 }
-.kh-pager-btn {
-  padding: 2px 8px;
-  border: 1px solid var(--kh-color-border);
-  border-radius: 4px;
-  background: var(--kh-color-surface);
-  cursor: pointer;
-  color: var(--kh-color-text-tertiary);
-}
-.kh-pager-btn:hover {
-  background: var(--kh-color-surface-hover);
-}
+
+
 .kh-pager-page {
   min-width: 40px;
   text-align: center;
@@ -570,26 +433,14 @@ function statusLabel(s: DocumentRow['status'], enabled: boolean): string {
   font-size: 12px;
   color: var(--kh-color-text-tertiary);
 }
-.kh-pager-sizes {
-  display: flex;
-  justify-content: flex-end;
-  gap: 4px;
-}
-.kh-pager-size {
-  padding: 2px 8px;
-  border: none;
-  background: transparent;
-  font-size: 12px;
-  color: var(--kh-color-text-muted);
-  cursor: pointer;
-  border-radius: 4px;
-}
-.kh-pager-size:hover {
-  background: var(--kh-color-surface-hover);
-  color: var(--kh-color-text-secondary);
-}
-.kh-pager-size-active {
-  background: var(--kh-color-primary);
-  color: var(--kh-color-primary-contrast);
-}
+
+
+
+
+.kh-col-name { min-width: 220px; max-width: 340px; }
+.kh-col-name .kh-doc-icon { margin-right: 6px; }
+.kh-col-time { white-space: nowrap; }
+.kh-doc-name { white-space: normal; overflow-wrap: anywhere; }
+.kh-doctab-table { border-radius: var(--radius); border: 1px solid var(--border); }
+.kh-pager-sizes { display: flex; gap: 4px; align-items: center; }
 </style>

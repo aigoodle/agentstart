@@ -1,4 +1,5 @@
-import { defineComponent, h, type PropType, type VNode } from 'vue';
+import { Button as ShadcnButton } from '../shadcn/button';
+import { defineComponent, h, isVNode, type Component, type PropType, type VNode } from 'vue';
 
 function nodes(slot?: () => VNode[]) {
   return slot?.() ?? [];
@@ -25,21 +26,19 @@ export const Button = defineComponent({
     disabled: Boolean,
     block: Boolean,
     htmlType: { type: String, default: 'button' },
-    icon: { type: [Object, Function] as PropType<unknown>, default: undefined },
+    icon: { type: [Object, Function] as PropType<Component | VNode>, default: undefined },
   },
   setup(props, { attrs, slots }) {
-    return () => h('button', {
+    return () => h(ShadcnButton, {
+      variant: props.danger && props.type === 'primary' ? 'destructive' : ({ primary: 'default', default: 'outline', dashed: 'outline', text: 'ghost', link: 'link' } as const)[props.type as 'primary'] ?? 'outline',
+      size: ({ small: 'sm', middle: 'default', large: 'lg' } as const)[props.size as 'small'] ?? 'default',
+      'aria-busy': props.loading || undefined,
       ...attrs,
       type: props.htmlType,
       disabled: props.disabled || props.loading,
-      class: ['as-btn', `as-btn--${props.type}`, `as-btn--${props.size}`, {
-        'as-btn--danger': props.danger,
-        'as-btn--loading': props.loading,
-        'as-btn--block': props.block,
-        'as-btn--icon-only': !plainText(nodes(slots.default)).trim(),
-      }, attrs.class],
-    }, [
-      props.loading ? h('span', { class: 'as-spinner as-spinner--small', 'aria-hidden': 'true' }) : props.icon ? h(props.icon as never) : null,
+      class: [props.type === 'dashed' ? 'border-dashed' : '', props.danger && props.type !== 'primary' ? 'text-destructive hover:text-destructive' : '', props.block && 'w-full', attrs.class],
+    }, () => [
+      props.loading ? h('span', { class: 'as-spinner as-spinner--small', 'aria-hidden': 'true' }) : props.icon ? (isVNode(props.icon) ? props.icon : h(props.icon)) : null,
       slots.default?.(),
     ]);
   },

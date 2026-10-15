@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import { Card as AsShadcnCard } from '../../ui/shadcn/card';
+
+import { Button as AsShadcnButton } from '../../ui/shadcn/button';
+import { Textarea as AsShadcnTextarea } from '../../ui/shadcn/textarea';
+
 /**
  * 调试与预览 — right-hand panel from Dify's orchestrate tab. Host-owned messages
  * list; input events surface as `send(query)` so the host wires its SSE/stream.
@@ -60,17 +65,17 @@ function onKeydown(e: KeyboardEvent) {
 </script>
 
 <template>
-  <div class="dbg-card">
+  <AsShadcnCard class="dbg-card">
     <div class="dbg-head">
       <div class="dbg-head-title">调试与预览</div>
-      <button
+      <AsShadcnButton variant="ghost"
         type="button"
         class="dbg-head-btn"
         title="清空会话重新开始"
         @click="emit('restart')"
       >
         ⟳
-      </button>
+      </AsShadcnButton>
     </div>
 
     <div ref="scroller" class="dbg-body">
@@ -115,7 +120,7 @@ function onKeydown(e: KeyboardEvent) {
 
     <div class="dbg-input-wrap">
       <div class="dbg-input-row">
-        <textarea
+        <AsShadcnTextarea
           v-model="input"
           class="dbg-input"
           :placeholder="placeholder"
@@ -123,7 +128,7 @@ function onKeydown(e: KeyboardEvent) {
           :disabled="loading"
           @keydown="onKeydown"
         />
-        <button
+        <AsShadcnButton variant="ghost"
           type="button"
           class="dbg-send"
           :disabled="!input.trim() || loading"
@@ -131,21 +136,21 @@ function onKeydown(e: KeyboardEvent) {
         >
           <span v-if="loading">…</span>
           <span v-else>➤</span>
-        </button>
+        </AsShadcnButton>
       </div>
       <div class="dbg-input-hint">
         <span class="dbg-hint-dot">●</span>
         {{ hint }}
-        <button
+        <AsShadcnButton variant="ghost"
           type="button"
           class="dbg-hint-link"
           @click="emit('restart')"
         >
           管理 →
-        </button>
+        </AsShadcnButton>
       </div>
     </div>
-  </div>
+  </AsShadcnCard>
 </template>
 
 <style scoped>
@@ -153,8 +158,8 @@ function onKeydown(e: KeyboardEvent) {
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: #fff;
-  border: 1px solid #e5e7eb;
+  background: var(--background);
+  border: 1px solid var(--border);
   border-radius: 12px;
   overflow: hidden;
 }
@@ -163,12 +168,12 @@ function onKeydown(e: KeyboardEvent) {
   align-items: center;
   justify-content: space-between;
   padding: 10px 14px;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--border);
 }
 .dbg-head-title {
   font-size: 13px;
   font-weight: 600;
-  color: #334155;
+  color: var(--foreground);
 }
 .dbg-head-btn {
   width: 26px;
@@ -177,13 +182,13 @@ function onKeydown(e: KeyboardEvent) {
   border: none;
   background: transparent;
   border-radius: 6px;
-  color: #94a3b8;
+  color: var(--muted-foreground);
   font-size: 15px;
   cursor: pointer;
 }
 .dbg-head-btn:hover {
-  background: #f1f5f9;
-  color: #475569;
+  background: var(--muted);
+  color: var(--muted-foreground);
 }
 .dbg-body {
   flex: 1;
@@ -194,11 +199,11 @@ function onKeydown(e: KeyboardEvent) {
 .dbg-empty {
   padding: 60px 20px;
   text-align: center;
-  color: #94a3b8;
+  color: var(--muted-foreground);
 }
 .dbg-empty-title {
   font-size: 15px;
-  color: #64748b;
+  color: var(--muted-foreground);
 }
 .dbg-empty-sub {
   margin-top: 4px;
@@ -230,11 +235,11 @@ function onKeydown(e: KeyboardEvent) {
 .dbg-bubble {
   max-width: 78%;
   padding: 10px 12px;
-  background: #fff;
-  border: 1px solid #e2e8f0;
+  background: var(--background);
+  border: 1px solid var(--border);
   border-radius: 12px;
   font-size: 13px;
-  color: #0f172a;
+  color: var(--foreground);
   line-height: 1.6;
 }
 .dbg-msg-user .dbg-bubble {
@@ -254,7 +259,7 @@ function onKeydown(e: KeyboardEvent) {
 .dbg-steps {
   margin-top: 6px;
   font-size: 11px;
-  color: #64748b;
+  color: var(--muted-foreground);
 }
 .dbg-steps summary {
   cursor: pointer;
@@ -263,27 +268,27 @@ function onKeydown(e: KeyboardEvent) {
 .dbg-step {
   padding: 6px 8px;
   margin-top: 4px;
-  background: #f8fafc;
+  background: var(--muted);
   border-radius: 6px;
-  color: #475569;
+  color: var(--muted-foreground);
 }
 .dbg-input-wrap {
   padding: 10px 12px 12px;
-  border-top: 1px solid #f1f5f9;
-  background: #fff;
+  border-top: 1px solid var(--border);
+  background: var(--background);
 }
 .dbg-input-row {
   display: flex;
   align-items: flex-end;
   gap: 6px;
   padding: 4px 6px 4px 12px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
   border-radius: 12px;
-  background: #f8fafc;
+  background: var(--muted);
 }
 .dbg-input-row:focus-within {
   border-color: #6366f1;
-  background: #fff;
+  background: var(--background);
 }
 .dbg-input {
   flex: 1;
@@ -296,7 +301,7 @@ function onKeydown(e: KeyboardEvent) {
   background: transparent;
   font-family: inherit;
   font-size: 13px;
-  color: #0f172a;
+  color: var(--foreground);
   line-height: 1.5;
 }
 .dbg-input:disabled {
@@ -329,7 +334,7 @@ function onKeydown(e: KeyboardEvent) {
   margin-top: 8px;
   padding-left: 4px;
   font-size: 11px;
-  color: #94a3b8;
+  color: var(--muted-foreground);
 }
 .dbg-hint-dot {
   color: #22c55e;

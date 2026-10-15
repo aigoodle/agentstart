@@ -1,4 +1,13 @@
 <script setup lang="ts">
+import { Card as AsShadcnCard } from '../../ui/shadcn/card';
+
+import { ShadcnBoolean as AsShadcnBoolean } from '../../ui/components/ShadcnBoolean';
+
+import { Button as AsShadcnButton } from '../../ui/shadcn/button';
+import { Textarea as AsShadcnTextarea } from '../../ui/shadcn/textarea';
+import { ShadcnSelect as AsShadcnSelect } from '../../ui/components/ShadcnSelect';
+import { Input as AsShadcnInput } from '../../ui/shadcn/input';
+
 /**
  * AppDesignDrawer — Dify workspace-style full-screen design drawer.
  *
@@ -1131,7 +1140,7 @@ function variableTypeLabel(type: AgentVariable['type']): string {
             <!-- 「调试」— 只在 flow 模式露出（agent/chat 已经在右侧编排面板里
                  常驻 ChatIframePanel，不需要再叠层）。宿主没配 chatConfig 时
                  disabled + 提示 —— 避免用户点了没反应。 -->
-            <button
+            <AsShadcnButton variant="ghost"
               v-if="isFlowMode"
               class="dr-btn dr-btn-secondary"
               :class="{ 'dr-btn-active': debugPanelOpen }"
@@ -1141,17 +1150,17 @@ function variableTypeLabel(type: AgentVariable['type']): string {
             >
               <BugOutlined class="dr-btn-icon dr-btn-icon-debug" />
               <span>调试</span>
-            </button>
-            <button
+            </AsShadcnButton>
+            <AsShadcnButton variant="ghost"
               class="dr-btn dr-btn-secondary"
               :disabled="saving || publishing"
               @click="submitSave"
             >
               <SaveOutlined class="dr-btn-icon" />
               <span>{{ saving ? '保存中…' : '保存' }}</span>
-            </button>
+            </AsShadcnButton>
             <div ref="publishMenuRef" class="dr-publish-wrap">
-              <button
+              <AsShadcnButton variant="ghost"
                 class="dr-btn dr-btn-primary dr-publish-btn"
                 :class="{ 'dr-publish-btn-open': publishMenuOpen }"
                 :disabled="saving || publishing"
@@ -1160,7 +1169,7 @@ function variableTypeLabel(type: AgentVariable['type']): string {
                 <RocketOutlined class="dr-btn-icon" />
                 <span>{{ publishing ? '发布中…' : '发布' }}</span>
                 <span class="dr-publish-caret" aria-hidden="true">▾</span>
-              </button>
+              </AsShadcnButton>
 
               <div v-if="publishMenuOpen" class="dr-publish-menu hud-panel">
                 <div class="dr-publish-head">
@@ -1169,13 +1178,13 @@ function variableTypeLabel(type: AgentVariable['type']): string {
                     <span class="dr-publish-head-time">
                       {{ latestPublished ? `发布于 ${publishedAgo}` : '尚未发布' }}
                     </span>
-                    <button class="dr-publish-restore" :disabled="!latestPublished" @click="onRestore">
+                    <AsShadcnButton variant="ghost" class="dr-publish-restore" :disabled="!latestPublished" @click="onRestore">
                       恢复
-                    </button>
+                    </AsShadcnButton>
                   </div>
                 </div>
 
-                <button
+                <AsShadcnButton variant="ghost"
                   class="dr-publish-primary"
                   :disabled="saving || publishing"
                   @click="onPublishUpdate"
@@ -1189,44 +1198,44 @@ function variableTypeLabel(type: AgentVariable['type']): string {
                     <kbd>⇧</kbd>
                     <kbd>P</kbd>
                   </span>
-                </button>
+                </AsShadcnButton>
 
                 <div class="dr-publish-divider" />
 
-                <button class="dr-publish-item" @click="onRun">
+                <AsShadcnButton variant="ghost" class="dr-publish-item" @click="onRun">
                   <PlayCircleOutlined class="dr-publish-item-icon" />
                   <span class="dr-publish-item-label">运行</span>
                   <span class="dr-publish-item-arrow">↗</span>
-                </button>
-                <button class="dr-publish-item" @click="onEmbed">
+                </AsShadcnButton>
+                <AsShadcnButton variant="ghost" class="dr-publish-item" @click="onEmbed">
                   <CodeOutlined class="dr-publish-item-icon" />
                   <span class="dr-publish-item-label">嵌入网站</span>
                   <span class="dr-publish-item-arrow">↗</span>
-                </button>
-                <button class="dr-publish-item" @click="onOpenInExplore">
+                </AsShadcnButton>
+                <AsShadcnButton variant="ghost" class="dr-publish-item" @click="onOpenInExplore">
                   <CompassOutlined class="dr-publish-item-icon" />
                   <span class="dr-publish-item-label">在“探索”中打开</span>
                   <span class="dr-publish-item-arrow">↗</span>
-                </button>
-                <button class="dr-publish-item" @click="onAccessApi">
+                </AsShadcnButton>
+                <AsShadcnButton variant="ghost" class="dr-publish-item" @click="onAccessApi">
                   <ApiOutlined class="dr-publish-item-icon" />
                   <span class="dr-publish-item-label">访问 API</span>
                   <span class="dr-publish-item-arrow">↗</span>
-                </button>
+                </AsShadcnButton>
 
                 <div class="dr-publish-divider" />
 
-                <button class="dr-publish-item" @click="onPublishToMarket">
+                <AsShadcnButton variant="ghost" class="dr-publish-item" @click="onPublishToMarket">
                   <ShopOutlined class="dr-publish-item-icon" />
                   <span class="dr-publish-item-label">发布到市场</span>
                   <span class="dr-publish-item-arrow">↗</span>
-                </button>
+                </AsShadcnButton>
               </div>
               <div v-if="historyOpen" class="dr-history-mask" @click.self="historyOpen = false">
                 <section class="dr-history-panel">
                   <header class="dr-history-header">
                     <strong>发布历史</strong>
-                    <button class="dr-history-close" @click="historyOpen = false">×</button>
+                    <AsShadcnButton variant="ghost" class="dr-history-close" @click="historyOpen = false">×</AsShadcnButton>
                   </header>
                   <div v-if="workflowHistory.length === 0" class="dr-history-empty">暂无发布记录</div>
                   <div v-else class="dr-history-list">
@@ -1236,16 +1245,16 @@ function variableTypeLabel(type: AgentVariable['type']): string {
                         <span>{{ formatDateTime(item.createdAt) }}（{{ relativeTime(item.createdAt) }}）</span>
                         <p v-if="item.markedComment">{{ item.markedComment }}</p>
                       </div>
-                      <button class="dr-publish-restore" @click="restoreSnapshot(item.id)">恢复此版本</button>
+                      <AsShadcnButton variant="ghost" class="dr-publish-restore" @click="restoreSnapshot(item.id)">恢复此版本</AsShadcnButton>
                     </article>
                   </div>
                 </section>
               </div>
             </div>
-            <button class="dr-btn dr-btn-ghost" title="关闭" @click="close">
+            <AsShadcnButton variant="ghost" class="dr-btn dr-btn-ghost" title="关闭" @click="close">
               <span class="dr-btn-icon dr-btn-icon-x" aria-hidden="true">✕</span>
               <span>关闭</span>
-            </button>
+            </AsShadcnButton>
             </div>
           </div>
       </template>
@@ -1258,12 +1267,12 @@ function variableTypeLabel(type: AgentVariable['type']): string {
           <aside class="dr-rail" :class="{ 'dr-rail-collapsed': collapsed }">
             <!-- App info card — click the ⋯ icon (top-right on hover) to open
                  the basic-info popover (Web App / API / MCP status). -->
-            <div
+            <AsShadcnCard
               ref="brandMenuRef"
               class="dr-info-card"
               :class="{ 'dr-info-card-active': brandMenuOpen }"
             >
-              <button
+              <AsShadcnButton variant="ghost"
                 v-show="!collapsed"
                 type="button"
                 class="dr-info-trigger"
@@ -1272,7 +1281,7 @@ function variableTypeLabel(type: AgentVariable['type']): string {
                 @click.stop="toggleBrandMenu"
               >
                 ⋯
-              </button>
+              </AsShadcnButton>
 
               <div
                 class="dr-info-avatar"
@@ -1312,22 +1321,22 @@ function variableTypeLabel(type: AgentVariable['type']): string {
 
                 <!-- Quick actions row -->
                 <div class="dr-bp-actions">
-                  <button class="dr-bp-action" @click="onBrandEdit">
+                  <AsShadcnButton variant="ghost" class="dr-bp-action" @click="onBrandEdit">
                     <EditOutlined class="dr-bp-action-icon" aria-hidden="true" />
                     <span>编辑信息</span>
-                  </button>
-                  <button class="dr-bp-action" @click="onBrandDuplicate">
+                  </AsShadcnButton>
+                  <AsShadcnButton variant="ghost" class="dr-bp-action" @click="onBrandDuplicate">
                     <CopyOutlined class="dr-bp-action-icon" aria-hidden="true" />
                     <span>复制</span>
-                  </button>
-                  <button class="dr-bp-action" @click="onBrandExport">
+                  </AsShadcnButton>
+                  <AsShadcnButton variant="ghost" class="dr-bp-action" @click="onBrandExport">
                     <DownloadOutlined class="dr-bp-action-icon" aria-hidden="true" />
                     <span>导出 DSL</span>
-                  </button>
-                  <button class="dr-bp-action">
+                  </AsShadcnButton>
+                  <AsShadcnButton variant="ghost" class="dr-bp-action">
                     <EllipsisOutlined class="dr-bp-action-icon" aria-hidden="true" />
                     <span>更多</span>
-                  </button>
+                  </AsShadcnButton>
                 </div>
 
                 <!-- Web App section -->
@@ -1338,29 +1347,29 @@ function variableTypeLabel(type: AgentVariable['type']): string {
                     <span class="dr-bp-status" :class="{ on: brandWebAppOn }">
                       ● {{ brandWebAppOn ? '运行中' : '已停用' }}
                     </span>
-                    <label class="dr-bp-switch">
-                      <input type="checkbox" v-model="brandWebAppOn" />
-                      <span class="dr-bp-switch-track" />
+                    <label class="inline-flex items-center">
+                      <AsShadcnBoolean appearance="switch" type="checkbox" v-model="brandWebAppOn" />
+
                     </label>
                   </div>
                   <div class="dr-bp-section-label">公开访问 URL</div>
                   <div class="dr-bp-url-row">
                     <span class="dr-bp-url" :title="webAppUrl">{{ webAppUrl }}</span>
-                    <button
+                    <AsShadcnButton variant="ghost"
                       class="dr-bp-icon-btn"
                       title="复制链接"
                       @click="copyToClipboard(webAppUrl)"
                     >
                       ⎘
-                    </button>
-                    <button class="dr-bp-icon-btn" title="二维码">▦</button>
-                    <button class="dr-bp-icon-btn" title="刷新">↻</button>
+                    </AsShadcnButton>
+                    <AsShadcnButton variant="ghost" class="dr-bp-icon-btn" title="二维码">▦</AsShadcnButton>
+                    <AsShadcnButton variant="ghost" class="dr-bp-icon-btn" title="刷新">↻</AsShadcnButton>
                   </div>
                   <div class="dr-bp-links">
-                    <button class="dr-bp-link">↗ 启动</button>
-                    <button class="dr-bp-link">◱ 嵌入</button>
-                    <button class="dr-bp-link">🎨 定制化</button>
-                    <button class="dr-bp-link">⚙ 设置</button>
+                    <AsShadcnButton variant="ghost" class="dr-bp-link">↗ 启动</AsShadcnButton>
+                    <AsShadcnButton variant="ghost" class="dr-bp-link">◱ 嵌入</AsShadcnButton>
+                    <AsShadcnButton variant="ghost" class="dr-bp-link">🎨 定制化</AsShadcnButton>
+                    <AsShadcnButton variant="ghost" class="dr-bp-link">⚙ 设置</AsShadcnButton>
                   </div>
                 </section>
 
@@ -1372,27 +1381,27 @@ function variableTypeLabel(type: AgentVariable['type']): string {
                     <span class="dr-bp-status" :class="{ on: brandApiOn }">
                       ● {{ brandApiOn ? '运行中' : '已停用' }}
                     </span>
-                    <label class="dr-bp-switch">
-                      <input type="checkbox" v-model="brandApiOn" />
-                      <span class="dr-bp-switch-track" />
+                    <label class="inline-flex items-center">
+                      <AsShadcnBoolean appearance="switch" type="checkbox" v-model="brandApiOn" />
+
                     </label>
                   </div>
                   <div class="dr-bp-section-label">API 访问地址</div>
                   <div class="dr-bp-url-row">
                     <span class="dr-bp-url" :title="apiBaseUrl">{{ apiBaseUrl }}</span>
-                    <button
+                    <AsShadcnButton variant="ghost"
                       class="dr-bp-icon-btn"
                       title="复制"
                       @click="copyToClipboard(apiBaseUrl)"
                     >
                       ⎘
-                    </button>
+                    </AsShadcnButton>
                   </div>
                   <div class="dr-bp-links">
-                    <button class="dr-bp-link">🔑 API 密钥</button>
-                    <button class="dr-bp-link" @click="onAccessApi">
+                    <AsShadcnButton variant="ghost" class="dr-bp-link">🔑 API 密钥</AsShadcnButton>
+                    <AsShadcnButton variant="ghost" class="dr-bp-link" @click="onAccessApi">
                       📄 查看 API 文档
-                    </button>
+                    </AsShadcnButton>
                   </div>
                 </section>
 
@@ -1404,9 +1413,9 @@ function variableTypeLabel(type: AgentVariable['type']): string {
                     <span class="dr-bp-status" :class="{ on: brandMcpOn }">
                       ● {{ brandMcpOn ? '运行中' : '已停用' }}
                     </span>
-                    <label class="dr-bp-switch">
-                      <input type="checkbox" v-model="brandMcpOn" />
-                      <span class="dr-bp-switch-track" />
+                    <label class="inline-flex items-center">
+                      <AsShadcnBoolean appearance="switch" type="checkbox" v-model="brandMcpOn" />
+
                     </label>
                   </div>
                   <div class="dr-bp-section-label">服务器的 URL</div>
@@ -1416,15 +1425,15 @@ function variableTypeLabel(type: AgentVariable['type']): string {
                     </span>
                   </div>
                   <div class="dr-bp-links">
-                    <button class="dr-bp-link">✎ 添加描述</button>
+                    <AsShadcnButton variant="ghost" class="dr-bp-link">✎ 添加描述</AsShadcnButton>
                   </div>
                 </section>
               </div>
-            </div>
+            </AsShadcnCard>
 
             <!-- Nav items -->
             <nav class="dr-nav">
-              <button
+              <AsShadcnButton variant="ghost"
                 v-for="item in [
                   { id: 'orchestrate', icon: AppstoreOutlined, label: '编排' },
                   { id: 'api', icon: ApiOutlined, label: '访问 API' },
@@ -1440,16 +1449,16 @@ function variableTypeLabel(type: AgentVariable['type']): string {
                 <span v-show="!collapsed" class="dr-nav-label">
                   {{ item.label }}
                 </span>
-              </button>
+              </AsShadcnButton>
             </nav>
 
-            <button
+            <AsShadcnButton variant="ghost"
               class="dr-rail-collapse"
               @click="collapsed = !collapsed"
               :title="collapsed ? '展开' : '折叠'"
             >
               {{ collapsed ? '»' : '«' }}
-            </button>
+            </AsShadcnButton>
           </aside>
 
           <!-- ── MAIN content ── -->
@@ -1485,37 +1494,37 @@ function variableTypeLabel(type: AgentVariable['type']): string {
                 <!-- LEFT: config cards -->
                 <section class="dr-config-col">
                   <!-- 提示词 -->
-                  <div class="dr-card">
+                  <AsShadcnCard class="dr-card">
                     <div class="dr-card-head">
                       <span class="dr-card-title">
                         <span class="dr-card-title-dot" />
                         提示词
                       </span>
-                      <button class="dr-link-btn">↗ 生成</button>
+                      <AsShadcnButton variant="ghost" class="dr-link-btn">↗ 生成</AsShadcnButton>
                     </div>
-                    <textarea
+                    <AsShadcnTextarea
                       v-model="form.instructions"
                       class="dr-prompt-textarea"
                       placeholder="在这里编写你的提示词，输入「{」插入变量，输入「/」插入提示内容块"
                       rows="8"
                     />
-                  </div>
+                  </AsShadcnCard>
 
                   <!-- 变量 —— 与流程设计里 StartNode 的「输入变量」同源，
                        用弹窗编辑，避免行内输入的信息密度低 / 类型不可选。 -->
-                  <div class="dr-card">
+                  <AsShadcnCard class="dr-card">
                     <div class="dr-card-head">
                       <span class="dr-card-title">
                         <span class="dr-card-title-dot" />
                         变量
                       </span>
-                      <button
+                      <AsShadcnButton variant="ghost"
                         class="dr-link-btn dr-link-btn-solid"
                         title="添加变量"
                         @click="openVariableEditor()"
                       >
                         + 添加
-                      </button>
+                      </AsShadcnButton>
                     </div>
                     <div v-if="variables.length === 0" class="dr-var-empty">
                       尚未配置变量，点击右上角 + 添加。变量可通过
@@ -1549,39 +1558,39 @@ function variableTypeLabel(type: AgentVariable['type']): string {
                           >
                             必填
                           </span>
-                          <button
+                          <AsShadcnButton variant="ghost"
                             class="dr-icon-btn"
                             title="编辑"
                             @click="openVariableEditor(v)"
                           >
                             ✎
-                          </button>
-                          <button
+                          </AsShadcnButton>
+                          <AsShadcnButton variant="ghost"
                             class="dr-icon-btn dr-icon-btn-danger"
                             title="删除"
                             @click="removeVariable(i)"
                           >
                             ✕
-                          </button>
+                          </AsShadcnButton>
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </AsShadcnCard>
 
                   <!-- 知识库 -->
-                  <div class="dr-card">
+                  <AsShadcnCard class="dr-card">
                     <div class="dr-card-head">
                       <span class="dr-card-title">
                         <span class="dr-card-title-dot" />
                         知识库
                       </span>
                       <div class="dr-card-actions">
-                        <button class="dr-link-btn dr-link-muted">
+                        <AsShadcnButton variant="ghost" class="dr-link-btn dr-link-muted">
                           🔧 召回设置
-                        </button>
-                        <button class="dr-link-btn" @click="openDatasetPicker">
+                        </AsShadcnButton>
+                        <AsShadcnButton variant="ghost" class="dr-link-btn" @click="openDatasetPicker">
                           + 添加
-                        </button>
+                        </AsShadcnButton>
                       </div>
                     </div>
                     <div
@@ -1616,40 +1625,40 @@ function variableTypeLabel(type: AgentVariable['type']): string {
                             {{ datasetMethodLabel(d) }}
                           </span>
                         </span>
-                        <button
+                        <AsShadcnButton variant="ghost"
                           class="dr-icon-btn"
                           title="移除"
                           @click="removeDataset(d.id)"
                         >
                           ✕
-                        </button>
+                        </AsShadcnButton>
                       </div>
                     </div>
 
                     <!-- 元数据过滤 -->
                     <div class="dr-inline-row">
                       <span class="dr-inline-label">元数据过滤</span>
-                      <select v-model="form.metadataFilter" class="dr-mini-select">
+                      <AsShadcnSelect v-model="form.metadataFilter" class="dr-mini-select">
                         <option :value="false">禁用</option>
                         <option :value="true">启用</option>
-                      </select>
+                      </AsShadcnSelect>
                     </div>
-                  </div>
+                  </AsShadcnCard>
 
                   <!-- 工具 -->
-                  <div class="dr-card">
+                  <AsShadcnCard class="dr-card">
                     <div class="dr-card-head"><span class="dr-card-title"><span class="dr-card-title-dot" />Skill</span></div>
                     <SkillSelect v-model="form.skillIds" />
-                  </div>
+                  </AsShadcnCard>
 
                   <!-- 工具 -->
-                  <div class="dr-card">
+                  <AsShadcnCard class="dr-card">
                     <div class="dr-card-head">
                       <span class="dr-card-title">
                         <span class="dr-card-title-dot" />
                         工具
                       </span>
-                      <button class="dr-link-btn">+ 添加</button>
+                      <AsShadcnButton variant="ghost" class="dr-link-btn">+ 添加</AsShadcnButton>
                     </div>
                     <div v-if="tools.length === 0" class="dr-card-empty">
                       您可以添加工具来扩展智能体能力
@@ -1661,7 +1670,7 @@ function variableTypeLabel(type: AgentVariable['type']): string {
                         class="dr-chip"
                         :class="{ on: form.toolNames.includes(t.name) }"
                       >
-                        <input
+                        <AsShadcnBoolean
                           type="checkbox"
                           :value="t.name"
                           :checked="form.toolNames.includes(t.name)"
@@ -1679,24 +1688,24 @@ function variableTypeLabel(type: AgentVariable['type']): string {
                         <span>{{ t.icon || '🔧' }} {{ t.name }}</span>
                       </label>
                     </div>
-                  </div>
+                  </AsShadcnCard>
 
                   <!-- 视觉 -->
-                  <div class="dr-card dr-card-inline">
+                  <AsShadcnCard class="dr-card dr-card-inline">
                     <div class="dr-card-head dr-card-head-inline">
                       <span class="dr-card-title">
                         <span class="dr-card-title-dot" />
                         视觉
                       </span>
                       <div class="dr-card-actions">
-                        <button class="dr-link-btn dr-link-muted">⚙ 设置</button>
-                        <label class="dr-switch">
-                          <input v-model="form.vision" type="checkbox" />
-                          <span class="dr-switch-slider" />
+                        <AsShadcnButton variant="ghost" class="dr-link-btn dr-link-muted">⚙ 设置</AsShadcnButton>
+                        <label class="inline-flex items-center">
+                          <AsShadcnBoolean appearance="switch" v-model="form.vision" type="checkbox" />
+
                         </label>
                       </div>
                     </div>
-                  </div>
+                  </AsShadcnCard>
                 </section>
 
                 <!-- RIGHT: preview col
@@ -1720,13 +1729,13 @@ function variableTypeLabel(type: AgentVariable['type']): string {
                         <span class="dr-card-title-dot" />
                         调试与预览
                       </span>
-                      <button
+                      <AsShadcnButton variant="ghost"
                         class="dr-icon-btn"
                         title="清空"
                         @click="previewMessages = []"
                       >
                         ↻
-                      </button>
+                      </AsShadcnButton>
                     </div>
                     <div class="dr-preview-scroll">
                       <div
@@ -1753,20 +1762,20 @@ function variableTypeLabel(type: AgentVariable['type']): string {
                       </div>
                     </div>
                     <div class="dr-preview-composer">
-                      <input
+                      <AsShadcnInput
                         v-model="previewInput"
                         class="dr-input"
                         placeholder="和 Bot 聊天"
                         :disabled="previewSending"
                         @keydown.enter.prevent="sendPreview"
                       />
-                      <button
+                      <AsShadcnButton variant="ghost"
                         class="dr-send-btn"
                         :disabled="previewSending || !previewInput.trim()"
                         @click="sendPreview"
                       >
                         ▶
-                      </button>
+                      </AsShadcnButton>
                     </div>
                   </template>
                 </section>
@@ -1861,7 +1870,7 @@ function variableTypeLabel(type: AgentVariable['type']): string {
               @close="closeDebug"
             />
             <template v-else>
-              <button
+              <AsShadcnButton variant="ghost"
                 v-if="app?.mode === 'chatflow'"
                 type="button"
                 class="dr-chatflow-expand"
@@ -1869,7 +1878,7 @@ function variableTypeLabel(type: AgentVariable['type']): string {
                 :aria-label="chatflowTraceExpanded ? '收起执行过程' : '展开执行过程'"
                 @pointerdown.stop
                 @click.stop="toggleChatflowTrace"
-              >{{ chatflowTraceExpanded ? '▶' : '◀' }}</button>
+              >{{ chatflowTraceExpanded ? '▶' : '◀' }}</AsShadcnButton>
               <div v-if="app?.mode === 'chatflow'" class="dr-chatflow-layout">
                 <ChatflowExecutionTrace
                   v-show="chatflowTraceExpanded"
@@ -1918,7 +1927,7 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   position: fixed;
   inset: 0;
   z-index: 1050;
-  background: #fff;
+  background: var(--background);
   animation: dr-fade-in 0.14s ease-out;
 }
 .dr-panel {
@@ -1926,7 +1935,7 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   height: 100%;
   display: flex;
   flex-direction: column;
-  background: #f8fafc;
+  background: var(--muted);
   overflow: hidden;
 }
 :global(.dr-app-drawer) {
@@ -1961,8 +1970,8 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   display: flex;
   align-items: center;
   padding: 0 20px;
-  background: #fff;
-  border-bottom: 1px solid #e5e7eb;
+  background: var(--background);
+  border-bottom: 1px solid var(--border);
   gap: 16px;
 }
 .dr-brand {
@@ -1990,7 +1999,7 @@ function variableTypeLabel(type: AgentVariable['type']): string {
 .dr-title {
   font-size: 14px;
   font-weight: 600;
-  color: #0f172a;
+  color: var(--foreground);
 }
 .dr-mode-badge {
   padding: 1px 6px;
@@ -2188,31 +2197,6 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   cursor: pointer;
   z-index: 1;
 }
-.dr-bp-switch-track {
-  position: absolute;
-  inset: 0;
-  border-radius: 999px;
-  background: var(--as-text-disabled, #cbd5e1);
-  transition: background 0.15s ease;
-}
-.dr-bp-switch-track::after {
-  content: '';
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: #fff;
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.18);
-  transition: transform 0.15s ease;
-}
-.dr-bp-switch input:checked + .dr-bp-switch-track {
-  background: var(--as-primary, #6366f1);
-}
-.dr-bp-switch input:checked + .dr-bp-switch-track::after {
-  transform: translateX(14px);
-}
 
 /* URL row — reads as an input field with trailing icon buttons */
 .dr-bp-section-label {
@@ -2280,7 +2264,7 @@ function variableTypeLabel(type: AgentVariable['type']): string {
 .dr-bp-link {
   padding: 4px 10px;
   border: 1px solid var(--as-border, #e5e7eb);
-  background: #fff;
+  background: var(--background);
   border-radius: 999px;
   color: var(--as-text-secondary, #475569);
   font-size: 11px;
@@ -2301,10 +2285,6 @@ function variableTypeLabel(type: AgentVariable['type']): string {
 }
 
 .dr-brand-panel :is(button, input):focus-visible {
-  outline: 2px solid var(--as-primary, #1677ff);
-  outline-offset: 2px;
-}
-.dr-bp-switch input:focus-visible + .dr-bp-switch-track {
   outline: 2px solid var(--as-primary, #1677ff);
   outline-offset: 2px;
 }
@@ -2373,11 +2353,11 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   color: #16a34a;
 }
 .dr-btn:disabled .dr-btn-icon-debug {
-  color: #94a3b8;
+  color: var(--muted-foreground);
 }
 .dr-btn-icon-x {
   font-size: 12px;
-  color: #94a3b8;
+  color: var(--muted-foreground);
   transition: color 0.15s ease;
 }
 
@@ -2403,9 +2383,9 @@ function variableTypeLabel(type: AgentVariable['type']): string {
 
 /* 保存 — outlined button, hover picks up an indigo hint to echo the CTA */
 .dr-btn-secondary {
-  background: #fff;
-  color: #334155;
-  border-color: #e2e8f0;
+  background: var(--background);
+  color: var(--foreground);
+  border-color: var(--border);
 }
 .dr-btn-secondary:hover:not(:disabled) {
   background: #eef2ff;
@@ -2416,8 +2396,8 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   background: #e0e7ff;
 }
 .dr-btn-secondary:disabled {
-  color: #94a3b8;
-  background: #f8fafc;
+  color: var(--muted-foreground);
+  background: var(--muted);
   cursor: not-allowed;
 }
 /* 「调试」按钮打开中 —— 用轻微填充 + 边框色标记正在活动 */
@@ -2453,8 +2433,8 @@ function variableTypeLabel(type: AgentVariable['type']): string {
 .dr-chatflow-layout{display:grid;grid-template-columns:1fr;width:100%;height:100%;gap:10px}
 .dr-debug-panel-expanded .dr-chatflow-layout{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
 .dr-chatflow-trace{min-width:0}
-.dr-chatflow-expand{position:absolute;z-index:4;left:-22px;top:50%;display:grid;place-items:center;width:24px;height:48px;padding:0;transform:translateY(-50%);border:1px solid #c7d2fe;border-right:0;border-radius:9px 0 0 9px;background:#fff;color:#4f46e5;box-shadow:-4px 3px 10px rgb(15 23 42/.12);cursor:pointer;font-size:11px}
-.dr-chatflow-expand:hover{background:#eef2ff;color:#3730a3}
+.dr-chatflow-expand{position:absolute;z-index:4;left:-22px;top:50%;display:grid;place-items:center;width:24px;height:48px;padding:0;transform:translateY(-50%);border: 1px solid #c7d2fe;border-right: 0;border-radius:9px 0 0 9px;background: var(--background);color: #4f46e5;box-shadow:-4px 3px 10px rgb(15 23 42/.12);cursor:pointer;font-size:11px}
+.dr-chatflow-expand:hover{background: #eef2ff;color: #3730a3}
 /* 用了 left/top 内联样式时，覆盖默认的 right 定位 */
 .dr-debug-panel[style*='left'] {
   right: auto;
@@ -2494,17 +2474,17 @@ function variableTypeLabel(type: AgentVariable['type']): string {
 /* 关闭 — ghost button, quiet by default */
 .dr-btn-ghost {
   background: transparent;
-  color: #64748b;
+  color: var(--muted-foreground);
 }
 .dr-btn-ghost:hover {
-  background: #f1f5f9;
-  color: #0f172a;
+  background: var(--muted);
+  color: var(--foreground);
 }
 .dr-btn-ghost:hover .dr-btn-icon-x {
-  color: #0f172a;
+  color: var(--foreground);
 }
 .dr-btn-ghost:active {
-  background: #e2e8f0;
+  background: var(--muted);
 }
 
 /* ==== Publish split-button + dropdown menu (Dify parity) ==== */
@@ -2534,8 +2514,8 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   z-index: 20;
   width: 280px;
   padding: 12px;
-  background: #fff;
-  border: 1px solid #e5e7eb;
+  background: var(--background);
+  border: 1px solid var(--border);
   border-radius: 12px;
   box-shadow:
     0 12px 40px rgba(15, 23, 42, 0.12),
@@ -2564,7 +2544,7 @@ function variableTypeLabel(type: AgentVariable['type']): string {
 .dr-publish-head-title {
   font-size: 11px;
   font-weight: 500;
-  color: #94a3b8;
+  color: var(--muted-foreground);
   letter-spacing: 0.02em;
 }
 .dr-publish-head-row {
@@ -2575,13 +2555,13 @@ function variableTypeLabel(type: AgentVariable['type']): string {
 }
 .dr-publish-head-time {
   font-size: 13px;
-  color: #334155;
+  color: var(--foreground);
 }
 .dr-publish-restore {
   padding: 3px 10px;
   font-size: 12px;
   color: #4338ca;
-  background: #fff;
+  background: var(--background);
   border: 1px solid #c7d2fe;
   border-radius: 6px;
   cursor: pointer;
@@ -2635,7 +2615,7 @@ function variableTypeLabel(type: AgentVariable['type']): string {
 .dr-publish-divider {
   height: 1px;
   margin: 4px 0;
-  background: #f1f5f9;
+  background: var(--muted);
 }
 .dr-publish-item {
   display: flex;
@@ -2643,7 +2623,7 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   gap: 10px;
   padding: 8px 10px;
   font-size: 13px;
-  color: #334155;
+  color: var(--foreground);
   background: transparent;
   border: none;
   border-radius: 8px;
@@ -2652,11 +2632,11 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   transition: background 0.12s;
 }
 .dr-publish-item:hover {
-  background: #f8fafc;
+  background: var(--muted);
 }
 .dr-publish-item-icon {
   width: 18px;
-  color: #64748b;
+  color: var(--muted-foreground);
   font-size: 15px;
   display: inline-flex;
   align-items: center;
@@ -2689,7 +2669,7 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   flex-shrink: 0;
 }
 .dr-publish-item:hover .dr-publish-item-arrow {
-  color: #64748b;
+  color: var(--muted-foreground);
 }
 
 /* ==== Body: left rail + main ==== */
@@ -2704,8 +2684,8 @@ function variableTypeLabel(type: AgentVariable['type']): string {
 .dr-rail {
   width: 224px;
   flex-shrink: 0;
-  background: #fff;
-  border-right: 1px solid #e5e7eb;
+  background: var(--background);
+  border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
   transition: width 0.25s ease;
@@ -2732,8 +2712,8 @@ function variableTypeLabel(type: AgentVariable['type']): string {
     box-shadow 0.15s ease;
 }
 .dr-info-card:hover {
-  background: #f8fafc;
-  border-color: #e2e8f0;
+  background: var(--muted);
+  border-color: var(--border);
 }
 .dr-info-card:hover .dr-info-trigger {
   opacity: 1;
@@ -2758,7 +2738,7 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   border: none;
   background: transparent;
   border-radius: 6px;
-  color: #94a3b8;
+  color: var(--muted-foreground);
   font-size: 16px;
   line-height: 1;
   cursor: pointer;
@@ -2804,7 +2784,7 @@ function variableTypeLabel(type: AgentVariable['type']): string {
 .dr-info-name {
   font-size: 13px;
   font-weight: 600;
-  color: #0f172a;
+  color: var(--foreground);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -2812,7 +2792,7 @@ function variableTypeLabel(type: AgentVariable['type']): string {
 .dr-info-desc {
   margin-top: 4px;
   font-size: 11px;
-  color: #64748b;
+  color: var(--muted-foreground);
   line-height: 1.5;
   display: -webkit-box;
   -webkit-line-clamp: 3;
@@ -2822,7 +2802,7 @@ function variableTypeLabel(type: AgentVariable['type']): string {
 .dr-info-meta {
   margin-top: 6px;
   font-size: 10px;
-  color: #94a3b8;
+  color: var(--muted-foreground);
 }
 .dr-info-tags {
   margin-top: 6px;
@@ -2878,13 +2858,13 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   background: transparent;
   border-radius: 8px;
   font-size: 13px;
-  color: #475569;
+  color: var(--muted-foreground);
   cursor: pointer;
   text-align: left;
   transition: background 0.15s;
 }
 .dr-nav-item:hover {
-  background: #f1f5f9;
+  background: var(--muted);
 }
 .dr-nav-item.on {
   background: #eef2ff;
@@ -2910,15 +2890,15 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   flex: none;
   padding: 8px;
   border: none;
-  background: #f8fafc;
-  border-top: 1px solid #f1f5f9;
-  color: #64748b;
+  background: var(--muted);
+  border-top: 1px solid var(--border);
+  color: var(--muted-foreground);
   font-size: 14px;
   cursor: pointer;
 }
 .dr-rail-collapse:hover {
-  background: #f1f5f9;
-  color: #0f172a;
+  background: var(--muted);
+  color: var(--foreground);
 }
 
 /* -- Main content -- */
@@ -2927,7 +2907,7 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   min-width: 0;
   min-height: 0;
   overflow: hidden;
-  background: #f8fafc;
+  background: var(--muted);
   display: flex;
   flex-direction: column;
 }
@@ -2981,7 +2961,7 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   min-height: 0;
   display: flex;
   flex-direction: column;
-  background: #fff;
+  background: var(--background);
 }
 .dr-api-slot > * {
   flex: 1;
@@ -3009,16 +2989,16 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   min-width: 0;
   display: flex;
   flex-direction: column;
-  background: #fff;
-  border: 1px solid #e5e7eb;
+  background: var(--background);
+  border: 1px solid var(--border);
   border-radius: 10px;
   overflow: hidden;
 }
 
 /* ==== Config cards ==== */
 .dr-card {
-  background: #fff;
-  border: 1px solid #e5e7eb;
+  background: var(--background);
+  border: 1px solid var(--border);
   border-radius: 10px;
   padding: 14px 16px;
 }
@@ -3040,7 +3020,7 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   gap: 6px;
   font-size: 13px;
   font-weight: 600;
-  color: #334155;
+  color: var(--foreground);
 }
 .dr-card-title-dot {
   width: 4px;
@@ -3055,12 +3035,12 @@ function variableTypeLabel(type: AgentVariable['type']): string {
 }
 .dr-card-empty {
   font-size: 12px;
-  color: #94a3b8;
+  color: var(--muted-foreground);
   padding: 6px 0;
 }
 .dr-card-empty code {
   padding: 1px 4px;
-  background: #f1f5f9;
+  background: var(--muted);
   color: #6366f1;
   border-radius: 3px;
   font-size: 11px;
@@ -3097,10 +3077,10 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   transform: translateY(-0.5px);
 }
 .dr-link-muted {
-  color: #64748b;
+  color: var(--muted-foreground);
 }
 .dr-link-muted:hover {
-  background: #f1f5f9;
+  background: var(--muted);
 }
 
 .dr-prompt-textarea {
@@ -3109,8 +3089,8 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   font-size: 13px;
   border: 1.5px solid #6366f1;
   border-radius: 8px;
-  background: #fff;
-  color: #0f172a;
+  background: var(--background);
+  color: var(--foreground);
   font-family: inherit;
   resize: vertical;
   min-height: 140px;
@@ -3124,10 +3104,10 @@ function variableTypeLabel(type: AgentVariable['type']): string {
 .dr-input {
   padding: 6px 10px;
   font-size: 12px;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--border);
   border-radius: 6px;
-  background: #fff;
-  color: #0f172a;
+  background: var(--background);
+  color: var(--foreground);
 }
 .dr-input:focus {
   outline: none;
@@ -3145,9 +3125,9 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   padding: 12px;
   text-align: center;
   font-size: 12px;
-  color: #94a3b8;
-  background: #f8fafc;
-  border: 1px dashed #e2e8f0;
+  color: var(--muted-foreground);
+  background: var(--muted);
+  border: 1px dashed var(--border);
   border-radius: 8px;
   line-height: 1.6;
 }
@@ -3169,15 +3149,15 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   justify-content: space-between;
   gap: 10px;
   padding: 8px 12px;
-  background: #fff;
-  border: 1px solid #e5e7eb;
+  background: var(--background);
+  border: 1px solid var(--border);
   border-radius: 8px;
   transition:
     background 0.15s,
     border-color 0.15s;
 }
 .dr-var-item:hover {
-  background: #f8fafc;
+  background: var(--muted);
   border-color: #c7d2fe;
 }
 .dr-var-left {
@@ -3208,14 +3188,14 @@ function variableTypeLabel(type: AgentVariable['type']): string {
 .dr-var-label {
   font-size: 12px;
   font-weight: 500;
-  color: #0f172a;
+  color: var(--foreground);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 .dr-var-name {
   font-size: 11px;
-  color: #94a3b8;
+  color: var(--muted-foreground);
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   white-space: nowrap;
   overflow: hidden;
@@ -3255,11 +3235,11 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   gap: 6px;
   padding: 4px 12px;
   font-size: 12px;
-  background: #f1f5f9;
+  background: var(--muted);
   border: 1px solid transparent;
   border-radius: 999px;
   cursor: pointer;
-  color: #334155;
+  color: var(--foreground);
 }
 .dr-chip.on {
   background: #eef2ff;
@@ -3281,8 +3261,8 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   align-items: center;
   gap: 8px;
   padding: 8px 10px;
-  background: #fff;
-  border: 1px solid #e5e7eb;
+  background: var(--background);
+  border: 1px solid var(--border);
   border-radius: 8px;
   transition: border-color 0.15s;
 }
@@ -3305,7 +3285,7 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   flex: 1;
   min-width: 0;
   font-size: 13px;
-  color: #0f172a;
+  color: var(--foreground);
   font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
@@ -3326,14 +3306,14 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   white-space: nowrap;
 }
 .dr-ds-tag-muted {
-  color: #64748b;
-  background: #f1f5f9;
+  color: var(--muted-foreground);
+  background: var(--muted);
 }
 
 .dr-inline-row {
   margin-top: 10px;
   padding-top: 10px;
-  border-top: 1px solid #f1f5f9;
+  border-top: 1px solid var(--border);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -3341,15 +3321,15 @@ function variableTypeLabel(type: AgentVariable['type']): string {
 .dr-inline-label {
   font-size: 12px;
   font-weight: 500;
-  color: #334155;
+  color: var(--foreground);
 }
 .dr-mini-select {
   padding: 3px 8px;
   font-size: 11px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border);
   border-radius: 4px;
-  background: #fff;
-  color: #64748b;
+  background: var(--background);
+  color: var(--muted-foreground);
 }
 
 /* ==== Switch (视觉) ==== */
@@ -3366,31 +3346,6 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   height: 100%;
   cursor: pointer;
 }
-.dr-switch-slider {
-  width: 32px;
-  height: 18px;
-  background: #cbd5e1;
-  border-radius: 999px;
-  position: relative;
-  transition: background 0.15s;
-}
-.dr-switch-slider::before {
-  content: '';
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 14px;
-  height: 14px;
-  background: #fff;
-  border-radius: 50%;
-  transition: transform 0.15s;
-}
-.dr-switch input:checked + .dr-switch-slider {
-  background: #6366f1;
-}
-.dr-switch input:checked + .dr-switch-slider::before {
-  transform: translateX(14px);
-}
 
 .dr-icon-btn {
   width: 24px;
@@ -3398,14 +3353,14 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   padding: 0;
   border: none;
   background: transparent;
-  color: #94a3b8;
+  color: var(--muted-foreground);
   cursor: pointer;
   border-radius: 4px;
   font-size: 13px;
 }
 .dr-icon-btn:hover {
-  background: #f1f5f9;
-  color: #475569;
+  background: var(--muted);
+  color: var(--muted-foreground);
 }
 
 /* ==== Preview col ==== */
@@ -3414,7 +3369,7 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--border);
 }
 .dr-preview-scroll {
   flex: 1;
@@ -3429,7 +3384,7 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   margin: auto;
   text-align: center;
   font-size: 12px;
-  color: #94a3b8;
+  color: var(--muted-foreground);
   line-height: 1.6;
 }
 .dr-msg {
@@ -3442,7 +3397,7 @@ function variableTypeLabel(type: AgentVariable['type']): string {
 }
 .dr-msg-role {
   font-size: 10px;
-  color: #94a3b8;
+  color: var(--muted-foreground);
   padding: 0 4px;
 }
 .dr-msg-body {
@@ -3459,8 +3414,8 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   color: #fff;
 }
 .dr-msg-assistant .dr-msg-body {
-  background: #f1f5f9;
-  color: #0f172a;
+  background: var(--muted);
+  color: var(--foreground);
 }
 .dr-msg-failed {
   background: #fef2f2 !important;
@@ -3468,7 +3423,7 @@ function variableTypeLabel(type: AgentVariable['type']): string {
 }
 .dr-preview-composer {
   padding: 12px 16px;
-  border-top: 1px solid #f1f5f9;
+  border-top: 1px solid var(--border);
   display: flex;
   gap: 8px;
 }
@@ -3505,18 +3460,18 @@ function variableTypeLabel(type: AgentVariable['type']): string {
 .dr-plain-title {
   font-size: 18px;
   font-weight: 600;
-  color: #0f172a;
+  color: var(--foreground);
   margin-bottom: 12px;
 }
 .dr-plain-hint {
   margin-top: 8px;
   font-size: 13px;
-  color: #64748b;
+  color: var(--muted-foreground);
   line-height: 1.7;
 }
 .dr-plain-hint code {
   padding: 1px 6px;
-  background: #f1f5f9;
+  background: var(--muted);
   color: #4338ca;
   border-radius: 4px;
   font-size: 12px;
@@ -3527,7 +3482,7 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   font-size: 12px;
   font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
   background: #0f172a;
-  color: #e2e8f0;
+  color: var(--muted-foreground);
   border-radius: 8px;
   overflow-x: auto;
   line-height: 1.6;
@@ -3538,35 +3493,35 @@ function variableTypeLabel(type: AgentVariable['type']): string {
   margin: auto;
   text-align: center;
   padding: 40px;
-  color: #94a3b8;
+  color: var(--muted-foreground);
 }
 .dr-empty-title {
   font-size: 14px;
   font-weight: 500;
-  color: #64748b;
+  color: var(--muted-foreground);
   margin-bottom: 6px;
 }
 .dr-empty-hint {
   font-size: 12px;
   line-height: 1.6;
-  color: #94a3b8;
+  color: var(--muted-foreground);
 }
 .dr-empty-hint code {
   padding: 1px 5px;
-  background: #f1f5f9;
+  background: var(--muted);
   border-radius: 4px;
   color: #4338ca;
   font-size: 11px;
 }
 .dr-history-mask { position: fixed; inset: 0; z-index: 1200; display: flex; justify-content: flex-end; background: rgba(15, 23, 42, 0.35); }
-.dr-history-panel { width: min(460px, 92vw); height: 100%; padding: 20px; overflow-y: auto; background: #fff; box-shadow: -8px 0 24px rgba(15, 23, 42, 0.15); }
+.dr-history-panel { width: min(460px, 92vw); height: 100%; padding: 20px; overflow-y: auto; background: var(--background); box-shadow: -8px 0 24px rgba(15, 23, 42, 0.15); }
 .dr-history-header, .dr-history-item { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
 .dr-history-header { margin-bottom: 16px; font-size: 16px; }
-.dr-history-close { border: 0; background: transparent; color: #64748b; font-size: 24px; cursor: pointer; }
+.dr-history-close { border: 0; background: transparent; color: var(--muted-foreground); font-size: 24px; cursor: pointer; }
 .dr-history-list { display: grid; gap: 10px; }
-.dr-history-item { padding: 14px; border: 1px solid #e2e8f0; border-radius: 10px; }
+.dr-history-item { padding: 14px; border: 1px solid var(--border); border-radius: 10px; }
 .dr-history-info { display: grid; min-width: 0; gap: 4px; }
-.dr-history-info span, .dr-history-info p, .dr-history-empty { margin: 0; color: #64748b; font-size: 12px; }
+.dr-history-info span, .dr-history-info p, .dr-history-empty { margin: 0; color: var(--muted-foreground); font-size: 12px; }
 .dr-history-info p { overflow-wrap: anywhere; }
 .dr-history-empty { padding: 40px 0; text-align: center; }
 </style>

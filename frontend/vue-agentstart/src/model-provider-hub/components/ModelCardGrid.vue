@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Button as AsShadcnButton } from '../../ui/shadcn/button';
+
 /**
  * ModelCardGrid — Dify-style card grid of already-configured models, grouped
  * by provider. Each card has a hover "⋯" menu wired via events so the host app
@@ -6,7 +8,7 @@
  */
 import { computed, ref } from 'vue';
 
-import { Card } from '../../ui';
+import { Button, Card, Tag } from '../../ui';
 import {
   modelTypeColor,
   modelTypeLabel,
@@ -111,13 +113,10 @@ function providerLabel(name: string): string {
           </template>
 
           <template #subtitle>
-            <span
-              class="ph-type-tag"
-              :data-color="modelTypeColor(m.modelType)"
-            >
+            <Tag :color="modelTypeColor(m.modelType)">
               {{ modelTypeLabel(m.modelType) }}
-            </span>
-            <span v-if="m.isDefault" class="ph-default-tag">默认</span>
+            </Tag>
+            <Tag v-if="m.isDefault" color="green">默认</Tag>
           </template>
 
           <template #description>
@@ -137,33 +136,29 @@ function providerLabel(name: string): string {
           </template>
 
           <template #actions>
-            <button
+            <Button size="small"
               v-if="showTestButton"
-              class="ph-btn"
               :disabled="testingId === m.id"
               @click.stop="runTest(m)"
             >
               {{ testingId === m.id ? '测试中...' : '🔍 测试' }}
-            </button>
-            <button
-              class="ph-btn"
+            </Button>
+            <Button size="small"
               @click.stop="emit('editCredentials', m)"
             >
               编辑凭证
-            </button>
-            <button
+            </Button>
+            <Button size="small"
               v-if="!m.isDefault"
-              class="ph-btn"
               @click.stop="emit('setDefault', m)"
             >
               设为默认
-            </button>
-            <button
-              class="ph-btn ph-btn-danger"
+            </Button>
+            <Button size="small" danger
               @click.stop="emit('delete', m)"
             >
               删除
-            </button>
+            </Button>
           </template>
         </Card>
       </div>
@@ -194,42 +189,23 @@ function providerLabel(name: string): string {
 .ph-group-name {
   font-size: 15px;
   font-weight: 500;
-  color: #111827;
+  color: var(--foreground);
 }
 .ph-group-count {
   padding: 1px 8px;
   font-size: 11px;
   border-radius: 10px;
-  background: #eef2ff;
-  color: #4338ca;
+  background: var(--accent);
+  color: var(--primary);
 }
 .ph-model-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 12px;
 }
-.ph-model-card {
-}
-/* Card footer: status on the left, action buttons on the right,
-   anchored to the bottom of the card. */
-.ph-model-card:deep(.as-management-card__footer) {
-  margin-top: auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  padding-top: 10px;
-}
-.ph-model-card:deep(.as-management-card__actions) {
-  display: inline-flex;
-  gap: 6px;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  flex: none;
-}
+
+
+
 .ph-model-header {
   display: flex;
   gap: 12px;
@@ -252,7 +228,7 @@ function providerLabel(name: string): string {
 .ph-title {
   font-size: 15px;
   font-weight: 600;
-  color: #111827;
+  color: var(--foreground);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -266,8 +242,8 @@ function providerLabel(name: string): string {
   padding: 1px 6px;
   font-size: 11px;
   border-radius: 4px;
-  background: #eef2ff;
-  color: #4338ca;
+  background: var(--accent);
+  color: var(--primary);
 }
 .ph-type-tag[data-color='green'] {
   background: #ecfdf5;
@@ -287,7 +263,7 @@ function providerLabel(name: string): string {
 .ph-desc {
   margin-top: 10px;
   font-size: 12px;
-  color: #6b7280;
+  color: var(--muted-foreground);
   min-height: 18px;
 }
 .ph-ok {
@@ -303,12 +279,12 @@ function providerLabel(name: string): string {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-top: 1px solid #f3f4f6;
+  border-top: 1px solid var(--border);
   padding-top: 8px;
 }
 .ph-status {
   font-size: 11px;
-  color: #6b7280;
+  color: var(--muted-foreground);
 }
 .ph-actions {
   display: flex;
@@ -322,14 +298,14 @@ function providerLabel(name: string): string {
   border: 1px solid transparent;
   border-radius: 4px;
   background: transparent;
-  color: #4338ca;
+  color: var(--primary);
   cursor: pointer;
 }
 .ph-btn:hover {
-  background: #eef2ff;
+  background: var(--accent);
 }
 .ph-btn:disabled {
-  color: #9ca3af;
+  color: var(--muted-foreground);
   cursor: not-allowed;
 }
 .ph-btn-danger {

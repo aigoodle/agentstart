@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { ShadcnSelect as AsShadcnSelect } from '../../ui/components/ShadcnSelect';
+import { Input as AsShadcnInput } from '../../ui/shadcn/input';
+import { Button as AsShadcnButton } from '../../ui/shadcn/button';
+
 /**
  * 日志与标注 tab — table + filters. Matches Snipaste_09-01-27:
  *   - period picker + status filter + search
@@ -83,7 +87,7 @@ const totalPages = computed(() =>
     </header>
 
     <div class="logs-filters">
-      <select
+      <AsShadcnSelect
         class="logs-input"
         :value="period"
         @change="(e) => { period = (e.target as HTMLSelectElement).value; emit('change-period', period); }"
@@ -91,8 +95,8 @@ const totalPages = computed(() =>
         <option>过去 7 天</option>
         <option>过去 30 天</option>
         <option>全部时间</option>
-      </select>
-      <select
+      </AsShadcnSelect>
+      <AsShadcnSelect
         class="logs-input"
         :value="statusFilter"
         @change="(e) => { statusFilter = (e.target as HTMLSelectElement).value; emit('change-status', statusFilter); }"
@@ -101,8 +105,8 @@ const totalPages = computed(() =>
         <option value="SUCCESS">成功</option>
         <option value="FAILED">失败</option>
         <option value="PENDING">处理中</option>
-      </select>
-      <input
+      </AsShadcnSelect>
+      <AsShadcnInput
         v-model="search"
         class="logs-input logs-search"
         placeholder="搜索..."
@@ -110,14 +114,14 @@ const totalPages = computed(() =>
       />
       <div class="logs-sort">
         <span class="logs-sort-label">排序:</span>
-        <select
+        <AsShadcnSelect
           class="logs-input"
           :value="sortKey"
           @change="(e) => (sortKey = (e.target as HTMLSelectElement).value as any)"
         >
           <option value="createdAt">创建时间</option>
           <option value="updatedAt">更新时间</option>
-        </select>
+        </AsShadcnSelect>
       </div>
     </div>
 
@@ -170,25 +174,25 @@ const totalPages = computed(() =>
     </div>
 
     <footer class="logs-foot">
-      <button
+      <AsShadcnButton variant="ghost"
         type="button"
         class="logs-page-btn"
         :disabled="page <= 1"
         @click="emit('change-page', page - 1)"
       >
         ‹
-      </button>
+      </AsShadcnButton>
       <span class="logs-page-label">{{ page }} / {{ totalPages }}</span>
-      <button
+      <AsShadcnButton variant="ghost"
         type="button"
         class="logs-page-btn"
         :disabled="page >= totalPages"
         @click="emit('change-page', page + 1)"
       >
         ›
-      </button>
+      </AsShadcnButton>
       <span class="logs-page-sep">|</span>
-      <select
+      <AsShadcnSelect
         class="logs-input"
         :value="pageSize"
         @change="emit('change-page-size', Number(($event.target as HTMLSelectElement).value))"
@@ -196,7 +200,7 @@ const totalPages = computed(() =>
         <option :value="10">10</option>
         <option :value="25">25</option>
         <option :value="50">50</option>
-      </select>
+      </AsShadcnSelect>
     </footer>
   </div>
 </template>
@@ -210,35 +214,35 @@ const totalPages = computed(() =>
 }
 .logs-top {
   padding: 16px 24px 8px;
-  background: #fff;
-  border-bottom: 1px solid #e5e7eb;
+  background: var(--background);
+  border-bottom: 1px solid var(--border);
 }
 .logs-top-title {
   margin: 0;
   font-size: 15px;
   font-weight: 600;
-  color: #0f172a;
+  color: var(--foreground);
 }
 .logs-top-sub {
   margin-top: 2px;
   font-size: 12px;
-  color: #94a3b8;
+  color: var(--muted-foreground);
 }
 .logs-filters {
   display: flex;
   gap: 8px;
   padding: 12px 24px;
-  background: #fff;
-  border-bottom: 1px solid #f1f5f9;
+  background: var(--background);
+  border-bottom: 1px solid var(--border);
   align-items: center;
 }
 .logs-input {
   padding: 5px 8px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
   border-radius: 6px;
-  background: #fff;
+  background: var(--background);
   font-size: 12px;
-  color: #0f172a;
+  color: var(--foreground);
   outline: none;
 }
 .logs-input:focus {
@@ -255,13 +259,13 @@ const totalPages = computed(() =>
 }
 .logs-sort-label {
   font-size: 12px;
-  color: #94a3b8;
+  color: var(--muted-foreground);
 }
 .logs-table-wrap {
   flex: 1;
   overflow: auto;
   padding: 0 24px;
-  background: #fff;
+  background: var(--background);
 }
 .logs-table {
   width: 100%;
@@ -271,31 +275,31 @@ const totalPages = computed(() =>
 .logs-table th {
   text-align: left;
   padding: 8px 10px;
-  color: #64748b;
+  color: var(--muted-foreground);
   font-weight: 500;
-  border-bottom: 1px solid #e5e7eb;
-  background: #fff;
+  border-bottom: 1px solid var(--border);
+  background: var(--background);
   position: sticky;
   top: 0;
 }
 .logs-table td {
   padding: 10px;
-  border-bottom: 1px solid #f1f5f9;
-  color: #334155;
+  border-bottom: 1px solid var(--border);
+  color: var(--foreground);
 }
 .logs-row {
   cursor: pointer;
   transition: background 0.15s;
 }
 .logs-row:hover {
-  background: #f8fafc;
+  background: var(--muted);
 }
 .logs-title-cell {
   display: flex;
   align-items: center;
   gap: 6px;
   font-weight: 500;
-  color: #0f172a;
+  color: var(--foreground);
 }
 .logs-title-dot {
   width: 6px;
@@ -305,7 +309,7 @@ const totalPages = computed(() =>
 }
 .logs-user-cell {
   font-family: ui-monospace, monospace;
-  color: #64748b;
+  color: var(--muted-foreground);
   font-size: 11px;
 }
 .logs-status {
@@ -345,44 +349,44 @@ const totalPages = computed(() =>
   background: #f59e0b;
 }
 .logs-date {
-  color: #64748b;
+  color: var(--muted-foreground);
   font-size: 11px;
   white-space: nowrap;
 }
 .logs-tbody-empty {
   padding: 40px !important;
   text-align: center;
-  color: #94a3b8;
+  color: var(--muted-foreground);
 }
 .logs-foot {
   display: flex;
   align-items: center;
   gap: 6px;
   padding: 12px 24px;
-  background: #fff;
-  border-top: 1px solid #e5e7eb;
+  background: var(--background);
+  border-top: 1px solid var(--border);
 }
 .logs-page-btn {
   width: 26px;
   height: 26px;
   padding: 0;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
   border-radius: 6px;
-  background: #fff;
+  background: var(--background);
   cursor: pointer;
-  color: #475569;
+  color: var(--muted-foreground);
 }
 .logs-page-btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
 }
 .logs-page-btn:hover:not(:disabled) {
-  background: #f1f5f9;
+  background: var(--muted);
 }
 .logs-page-label {
   padding: 0 6px;
   font-size: 12px;
-  color: #64748b;
+  color: var(--muted-foreground);
 }
 .logs-page-sep {
   margin: 0 6px;

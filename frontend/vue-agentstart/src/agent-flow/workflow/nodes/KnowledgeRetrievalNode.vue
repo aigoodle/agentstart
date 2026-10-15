@@ -168,7 +168,7 @@ const isDynamic = computed(() => props.data?.dataset?.dynamic === true);
 .knowledge-query-value {
   flex: 1;
   min-width: 0;
-  color: #1f2937;
+  color: var(--foreground);
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -214,7 +214,7 @@ const isDynamic = computed(() => props.data?.dataset?.dynamic === true);
   flex: 1;
   min-width: 0;
   overflow: hidden;
-  color: #1f2937;
+  color: var(--foreground);
   text-overflow: ellipsis;
   white-space: nowrap;
   font-weight: 500;
@@ -224,8 +224,8 @@ const isDynamic = computed(() => props.data?.dataset?.dynamic === true);
   flex: none;
   padding: 1px 6px;
   font-size: 10px;
-  color: #6b7280;
-  background: #f3f4f6;
+  color: var(--muted-foreground);
+  background: var(--muted);
   border-radius: 3px;
 }
 

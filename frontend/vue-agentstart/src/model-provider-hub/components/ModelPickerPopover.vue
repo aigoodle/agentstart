@@ -1,4 +1,11 @@
 <script setup lang="ts">
+import { Switch as ASwitch, Tooltip as ATooltip, Slider as ASlider, InputNumber as AInputNumber, Segmented as ASegmented, Textarea as ATextarea } from '../../ui';
+
+import { Card as AsShadcnCard } from '../../ui/shadcn/card';
+
+import { Button as AsShadcnButton } from '../../ui/shadcn/button';
+import { Input as AsShadcnInput } from '../../ui/shadcn/input';
+
 /**
  * ModelPickerPopover — 通用「模型设置」面板。
  *
@@ -573,14 +580,14 @@ defineExpose({
         <!-- 顶部标题栏 -->
         <div class="ph-mp-header">
           <span class="ph-mp-title">{{ title }}</span>
-          <button
+          <AsShadcnButton variant="ghost"
             type="button"
             class="ph-mp-close"
             aria-label="关闭"
             @click="closePanel"
           >
             <CloseOutlined />
-          </button>
+          </AsShadcnButton>
         </div>
 
         <div class="ph-mp-scroll">
@@ -604,7 +611,7 @@ defineExpose({
               >
                 <div class="ph-mp-search">
                   <SearchOutlined class="ph-mp-search-icon" />
-                  <input
+                  <AsShadcnInput
                     v-model="searchQuery"
                     class="ph-mp-search-input"
                     placeholder="搜索模型"
@@ -705,7 +712,7 @@ defineExpose({
               </div>
             </template>
 
-            <div
+            <AsShadcnCard
               class="ph-mp-model-card"
               :class="{
                 'is-active': modelDropdownOpen,
@@ -739,7 +746,7 @@ defineExpose({
               </span>
               <SettingOutlined class="ph-mp-model-card-cog" />
               <DownOutlined class="ph-mp-model-card-arrow" />
-            </div>
+            </AsShadcnCard>
           </Popover>
 
           <!-- 参数区 -->
@@ -892,7 +899,7 @@ defineExpose({
 .ph-mp-popover > .as-popover__panel {
   padding: 0;
   border-radius: 12px;
-  background: #fff;
+  background: var(--background);
   overflow: hidden;
 }
 
@@ -904,7 +911,7 @@ defineExpose({
   max-height: 84vh;
   border: 1px solid #d9dee8;
   border-radius: 12px;
-  background: #fff;
+  background: var(--background);
   box-shadow: 0 12px 32px rgba(15, 23, 42, 0.16);
   overflow: hidden;
 }
@@ -927,13 +934,13 @@ defineExpose({
 .ph-mp-title {
   font-size: 15px;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--foreground);
 }
 .ph-mp-close {
   padding: 0;
   border: none;
   background: transparent;
-  color: #9ca3af;
+  color: var(--muted-foreground);
   font-size: 14px;
   cursor: pointer;
   border-radius: 6px;
@@ -941,8 +948,8 @@ defineExpose({
   height: 24px;
 }
 .ph-mp-close:hover {
-  background: #f3f4f6;
-  color: #4b5563;
+  background: var(--muted);
+  color: var(--muted-foreground);
 }
 
 /* 模型卡片（点击展开二级下拉） */
@@ -966,21 +973,21 @@ defineExpose({
   gap: 10px;
   padding: 10px 12px;
   margin-bottom: 14px;
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
+  background: var(--background);
+  border: 1px solid var(--border);
   border-radius: 10px;
   cursor: pointer;
   transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
 }
 .ph-mp-model-card:hover {
-  border-color: #a5b4fc;
+  border-color: var(--ring);
 }
 .ph-mp-model-card.is-active {
-  border-color: #6366f1;
+  border-color: var(--ring);
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
 }
 .ph-mp-model-card.has-value {
-  background: #fafbff;
+  background: var(--background);
 }
 .ph-mp-model-card-icon {
   flex: none;
@@ -996,7 +1003,7 @@ defineExpose({
   min-width: 0;
   font-size: 13px;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--foreground);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -1004,14 +1011,14 @@ defineExpose({
 .ph-mp-model-card-placeholder {
   flex: 1;
   font-size: 13px;
-  color: #9ca3af;
+  color: var(--muted-foreground);
 }
 .ph-mp-model-card-cog {
-  color: #94a3b8;
+  color: var(--muted-foreground);
   font-size: 12px;
 }
 .ph-mp-model-card-arrow {
-  color: #94a3b8;
+  color: var(--muted-foreground);
   font-size: 10px;
   transition: transform 0.15s;
 }
@@ -1028,7 +1035,7 @@ defineExpose({
   max-width: 92vw;
   border: 1px solid #d9dee8;
   border-radius: 10px;
-  background: #fff;
+  background: var(--background);
   box-shadow: 0 10px 28px rgba(15, 23, 42, 0.14);
   overflow: hidden;
 }
@@ -1037,11 +1044,11 @@ defineExpose({
   align-items: center;
   gap: 8px;
   padding: 8px 12px;
-  border-bottom: 1px solid #f0f0f0;
-  background: #f9fafb;
+  border-bottom: 1px solid var(--border);
+  background: var(--muted);
 }
 .ph-mp-search-icon {
-  color: #9ca3af;
+  color: var(--muted-foreground);
 }
 .ph-mp-search-input {
   flex: 1;
@@ -1050,10 +1057,10 @@ defineExpose({
   outline: 0;
   background: transparent;
   font-size: 13px;
-  color: #1f2937;
+  color: var(--foreground);
 }
 .ph-mp-search-input::placeholder {
-  color: #9ca3af;
+  color: var(--muted-foreground);
 }
 .ph-mp-body {
   overflow-x: hidden;
@@ -1070,7 +1077,7 @@ defineExpose({
   align-items: center;
   gap: 6px;
   padding: 28px 16px;
-  color: #9ca3af;
+  color: var(--muted-foreground);
   font-size: 12px;
   text-align: center;
 }
@@ -1090,7 +1097,7 @@ defineExpose({
 .ph-mp-group + .ph-mp-group {
   margin-top: 2px;
   padding-top: 4px;
-  border-top: 1px solid #f3f4f6;
+  border-top: 1px solid var(--border);
 }
 .ph-mp-group-header {
   display: flex;
@@ -1103,18 +1110,18 @@ defineExpose({
   transition: background 0.12s;
 }
 .ph-mp-group-header:hover {
-  background: #f9fafb;
+  background: var(--muted);
 }
 .ph-mp-fold {
   font-size: 10px;
-  color: #9ca3af;
+  color: var(--muted-foreground);
 }
 .ph-mp-group-name {
   flex: 1;
   min-width: 0;
   font-size: 12px;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--foreground);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -1135,7 +1142,7 @@ defineExpose({
   transition: background 0.12s;
 }
 .ph-mp-item:hover {
-  background: #f3f4f6;
+  background: var(--muted);
 }
 .ph-mp-item.is-active {
   background: #eef2ff;
@@ -1144,7 +1151,7 @@ defineExpose({
   flex: 1;
   min-width: 0;
   font-size: 13px;
-  color: #1f2937;
+  color: var(--foreground);
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas,
     'Liberation Mono', monospace;
   overflow: hidden;
@@ -1185,11 +1192,11 @@ defineExpose({
   align-items: center;
   gap: 6px;
   padding: 10px 14px;
-  border-top: 1px solid #f0f0f0;
+  border-top: 1px solid var(--border);
   color: #4338ca;
   font-size: 12px;
   cursor: pointer;
-  background: #fafbff;
+  background: var(--background);
 }
 .ph-mp-dropdown-footer:hover {
   background: #eef2ff;
@@ -1237,7 +1244,7 @@ defineExpose({
   padding: 4px 0 10px;
   font-size: 14px;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--foreground);
 }
 .ph-mp-params {
   display: flex;
@@ -1265,13 +1272,13 @@ defineExpose({
   width: 88px;
   font-size: 13px;
   font-weight: 500;
-  color: #374151;
+  color: var(--foreground);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 .ph-mp-param-hint {
-  color: #94a3b8;
+  color: var(--muted-foreground);
   font-size: 12px;
   cursor: help;
 }
@@ -1318,22 +1325,22 @@ defineExpose({
   gap: 8px;
   padding: 6px 10px;
   min-height: 36px;
-  background: #fff;
-  border: 1px solid #e5e7eb;
+  background: var(--background);
+  border: 1px solid var(--border);
   border-radius: 8px;
   cursor: pointer;
   transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
 }
 .ph-mp-trigger:hover {
-  border-color: #a5b4fc;
-  background: #fafbff;
+  border-color: var(--ring);
+  background: var(--background);
 }
 .ph-mp-trigger.is-active {
-  border-color: #6366f1;
+  border-color: var(--ring);
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
 }
 .ph-mp-trigger.has-value {
-  background: #fafbff;
+  background: var(--background);
 }
 .ph-mp-trigger.is-disabled {
   cursor: not-allowed;
@@ -1353,7 +1360,7 @@ defineExpose({
   max-width: 55%;
   font-size: 13px;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--foreground);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -1362,7 +1369,7 @@ defineExpose({
   flex: 1;
   min-width: 0;
   font-size: 11px;
-  color: #6b7280;
+  color: var(--muted-foreground);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -1370,12 +1377,12 @@ defineExpose({
 .ph-mp-trigger-placeholder {
   flex: 1;
   font-size: 13px;
-  color: #9ca3af;
+  color: var(--muted-foreground);
 }
 .ph-mp-trigger-arrow {
   flex: none;
   font-size: 10px;
-  color: #9ca3af;
+  color: var(--muted-foreground);
   transition: transform 0.15s;
 }
 .ph-mp-trigger.is-active .ph-mp-trigger-arrow {

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Input as AInput, Textarea as ATextarea, InputNumber as AInputNumber, Select as ASelect } from '../../../ui';
+
 import { computed } from 'vue';
 import WfField from '../WfField.vue';
 

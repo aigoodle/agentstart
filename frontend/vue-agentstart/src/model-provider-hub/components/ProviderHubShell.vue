@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import { ShadcnBoolean as AsShadcnBoolean } from '../../ui/components/ShadcnBoolean';
+
+import { Input as AsShadcnInput } from '../../ui/shadcn/input';
+import { Button as AsShadcnButton } from '../../ui/shadcn/button';
+import { ShadcnSelect as AsShadcnSelect } from '../../ui/components/ShadcnSelect';
+
 /**
  * ProviderHubShell — compact provider settings.
  * Configured providers, including those with an empty catalog, expose model
@@ -179,12 +185,19 @@ function distinctModelTypes(p: ProviderView): string[] {
   const rows = catalogRows(p.name);
   if (rows.length > 0) {
     const set = new Set<string>();
-    for (const r of rows) set.add(r.modelType);
+    for (const r of rows) {
+      set.add(r.modelType);
+      if (r.features?.includes('VISION')) set.add('VISION');
+    }
     return [...set];
   }
   // Fallback to what the provider advertises via predefined models.
   const set = new Set<string>();
-  for (const pd of p.predefinedModels ?? []) set.add(pd.modelType);
+  for (const pd of p.predefinedModels ?? []) {
+    set.add(pd.modelType);
+    if (pd.features?.includes('VISION')) set.add('VISION');
+  }
+  if (set.size === 0) for (const t of p.supportedModelTypes ?? []) set.add(t);
   return [...set];
 }
 
@@ -515,14 +528,16 @@ function closeCardMenu() {
 // -------------------------------------------------- popover filter tabs
 type EnabledFilter = 'all' | 'disabled' | 'enabled';
 const enabledFilter = ref<EnabledFilter>('all');
-const typeFilter = ref<'all' | ModelType>('all');
+const typeFilter = ref<'all' | ModelType | 'VISION'>('all');
 
 function filteredCatalogRows(providerName: string): CatalogRow[] {
   const rows = catalogRows(providerName);
   return rows.filter((r) => {
     if (enabledFilter.value === 'enabled' && !r.enabled) return false;
     if (enabledFilter.value === 'disabled' && r.enabled) return false;
-    if (typeFilter.value !== 'all' && r.modelType !== typeFilter.value) return false;
+    if (typeFilter.value === 'VISION') {
+      if (!r.features?.includes('VISION')) return false;
+    } else if (typeFilter.value !== 'all' && r.modelType !== typeFilter.value) return false;
     return true;
   });
 }
@@ -538,9 +553,12 @@ function groupFilteredByType(providerName: string): Record<string, CatalogRow[]>
   return acc;
 }
 
-function availableTypesInCatalog(providerName: string): ModelType[] {
-  const set = new Set<ModelType>();
-  for (const r of catalogRows(providerName)) set.add(r.modelType);
+function availableTypesInCatalog(providerName: string): Array<ModelType | 'VISION'> {
+  const set = new Set<ModelType | 'VISION'>();
+  for (const r of catalogRows(providerName)) {
+    set.add(r.modelType);
+    if (r.features?.includes('VISION')) set.add('VISION');
+  }
   return [...set];
 }
 
@@ -559,6 +577,7 @@ watch(popoverProvider, () => resetFilters());
 
 // -------------------------------------------------- row display helpers
 function modelTypeIcon(t: ModelType | string): string {
+  if (t === 'VISION') return '👁';
   if (t === 'VIDEO') return '🎬';
   if (t === 'IMAGE') return '🖼';
   if (t === 'LLM') return '💬';
@@ -573,7 +592,7 @@ function modelTypeIcon(t: ModelType | string): string {
 function modelTypeTagStyle(type: string) {
   const colors: Record<string, string> = {
     LLM: '#2563eb', TEXT_EMBEDDING: '#059669', RERANK: '#d97706',
-    VIDEO: '#7c3aed', IMAGE: '#db2777', SPEECH2TEXT: '#0891b2',
+    VISION: '#9333ea', VIDEO: '#7c3aed', IMAGE: '#db2777', SPEECH2TEXT: '#0891b2',
     TTS: '#4f46e5', MODERATION: '#64748b',
   };
   const color = colors[type] ?? '#64748b';
@@ -619,7 +638,7 @@ function capabilityTags(
   const seen = new Set(out.map((t) => t.key));
   for (const f of row.features ?? []) {
     if (f === 'VISION' && !seen.has('VISION')) {
-      out.push({ key: 'VISION', label: 'Vision', color: 'purple' });
+      out.push({ key: 'VISION', label: '视觉理解 · Vision', color: 'purple' });
       seen.add('VISION');
     } else if (
       (f === 'TOOL_CALL' || f === 'STREAM_TOOL_CALL') &&
@@ -691,7 +710,7 @@ function capabilityTags(
             <circle cx="11" cy="11" r="7" />
             <path d="m20 20-3.5-3.5" />
           </svg>
-          <input
+          <AsShadcnInput
             v-model="search"
             class="phs-search"
             placeholder="搜索供应商"
@@ -738,7 +757,7 @@ function capabilityTags(
               overlay-class-name="phs-card-menu-overlay"
               @update:open="(v: boolean) => (v ? openMenuFor = p.name : closeCardMenu())"
             >
-              <button
+              <AsShadcnButton variant="ghost"
                 type="button"
                 class="phs-card-menu-btn"
                 :class="{ 'phs-card-menu-btn--open': openMenuFor === p.name }"
@@ -758,10 +777,10 @@ function capabilityTags(
                   <circle cx="12" cy="12" r="1.6" />
                   <circle cx="19" cy="12" r="1.6" />
                 </svg>
-              </button>
+              </AsShadcnButton>
               <template #content>
                 <div class="phs-card-menu-content" role="menu">
-                  <button
+                  <AsShadcnButton variant="ghost"
                     v-if="p.supportsRemoteModelListing"
                     type="button"
                     role="menuitem"
@@ -782,8 +801,8 @@ function capabilityTags(
                       <path d="M21 3v5h-5" />
                     </svg>
                     重新拉取模型
-                  </button>
-                  <button
+                  </AsShadcnButton>
+                  <AsShadcnButton variant="ghost"
                     type="button"
                     role="menuitem"
                     class="phs-card-menu-item"
@@ -804,8 +823,8 @@ function capabilityTags(
                       <path d="m15 7 3 3 3-3.5-3-3" />
                     </svg>
                     编辑凭证
-                  </button>
-                  <button
+                  </AsShadcnButton>
+                  <AsShadcnButton variant="ghost"
                     type="button"
                     role="menuitem"
                     class="phs-card-menu-item"
@@ -826,9 +845,9 @@ function capabilityTags(
                       <path d="M8 12h8" />
                     </svg>
                     手动添加模型
-                  </button>
+                  </AsShadcnButton>
                   <div class="phs-card-menu-sep" role="separator" />
-                  <button
+                  <AsShadcnButton variant="ghost"
                     type="button"
                     role="menuitem"
                     class="phs-card-menu-item phs-card-menu-item--danger"
@@ -851,7 +870,7 @@ function capabilityTags(
                       <path d="M14 11v6" />
                     </svg>
                     删除凭证
-                  </button>
+                  </AsShadcnButton>
                 </div>
               </template>
             </Popover>
@@ -897,37 +916,37 @@ function capabilityTags(
               </div>
                 <div class="phs-filter-bar">
                   <div class="phs-filter-group">
-                    <button
+                    <AsShadcnButton variant="ghost"
                       class="phs-filter-tab"
                       :class="{ 'phs-filter-tab--on': enabledFilter === 'all' }"
                       @click="enabledFilter = 'all'"
                     >
                       全部 <span class="phs-filter-count">{{ countBy(p.name, 'all') }}</span>
-                    </button>
-                    <button
+                    </AsShadcnButton>
+                    <AsShadcnButton variant="ghost"
                       class="phs-filter-tab"
                       :class="{ 'phs-filter-tab--on': enabledFilter === 'enabled' }"
                       @click="enabledFilter = 'enabled'"
                     >
                       已启用 <span class="phs-filter-count">{{ countBy(p.name, 'enabled') }}</span>
-                    </button>
-                    <button
+                    </AsShadcnButton>
+                    <AsShadcnButton variant="ghost"
                       class="phs-filter-tab"
                       :class="{ 'phs-filter-tab--on': enabledFilter === 'disabled' }"
                       @click="enabledFilter = 'disabled'"
                     >
                       未启用 <span class="phs-filter-count">{{ countBy(p.name, 'disabled') }}</span>
-                    </button>
+                    </AsShadcnButton>
                   </div>
                   <div class="phs-filter-group phs-type-filters">
-                    <button
+                    <AsShadcnButton variant="ghost"
                       class="phs-filter-tab"
                       :class="{ 'phs-filter-tab--on': typeFilter === 'all' }"
                       @click="typeFilter = 'all'"
                     >
                       <span aria-hidden="true">▦</span> 所有类型
-                    </button>
-                    <button
+                    </AsShadcnButton>
+                    <AsShadcnButton variant="ghost"
                       v-for="t in availableTypesInCatalog(p.name)"
                       :key="t"
                       class="phs-filter-tab"
@@ -937,7 +956,7 @@ function capabilityTags(
                       @click="typeFilter = t"
                     >
                       <span aria-hidden="true">{{ modelTypeIcon(t) }}</span> {{ modelTypeLabel(t) }}
-                    </button>
+                    </AsShadcnButton>
                   </div>
                 </div>
 
@@ -1019,22 +1038,22 @@ function capabilityTags(
                         >
                           默认
                         </span>
-                        <button
+                        <AsShadcnButton variant="ghost"
                           v-if="row.source === 'custom'"
                           class="phs-row-gear"
                           title="参数 / 设为默认 / 删除"
                           @click.stop="openDrawer(catalogRowToModelEntity(row, p.name), p)"
                         >
                           ⚙
-                        </button>
-                        <label class="phs-switch">
-                          <input
+                        </AsShadcnButton>
+                        <label class="inline-flex items-center">
+                          <AsShadcnBoolean
                             type="checkbox"
                             :checked="row.enabled"
                             :disabled="togglingKey.has(toggleKey(row))"
                             @change="(e) => onToggleEnabled(p.name, row, (e.target as HTMLInputElement).checked)"
                           />
-                          <span class="phs-switch-slider" />
+
                         </label>
                       </div>
                     </div>
@@ -1051,8 +1070,8 @@ function capabilityTags(
             </template>
           </Modal>
 
-            <button
-              class="phs-count-btn"
+            <AsShadcnButton variant="ghost"
+              class="phs-count-btn mt-3"
               title="点击查看模型列表"
               @click.stop="popoverProvider?.name === p.name ? closePopover() : openPopover(p)"
               :aria-expanded="popoverProvider?.name === p.name"
@@ -1061,7 +1080,7 @@ function capabilityTags(
               <span class="phs-count-label">已启用</span>
               <span class="phs-count-total">共 {{ catalogByProvider[p.name] ? catalogRows(p.name).length : knownModelCount(p) }} 个模型</span>
               <span class="phs-count-arrow" aria-hidden="true">→</span>
-            </button>
+            </AsShadcnButton>
         </Card>
       </div>
     </div>
@@ -1088,7 +1107,7 @@ function capabilityTags(
           </template>
 
           <template #badge>
-            <button
+            <AsShadcnButton variant="ghost"
               type="button"
               class="phs-installable-config"
               :title="p.name === 'openai-compatible' ? '配置自定义接口' : p.credentialConfigured ? '管理配置' : '配置供应商'"
@@ -1099,7 +1118,7 @@ function capabilityTags(
                 <path d="m9.5 3-.6 2.2-1.7 1L5 5.7 2.5 10l1.6 1.6v1.8L2.5 15 5 19.3l2.2-.5 1.7 1 .6 2.2h5l.6-2.2 1.7-1 2.2.5 2.5-4.3-1.6-1.6v-1.8L21.5 10 19 5.7l-2.2.5-1.7-1L14.5 3z" />
                 <circle cx="12" cy="12.5" r="3" />
               </svg>
-            </button>
+            </AsShadcnButton>
           </template>
 
           <div class="phs-installable-caps">
@@ -1158,7 +1177,7 @@ function capabilityTags(
           </div>
           <div class="phs-mini-field">
             <label>模型名称 <span class="phs-req">*</span></label>
-            <input
+            <AsShadcnInput
               v-model="manualAddForm.modelName"
               class="phs-mini-input"
               placeholder="例如 gpt-4o-2025-preview"
@@ -1166,7 +1185,7 @@ function capabilityTags(
           </div>
           <div class="phs-mini-field">
             <label>模型类型</label>
-            <select v-model="manualAddForm.modelType" class="phs-mini-input">
+            <AsShadcnSelect v-model="manualAddForm.modelType" class="phs-mini-input">
               <option
                 v-for="t in manualAddProvider?.supportedModelTypes ?? []"
                 :key="t"
@@ -1174,7 +1193,7 @@ function capabilityTags(
               >
                 {{ modelTypeLabel(t) }}
               </option>
-            </select>
+            </AsShadcnSelect>
           </div>
           <div v-if="manualAddError" class="phs-mini-error">
             {{ manualAddError }}
@@ -1219,7 +1238,7 @@ function capabilityTags(
 .phs-search-icon {
   position: absolute;
   left: 10px;
-  color: #9ca3af;
+  color: var(--muted-foreground);
   pointer-events: none;
 }
 .phs-search {
@@ -1228,23 +1247,23 @@ function capabilityTags(
   height: 36px;
   padding: 0 12px 0 32px;
   font-size: 13px;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--border);
   border-radius: 8px;
-  background: #fff;
-  color: #111827;
+  background: var(--background);
+  color: var(--foreground);
   transition:
     border-color 0.15s ease,
     box-shadow 0.15s ease;
 }
 .phs-search::placeholder {
-  color: #9ca3af;
+  color: var(--muted-foreground);
 }
 .phs-search:focus {
   outline: none;
   border-color: #6366f1;
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
 }
-:global(.dark) .phs-search {
+.dark .phs-search {
   background: #2d2d2d;
   color: #f3f4f6;
   border-color: #3d3d3d;
@@ -1257,11 +1276,11 @@ function capabilityTags(
 .phs-section-title {
   font-size: 14px;
   font-weight: 600;
-  color: #374151;
+  color: var(--foreground);
   margin-bottom: 4px;
 }
-:global(.dark) .phs-section-title {
-  color: #d1d5db;
+.dark .phs-section-title {
+  color: var(--muted-foreground);
 }
 
 /* -------- compact configured providers -------- */
@@ -1270,28 +1289,12 @@ function capabilityTags(
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 8px;
 }
-.phs-compact-card {
-  min-width: 0;
-  min-height: 0;
-  padding: 10px;
-  gap: 8px;
-  border-radius: 10px;
-}
-.phs-compact-card:deep(.as-management-card__head) { gap: 8px; }
-.phs-compact-card:deep(.as-management-card__icon) {
-  width: 32px;
-  height: 32px;
-  flex-shrink: 0;
-  border: 0;
-  background: transparent;
-}
-.phs-compact-card:deep(.as-management-card__title h3) { font-size: 13px; line-height: 18px; }
-.phs-compact-card:deep(.as-management-card__title small) { margin-top: 2px; line-height: 14px; }
-.phs-compact-card:deep(.as-management-card__content) {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
+
+
+
+
+
+
 .phs-compact-card:deep(.as-popover) { display: block; width: 100%; }
 .phs-compact-caps { display: flex; gap: 4px; flex-wrap: wrap; }
 .phs-count-btn {
@@ -1338,7 +1341,7 @@ function capabilityTags(
   justify-content: center;
   background: transparent;
   border: none;
-  color: #9ca3af;
+  color: var(--muted-foreground);
   cursor: pointer;
   width: 28px;
   height: 28px;
@@ -1424,12 +1427,12 @@ function capabilityTags(
 /* Popover filter tab bar */
 .phs-filter-bar {
   padding: 0 0 12px;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
-:global(.dark) .phs-filter-bar {
+.dark .phs-filter-bar {
   border-bottom-color: #2d2d2d;
 }
 .phs-filter-group {
@@ -1438,19 +1441,19 @@ function capabilityTags(
   flex-wrap: wrap;
 }
 .phs-filter-tab {
-  background: #f3f4f6;
+  background: var(--muted);
   border: 1px solid transparent;
   border-radius: 6px;
   padding: 4px 10px;
   font-size: 12px;
-  color: #374151;
+  color: var(--foreground);
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 4px;
 }
 .phs-filter-tab:hover {
-  background: #e5e7eb;
+  background: var(--muted);
 }
 .phs-filter-tab--on {
   background: #eef2ff;
@@ -1458,14 +1461,14 @@ function capabilityTags(
   color: #4338ca;
   font-weight: 500;
 }
-:global(.dark) .phs-filter-tab {
+.dark .phs-filter-tab {
   background: #262626;
-  color: #d1d5db;
+  color: var(--muted-foreground);
 }
-:global(.dark) .phs-filter-tab:hover {
+.dark .phs-filter-tab:hover {
   background: #2d2d2d;
 }
-:global(.dark) .phs-filter-tab--on {
+.dark .phs-filter-tab--on {
   background: #312e81;
   color: #a5b4fc;
 }
@@ -1474,12 +1477,12 @@ function capabilityTags(
   padding: 0 5px;
   border-radius: 999px;
   font-size: 10.5px;
-  color: #6b7280;
+  color: var(--muted-foreground);
   min-width: 18px;
   text-align: center;
 }
 .phs-filter-tab--on .phs-filter-count {
-  background: #fff;
+  background: var(--background);
   color: #4338ca;
 }
 
@@ -1510,14 +1513,14 @@ function capabilityTags(
   padding: 5px 12px;
   font-size: 12px;
   border-radius: 6px;
-  border: 1px solid #d1d5db;
-  background: #fff;
-  color: #374151;
+  border: 1px solid var(--border);
+  background: var(--background);
+  color: var(--foreground);
   cursor: pointer;
   white-space: nowrap;
 }
 .phs-btn:hover {
-  background: #f9fafb;
+  background: var(--muted);
 }
 .phs-btn:disabled {
   opacity: 0.5;
@@ -1547,31 +1550,11 @@ function capabilityTags(
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 8px;
 }
-.phs-installable-card {
-  min-width: 0;
-  min-height: 0;
-  padding: 10px;
-  gap: 8px;
-  border-radius: 10px;
-}
-.phs-installable-card:deep(.as-management-card__head) {
-  gap: 8px;
-}
-.phs-installable-card:deep(.as-management-card__icon) {
-  width: 32px;
-  height: 32px;
-  flex-shrink: 0;
-  border: 0;
-  background: transparent;
-}
-.phs-installable-card:deep(.as-management-card__title h3) {
-  font-size: 13px;
-  line-height: 18px;
-}
-.phs-installable-card:deep(.as-management-card__title small) {
-  margin-top: 2px;
-  line-height: 14px;
-}
+
+
+
+
+
 .phs-installable-config {
   display: flex;
   align-items: center;
@@ -1616,7 +1599,7 @@ function capabilityTags(
 .phs-empty {
   padding: 40px 0;
   text-align: center;
-  color: #9ca3af;
+  color: var(--muted-foreground);
   font-size: 13px;
 }
 
@@ -1666,7 +1649,7 @@ function capabilityTags(
   gap: 7px;
   min-height: 38px;
   padding: 4px 8px;
-  background: #fff;
+  background: var(--background);
   border: 1px solid transparent;
   border-radius: 7px;
   transition:
@@ -1676,22 +1659,22 @@ function capabilityTags(
   overflow: hidden;
 }
 .phs-row:hover {
-  background: #f8fafc;
-  border-color: #e2e8f0;
+  background: var(--muted);
+  border-color: var(--border);
 }
 .phs-row--on {
   background: #f5f7ff;
   border-color: #dfe3ff;
   box-shadow: inset 2px 0 0 #6366f1;
 }
-:global(.dark) .phs-row {
+.dark .phs-row {
   background: #1f1f1f;
   border-color: #2d2d2d;
 }
-:global(.dark) .phs-row:hover {
+.dark .phs-row:hover {
   background: #262626;
 }
-:global(.dark) .phs-row--on {
+.dark .phs-row--on {
   background: #312e81;
   border-color: #6366f1;
 }
@@ -1724,14 +1707,14 @@ function capabilityTags(
   min-width: 0;
   font-size: 12.5px;
   font-weight: 550;
-  color: #111827;
+  color: var(--foreground);
   font-family:
     ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-:global(.dark) .phs-row-name {
+.dark .phs-row-name {
   color: #f3f4f6;
 }
 .phs-row-cap {
@@ -1762,8 +1745,8 @@ function capabilityTags(
   color: #1e40af;
 }
 .phs-row-cap--ctx {
-  background: #f3f4f6;
-  color: #4b5563;
+  background: var(--muted);
+  color: var(--muted-foreground);
   font-family:
     ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
 }
@@ -1782,7 +1765,7 @@ function capabilityTags(
 .phs-row-gear {
   background: transparent;
   border: none;
-  color: #9ca3af;
+  color: var(--muted-foreground);
   cursor: pointer;
   width: 24px;
   height: 24px;
@@ -1802,25 +1785,25 @@ function capabilityTags(
   align-items: center;
   gap: 8px;
   padding: 6px 10px;
-  background: #f9fafb;
+  background: var(--muted);
   border: 1px solid transparent;
   border-radius: 999px;
   transition: background 0.15s ease, border-color 0.15s ease;
 }
 .phs-pill:hover {
-  background: #f3f4f6;
+  background: var(--muted);
 }
 .phs-pill--on {
   background: #eef2ff;
   border-color: #a5b4fc;
 }
-:global(.dark) .phs-pill {
+.dark .phs-pill {
   background: #262626;
 }
-:global(.dark) .phs-pill:hover {
+.dark .phs-pill:hover {
   background: #2d2d2d;
 }
-:global(.dark) .phs-pill--on {
+.dark .phs-pill--on {
   background: #312e81;
   border-color: #6366f1;
 }
@@ -1830,12 +1813,12 @@ function capabilityTags(
   font-size: 12.5px;
   font-family:
     ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
-  color: #111827;
+  color: var(--foreground);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-:global(.dark) .phs-pill-name {
+.dark .phs-pill-name {
   color: #f3f4f6;
 }
 .phs-pill-meta {
@@ -1868,7 +1851,7 @@ function capabilityTags(
 .phs-pill-gear {
   background: transparent;
   border: none;
-  color: #9ca3af;
+  color: var(--muted-foreground);
   cursor: pointer;
   font-size: 13px;
   padding: 0 4px;
@@ -1893,41 +1876,12 @@ function capabilityTags(
   width: 0;
   height: 0;
 }
-.phs-switch-slider {
-  position: absolute;
-  cursor: pointer;
-  inset: 0;
-  background: #cbd5e1;
-  border-radius: 999px;
-  transition: 0.15s;
-}
-.phs-switch-slider:before {
-  position: absolute;
-  content: '';
-  height: 12px;
-  width: 12px;
-  left: 2px;
-  bottom: 2px;
-  background: #fff;
-  border-radius: 50%;
-  transition: 0.15s;
-}
-.phs-switch input:checked + .phs-switch-slider {
-  background: #6366f1;
-}
-.phs-switch input:checked + .phs-switch-slider:before {
-  transform: translateX(12px);
-}
 
 @media (max-width: 560px) {
   .phs-row-cap--ctx,
   .phs-row-cap[data-color='blue'] {
     display: none;
   }
-}
-.phs-switch input:disabled + .phs-switch-slider {
-  opacity: 0.5;
-  cursor: not-allowed;
 }
 
 /* -------- manual add mini-modal -------- */
@@ -1943,13 +1897,13 @@ function capabilityTags(
 .phs-mini-modal {
   width: 420px;
   max-width: 92vw;
-  background: #fff;
+  background: var(--background);
   border-radius: 12px;
   box-shadow: 0 12px 40px rgba(15, 23, 42, 0.25);
   display: flex;
   flex-direction: column;
 }
-:global(.dark) .phs-mini-modal {
+.dark .phs-mini-modal {
   background: #1f1f1f;
   color: #f3f4f6;
 }
@@ -1958,27 +1912,27 @@ function capabilityTags(
   justify-content: space-between;
   align-items: center;
   padding: 12px 16px;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
 }
 .phs-mini-title {
   font-size: 14px;
   font-weight: 600;
-  color: #111827;
+  color: var(--foreground);
 }
-:global(.dark) .phs-mini-title {
+.dark .phs-mini-title {
   color: #f3f4f6;
 }
 .phs-mini-close {
   background: transparent;
   border: none;
   font-size: 16px;
-  color: #6b7280;
+  color: var(--muted-foreground);
   cursor: pointer;
   padding: 2px 6px;
   border-radius: 4px;
 }
 .phs-mini-close:hover {
-  background: #f3f4f6;
+  background: var(--muted);
 }
 .phs-mini-body {
   padding: 12px 16px;
@@ -1988,7 +1942,7 @@ function capabilityTags(
 }
 .phs-mini-hint {
   font-size: 12px;
-  color: #6b7280;
+  color: var(--muted-foreground);
   line-height: 1.5;
 }
 .phs-mini-field {
@@ -1998,18 +1952,18 @@ function capabilityTags(
 }
 .phs-mini-field label {
   font-size: 12px;
-  color: #374151;
+  color: var(--foreground);
   font-weight: 500;
 }
 .phs-mini-input {
   padding: 6px 10px;
   font-size: 13px;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--border);
   border-radius: 6px;
-  background: #fff;
-  color: #111827;
+  background: var(--background);
+  color: var(--foreground);
 }
-:global(.dark) .phs-mini-input {
+.dark .phs-mini-input {
   background: #2d2d2d;
   border-color: #3d3d3d;
   color: #f3f4f6;
@@ -2029,4 +1983,12 @@ function capabilityTags(
 .phs-req {
   color: #dc2626;
 }
+
+.dark .phs-cap {
+  color: #a5b4fc;
+  background: rgb(99 102 241 / 18%);
+}
+.dark .phs-cap[data-color='green'] { color: #86efac; background: rgb(34 197 94 / 15%); }
+.dark .phs-cap[data-color='orange'] { color: #fdba74; background: rgb(249 115 22 / 15%); }
+.dark .phs-cap[data-color='purple'] { color: #d8b4fe; background: rgb(168 85 247 / 15%); }
 </style>

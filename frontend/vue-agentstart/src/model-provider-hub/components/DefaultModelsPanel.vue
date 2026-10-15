@@ -40,6 +40,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   types: () => [
     { modelType: 'LLM', desc: '系统推理模型' },
+    { modelType: 'IMAGE', desc: '图片生成模型' },
     { modelType: 'VIDEO', desc: '视频生成模型' },
     { modelType: 'TEXT_EMBEDDING', desc: 'Embedding 模型' },
     { modelType: 'RERANK', desc: 'Rerank 模型' },
@@ -186,7 +187,7 @@ const rows = computed(() =>
 .dmp-title {
   font-size: 14px;
   font-weight: 600;
-  color: #374151;
+  color: var(--foreground);
   display: flex;
   align-items: baseline;
   gap: 4px;
@@ -194,12 +195,12 @@ const rows = computed(() =>
    * the title row to overflow. */
   flex-wrap: wrap;
 }
-:global(.dark) .dmp-title {
-  color: #d1d5db;
+.dark .dmp-title {
+  color: var(--muted-foreground);
 }
 .dmp-title-hint {
   font-weight: 400;
-  color: #9ca3af;
+  color: var(--muted-foreground);
   font-size: 12px;
 }
 .dmp-grid {
@@ -215,14 +216,14 @@ const rows = computed(() =>
 }
 .dmp-row {
   padding: 12px 14px;
-  background: #fff;
-  border: 1px solid #e5e7eb;
+  background: var(--background);
+  border: 1px solid var(--border);
   border-radius: 10px;
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
-:global(.dark) .dmp-row {
+.dark .dmp-row {
   background: #1f1f1f;
   border-color: #2d2d2d;
 }
@@ -254,18 +255,26 @@ const rows = computed(() =>
 }
 .dmp-desc {
   font-size: 12px;
-  color: #6b7280;
+  color: var(--muted-foreground);
   flex: 1;
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-:global(.dark) .dmp-desc {
-  color: #9ca3af;
+.dark .dmp-desc {
+  color: var(--muted-foreground);
 }
 .dmp-saving {
   font-size: 11px;
   color: #6366f1;
 }
+
+.dark .dmp-cap {
+  color: #a5b4fc;
+  background: rgb(99 102 241 / 18%);
+}
+.dark .dmp-cap[data-color='green'] { color: #86efac; background: rgb(34 197 94 / 15%); }
+.dark .dmp-cap[data-color='orange'] { color: #fdba74; background: rgb(249 115 22 / 15%); }
+.dark .dmp-cap[data-color='purple'] { color: #d8b4fe; background: rgb(168 85 247 / 15%); }
 </style>

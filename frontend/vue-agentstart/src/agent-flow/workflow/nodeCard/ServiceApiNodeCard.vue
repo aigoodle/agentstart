@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Select as ASelect, SelectOption as ASelectOption, Input as AInput, Tooltip as ATooltip, InputNumber as AInputNumber } from '../../../ui';
+
 import { computed } from 'vue';
 
 import WfField from '@/workflow/WfField.vue';
@@ -104,7 +106,7 @@ const paramCount = computed(() => nonEmptyCount(formState.value.parameters));
   display: flex;
   align-items: stretch;
   background: var(--wf-config-surface, #ffffff);
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border);
   border-radius: 6px;
   overflow: hidden;
   transition: border-color 0.15s, box-shadow 0.15s;
@@ -118,7 +120,7 @@ const paramCount = computed(() => nonEmptyCount(formState.value.parameters));
 .wf-http-method {
   flex: none;
   width: 88px;
-  border-right: 1px solid #e5e7eb;
+  border-right: 1px solid var(--border);
   background: color-mix(in srgb, var(--http-method-color) 10%, transparent);
 }
 
@@ -141,9 +143,9 @@ const paramCount = computed(() => nonEmptyCount(formState.value.parameters));
   flex: none;
   padding: 0 8px;
   gap: 2px;
-  color: #6b7280;
+  color: var(--muted-foreground);
   background: var(--wf-config-surface-hover, #f9fafb);
-  border-left: 1px solid #e5e7eb;
+  border-left: 1px solid var(--border);
   font-size: 11px;
 }
 
@@ -161,12 +163,12 @@ const paramCount = computed(() => nonEmptyCount(formState.value.parameters));
   height: 30px;
   font-size: 12px;
   text-align: right;
-  color: #1f2937;
+  color: var(--foreground);
 }
 
 .wf-http-timeout-suffix {
   font-size: 11px;
-  color: #9ca3af;
+  color: var(--muted-foreground);
 }
 
 .wf-http-badge {

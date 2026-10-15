@@ -1,0 +1,109 @@
+@layer theme, base, agent-start-components, utilities;
+/* Compile shadcn utilities in the library. No preflight: hosts own their reset. */
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities) source('../');
+@import 'tw-animate-css';
+@import 'vue-sonner/style.css';
+@custom-variant dark (&:where(.dark, .dark *, [data-theme='dark'], [data-theme='dark'] *));
+
+:root {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: white;
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --radius: 0.625rem;
+}
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+}
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+/* Popups must sit above the library's stacked dialogs, not Tailwind's z-50. */
+.as-select-popup, .as-popover-popup, .as-dropdown-popup, .as-tooltip-popup { z-index: 10000; }
+[data-slot] { box-sizing: border-box; font-family: inherit; }
+.as-select-trigger { width: 100%; }
+.as-select-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+
+.as-check-label { display: inline-flex; align-items: center; gap: 8px; }
+.as-skeleton-stack { display: grid; gap: 12px; }
+.as-boolean-field { display: inline-flex; align-items: center; }
+.as-range-field, .as-select-field { display: block; width: 100%; min-width: 0; }
+
+@layer base {
+  [data-slot] { border-color: var(--border); }
+  button[data-slot] {
+    appearance: none;
+    border: 0 solid transparent;
+    background: transparent;
+    font: inherit;
+    cursor: pointer;
+  }
+  button[data-slot]:disabled { cursor: not-allowed; }
+  input[data-slot], textarea[data-slot] { box-sizing: border-box; font: inherit; }
+  [data-slot='card-title'], [data-slot='card-description'], [data-slot='alert-title'], [data-slot='alert-description'] { margin: 0; }
+}
+.as-select-field > select[hidden], .as-boolean-field > input[hidden], .as-range-field > input[hidden] { display: none !important; }
+
+.as-select-field > button[aria-label='清除选择'] { position: absolute; top: 2px; right: 28px; }
+.as-select-field { position: relative; }
+.as-select-field > input[data-slot='input'] { margin-top: 6px; }
+
+[data-slot='table'] { border-collapse: collapse; border-spacing: 0; }
+.as-data-table { table-layout: fixed; }
+.as-data-table__ellipsis { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.as-data-table__empty td { height: 96px; text-align: center; color: var(--muted-foreground); }

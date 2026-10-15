@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Button as AButton } from '../../ui';
+
 import { h } from 'vue';
 
 import {

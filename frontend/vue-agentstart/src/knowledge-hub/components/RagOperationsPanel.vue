@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import { Card as AsShadcnCard } from '../../ui/shadcn/card';
+
+import { Button as AsShadcnButton } from '../../ui/shadcn/button';
+import { Textarea as AsShadcnTextarea } from '../../ui/shadcn/textarea';
+
 import { computed, onMounted, ref } from 'vue';
 import { defaultRagPolicy, type DatasetDetailHub, type RagCapabilities, type RagPolicy, type RagResult, type RecentQuery } from '../types';
 import type { RetrievalConfig } from '../types/dataset';
@@ -185,37 +190,37 @@ onMounted(initialize);
       <div class="kh-actions">
         <span v-if="dirty" class="kh-draft">策略有未保存的修改</span>
         <span v-else-if="saved" role="status">默认策略已保存</span>
-        <button class="kh-primary" :disabled="!ready || locked" @click="savePolicy">{{ saving ? '保存中…' : '保存为默认策略' }}</button>
+        <AsShadcnButton variant="ghost" class="kh-primary" :disabled="!ready || locked" @click="savePolicy">{{ saving ? '保存中…' : '保存为默认策略' }}</AsShadcnButton>
       </div>
     </header>
     <p v-if="error" role="alert" class="kh-error">{{ error }}</p>
     <div v-if="initializing" class="kh-empty" role="status">正在加载知识库策略…</div>
-    <button v-else-if="!ready" @click="initialize">重新加载</button>
+    <AsShadcnButton variant="ghost" v-else-if="!ready" @click="initialize">重新加载</AsShadcnButton>
     <div v-else class="kh-workbench">
       <div class="kh-config-column">
-        <section class="kh-query-card">
+        <AsShadcnCard class="kh-query-card">
           <div class="kh-card-title"><h3>检索测试</h3><span class="kh-tag">{{ methodLabel }}</span></div>
           <p>本次检索直接使用下方设置，保存后可在业务中复用。</p>
           <label class="kh-query-label" for="kh-rag-query">检索问题</label>
-          <textarea id="kh-rag-query" v-model="query" :disabled="locked" rows="5" maxlength="4000" placeholder="输入需要从知识库中查找的问题…" @keydown.ctrl.enter.prevent="runQuery()" @keydown.meta.enter.prevent="runQuery()" />
+          <AsShadcnTextarea id="kh-rag-query" v-model="query" :disabled="locked" rows="5" maxlength="4000" placeholder="输入需要从知识库中查找的问题…" @keydown.ctrl.enter.prevent="runQuery()" @keydown.meta.enter.prevent="runQuery()" />
           <div class="kh-actions kh-query-actions"><small>{{ query.length }}/4000 · Ctrl / ⌘ + Enter</small>
-            <button class="kh-primary" :disabled="!hub.retrieveRag || locked || !query.trim()" @click="runQuery()">{{ running ? '检索中…' : '执行检索' }}</button>
+            <AsShadcnButton variant="ghost" class="kh-primary" :disabled="!hub.retrieveRag || locked || !query.trim()" @click="runQuery()">{{ running ? '检索中…' : '执行检索' }}</AsShadcnButton>
           </div>
           <p v-if="!hub.retrieveRag" class="kh-error">当前宿主未连接 RAG 检索接口。</p>
-        </section>
-        <section class="kh-strategy-card">
+        </AsShadcnCard>
+        <AsShadcnCard class="kh-strategy-card">
           <div class="kh-card-title"><h3>检索策略</h3><span class="kh-tag">{{ dirty ? '当前草稿' : '知识库默认策略' }}</span></div>
           <fieldset class="kh-editor-fieldset" :disabled="locked">
             <RagPolicyEditor v-model="policy" :capabilities="capabilities" :rerank-models="rerankModels" />
           </fieldset>
-        </section>
-        <section class="kh-history-card">
+        </AsShadcnCard>
+        <AsShadcnCard class="kh-history-card">
           <div class="kh-card-title"><h3>最近检索</h3><small>点击问题，使用当前策略重新检索</small></div>
           <p v-if="!history.length">暂无检索记录。</p>
-          <button v-for="item in history" :key="item.id" class="kh-history-row" :disabled="locked" @click="runQuery(item.query)">
+          <AsShadcnButton variant="ghost" v-for="item in history" :key="item.id" class="kh-history-row" :disabled="locked" @click="runQuery(item.query)">
             <span class="kh-history-query">{{ item.query }}</span><small>{{ item.hitCount }} 命中 · {{ item.at }}</small>
-          </button>
-        </section>
+          </AsShadcnButton>
+        </AsShadcnCard>
       </div>
       <section class="kh-results-column" :aria-busy="running" aria-label="检索结果">
         <div class="kh-card-title"><h3>检索结果 <span v-if="result" class="kh-tag">{{ result.evidence.length }} 条证据</span></h3><small v-if="result">{{ latency }} ms</small></div>
@@ -246,15 +251,15 @@ onMounted(initialize);
       <summary>质量评测与索引运维 <small>使用当前检索策略评测，管理索引和失败任务</small></summary>
       <p v-if="operationsError" role="alert" class="kh-error">{{ operationsError }}</p>
       <div class="kh-operations-grid">
-        <section><h3>检索评测集</h3><p>评测复用上方策略与 Top K。</p><textarea v-model="evaluationJson" rows="10" spellcheck="false" aria-label="评测集 JSON" />
-          <button class="kh-primary" :disabled="!ready || !hub.evaluateRetrieval || operating || locked" @click="evaluate">{{ operating ? '处理中…' : '运行评测' }}</button>
+        <section><h3>检索评测集</h3><p>评测复用上方策略与 Top K。</p><AsShadcnTextarea v-model="evaluationJson" rows="10" spellcheck="false" aria-label="评测集 JSON" />
+          <AsShadcnButton variant="ghost" class="kh-primary" :disabled="!ready || !hub.evaluateRetrieval || operating || locked" @click="evaluate">{{ operating ? '处理中…' : '运行评测' }}</AsShadcnButton>
           <div v-if="report" class="kh-metrics"><div v-for="(value, key) in report.metrics" :key="key"><span>{{ key }}</span><strong>{{ Number(value).toFixed(3) }}</strong></div></div>
         </section>
-        <section><div class="kh-card-title"><h3>索引与摄取任务</h3><button :disabled="operating" @click="refreshOperations">刷新状态</button></div>
+        <section><div class="kh-card-title"><h3>索引与摄取任务</h3><AsShadcnButton variant="ghost" :disabled="operating" @click="refreshOperations">刷新状态</AsShadcnButton></div>
           <p v-if="!versions.length">暂无版本化索引，当前使用兼容模式。</p>
-          <article v-for="item in versions" :key="item.id" class="kh-row"><div><strong>{{ item.version }}</strong><small>{{ item.status }} · {{ item.embeddingModelVersion || '未记录 Embedding 版本' }}</small></div><button v-if="hub.activateIndexVersion && (item.status === 'RETIRED' || item.status === 'REBUILDING')" :disabled="operating" @click="operate(() => hub.activateIndexVersion!(datasetId, item.id))">{{ item.status === 'RETIRED' ? '回退至此版本' : '激活' }}</button></article>
+          <article v-for="item in versions" :key="item.id" class="kh-row"><div><strong>{{ item.version }}</strong><small>{{ item.status }} · {{ item.embeddingModelVersion || '未记录 Embedding 版本' }}</small></div><AsShadcnButton variant="ghost" v-if="hub.activateIndexVersion && (item.status === 'RETIRED' || item.status === 'REBUILDING')" :disabled="operating" @click="operate(() => hub.activateIndexVersion!(datasetId, item.id))">{{ item.status === 'RETIRED' ? '回退至此版本' : '激活' }}</AsShadcnButton></article>
           <h3>隔离任务</h3><p v-if="!poisoned.length">没有隔离的摄取任务。</p>
-          <article v-for="job in poisoned" :key="job.documentId" class="kh-row"><div><strong>{{ job.filename || job.documentId }}</strong><small>{{ job.lastError || '未知错误' }} · 重试 {{ job.retryCount || 0 }} 次</small></div><button v-if="hub.replayIngestionJob" :disabled="operating" @click="operate(() => hub.replayIngestionJob!(datasetId, job.documentId))">人工重放</button></article>
+          <article v-for="job in poisoned" :key="job.documentId" class="kh-row"><div><strong>{{ job.filename || job.documentId }}</strong><small>{{ job.lastError || '未知错误' }} · 重试 {{ job.retryCount || 0 }} 次</small></div><AsShadcnButton variant="ghost" v-if="hub.replayIngestionJob" :disabled="operating" @click="operate(() => hub.replayIngestionJob!(datasetId, job.documentId))">人工重放</AsShadcnButton></article>
         </section>
       </div>
     </details>

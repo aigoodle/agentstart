@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Button as AsShadcnButton } from '../../ui/shadcn/button';
+
 /**
  * 访问 API tab — reproduces the Dify docs layout (Snipaste_09-01-20):
  *   - big heading + subtitle
@@ -169,7 +171,7 @@ onMounted(() => {
           <span class="api-status-dot" />
           {{ serverStatus }}
         </span>
-        <button
+        <AsShadcnButton variant="ghost"
           v-if="canManageKeys"
           type="button"
           class="api-key-btn"
@@ -177,7 +179,7 @@ onMounted(() => {
         >
           <KeyOutlined />
           <span>API 密钥</span>
-        </button>
+        </AsShadcnButton>
         <span v-else class="api-key-hint">API 密钥</span>
       </div>
     </header>
@@ -204,7 +206,7 @@ onMounted(() => {
           <div class="api-codeblock">
             <div class="api-codeblock-head">Code</div>
             <pre class="api-code"><code>{{ baseUrl }}</code></pre>
-            <button class="api-copy" @click="copy(baseUrl)">复制</button>
+            <AsShadcnButton variant="ghost" class="api-copy" @click="copy(baseUrl)">复制</AsShadcnButton>
           </div>
         </section>
 
@@ -219,9 +221,9 @@ onMounted(() => {
           <div class="api-codeblock">
             <div class="api-codeblock-head">Code</div>
             <pre class="api-code"><code>Authorization: Bearer {{ apiKey }}</code></pre>
-            <button class="api-copy" @click="copy(`Authorization: Bearer ${apiKey}`)">
+            <AsShadcnButton variant="ghost" class="api-copy" @click="copy(`Authorization: Bearer ${apiKey}`)">
               复制
-            </button>
+            </AsShadcnButton>
           </div>
         </section>
 
@@ -244,16 +246,16 @@ onMounted(() => {
           <div v-if="ep.code" class="api-codeblock api-codeblock-dark">
             <div class="api-codeblock-head api-codeblock-head-dark">Request</div>
             <pre class="api-code api-code-dark"><code>{{ ep.code }}</code></pre>
-            <button class="api-copy api-copy-dark" @click="copy(ep.code ?? '')">
+            <AsShadcnButton variant="ghost" class="api-copy api-copy-dark" @click="copy(ep.code ?? '')">
               复制
-            </button>
+            </AsShadcnButton>
           </div>
         </section>
       </div>
 
       <aside v-if="anchors.length > 0" class="api-toc">
         <div class="api-toc-title">目录</div>
-        <button
+        <AsShadcnButton variant="ghost"
           v-for="a in anchors"
           :key="a.id"
           type="button"
@@ -262,7 +264,7 @@ onMounted(() => {
           @click="goto(a.id)"
         >
           {{ a.title }}
-        </button>
+        </AsShadcnButton>
       </aside>
     </div>
   </div>
@@ -280,21 +282,21 @@ onMounted(() => {
   align-items: center;
   justify-content: space-between;
   padding: 12px 20px;
-  border-bottom: 1px solid #e5e7eb;
-  background: #fff;
+  border-bottom: 1px solid var(--border);
+  background: var(--background);
 }
 .api-top-title {
   margin: 0;
   font-size: 15px;
   font-weight: 600;
-  color: #0f172a;
+  color: var(--foreground);
 }
 .api-top-right {
   display: flex;
   align-items: center;
   gap: 14px;
   font-size: 12px;
-  color: #64748b;
+  color: var(--muted-foreground);
 }
 .api-status {
   display: inline-flex;
@@ -310,9 +312,9 @@ onMounted(() => {
 }
 .api-key-hint {
   padding: 3px 8px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
   border-radius: 6px;
-  background: #f8fafc;
+  background: var(--muted);
 }
 .api-key-btn {
   display: inline-flex;
@@ -351,11 +353,11 @@ onMounted(() => {
 .api-h1 {
   margin: 0 0 6px;
   font-size: 22px;
-  color: #0f172a;
+  color: var(--foreground);
 }
 .api-lead {
   margin: 0;
-  color: #64748b;
+  color: var(--muted-foreground);
   font-size: 13px;
   line-height: 1.6;
 }
@@ -366,16 +368,16 @@ onMounted(() => {
   margin: 0 0 8px;
   font-size: 16px;
   font-weight: 600;
-  color: #0f172a;
+  color: var(--foreground);
 }
 .api-p {
-  color: #475569;
+  color: var(--muted-foreground);
   font-size: 13px;
   line-height: 1.7;
 }
 .api-p code {
   padding: 1px 6px;
-  background: #f1f5f9;
+  background: var(--muted);
   border-radius: 4px;
   color: #dc2626;
   font-family: ui-monospace, monospace;
@@ -384,15 +386,15 @@ onMounted(() => {
 .api-codeblock {
   position: relative;
   margin-top: 8px;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background: var(--muted);
+  border: 1px solid var(--border);
   border-radius: 8px;
   overflow: hidden;
 }
 .api-codeblock-head {
   padding: 6px 12px;
   background: #eef2f7;
-  color: #64748b;
+  color: var(--muted-foreground);
   font-size: 11px;
   font-weight: 600;
 }
@@ -400,7 +402,7 @@ onMounted(() => {
   margin: 0;
   padding: 12px 14px;
   background: transparent;
-  color: #0f172a;
+  color: var(--foreground);
   font-family: ui-monospace, monospace;
   font-size: 12px;
   line-height: 1.6;
@@ -414,7 +416,7 @@ onMounted(() => {
   padding: 2px 8px;
   border: none;
   background: transparent;
-  color: #64748b;
+  color: var(--muted-foreground);
   font-size: 11px;
   cursor: pointer;
 }
@@ -427,13 +429,13 @@ onMounted(() => {
 }
 .api-codeblock-head-dark {
   background: #1e293b;
-  color: #94a3b8;
+  color: var(--muted-foreground);
 }
 .api-code-dark {
-  color: #e2e8f0;
+  color: var(--muted-foreground);
 }
 .api-copy-dark {
-  color: #94a3b8;
+  color: var(--muted-foreground);
 }
 .api-method {
   display: inline-block;
@@ -449,7 +451,7 @@ onMounted(() => {
   color: #fff;
 }
 .api-method-get {
-  background: #2563eb;
+  background: var(--primary);
   color: #fff;
 }
 .api-method-delete {
@@ -459,20 +461,20 @@ onMounted(() => {
 .api-path {
   font-family: ui-monospace, monospace;
   font-size: 12px;
-  color: #475569;
+  color: var(--muted-foreground);
 }
 
 /* TOC */
 .api-toc {
   padding: 24px 12px;
-  border-left: 1px solid #e5e7eb;
-  background: #fff;
+  border-left: 1px solid var(--border);
+  background: var(--background);
 }
 .api-toc-title {
   padding: 4px 8px 6px;
   font-size: 11px;
   font-weight: 600;
-  color: #94a3b8;
+  color: var(--muted-foreground);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -484,13 +486,13 @@ onMounted(() => {
   background: transparent;
   border-radius: 6px;
   font-size: 12px;
-  color: #64748b;
+  color: var(--muted-foreground);
   text-align: left;
   cursor: pointer;
 }
 .api-toc-item:hover {
-  background: #f1f5f9;
-  color: #0f172a;
+  background: var(--muted);
+  color: var(--foreground);
 }
 .api-toc-item-active {
   background: #eef2ff;

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Tag as ATag, Select as ASelect, Switch as ASwitch } from '../../../ui';
+
 import { ref } from 'vue';
 
 import MemoryWindow from '@/components/MemoryWindow.vue';
@@ -185,7 +187,7 @@ const RESPONSE_FORMATS = [
 .llm-varselect {
   padding: 4px 8px;
   background: var(--wf-config-surface-hover, #f9fafb);
-  border: 1px dashed #d1d5db;
+  border: 1px dashed var(--border);
   border-radius: 6px;
   cursor: pointer;
   transition: border-color 0.15s;

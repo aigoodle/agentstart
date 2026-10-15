@@ -1,22 +1,18 @@
 import {
-  Teleport,
   Transition,
   defineComponent,
   h,
-  nextTick,
-  onBeforeUnmount,
   ref,
-  watch,
   type PropType,
 } from 'vue';
 
+import { DialogHeader, DialogFooter } from '../shadcn/dialog';
+import { useOverlayLayer } from './overlayLayer';
 import { Button } from './Button';
+import { Dialog, DialogContent, DialogOverlay, DialogPortal, DialogTitle } from './dialog';
 
 type AnyRecord = Record<string, unknown>;
 
-// Teleported dialogs share one layer stack, ordered by opening time.
-let nextModalLayer = 1200;
-const modalLayers = new Map<symbol, number>();
 
 export const Modal = defineComponent({
   name: 'AsModal',
@@ -35,59 +31,54 @@ export const Modal = defineComponent({
     destroyOnClose: Boolean,
     keyboard: { type: Boolean, default: true },
     centered: Boolean,
+    headless: Boolean,
+    bodyStyle: [String, Object] as PropType<string | Record<string, unknown>>,
     okButtonProps: { type: Object as PropType<AnyRecord>, default: () => ({}) },
     cancelButtonProps: { type: Object as PropType<AnyRecord>, default: () => ({}) },
   },
   emits: ['update:open', 'update:visible', 'ok', 'cancel', 'afterClose'],
   setup(props, { attrs, emit, slots }) {
     const panel = ref<HTMLElement | null>(null);
-    const previouslyFocused = ref<HTMLElement | null>(null);
-    const layerId = Symbol('modal');
-    const layer = ref(1200);
-    const isTopModal = () => modalLayers.get(layerId) === Math.max(...modalLayers.values());
-    const releaseLayer = () => {
-      const restoreFocus = isTopModal();
-      modalLayers.delete(layerId);
-      if (restoreFocus && previouslyFocused.value?.isConnected) previouslyFocused.value.focus();
-      previouslyFocused.value = null;
-    };
+    const isOpen = () => props.open || props.visible;
+    const { layer, isTop: isTopModal } = useOverlayLayer(isOpen);
     const close = (event?: Event) => {
       emit('update:open', false);
       emit('update:visible', false);
       emit('cancel', event);
     };
-    const isOpen = () => props.open || props.visible;
-
-    watch(isOpen, async (open) => {
-      if (typeof document === 'undefined') return;
-      if (open) {
-        layer.value = nextModalLayer;
-        nextModalLayer += 10;
-        modalLayers.set(layerId, layer.value);
-        previouslyFocused.value = document.activeElement as HTMLElement | null;
-        await nextTick();
-        if (isOpen() && isTopModal()) panel.value?.focus();
-      } else {
-        releaseLayer();
-      }
-    }, { immediate: true });
-    onBeforeUnmount(releaseLayer);
-
-    return () => h(Teleport, { to: 'body' }, h(Transition, {
+    return () => h(Dialog, {
+      open: isOpen(),
+      // Dismissal is translated explicitly below to preserve cancel's Event payload.
+    }, () => h(DialogPortal, { forceMount: true }, () => h(Transition, {
       name: 'as-modal-fade',
       onAfterLeave: () => emit('afterClose'),
     }, () => isOpen() ? h('div', {
       class: ['as-modal-root', { 'as-modal-root--centered': props.centered }],
       style: { zIndex: layer.value },
-      onKeydown: (event: KeyboardEvent) => {
-        if (isTopModal() && event.key === 'Escape') {
-          event.stopPropagation();
-          if (props.keyboard) close(event);
-        }
-      },
     }, [
-      h('div', { class: 'as-modal__mask', onClick: (event: Event) => { if (props.maskClosable) close(event); } }),
-      h('section', {
+      h(DialogOverlay, { asChild: true, forceMount: true }, () => h('div', {
+        class: 'as-modal__mask',
+        onClick: (event: Event) => { if (isTopModal() && props.maskClosable) close(event); },
+      })),
+      h(DialogContent, {
+        asChild: true,
+        forceMount: true,
+        'aria-describedby': undefined,
+        onEscapeKeyDown: (event: KeyboardEvent) => {
+          // Keep controlled cancellation events and guard background layers.
+          event.preventDefault();
+          if (isTopModal() && props.keyboard) close(event);
+        },
+        onPointerDownOutside: (event: CustomEvent<{ originalEvent: PointerEvent }>) => {
+          event.preventDefault();
+        },
+        onInteractOutside: (event: Event) => event.preventDefault(),
+        onOpenAutoFocus: (event: Event) => {
+          event.preventDefault();
+          if (isTopModal()) panel.value?.focus();
+        },
+        onCloseAutoFocus: (event: Event) => event.preventDefault(),
+      }, () => h('section', {
         ...attrs,
         ref: panel,
         class: ['as-modal', 'as-hud-frame', 'as-hud-frame--modal', attrs.class],
@@ -106,21 +97,21 @@ export const Modal = defineComponent({
           h('i', { class: 'as-hud-modal__rail as-hud-modal__rail--left' }),
           h('i', { class: 'as-hud-modal__rail as-hud-modal__rail--right' }),
         ]),
-        h('header', { class: 'as-modal__head' }, [
-          h('div', { class: 'as-modal__title' }, [
+        props.headless ? h(DialogTitle, { class: 'sr-only' }, () => props.title ?? '对话框') : h(DialogHeader, { class: 'as-modal__head flex-row' }, () => [
+          h(DialogTitle, { as: 'div', class: 'as-modal__title' }, () => [
             h('span', { class: 'as-modal__title-text' }, slots.title?.() ?? [
               h('span', { class: 'as-modal-title' }, props.title),
             ]),
           ]),
-          props.closable ? h('button', { type: 'button', class: 'as-modal__close', 'aria-label': '关闭', onClick: close }, '×') : null,
+          props.closable ? h(Button, { type: 'text', size: 'small', htmlType: 'button', class: 'as-modal__close', style: { position: 'absolute', right: '16px', left: 'auto', top: '12px', bottom: 'auto', margin: '0', width: '32px', height: '32px', padding: '0' }, 'aria-label': '关闭', onClick: close }, () => '×') : null,
         ]),
-        h('div', { class: 'as-modal__body' }, slots.default?.()),
-        props.footer === null || props.footer === false ? null : h('footer', { class: 'as-modal__footer' }, slots.footer?.() ?? [
+        h('div', { class: 'as-modal__body', style: props.bodyStyle }, slots.default?.()),
+        props.footer === null || props.footer === false ? null : h(DialogFooter, { class: 'as-modal__footer' }, () => slots.footer?.() ?? [
           h(Button, { ...props.cancelButtonProps, onClick: close }, () => props.cancelText),
           h(Button, { ...props.okButtonProps, type: 'primary', loading: props.confirmLoading, onClick: () => emit('ok') }, () => props.okText),
         ]),
-      ]),
-    ]) : null));
+      ])),
+    ]) : null)));
   },
 }) as ReturnType<typeof defineComponent> & {
   confirm?: (options: AnyRecord) => void;

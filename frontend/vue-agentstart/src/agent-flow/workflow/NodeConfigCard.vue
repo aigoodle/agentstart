@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { Input as AInput, Popover as APopover, Tooltip as ATooltip } from '../../ui';
+
+import { Button as AsShadcnButton } from '../../ui/shadcn/button';
+
 import { computed, defineEmits, onBeforeMount, ref, watch } from 'vue';
 
 import {
@@ -295,20 +299,20 @@ watch(() => props.selectNode, panelInit);
               </template>
             </div>
           </template>
-          <button class="wf-config-header-btn" title="更多">
+          <AsShadcnButton variant="ghost" class="wf-config-header-btn" title="更多">
             <EllipsisOutlined />
-          </button>
+          </AsShadcnButton>
         </a-popover>
         <a-tooltip title="帮助文档" placement="bottom">
-          <button class="wf-config-header-btn">
+          <AsShadcnButton variant="ghost" class="wf-config-header-btn">
             <ReadOutlined />
-          </button>
+          </AsShadcnButton>
         </a-tooltip>
         <div class="wf-config-header-divider" />
         <a-tooltip title="关闭" placement="bottom">
-          <button class="wf-config-header-btn" @click="closeCard">
+          <AsShadcnButton variant="ghost" class="wf-config-header-btn" @click="closeCard">
             <CloseOutlined />
-          </button>
+          </AsShadcnButton>
         </a-tooltip>
       </div>
     </div>

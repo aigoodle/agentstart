@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Input as AsShadcnInput } from '../../ui/shadcn/input';
+
 /**
  * KnowledgeHubApp — the drop-in top-level component for the knowledge-base
  * feature. Consumers only need to implement the `KnowledgeHubApi` interface
@@ -324,7 +326,7 @@ defineExpose({
               <circle cx="11" cy="11" r="7" />
               <path d="m20 20-3.5-3.5" />
             </svg>
-            <input
+            <AsShadcnInput
               v-model="keyword"
               class="kh-app-search-input"
               :placeholder="t('app.searchPlaceholder')"

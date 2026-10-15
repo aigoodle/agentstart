@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { Button as AButton, Select as ASelect, SelectOption as ASelectOption, Input as AInput, Tooltip as ATooltip, InputNumber as AInputNumber, Tag as ATag } from '../../../ui';
+
+import { Button as AsShadcnButton } from '../../../ui/shadcn/button';
+
 import { computed, ref } from 'vue';
 
 import PromptEditor from '@/components/PromptEditor.vue';
@@ -213,7 +217,7 @@ const authEnabled = computed(() => {
 
       <!-- Body 类型切换：紧凑的 chip 风格 -->
       <div class="wf-http-body-tabs">
-        <button
+        <AsShadcnButton variant="ghost"
           v-for="t in BODY_TYPES"
           :key="t.value"
           class="wf-http-body-tab"
@@ -221,7 +225,7 @@ const authEnabled = computed(() => {
           @click="formState.bodyType = t.value"
         >
           {{ t.label }}
-        </button>
+        </AsShadcnButton>
       </div>
 
       <!-- Body 内容按类型分发 -->
@@ -286,7 +290,7 @@ const authEnabled = computed(() => {
   display: flex;
   align-items: stretch;
   background: var(--wf-config-surface, #ffffff);
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border);
   border-radius: 6px;
   overflow: hidden;
   transition: border-color 0.15s, box-shadow 0.15s;
@@ -300,7 +304,7 @@ const authEnabled = computed(() => {
 .wf-http-method {
   flex: none;
   width: 88px;
-  border-right: 1px solid #e5e7eb;
+  border-right: 1px solid var(--border);
   background: color-mix(in srgb, var(--http-method-color) 10%, transparent);
 }
 
@@ -324,9 +328,9 @@ const authEnabled = computed(() => {
   flex: none;
   padding: 0 8px;
   gap: 2px;
-  color: #6b7280;
+  color: var(--muted-foreground);
   background: var(--wf-config-surface-hover, #f9fafb);
-  border-left: 1px solid #e5e7eb;
+  border-left: 1px solid var(--border);
   font-size: 11px;
 }
 
@@ -344,12 +348,12 @@ const authEnabled = computed(() => {
   height: 30px;
   font-size: 12px;
   text-align: right;
-  color: #1f2937;
+  color: var(--foreground);
 }
 
 .wf-http-timeout-suffix {
   font-size: 11px;
-  color: #9ca3af;
+  color: var(--muted-foreground);
 }
 
 /* -------------------------------------------------------------
@@ -394,7 +398,7 @@ const authEnabled = computed(() => {
   flex: none;
   padding: 3px 8px;
   font-size: 11px;
-  color: #6b7280;
+  color: var(--muted-foreground);
   background: transparent;
   border: none;
   border-radius: 4px;
@@ -404,7 +408,7 @@ const authEnabled = computed(() => {
 }
 
 .wf-http-body-tab:hover {
-  color: #1f2937;
+  color: var(--foreground);
 }
 
 .wf-http-body-tab.is-active {
@@ -422,9 +426,9 @@ const authEnabled = computed(() => {
   padding: 8px 12px;
   text-align: center;
   font-size: 11px;
-  color: #9ca3af;
+  color: var(--muted-foreground);
   background: var(--wf-config-surface-hover, #f9fafb);
-  border: 1px dashed #e5e7eb;
+  border: 1px dashed var(--border);
   border-radius: 6px;
 }
 
@@ -434,7 +438,7 @@ const authEnabled = computed(() => {
   padding: 6px 10px;
   min-height: 32px;
   background: var(--wf-config-surface-hover, #f9fafb);
-  border: 1px dashed #d1d5db;
+  border: 1px dashed var(--border);
   border-radius: 6px;
   cursor: pointer;
   transition: border-color 0.15s;
@@ -446,6 +450,6 @@ const authEnabled = computed(() => {
 
 .wf-http-binary-hint {
   font-size: 12px;
-  color: #9ca3af;
+  color: var(--muted-foreground);
 }
 </style>

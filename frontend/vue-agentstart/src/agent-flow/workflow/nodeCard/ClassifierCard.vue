@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Button as AButton } from '../../../ui';
+
 import { h } from 'vue';
 
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons-vue';
@@ -98,9 +100,9 @@ const removeClass = (index: number) => {
   padding: 12px;
   text-align: center;
   font-size: 12px;
-  color: #9ca3af;
+  color: var(--muted-foreground);
   background: var(--wf-config-surface-hover, #f9fafb);
-  border: 1px dashed #e5e7eb;
+  border: 1px dashed var(--border);
   border-radius: 6px;
 }
 
@@ -116,7 +118,7 @@ const removeClass = (index: number) => {
   gap: 6px;
   padding: 10px;
   background: var(--wf-config-surface-hover, #f9fafb);
-  border: 1px solid #f0f0f0;
+  border: 1px solid var(--border);
   border-radius: 6px;
 }
 
@@ -129,6 +131,6 @@ const removeClass = (index: number) => {
 .classifier-item-name {
   font-size: 12px;
   font-weight: 500;
-  color: #4b5563;
+  color: var(--muted-foreground);
 }
 </style>

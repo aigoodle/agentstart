@@ -183,7 +183,7 @@ const onConnectionPlusClick = (event, nodeId, handleId) => {
 .classifier-more {
   padding: 2px 8px;
   font-size: 10px;
-  color: #6b7280;
+  color: var(--muted-foreground);
   font-style: italic;
 }
 </style>

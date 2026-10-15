@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { Switch as ASwitch, Input as AInput, Select as ASelect, SelectOption as ASelectOption, InputNumber as AInputNumber, Textarea as ATextarea, Button as AButton } from '../../../ui';
+
+import { Button as AsShadcnButton } from '../../../ui/shadcn/button';
+
 import { computed, onMounted, ref, watch, watchEffect } from 'vue';
 import { ApiOutlined, ClockCircleOutlined, MessageOutlined, ThunderboltOutlined } from '@ant-design/icons-vue';
 
@@ -162,7 +166,7 @@ onMounted(loadMessageConnectors);
     </div>
 
     <div v-if="enabled" class="wf-triggers-types">
-      <button
+      <AsShadcnButton variant="ghost"
         v-for="item in TRIGGERS"
         :key="item.key"
         type="button"
@@ -173,7 +177,7 @@ onMounted(loadMessageConnectors);
       >
         <component :is="item.icon" class="wf-triggers-type-icon" />
         <span>{{ item.label }}</span>
-      </button>
+      </AsShadcnButton>
     </div>
 
     <div v-if="enabled && currentType === 'schedule'" class="wf-schedule-form">

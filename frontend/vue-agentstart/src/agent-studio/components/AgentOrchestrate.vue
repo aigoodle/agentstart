@@ -1,4 +1,11 @@
 <script setup lang="ts">
+import { Card as AsShadcnCard } from '../../ui/shadcn/card';
+
+import { ShadcnBoolean as AsShadcnBoolean } from '../../ui/components/ShadcnBoolean';
+
+import { Button as AsShadcnButton } from '../../ui/shadcn/button';
+import { ShadcnSelect as AsShadcnSelect } from '../../ui/components/ShadcnSelect';
+
 /**
  * 编排 tab body. Two-column: left = editor sections stack, right = debug slot.
  * Above both, a toolbar with:
@@ -86,13 +93,13 @@ function removeKnowledge(id: string) {
     <header class="orch-top">
       <h2 class="orch-top-title">编排</h2>
       <div class="orch-top-actions">
-        <button
+        <AsShadcnButton variant="ghost"
           type="button"
           class="orch-btn orch-btn-ghost"
           @click="emit('openSettings')"
         >
           ⚙ Agent 设置
-        </button>
+        </AsShadcnButton>
         <div class="orch-model">
           <ModelPickerPopover
             :model-value="modelSelection"
@@ -104,14 +111,14 @@ function removeKnowledge(id: string) {
             @update:model-value="onPickModel"
           />
         </div>
-        <button
+        <AsShadcnButton variant="ghost"
           type="button"
           class="orch-btn orch-btn-primary"
           :disabled="publishing"
           @click="emit('publish')"
         >
           {{ publishing ? '发布中...' : '发布' }}
-        </button>
+        </AsShadcnButton>
       </div>
     </header>
 
@@ -137,7 +144,7 @@ function removeKnowledge(id: string) {
 
         <!-- 知识库 -->
         <slot name="knowledge">
-          <div class="orch-card">
+          <AsShadcnCard class="orch-card">
             <div class="orch-card-head">
               <div class="orch-card-title">
                 知识库
@@ -145,13 +152,13 @@ function removeKnowledge(id: string) {
                   ⓘ
                 </span>
               </div>
-              <button
+              <AsShadcnButton variant="ghost"
                 type="button"
                 class="orch-card-btn"
                 @click="emit('addKnowledge')"
               >
                 + 添加
-              </button>
+              </AsShadcnButton>
             </div>
             <div v-if="knowledge.length === 0" class="orch-hint">
               你可以让模型引用知识库作为上下文。
@@ -167,27 +174,27 @@ function removeKnowledge(id: string) {
                 <span v-if="k.documentCount != null" class="orch-know-count">
                   {{ k.documentCount }} 文档
                 </span>
-                <button
+                <AsShadcnButton variant="ghost"
                   type="button"
                   class="orch-know-x"
                   @click="removeKnowledge(k.id)"
                 >
                   ×
-                </button>
+                </AsShadcnButton>
               </div>
             </div>
-          </div>
+          </AsShadcnCard>
         </slot>
 
         <!-- 元数据过滤 (inline row, matches Dify) -->
-        <div class="orch-inline-card">
+        <AsShadcnCard class="orch-inline-card">
           <div class="orch-inline-label">
             元数据过滤
             <span class="orch-help" title="限制检索到的文档必须匹配指定元数据">
               ⓘ
             </span>
           </div>
-          <select
+          <AsShadcnSelect
             class="orch-inline-select"
             :value="metadataFilter"
             @change="emit('update:metadataFilter', ($event.target as HTMLSelectElement).value)"
@@ -195,8 +202,8 @@ function removeKnowledge(id: string) {
             <option value="禁用">禁用</option>
             <option value="自动">自动</option>
             <option value="手动">手动</option>
-          </select>
-        </div>
+          </AsShadcnSelect>
+        </AsShadcnCard>
 
         <!-- 工具 -->
         <slot name="tools">
@@ -208,7 +215,7 @@ function removeKnowledge(id: string) {
         </slot>
 
         <!-- 视觉 -->
-        <div class="orch-inline-card">
+        <AsShadcnCard class="orch-inline-card">
           <div class="orch-inline-label">
             <span class="orch-vision-icon">👁</span>
             视觉
@@ -217,17 +224,17 @@ function removeKnowledge(id: string) {
             </span>
           </div>
           <div class="orch-inline-right">
-            <button type="button" class="orch-inline-ghost">⚙ 设置</button>
-            <label class="orch-switch">
-              <input
+            <AsShadcnButton variant="ghost" type="button" class="orch-inline-ghost">⚙ 设置</AsShadcnButton>
+            <label class="inline-flex items-center">
+              <AsShadcnBoolean
                 type="checkbox"
                 :checked="visionEnabled"
                 @change="emit('update:visionEnabled', ($event.target as HTMLInputElement).checked)"
               />
-              <span class="orch-switch-slider" />
+
             </label>
           </div>
-        </div>
+        </AsShadcnCard>
       </section>
 
       <!-- RIGHT: debug slot -->
@@ -252,14 +259,14 @@ function removeKnowledge(id: string) {
   align-items: center;
   justify-content: space-between;
   padding: 12px 20px;
-  border-bottom: 1px solid #e5e7eb;
-  background: #fff;
+  border-bottom: 1px solid var(--border);
+  background: var(--background);
 }
 .orch-top-title {
   margin: 0;
   font-size: 15px;
   font-weight: 600;
-  color: #0f172a;
+  color: var(--foreground);
 }
 .orch-top-actions {
   display: flex;
@@ -271,16 +278,16 @@ function removeKnowledge(id: string) {
   align-items: center;
   gap: 4px;
   padding: 6px 12px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
   border-radius: 8px;
-  background: #fff;
+  background: var(--background);
   font-size: 12px;
-  color: #475569;
+  color: var(--muted-foreground);
   cursor: pointer;
   transition: background 0.15s;
 }
 .orch-btn:hover:not(:disabled) {
-  background: #f1f5f9;
+  background: var(--muted);
 }
 .orch-btn-primary {
   background: linear-gradient(135deg, #6366f1, #4f46e5);
@@ -334,8 +341,8 @@ function removeKnowledge(id: string) {
 /* Generic card */
 .orch-card {
   padding: 12px 14px;
-  background: #fff;
-  border: 1px solid #e5e7eb;
+  background: var(--background);
+  border: 1px solid var(--border);
   border-radius: 12px;
 }
 .orch-card-head {
@@ -347,7 +354,7 @@ function removeKnowledge(id: string) {
 .orch-card-title {
   font-size: 13px;
   font-weight: 600;
-  color: #334155;
+  color: var(--foreground);
 }
 .orch-card-btn {
   padding: 2px 8px;
@@ -363,13 +370,13 @@ function removeKnowledge(id: string) {
 }
 .orch-help {
   margin-left: 4px;
-  color: #94a3b8;
+  color: var(--muted-foreground);
   font-size: 11px;
   cursor: help;
 }
 .orch-hint {
   font-size: 12px;
-  color: #94a3b8;
+  color: var(--muted-foreground);
 }
 .orch-know-list {
   display: flex;
@@ -381,7 +388,7 @@ function removeKnowledge(id: string) {
   align-items: center;
   gap: 8px;
   padding: 6px 10px;
-  background: #f8fafc;
+  background: var(--muted);
   border-radius: 8px;
   font-size: 12px;
 }
@@ -389,12 +396,12 @@ function removeKnowledge(id: string) {
   font-size: 14px;
 }
 .orch-know-name {
-  color: #0f172a;
+  color: var(--foreground);
   font-weight: 500;
 }
 .orch-know-count {
   margin-left: 4px;
-  color: #94a3b8;
+  color: var(--muted-foreground);
   font-size: 11px;
 }
 .orch-know-x {
@@ -402,7 +409,7 @@ function removeKnowledge(id: string) {
   padding: 0 6px;
   border: none;
   background: transparent;
-  color: #94a3b8;
+  color: var(--muted-foreground);
   font-size: 14px;
   cursor: pointer;
 }
@@ -416,8 +423,8 @@ function removeKnowledge(id: string) {
   align-items: center;
   justify-content: space-between;
   padding: 10px 14px;
-  background: #fff;
-  border: 1px solid #e5e7eb;
+  background: var(--background);
+  border: 1px solid var(--border);
   border-radius: 12px;
 }
 .orch-inline-label {
@@ -426,15 +433,15 @@ function removeKnowledge(id: string) {
   gap: 6px;
   font-size: 13px;
   font-weight: 600;
-  color: #334155;
+  color: var(--foreground);
 }
 .orch-inline-select {
   padding: 3px 8px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
   border-radius: 6px;
-  background: #fff;
+  background: var(--background);
   font-size: 12px;
-  color: #0f172a;
+  color: var(--foreground);
 }
 .orch-inline-right {
   display: flex;
@@ -447,11 +454,11 @@ function removeKnowledge(id: string) {
   border-radius: 6px;
   background: transparent;
   font-size: 12px;
-  color: #64748b;
+  color: var(--muted-foreground);
   cursor: pointer;
 }
 .orch-inline-ghost:hover {
-  background: #f1f5f9;
+  background: var(--muted);
 }
 .orch-vision-icon {
   display: inline-flex;
@@ -476,30 +483,5 @@ function removeKnowledge(id: string) {
   opacity: 0;
   width: 0;
   height: 0;
-}
-.orch-switch-slider {
-  position: absolute;
-  inset: 0;
-  background: #cbd5e1;
-  border-radius: 999px;
-  cursor: pointer;
-  transition: background 0.15s;
-}
-.orch-switch-slider::before {
-  content: '';
-  position: absolute;
-  width: 14px;
-  height: 14px;
-  top: 2px;
-  left: 2px;
-  background: #fff;
-  border-radius: 50%;
-  transition: transform 0.15s;
-}
-.orch-switch input:checked + .orch-switch-slider {
-  background: #4f46e5;
-}
-.orch-switch input:checked + .orch-switch-slider::before {
-  transform: translateX(14px);
 }
 </style>

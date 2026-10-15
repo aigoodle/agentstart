@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Input as AsShadcnInput } from '../../ui/shadcn/input';
+
 /**
  * ProviderCredentialModal — save-and-validate a provider-level API key.
  *
@@ -129,7 +131,7 @@ async function save() {
               <span v-if="!editMode" class="pcm-req">*</span>
               <span v-if="f.secret" class="pcm-secret">密文</span>
             </label>
-            <input
+            <AsShadcnInput
               v-if="f.secret"
               type="password"
               class="pcm-input"
@@ -140,7 +142,7 @@ async function save() {
               :placeholder="editMode ? '留空 = 保持不变' : (f.placeholder ?? '')"
               @input="(e) => (creds[f.name] = (e.target as HTMLInputElement).value)"
             />
-            <input
+            <AsShadcnInput
               v-else
               type="text"
               :required="!editMode"
@@ -187,7 +189,7 @@ async function save() {
   z-index: 1000;
 }
 .pcm-modal { max-height: 88vh; }
-:global(.dark) .pcm-modal {
+.dark .pcm-modal {
   background: #1f1f1f;
   color: #f3f4f6;
 }
@@ -196,9 +198,9 @@ async function save() {
   align-items: center;
   justify-content: space-between;
   padding: 14px 20px;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
 }
-:global(.dark) .pcm-header {
+.dark .pcm-header {
   border-bottom-color: #2d2d2d;
 }
 .pcm-title {
@@ -213,13 +215,13 @@ async function save() {
   background: transparent;
   border: none;
   font-size: 18px;
-  color: #6b7280;
+  color: var(--muted-foreground);
   cursor: pointer;
   padding: 4px 8px;
   border-radius: 6px;
 }
 .pcm-close:hover {
-  background: #f3f4f6;
+  background: var(--muted);
 }
 .pcm-body {
   padding: 16px 20px;
@@ -229,7 +231,7 @@ async function save() {
 .pcm-hint {
   margin-bottom: 12px;
   font-size: 12px;
-  color: #6b7280;
+  color: var(--muted-foreground);
   line-height: 1.6;
 }
 .pcm-error {
@@ -257,10 +259,10 @@ async function save() {
   gap: 6px;
   font-size: 13px;
   font-weight: 500;
-  color: #374151;
+  color: var(--foreground);
 }
-:global(.dark) .pcm-label {
-  color: #d1d5db;
+.dark .pcm-label {
+  color: var(--muted-foreground);
 }
 .pcm-req {
   color: #dc2626;
@@ -275,12 +277,12 @@ async function save() {
 .pcm-input {
   padding: 8px 10px;
   font-size: 13px;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--border);
   border-radius: 6px;
-  background: #fff;
-  color: #111827;
+  background: var(--background);
+  color: var(--foreground);
 }
-:global(.dark) .pcm-input {
+.dark .pcm-input {
   background: #2d2d2d;
   border-color: #3d3d3d;
   color: #f3f4f6;

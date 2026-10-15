@@ -103,7 +103,7 @@ const modelName = computed(() => props.data.model?.modelName || '');
 
 .wf-node-subtitle-empty {
   font-style: italic;
-  color: #9ca3af;
+  color: var(--muted-foreground);
   font-weight: 400;
 }
 
@@ -119,7 +119,7 @@ const modelName = computed(() => props.data.model?.modelName || '');
 }
 
 .param-name {
-  color: #1f2937;
+  color: var(--foreground);
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
 }
 
@@ -132,6 +132,6 @@ const modelName = computed(() => props.data.model?.modelName || '');
   padding: 2px 6px;
   font-size: 10px;
   font-style: italic;
-  color: #9ca3af;
+  color: var(--muted-foreground);
 }
 </style>

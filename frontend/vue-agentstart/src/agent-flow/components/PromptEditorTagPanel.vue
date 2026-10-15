@@ -1,5 +1,9 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
+import { Button as AsShadcnButton } from '../../ui/shadcn/button';
+
+import { computed, ref } from 'vue';
+
+import { Popover, PopoverAnchor, PopoverContent } from '../../ui/shadcn/popover';
 
 import { DownOutlined, RightOutlined } from '@ant-design/icons-vue';
 
@@ -33,43 +37,17 @@ const props = defineProps({
 
 const emit = defineEmits(['close', 'select']);
 
-const panelRef = ref<HTMLElement | null>(null);
-// 首次测量完成前放在视口外，既不会闪到左上角，也不需要额外的
-// visibility 响应式状态（后者容易与 Teleport 更新形成递归渲染）。
-const panelPos = ref({ top: '-9999px', left: '-9999px' });
+const anchorReference = computed(() => props.targetElement?.element ?? props.targetElement ?? {
+  getBoundingClientRect: () => {
+    const left = parseFloat(props.position?.left ?? '0'), top = parseFloat(props.position?.top ?? '0');
+    return { x: left, y: top, left, top, right: left, bottom: top, width: 0, height: 0 } as DOMRect;
+  },
+});
 const expandedKeys = ref<Set<string>>(new Set());
 const workflowStore = useWorkflowStore();
 const nodeList = computed<any[]>(() => props.nodeId
   ? workflowStore.getParentNodeList(props.nodeId)
   : []);
-
-/** ---------- 定位 ---------- */
-function updatePosition() {
-  // SSR guard: also invoked from an immediate watch during setup.
-  if (typeof window === 'undefined') return;
-  if (!props.targetElement) {
-    panelPos.value = {
-      top: props.position?.top ?? '0px',
-      left: props.position?.left ?? '0px',
-    };
-    return;
-  }
-  const rect = props.targetElement.getBoundingClientRect();
-  const panelH = panelRef.value?.offsetHeight || 320;
-  const panelW = panelRef.value?.offsetWidth || 300;
-  const vh = window.innerHeight;
-  const vw = window.innerWidth;
-
-  let top = rect.bottom + 6;
-  let left = rect.left;
-  if (top + panelH > vh) top = Math.max(10, rect.top - panelH - 6);
-  if (left + panelW > vw) left = Math.max(10, vw - panelW - 10);
-
-  panelPos.value = {
-    top: `${Math.max(10, top)}px`,
-    left: `${Math.max(10, left)}px`,
-  };
-}
 
 /** ---------- 搜索/展开 ---------- */
 function getNodeOutputList(node: any) {
@@ -134,49 +112,6 @@ function close() {
   emit('close');
 }
 
-function onDocMouseDown(e: MouseEvent) {
-  if (!panelRef.value) return;
-  if (!panelRef.value.contains(e.target as Node)) close();
-}
-
-/** ESC 快捷键关闭面板；capture 阶段拦截，避免宿主编辑器把事件吃掉。 */
-function onDocKeyDown(e: KeyboardEvent) {
-  if (!props.show) return;
-  if (e.key === 'Escape') {
-    e.preventDefault();
-    e.stopPropagation();
-    close();
-  }
-}
-
-/** ---------- 生命周期 ---------- */
-onMounted(() => {
-  document.addEventListener('mousedown', onDocMouseDown);
-  document.addEventListener('keydown', onDocKeyDown, true);
-  window.addEventListener('scroll', updatePosition, true);
-  window.addEventListener('resize', updatePosition);
-  if (props.show) updatePosition();
-});
-
-onUnmounted(() => {
-  document.removeEventListener('mousedown', onDocMouseDown);
-  document.removeEventListener('keydown', onDocKeyDown, true);
-  window.removeEventListener('scroll', updatePosition, true);
-  window.removeEventListener('resize', updatePosition);
-});
-
-watch(() => props.show, (show) => {
-  if (show) updatePosition();
-  else panelPos.value = { top: '-9999px', left: '-9999px' };
-}, { flush: 'post' });
-
-// slash 输入模式会持续替换光标锚点；面板已经打开时同步跟随。
-watch(() => props.targetElement, () => {
-  if (props.show) updatePosition();
-}, { flush: 'post' });
-
-watch(() => props.position, updatePosition);
-
 /** 判断当前 selectedIndex 对应的项是否命中，给项加 active */
 function isActive(nodeId: string, parentName: string | null, name: string) {
   if (!props.isSlashMode) return false;
@@ -191,24 +126,20 @@ function isActive(nodeId: string, parentName: string | null, name: string) {
 </script>
 
 <template>
-  <Teleport to="body">
-  <div
-    v-if="show"
-    ref="panelRef"
-    class="wf-tag-panel hud-panel"
-    :style="panelPos"
-    @mousedown.stop
-  >
+  <Popover :open="show" @update:open="!$event && close()">
+    <PopoverAnchor :reference="anchorReference" style="display: none" />
+    <PopoverContent class="wf-tag-panel hud-panel" side="bottom" align="start" :side-offset="6" :collision-padding="10"
+      :style="{ width: '300px', padding: 0 }" @open-auto-focus.prevent @close-auto-focus.prevent @mousedown.stop>
     <div class="wf-tag-panel-header">
       <div class="wf-tag-panel-title">快速插入变量</div>
-      <button class="wf-tag-panel-close" @click="close">
+      <AsShadcnButton variant="ghost" class="wf-tag-panel-close" @click="close">
         <svg viewBox="0 0 24 24" width="14" height="14">
           <path
             fill="currentColor"
             d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
           />
         </svg>
-      </button>
+      </AsShadcnButton>
     </div>
 
     <div class="wf-tag-panel-body">
@@ -273,25 +204,25 @@ function isActive(nodeId: string, parentName: string | null, name: string) {
         </div>
       </div>
     </div>
-  </div>
-  </Teleport>
+    </PopoverContent>
+  </Popover>
 </template>
 
-<style scoped>
+<style>
 .wf-tag-panel {
-  position: fixed;
-  z-index: 2000;
+  position: relative;
+  z-index: 10000;
   display: flex;
   flex-direction: column;
   width: 300px;
   max-height: 360px;
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
+  background: var(--background);
+  border: 1px solid var(--border);
   border-radius: 10px;
   box-shadow: 0 12px 32px rgba(15, 23, 42, 0.16);
   overflow: hidden;
   font-size: 13px;
-  color: #1f2937;
+  color: var(--foreground);
 }
 
 .wf-tag-panel-header {
@@ -299,14 +230,14 @@ function isActive(nodeId: string, parentName: string | null, name: string) {
   align-items: center;
   justify-content: space-between;
   padding: 8px 12px;
-  background: #f9fafb;
-  border-bottom: 1px solid #f0f0f0;
+  background: var(--muted);
+  border-bottom: 1px solid var(--border);
 }
 
 .wf-tag-panel-title {
   font-size: 12px;
   font-weight: 600;
-  color: #4b5563;
+  color: var(--muted-foreground);
   letter-spacing: 0.3px;
   text-transform: uppercase;
 }
@@ -317,7 +248,7 @@ function isActive(nodeId: string, parentName: string | null, name: string) {
   justify-content: center;
   width: 22px;
   height: 22px;
-  color: #6b7280;
+  color: var(--muted-foreground);
   background: transparent;
   border: none;
   border-radius: 4px;
@@ -326,8 +257,8 @@ function isActive(nodeId: string, parentName: string | null, name: string) {
 }
 
 .wf-tag-panel-close:hover {
-  background: #e5e7eb;
-  color: #1f2937;
+  background: var(--muted);
+  color: var(--foreground);
 }
 
 .wf-tag-panel-body {
@@ -335,14 +266,14 @@ function isActive(nodeId: string, parentName: string | null, name: string) {
   min-height: 0;
   padding: 4px 0;
   overflow-y: auto;
-  background: #ffffff;
+  background: var(--background);
 }
 
 .wf-tag-panel-body::-webkit-scrollbar {
   width: 6px;
 }
 .wf-tag-panel-body::-webkit-scrollbar-thumb {
-  background: #d1d5db;
+  background: var(--muted);
   border-radius: 3px;
 }
 
@@ -350,7 +281,7 @@ function isActive(nodeId: string, parentName: string | null, name: string) {
   padding: 20px 16px;
   text-align: center;
   font-size: 12px;
-  color: #9ca3af;
+  color: var(--muted-foreground);
 }
 
 .wf-tag-group {
@@ -358,14 +289,14 @@ function isActive(nodeId: string, parentName: string | null, name: string) {
 }
 
 .wf-tag-group + .wf-tag-group {
-  border-top: 1px solid #f3f4f6;
+  border-top: 1px solid var(--border);
 }
 
 .wf-tag-group-title {
   padding: 6px 14px 4px;
   font-size: 11px;
   font-weight: 600;
-  color: #6b7280;
+  color: var(--muted-foreground);
   letter-spacing: 0.4px;
   text-transform: uppercase;
 }
@@ -398,7 +329,7 @@ function isActive(nodeId: string, parentName: string | null, name: string) {
   justify-content: center;
   width: 14px;
   height: 14px;
-  color: #9ca3af;
+  color: var(--muted-foreground);
 }
 
 .wf-tag-expand:hover {
@@ -425,7 +356,7 @@ function isActive(nodeId: string, parentName: string | null, name: string) {
 }
 
 .wf-tag-icon[data-type='string'] {
-  background: #3b82f6;
+  background: var(--primary);
 }
 .wf-tag-icon[data-type='number'] {
   background: #f59e0b;
@@ -454,7 +385,7 @@ function isActive(nodeId: string, parentName: string | null, name: string) {
 .wf-tag-type {
   flex: none;
   font-size: 11px;
-  color: #9ca3af;
+  color: var(--muted-foreground);
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
 }
 </style>

@@ -1,4 +1,13 @@
 <script setup lang="ts">
+import { Card as AsShadcnCard } from '../../ui/shadcn/card';
+
+import { ShadcnBoolean as AsShadcnBoolean } from '../../ui/components/ShadcnBoolean';
+import { ShadcnRange as AsShadcnRange } from '../../ui/components/ShadcnRange';
+
+import { ShadcnSelect as AsShadcnSelect } from '../../ui/components/ShadcnSelect';
+import { Button as AsShadcnButton } from '../../ui/shadcn/button';
+import { Input as AsShadcnInput } from '../../ui/shadcn/input';
+
 /**
  * RetrievalMethodPicker — Dify-parity 检索方法 selector, extracted so the same
  * UI serves the create wizard (step 2), the settings panel, and the recall
@@ -150,7 +159,7 @@ function pickMethod(m: RetrievalMethod) {
 <template>
   <div class="rmp" :class="[`rmp-${variant}`]">
     <!-- 向量检索 -->
-    <div
+    <AsShadcnCard
       class="rmp-card"
       :class="{
         'rmp-card-active': method === 'VECTOR',
@@ -174,11 +183,11 @@ function pickMethod(m: RetrievalMethod) {
         @click.stop
       >
         <label class="rmp-check">
-          <input type="checkbox" v-model="rerankEnabled" />
+          <AsShadcnBoolean type="checkbox" v-model="rerankEnabled" />
           <span>Rerank 模型</span>
           <span class="rmp-hint-inline">对检索结果按语义相关度重排</span>
         </label>
-        <select
+        <AsShadcnSelect
           v-if="rerankEnabled"
           v-model="rerankModelId"
           class="rmp-select"
@@ -187,13 +196,13 @@ function pickMethod(m: RetrievalMethod) {
           <option v-for="m in rerankModels" :key="m.id" :value="m.id">
             {{ m.label }}
           </option>
-        </select>
+        </AsShadcnSelect>
         <div class="rmp-slider-row">
           <div class="rmp-slider-label">
             <span>Top K</span>
             <span class="rmp-slider-val">{{ topK }}</span>
           </div>
-          <input
+          <AsShadcnRange
             v-model.number="topK"
             type="range"
             min="1"
@@ -205,14 +214,14 @@ function pickMethod(m: RetrievalMethod) {
         <div class="rmp-slider-row">
           <div class="rmp-slider-label">
             <label class="rmp-check rmp-check-inline">
-              <input type="checkbox" v-model="scoreThresholdEnabled" />
+              <AsShadcnBoolean type="checkbox" v-model="scoreThresholdEnabled" />
               <span>Score 阈值</span>
             </label>
             <span class="rmp-slider-val">
               {{ scoreThresholdEnabled ? scoreThreshold.toFixed(2) : '—' }}
             </span>
           </div>
-          <input
+          <AsShadcnRange
             v-model.number="scoreThreshold"
             type="range"
             min="0"
@@ -223,10 +232,10 @@ function pickMethod(m: RetrievalMethod) {
           />
         </div>
       </div>
-    </div>
+    </AsShadcnCard>
 
     <!-- 全文检索 -->
-    <div
+    <AsShadcnCard
       class="rmp-card"
       :class="{ 'rmp-card-active': method === 'FULL_TEXT' }"
       @click="pickMethod('FULL_TEXT')"
@@ -247,7 +256,7 @@ function pickMethod(m: RetrievalMethod) {
             <span>Top K</span>
             <span class="rmp-slider-val">{{ topK }}</span>
           </div>
-          <input
+          <AsShadcnRange
             v-model.number="topK"
             type="range"
             min="1"
@@ -259,14 +268,14 @@ function pickMethod(m: RetrievalMethod) {
         <div class="rmp-slider-row">
           <div class="rmp-slider-label">
             <label class="rmp-check rmp-check-inline">
-              <input type="checkbox" v-model="scoreThresholdEnabled" />
+              <AsShadcnBoolean type="checkbox" v-model="scoreThresholdEnabled" />
               <span>Score 阈值</span>
             </label>
             <span class="rmp-slider-val">
               {{ scoreThresholdEnabled ? scoreThreshold.toFixed(2) : '—' }}
             </span>
           </div>
-          <input
+          <AsShadcnRange
             v-model.number="scoreThreshold"
             type="range"
             min="0"
@@ -277,10 +286,10 @@ function pickMethod(m: RetrievalMethod) {
           />
         </div>
       </div>
-    </div>
+    </AsShadcnCard>
 
     <!-- 混合检索 -->
-    <div
+    <AsShadcnCard
       class="rmp-card"
       :class="{
         'rmp-card-active': method === 'HYBRID',
@@ -305,30 +314,30 @@ function pickMethod(m: RetrievalMethod) {
         @click.stop
       >
         <div class="rmp-tabs">
-          <button
+          <AsShadcnButton variant="ghost"
             type="button"
             class="rmp-tab"
             :class="{ 'rmp-tab-active': hybridSubMode === 'weight' }"
             @click="hybridSubMode = 'weight'"
           >
             权重设置
-          </button>
-          <button
+          </AsShadcnButton>
+          <AsShadcnButton variant="ghost"
             type="button"
             class="rmp-tab"
             :class="{ 'rmp-tab-active': hybridSubMode === 'rerank' }"
             @click="hybridSubMode = 'rerank'"
           >
             Rerank 模型
-          </button>
+          </AsShadcnButton>
         </div>
         <div v-if="hybridSubMode === 'weight'" class="rmp-slider-row">
           <div class="rmp-slider-label">
             <span>召回融合</span>
-            <select v-model="fusionMethod" class="rmp-select rmp-select-inline">
+            <AsShadcnSelect v-model="fusionMethod" class="rmp-select rmp-select-inline">
               <option value="RECIPROCAL_RANK">RRF 排名融合（推荐）</option>
               <option value="WEIGHTED_SCORE">加权分数融合</option>
-            </select>
+            </AsShadcnSelect>
           </div>
           <div class="rmp-slider-label">
             <span>
@@ -336,7 +345,7 @@ function pickMethod(m: RetrievalMethod) {
               {{ (1 - vectorWeight).toFixed(1) }}
             </span>
           </div>
-          <input
+          <AsShadcnRange
             v-model.number="vectorWeight"
             type="range"
             min="0"
@@ -347,10 +356,10 @@ function pickMethod(m: RetrievalMethod) {
         </div>
         <div v-else>
           <label class="rmp-check">
-            <input type="checkbox" v-model="rerankEnabled" />
+            <AsShadcnBoolean type="checkbox" v-model="rerankEnabled" />
             <span>启用 Rerank 模型</span>
           </label>
-          <select
+          <AsShadcnSelect
             v-if="rerankEnabled"
             v-model="rerankModelId"
             class="rmp-select"
@@ -359,14 +368,14 @@ function pickMethod(m: RetrievalMethod) {
             <option v-for="m in rerankModels" :key="m.id" :value="m.id">
               {{ m.label }}
             </option>
-          </select>
+          </AsShadcnSelect>
         </div>
         <div class="rmp-slider-row">
           <div class="rmp-slider-label">
             <span>Top K</span>
             <span class="rmp-slider-val">{{ topK }}</span>
           </div>
-          <input
+          <AsShadcnRange
             v-model.number="topK"
             type="range"
             min="1"
@@ -378,36 +387,36 @@ function pickMethod(m: RetrievalMethod) {
         <div class="rmp-advanced-grid">
           <label>
             <span>候选池倍数</span>
-            <input v-model.number="recallMultiplier" type="number" min="1" max="20" class="rmp-select" />
+            <AsShadcnInput v-model.number="recallMultiplier" type="number" min="1" max="20" class="rmp-select" />
           </label>
           <label>
             <span>单文档最多命中</span>
-            <input v-model.number="maxChunksPerDocument" type="number" min="0" max="20" class="rmp-select" />
+            <AsShadcnInput v-model.number="maxChunksPerDocument" type="number" min="0" max="20" class="rmp-select" />
           </label>
           <label>
             <span>相邻上下文窗口</span>
-            <input v-model.number="neighborWindow" type="number" min="0" max="5" class="rmp-select" />
+            <AsShadcnInput v-model.number="neighborWindow" type="number" min="0" max="5" class="rmp-select" />
           </label>
           <label>
             <span>查询变体上限</span>
-            <input v-model.number="maxQueryVariants" type="number" min="1" max="8" class="rmp-select" :disabled="!queryExpansionEnabled" />
+            <AsShadcnInput v-model.number="maxQueryVariants" type="number" min="1" max="8" class="rmp-select" :disabled="!queryExpansionEnabled" />
           </label>
         </div>
         <label class="rmp-check">
-          <input v-model="queryExpansionEnabled" type="checkbox" />
+          <AsShadcnBoolean v-model="queryExpansionEnabled" type="checkbox" />
           <span>启用查询清洗与多路召回</span>
         </label>
         <div class="rmp-slider-row">
           <div class="rmp-slider-label">
             <label class="rmp-check rmp-check-inline">
-              <input type="checkbox" v-model="scoreThresholdEnabled" />
+              <AsShadcnBoolean type="checkbox" v-model="scoreThresholdEnabled" />
               <span>Score 阈值</span>
             </label>
             <span class="rmp-slider-val">
               {{ scoreThresholdEnabled ? scoreThreshold.toFixed(2) : '—' }}
             </span>
           </div>
-          <input
+          <AsShadcnRange
             v-model.number="scoreThreshold"
             type="range"
             min="0"
@@ -418,7 +427,7 @@ function pickMethod(m: RetrievalMethod) {
           />
         </div>
       </div>
-    </div>
+    </AsShadcnCard>
 
     <p v-if="disableVectorish" class="rmp-econ-note">
       当前索引方式为「经济」，仅支持全文检索。

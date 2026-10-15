@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import { Card as AsShadcnCard } from '../../ui/shadcn/card';
+
+import { Button as AsShadcnButton } from '../../ui/shadcn/button';
+import { Textarea as AsShadcnTextarea } from '../../ui/shadcn/textarea';
+
 /**
  * 提示词 block from Dify's orchestrate tab. Textarea + "生成" chip (host wires
  * up prompt-generation via `generate`) + variable insertion helpers.
@@ -63,7 +68,7 @@ function insertVariable(v: PromptVariable) {
 </script>
 
 <template>
-  <div class="prompt-card">
+  <AsShadcnCard class="prompt-card">
     <div class="prompt-head">
       <div class="prompt-title">
         提示词
@@ -72,21 +77,21 @@ function insertVariable(v: PromptVariable) {
         </span>
       </div>
       <div class="prompt-head-actions">
-        <button
+        <AsShadcnButton variant="ghost"
           v-if="insertableVars.length > 0"
           type="button"
           class="prompt-chip"
           @click="showVars = !showVars"
         >
           + 变量
-        </button>
-        <button type="button" class="prompt-chip prompt-chip-primary" @click="emit('generate')">
+        </AsShadcnButton>
+        <AsShadcnButton variant="ghost" type="button" class="prompt-chip prompt-chip-primary" @click="emit('generate')">
           ✨ 生成
-        </button>
+        </AsShadcnButton>
       </div>
     </div>
     <div class="prompt-body">
-      <textarea
+      <AsShadcnTextarea
         ref="textarea"
         :value="modelValue"
         class="prompt-textarea"
@@ -96,7 +101,7 @@ function insertVariable(v: PromptVariable) {
       />
       <div v-if="showVars" class="prompt-var-pop">
         <div class="prompt-var-title">插入变量</div>
-        <button
+        <AsShadcnButton variant="ghost"
           v-for="v in insertableVars"
           :key="v.key"
           type="button"
@@ -105,19 +110,19 @@ function insertVariable(v: PromptVariable) {
         >
           <code>{{ tokenOf(v.key) }}</code>
           <span class="prompt-var-item-label">{{ v.label || v.key }}</span>
-        </button>
+        </AsShadcnButton>
       </div>
     </div>
     <div class="prompt-footer">
       <span class="prompt-count">{{ modelValue?.length ?? 0 }} 字符</span>
     </div>
-  </div>
+  </AsShadcnCard>
 </template>
 
 <style scoped>
 .prompt-card {
   padding: 12px 14px 8px;
-  background: #fff;
+  background: var(--background);
   border: 1.5px solid #6366f1;
   border-radius: 12px;
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.08);
@@ -131,11 +136,11 @@ function insertVariable(v: PromptVariable) {
 .prompt-title {
   font-size: 13px;
   font-weight: 600;
-  color: #334155;
+  color: var(--foreground);
 }
 .prompt-help {
   margin-left: 4px;
-  color: #94a3b8;
+  color: var(--muted-foreground);
   font-size: 11px;
   cursor: help;
 }
@@ -146,9 +151,9 @@ function insertVariable(v: PromptVariable) {
 }
 .prompt-chip {
   padding: 3px 10px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
   border-radius: 999px;
-  background: #fff;
+  background: var(--background);
   font-size: 12px;
   color: #4338ca;
   cursor: pointer;
@@ -173,12 +178,12 @@ function insertVariable(v: PromptVariable) {
   resize: vertical;
   font-family: inherit;
   font-size: 13px;
-  color: #0f172a;
+  color: var(--foreground);
   background: transparent;
   line-height: 1.6;
 }
 .prompt-textarea::placeholder {
-  color: #94a3b8;
+  color: var(--muted-foreground);
 }
 .prompt-var-pop {
   position: absolute;
@@ -186,8 +191,8 @@ function insertVariable(v: PromptVariable) {
   right: 8px;
   min-width: 220px;
   padding: 6px;
-  background: #fff;
-  border: 1px solid #e2e8f0;
+  background: var(--background);
+  border: 1px solid var(--border);
   border-radius: 10px;
   box-shadow: 0 12px 32px rgba(15, 23, 42, 0.14);
   z-index: 5;
@@ -196,7 +201,7 @@ function insertVariable(v: PromptVariable) {
   padding: 4px 8px;
   font-size: 11px;
   font-weight: 600;
-  color: #64748b;
+  color: var(--muted-foreground);
 }
 .prompt-var-item {
   display: flex;
@@ -211,7 +216,7 @@ function insertVariable(v: PromptVariable) {
   cursor: pointer;
 }
 .prompt-var-item:hover {
-  background: #f1f5f9;
+  background: var(--muted);
 }
 .prompt-var-item code {
   padding: 1px 5px;
@@ -222,16 +227,16 @@ function insertVariable(v: PromptVariable) {
   font-family: ui-monospace, monospace;
 }
 .prompt-var-item-label {
-  color: #475569;
+  color: var(--muted-foreground);
 }
 .prompt-footer {
   display: flex;
   justify-content: flex-end;
   padding-top: 4px;
-  border-top: 1px solid #f1f5f9;
+  border-top: 1px solid var(--border);
 }
 .prompt-count {
   font-size: 11px;
-  color: #94a3b8;
+  color: var(--muted-foreground);
 }
 </style>

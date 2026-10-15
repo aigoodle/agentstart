@@ -1,4 +1,12 @@
 <script setup lang="ts">
+import { Card as AsShadcnCard } from '../../ui/shadcn/card';
+
+import { ShadcnBoolean as AsShadcnBoolean } from '../../ui/components/ShadcnBoolean';
+
+import { Button as AsShadcnButton } from '../../ui/shadcn/button';
+import { Input as AsShadcnInput } from '../../ui/shadcn/input';
+import { ShadcnSelect as AsShadcnSelect } from '../../ui/components/ShadcnSelect';
+
 /**
  * 变量 block from Dify's orchestrate tab. Emits `add` and mutates rows in
  * place — the host owns the array (v-model:list).
@@ -47,7 +55,7 @@ function removeRow(rows: PromptVariable[], idx: number) {
 </script>
 
 <template>
-  <div class="var-card">
+  <AsShadcnCard class="var-card">
     <div class="var-head">
       <div class="var-title">
         变量
@@ -55,7 +63,7 @@ function removeRow(rows: PromptVariable[], idx: number) {
           ⓘ
         </span>
       </div>
-      <button type="button" class="var-add" @click="addRow(list)">+ 添加</button>
+      <AsShadcnButton variant="ghost" type="button" class="var-add" @click="addRow(list)">+ 添加</AsShadcnButton>
     </div>
     <div v-if="list.length === 0" class="var-empty">
       变量能让用户在表单中输入提示词或直接引用。你可以试试在提示词中输入
@@ -63,19 +71,19 @@ function removeRow(rows: PromptVariable[], idx: number) {
     </div>
     <div v-else class="var-list">
       <div v-for="(row, i) in list" :key="i" class="var-row">
-        <input
+        <AsShadcnInput
           class="var-input var-input-key"
           :value="row.key"
           placeholder="key"
           @input="(e) => updateRow(list, i, { key: (e.target as HTMLInputElement).value })"
         />
-        <input
+        <AsShadcnInput
           class="var-input"
           :value="row.label"
           placeholder="展示名"
           @input="(e) => updateRow(list, i, { label: (e.target as HTMLInputElement).value })"
         />
-        <select
+        <AsShadcnSelect
           class="var-input var-input-type"
           :value="row.type"
           @change="(e) => updateRow(list, i, { type: (e.target as HTMLSelectElement).value as VariableType })"
@@ -83,28 +91,28 @@ function removeRow(rows: PromptVariable[], idx: number) {
           <option v-for="o in TYPE_OPTIONS" :key="o.value" :value="o.value">
             {{ o.label }}
           </option>
-        </select>
+        </AsShadcnSelect>
         <label class="var-required">
-          <input
+          <AsShadcnBoolean
             type="checkbox"
             :checked="row.required ?? false"
             @change="(e) => updateRow(list, i, { required: (e.target as HTMLInputElement).checked })"
           />
           必填
         </label>
-        <button type="button" class="var-remove" @click="removeRow(list, i)">
+        <AsShadcnButton variant="ghost" type="button" class="var-remove" @click="removeRow(list, i)">
           ×
-        </button>
+        </AsShadcnButton>
       </div>
     </div>
-  </div>
+  </AsShadcnCard>
 </template>
 
 <style scoped>
 .var-card {
   padding: 12px 14px;
-  background: #fff;
-  border: 1px solid #e5e7eb;
+  background: var(--background);
+  border: 1px solid var(--border);
   border-radius: 12px;
 }
 .var-head {
@@ -116,11 +124,11 @@ function removeRow(rows: PromptVariable[], idx: number) {
 .var-title {
   font-size: 13px;
   font-weight: 600;
-  color: #334155;
+  color: var(--foreground);
 }
 .var-help {
   margin-left: 4px;
-  color: #94a3b8;
+  color: var(--muted-foreground);
   font-size: 11px;
   cursor: help;
 }
@@ -139,12 +147,12 @@ function removeRow(rows: PromptVariable[], idx: number) {
 .var-empty {
   padding: 4px 0;
   font-size: 12px;
-  color: #94a3b8;
+  color: var(--muted-foreground);
   line-height: 1.5;
 }
 .var-empty code {
   padding: 1px 5px;
-  background: #f1f5f9;
+  background: var(--muted);
   border-radius: 4px;
   font-family: ui-monospace, monospace;
 }
@@ -162,11 +170,11 @@ function removeRow(rows: PromptVariable[], idx: number) {
   flex: 1;
   min-width: 0;
   padding: 5px 8px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
   border-radius: 6px;
   font-size: 12px;
-  background: #fff;
-  color: #0f172a;
+  background: var(--background);
+  color: var(--foreground);
 }
 .var-input:focus {
   outline: none;
@@ -185,7 +193,7 @@ function removeRow(rows: PromptVariable[], idx: number) {
   align-items: center;
   gap: 4px;
   font-size: 11px;
-  color: #64748b;
+  color: var(--muted-foreground);
   white-space: nowrap;
 }
 .var-remove {
@@ -194,7 +202,7 @@ function removeRow(rows: PromptVariable[], idx: number) {
   border: none;
   border-radius: 6px;
   background: transparent;
-  color: #94a3b8;
+  color: var(--muted-foreground);
   font-size: 16px;
   cursor: pointer;
 }

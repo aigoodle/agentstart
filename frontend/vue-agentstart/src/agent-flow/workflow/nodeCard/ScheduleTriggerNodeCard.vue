@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Input as AInput, Select as ASelect } from '../../../ui';
+
 import { onMounted, ref, watchEffect } from 'vue';
 
 import PromptEditor from '@/components/PromptEditor.vue';
@@ -163,7 +165,7 @@ function syncTargetWorkflow(workflowId?: string) {
 
 <style scoped>
 .wf-full-width { width: 100%; }
-.wf-help { margin-top: 6px; color: #9ca3af; font-size: 11px; line-height: 1.55; }
+.wf-help { margin-top: 6px; color: var(--muted-foreground); font-size: 11px; line-height: 1.55; }
 .wf-error { margin-top: 6px; color: #dc2626; font-size: 11px; }
 .workflow-option { display: flex; align-items: center; gap: 12px; }
 .workflow-option-icon { display: inline-flex; flex: none; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 6px; }

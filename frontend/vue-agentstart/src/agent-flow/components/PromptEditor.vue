@@ -623,9 +623,9 @@ onUnmounted(() => {
 .wf-pe {
   display: flex;
   flex-direction: column;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border);
   border-radius: 8px;
-  background: #ffffff;
+  background: var(--background);
   transition: border-color 0.15s, box-shadow 0.15s;
 }
 
@@ -649,8 +649,8 @@ onUnmounted(() => {
   align-items: center;
   justify-content: space-between;
   padding: 6px 10px;
-  background: #f9fafb;
-  border-bottom: 1px solid #f0f0f0;
+  background: var(--muted);
+  border-bottom: 1px solid var(--border);
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
 }
@@ -658,7 +658,7 @@ onUnmounted(() => {
 .wf-pe-title {
   font-size: 12px;
   font-weight: 600;
-  color: #4b5563;
+  color: var(--muted-foreground);
   text-transform: uppercase;
   letter-spacing: 0.4px;
 }
@@ -675,7 +675,7 @@ onUnmounted(() => {
   gap: 4px;
   padding: 4px 8px;
   font-size: 12px;
-  color: #4b5563;
+  color: var(--muted-foreground);
   background: transparent;
   border: 1px solid transparent;
   border-radius: 4px;
@@ -694,7 +694,7 @@ onUnmounted(() => {
   overflow-x: hidden;
   font-size: 13px;
   line-height: 1.6;
-  color: #1f2937;
+  color: var(--foreground);
   white-space: pre-wrap;
   word-break: break-word;
   outline: none;
@@ -702,7 +702,7 @@ onUnmounted(() => {
 
 .wf-pe-input:empty::before {
   content: attr(data-placeholder);
-  color: #9ca3af;
+  color: var(--muted-foreground);
   pointer-events: none;
 }
 
@@ -716,15 +716,15 @@ onUnmounted(() => {
   display: flex;
   justify-content: flex-end;
   padding: 4px 12px;
-  background: #f9fafb;
-  border-top: 1px solid #f0f0f0;
+  background: var(--muted);
+  border-top: 1px solid var(--border);
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
 }
 
 .wf-pe-count {
   font-size: 11px;
-  color: #9ca3af;
+  color: var(--muted-foreground);
 }
 
 /* Pill 样式（非 scoped：pill 是通过 innerHTML 插入的） */
@@ -741,7 +741,7 @@ onUnmounted(() => {
   margin: 0 2px;
   font-size: 12px;
   line-height: 1.4;
-  color: #1f2937;
+  color: var(--foreground);
   background: #eef2ff;
   border: 1px solid #c7d2fe;
   border-radius: 4px;
@@ -771,7 +771,7 @@ onUnmounted(() => {
 }
 
 .wf-pe-pill[data-type='string'] .wf-pe-pill-icon {
-  background: #3b82f6;
+  background: var(--primary);
 }
 .wf-pe-pill[data-type='number'] .wf-pe-pill-icon {
   background: #f59e0b;

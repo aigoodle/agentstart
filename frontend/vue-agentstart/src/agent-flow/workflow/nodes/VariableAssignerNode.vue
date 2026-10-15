@@ -114,12 +114,12 @@ const total = computed(() => props.data.assignments?.length || 0);
 }
 
 .assigner-arrow {
-  color: #6b7280;
+  color: var(--muted-foreground);
   font-weight: 600;
 }
 
 .assigner-source {
-  color: #1f2937;
+  color: var(--foreground);
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -130,6 +130,6 @@ const total = computed(() => props.data.assignments?.length || 0);
   padding: 2px 6px;
   font-size: 10px;
   font-style: italic;
-  color: #9ca3af;
+  color: var(--muted-foreground);
 }
 </style>

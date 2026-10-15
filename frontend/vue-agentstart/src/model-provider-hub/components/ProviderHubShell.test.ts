@@ -24,6 +24,30 @@ const provider = {
 let wrapper: ReturnType<typeof mount>;
 afterEach(() => { wrapper?.unmount(); document.body.innerHTML = ''; vi.clearAllMocks(); });
 describe('provider management interactions', () => {
+  it('filters vision capabilities separately from image and video generation types', async () => {
+    api.listProviders.mockResolvedValue([provider]);
+    api.getProviderCatalog.mockResolvedValue([
+      { id: 'vision', source: 'predefined', model: 'vision-chat', modelType: 'LLM', features: ['VISION'], enabled: true },
+      { id: 'text', source: 'predefined', model: 'text-chat', modelType: 'LLM', enabled: true },
+      { id: 'image', source: 'predefined', model: 'image-generator', modelType: 'IMAGE', enabled: true },
+      { id: 'video', source: 'predefined', model: 'video-generator', modelType: 'VIDEO', enabled: true },
+    ]);
+    wrapper = mount(ProviderHubShell, {
+      attachTo: document.body,
+      global: { stubs: { DefaultModelsPanel: true, ProviderCredentialModal: true, ModelParameterDrawer: true } },
+    });
+    await flushPromises();
+    await wrapper.get('.phs-count-btn').trigger('click');
+    await flushPromises();
+    const filters = Array.from(document.querySelectorAll<HTMLButtonElement>('.phs-type-filters button'));
+    for (const [type, model] of [['VISION', 'vision-chat'], ['IMAGE', 'image-generator'], ['VIDEO', 'video-generator']]) {
+      filters.find(button => button.textContent?.includes(type!))!.click();
+      await flushPromises();
+      expect(document.querySelectorAll('.phs-row')).toHaveLength(1);
+      expect(document.querySelector('.phs-row-name')?.textContent).toContain(model);
+    }
+  });
+
   it('opens model management for a configured provider with no models and closes the modal and dismisses the menu on outside click', async () => {
     api.listProviders.mockResolvedValue([provider]);
     wrapper = mount(ProviderHubShell, {
@@ -56,8 +80,8 @@ describe('provider management interactions', () => {
     await flushPromises();
     expect(document.querySelector('.phs-card-menu-content')).not.toBeNull();
     const panel = document.querySelector<HTMLElement>('.phs-card-menu-overlay')!;
-    expect(panel.style.right).toBe('auto');
-    expect(panel.style.bottom).toBe('auto');
+    expect(panel.getAttribute('data-side')).not.toBeNull();
+    await new Promise(resolve => setTimeout(resolve, 10));
     document.body.dispatchEvent(new Event('pointerdown', { bubbles: true }));
     await flushPromises();
     expect(document.querySelector('.phs-card-menu-content')).toBeNull();

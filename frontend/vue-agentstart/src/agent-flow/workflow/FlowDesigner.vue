@@ -1,5 +1,10 @@
 <script setup lang="ts">
 // @ts-nocheck — legacy flow-designer code, pre-dates strict typing; cleanup tracked separately.
+
+import { Tooltip as ATooltip, Button as AButton, Input as AInput } from '../../ui';
+
+import { Button as AsShadcnButton } from '../../ui/shadcn/button';
+
 import { computed, defineEmits, nextTick, onBeforeUnmount, onMounted, ref } from 'vue';
 
 import { Background } from '@vue-flow/background';
@@ -1547,22 +1552,22 @@ defineExpose({
         <div v-if="!readonly" class="wf-top-toolbar">
           <div class="wf-top-toolbar-group">
             <a-tooltip title="撤销 (Ctrl+Z)">
-              <button
+              <AsShadcnButton variant="ghost"
                 class="wf-top-btn"
                 :disabled="!canUndo"
                 @click="undo"
               >
                 <Icon name="undo" />
-              </button>
+              </AsShadcnButton>
             </a-tooltip>
             <a-tooltip title="重做 (Ctrl+Y)">
-              <button
+              <AsShadcnButton variant="ghost"
                 class="wf-top-btn"
                 :disabled="!canRedo"
                 @click="redo"
               >
                 <Icon name="redo" />
-              </button>
+              </AsShadcnButton>
             </a-tooltip>
           </div>
           <!-- 试运行 / 保存 / 发布 —— 只在独立宿主模式显示。抽屉宿主自己已经在
@@ -1843,20 +1848,20 @@ defineExpose({
           <!-- 缩放控件（右下角悬浮） -->
           <div class="wf-zoom-cluster">
             <a-tooltip title="放大">
-              <button class="wf-zoom-btn" @click="zoomIn">＋</button>
+              <AsShadcnButton variant="ghost" class="wf-zoom-btn" @click="zoomIn">＋</AsShadcnButton>
             </a-tooltip>
             <a-tooltip title="缩小">
-              <button class="wf-zoom-btn" @click="zoomOut">－</button>
+              <AsShadcnButton variant="ghost" class="wf-zoom-btn" @click="zoomOut">－</AsShadcnButton>
             </a-tooltip>
             <a-tooltip title="适应画布">
-              <button class="wf-zoom-btn" @click="fitView">
+              <AsShadcnButton variant="ghost" class="wf-zoom-btn" @click="fitView">
                 <Icon name="fit" />
-              </button>
+              </AsShadcnButton>
             </a-tooltip>
             <a-tooltip title="自动排布">
-              <button class="wf-zoom-btn" @click="arrangeNodes">
+              <AsShadcnButton variant="ghost" class="wf-zoom-btn" @click="arrangeNodes">
                 <Icon name="arrange" />
-              </button>
+              </AsShadcnButton>
             </a-tooltip>
           </div>
 
@@ -1958,13 +1963,13 @@ defineExpose({
             @mousedown.stop
             @keydown.stop
           />
-          <button
+          <AsShadcnButton variant="ghost"
             class="wf-selector-close-btn"
             title="关闭"
             @click.stop="closeNodeSelector"
           >
             <Icon name="close" />
-          </button>
+          </AsShadcnButton>
         </div>
         <div class="wf-selector-content">
           <div
@@ -2055,7 +2060,7 @@ defineExpose({
   align-items: center;
   padding: 0 16px;
   height: 60px;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
   flex-shrink: 0;
 }
 
@@ -2076,7 +2081,7 @@ defineExpose({
 .app-title {
   font-size: 18px;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--foreground);
 }
 
 .btn {
@@ -2120,21 +2125,21 @@ defineExpose({
 }
 
 .btn-save {
-  background: #e5e7eb;
-  color: #374151;
+  background: var(--muted);
+  color: var(--foreground);
 }
 
 .btn-save:hover {
-  background: #d1d5db;
+  background: var(--muted);
 }
 
 .btn-share {
-  background: #3b82f6;
+  background: var(--primary);
   color: white;
 }
 
 .btn-share:hover {
-  background: #2563eb;
+  background: var(--primary);
 }
 
 /* 主布局 */
@@ -2149,7 +2154,7 @@ defineExpose({
 .left-panel {
   width: 280px;
   background: white;
-  border-right: 1px solid #e5e7eb;
+  border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -2157,14 +2162,14 @@ defineExpose({
 
 .panel-header {
   padding: 16px;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
 }
 
 .panel-header h3 {
   margin: 0;
   font-size: 16px;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--foreground);
 }
 
 .node-categories {
@@ -2183,7 +2188,7 @@ defineExpose({
   gap: 8px;
   font-size: 14px;
   font-weight: 600;
-  color: #4b5563;
+  color: var(--muted-foreground);
   margin-bottom: 12px;
 }
 
@@ -2198,7 +2203,7 @@ defineExpose({
   align-items: center;
   gap: 8px;
   padding: 8px 12px;
-  /* border: 1px solid #e5e7eb; */
+  /* border: 1px solid var(--border); */
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.2s;
@@ -2207,25 +2212,25 @@ defineExpose({
 
 .node-item:hover {
   border-color: #6366f1;
-  background: #f8fafc;
+  background: var(--muted);
 }
 
 .node-item span {
   font-size: 14px;
-  color: #374151;
+  color: var(--foreground);
 }
 
 /* 中间画布 */
 .center-canvas {
   flex: 1;
   position: relative;
-  background: #f9fafb;
+  background: var(--muted);
 }
 
 .dify-flow {
   width: 100%;
   height: 100%;
-  background: #f8fafc;
+  background: var(--muted);
 }
 
 /* 顶部悬浮工具栏（保存 / 发布 / 试运行 / 撤销 / 重做） */
@@ -2303,7 +2308,7 @@ defineExpose({
   gap: 12px;
   padding: 5px 10px;
   background: rgba(255, 255, 255, 0.95);
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border);
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
   backdrop-filter: blur(6px);
@@ -2317,12 +2322,12 @@ defineExpose({
 }
 
 .wf-status-label {
-  color: #9ca3af;
+  color: var(--muted-foreground);
 }
 
 .wf-status-value {
   font-weight: 600;
-  color: #4b5563;
+  color: var(--muted-foreground);
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
 }
 
@@ -2332,8 +2337,8 @@ defineExpose({
   z-index: 20;
   min-width: 160px;
   padding: 4px 0;
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
+  background: var(--background);
+  border: 1px solid var(--border);
   border-radius: 8px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 }
@@ -2345,13 +2350,13 @@ defineExpose({
   gap: 24px;
   padding: 8px 12px;
   font-size: 13px;
-  color: #1f2937;
+  color: var(--foreground);
   cursor: pointer;
   transition: background 0.15s;
 }
 
 .wf-context-menu-item:hover {
-  background: #f3f4f6;
+  background: var(--muted);
 }
 
 .wf-context-menu-item-danger {
@@ -2363,7 +2368,7 @@ defineExpose({
 }
 
 .wf-context-menu-item-disabled {
-  color: #d1d5db;
+  color: var(--muted-foreground);
   cursor: not-allowed;
 }
 
@@ -2374,11 +2379,11 @@ defineExpose({
 .wf-context-menu-divider {
   height: 1px;
   margin: 4px 0;
-  background: #f3f4f6;
+  background: var(--muted);
 }
 
 .wf-context-menu-shortcut {
-  color: #9ca3af;
+  color: var(--muted-foreground);
   font-size: 12px;
 }
 
@@ -2468,8 +2473,8 @@ defineExpose({
   flex-direction: column;
   width: 280px;
   max-height: min(70vh, 600px);
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
+  background: var(--background);
+  border: 1px solid var(--border);
   border-radius: 10px;
   box-shadow: 0 20px 40px rgba(15, 23, 42, 0.2);
   overflow: hidden;
@@ -2480,8 +2485,8 @@ defineExpose({
   align-items: center;
   gap: 6px;
   padding: 8px;
-  background: #f9fafb;
-  border-bottom: 1px solid #f0f0f0;
+  background: var(--muted);
+  border-bottom: 1px solid var(--border);
   cursor: grab;
   user-select: none;
 }
@@ -2497,15 +2502,14 @@ defineExpose({
   flex: none;
   width: 14px;
   height: 20px;
-  color: #9ca3af;
+  color: var(--muted-foreground);
 }
 
 .wf-selector-drag-dots {
   position: relative;
   width: 6px;
   height: 10px;
-  background:
-    radial-gradient(circle at 25% 25%, currentColor 1px, transparent 1.5px),
+  background: radial-gradient(circle at 25% 25%, currentColor 1px, transparent 1.5px),
     radial-gradient(circle at 75% 25%, currentColor 1px, transparent 1.5px),
     radial-gradient(circle at 25% 75%, currentColor 1px, transparent 1.5px),
     radial-gradient(circle at 75% 75%, currentColor 1px, transparent 1.5px);
@@ -2519,7 +2523,7 @@ defineExpose({
   flex: none;
   width: 24px;
   height: 24px;
-  color: #6b7280;
+  color: var(--muted-foreground);
   background: transparent;
   border: none;
   border-radius: 4px;
@@ -2528,8 +2532,8 @@ defineExpose({
 }
 
 .wf-selector-close-btn:hover {
-  background: #e5e7eb;
-  color: #1f2937;
+  background: var(--muted);
+  color: var(--foreground);
 }
 
 .wf-selector-content {
@@ -2543,7 +2547,7 @@ defineExpose({
   padding: 20px 8px;
   text-align: center;
   font-size: 12px;
-  color: #9ca3af;
+  color: var(--muted-foreground);
 }
 
 .wf-selector-category {
@@ -2561,7 +2565,7 @@ defineExpose({
   padding: 4px 6px;
   font-size: 12px;
   font-weight: 600;
-  color: #6b7280;
+  color: var(--muted-foreground);
   text-transform: uppercase;
   letter-spacing: 0.4px;
 }
@@ -2603,7 +2607,7 @@ defineExpose({
 
 .wf-selector-node-label {
   font-size: 13px;
-  color: #1f2937;
+  color: var(--foreground);
 }
 
 .wf-selector-preview {
@@ -2611,8 +2615,8 @@ defineExpose({
   left: 288px;
   width: 260px;
   padding: 12px;
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
+  background: var(--background);
+  border: 1px solid var(--border);
   border-radius: 8px;
   box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
   transform: translateY(-8px);
@@ -2629,13 +2633,13 @@ defineExpose({
 .wf-selector-preview-title {
   font-size: 13px;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--foreground);
 }
 
 .wf-selector-preview-desc {
   font-size: 12px;
   line-height: 1.4;
-  color: #6b7280;
+  color: var(--muted-foreground);
 }
 
 /* 彩色图标样式 —— class 名对齐当前 UPPER_SNAKE 的 node.type
@@ -2646,7 +2650,7 @@ defineExpose({
 }
 .icon-USER_INPUT {
   background: #dbeafe;
-  color: #2563eb;
+  color: var(--primary);
 }
 .icon-FILE_UPLOAD {
   background: #f3e8ff;
@@ -2654,7 +2658,7 @@ defineExpose({
 }
 .icon-LLM {
   background: #dbeafe;
-  color: #2563eb;
+  color: var(--primary);
 }
 .icon-AGENT {
   background: #ede9fe;
@@ -2743,7 +2747,7 @@ defineExpose({
 }
 
 .wf-selector-content::-webkit-scrollbar-thumb {
-  background: #d1d5db;
+  background: var(--muted);
   border-radius: 3px;
 }
 
@@ -2757,7 +2761,7 @@ defineExpose({
 }
 
 .selector-content::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: var(--muted);
   border-radius: 3px;
 }
 
@@ -2776,7 +2780,7 @@ defineExpose({
   left: 240px;
   width: 220px;
   background: white;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border);
   border-radius: 8px;
   padding: 16px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -2795,7 +2799,7 @@ defineExpose({
   gap: 4px;
   padding: 4px;
   background: rgba(255, 255, 255, 0.96);
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border);
   border-radius: 10px;
   box-shadow: 0 4px 16px rgba(15, 23, 42, 0.08);
   backdrop-filter: blur(6px);
@@ -2807,7 +2811,7 @@ defineExpose({
   justify-content: center;
   width: 28px;
   height: 28px;
-  color: #4b5563;
+  color: var(--muted-foreground);
   font-size: 14px;
   line-height: 1;
   background: transparent;
@@ -2818,8 +2822,8 @@ defineExpose({
 }
 
 .wf-zoom-btn:hover {
-  background: #f3f4f6;
-  color: #1f2937;
+  background: var(--muted);
+  color: var(--foreground);
 }
 
 .wf-zoom-btn :deep(.icon) {
@@ -2833,7 +2837,7 @@ defineExpose({
   bottom: 12px !important;
   width: 160px !important;
   height: 100px !important;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border);
   border-radius: 10px;
   background: var(--as-bg-elevated, var(--as-bg, #fff)) !important;
   box-shadow: 0 4px 16px rgba(15, 23, 42, 0.08);
@@ -2860,17 +2864,17 @@ defineExpose({
 .preview-title {
   font-size: 16px;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--foreground);
 }
 
 .preview-description {
   font-size: 13px;
-  color: #6b7280;
+  color: var(--muted-foreground);
   line-height: 1.5;
 }
 
 /* Workflow designer dark surfaces. Keep the canvas slightly darker than nodes. */
-:global(.dark) .dify-flow-designer,
+.dark .dify-flow-designer,
 :global([data-theme='dark']) .dify-flow-designer {
   --wf-designer-bg: #061629;
   --wf-designer-surface: var(--as-bg-elevated, var(--as-bg, #081e36));
@@ -2880,14 +2884,14 @@ defineExpose({
   --wf-designer-muted: #8da3bb;
 }
 
-:global(.dark) .dify-flow-designer .center-canvas,
-:global(.dark) .dify-flow-designer .dify-flow,
+.dark .dify-flow-designer .center-canvas,
+.dark .dify-flow-designer .dify-flow,
 :global([data-theme='dark']) .dify-flow-designer .center-canvas,
 :global([data-theme='dark']) .dify-flow-designer .dify-flow {
   background: var(--wf-designer-bg);
 }
 
-:global(.dark) .dify-flow-designer :is(.wf-top-toolbar, .wf-bottom-status, .wf-context-menu, .wf-selector-panel, .wf-selector-preview, .node-preview-card, .wf-zoom-cluster),
+.dark .dify-flow-designer :is(.wf-top-toolbar, .wf-bottom-status, .wf-context-menu, .wf-selector-panel, .wf-selector-preview, .node-preview-card, .wf-zoom-cluster),
 :global([data-theme='dark']) .dify-flow-designer :is(.wf-top-toolbar, .wf-bottom-status, .wf-context-menu, .wf-selector-panel, .wf-selector-preview, .node-preview-card, .wf-zoom-cluster) {
   color: var(--wf-designer-text);
   background: color-mix(in srgb, var(--wf-designer-surface) 96%, transparent);
@@ -2895,33 +2899,33 @@ defineExpose({
   box-shadow: 0 8px 24px rgb(0 0 0 / 30%);
 }
 
-:global(.dark) .dify-flow-designer :is(.wf-selector-header, .wf-top-btn:hover:not(:disabled), .wf-context-menu-item:hover, .wf-selector-node:hover, .wf-selector-close-btn:hover, .wf-zoom-btn:hover),
+.dark .dify-flow-designer :is(.wf-selector-header, .wf-top-btn:hover:not(:disabled), .wf-context-menu-item:hover, .wf-selector-node:hover, .wf-selector-close-btn:hover, .wf-zoom-btn:hover),
 :global([data-theme='dark']) .dify-flow-designer :is(.wf-selector-header, .wf-top-btn:hover:not(:disabled), .wf-context-menu-item:hover, .wf-selector-node:hover, .wf-selector-close-btn:hover, .wf-zoom-btn:hover) {
   color: var(--wf-designer-text);
   background: var(--wf-designer-surface-hover);
 }
 
-:global(.dark) .dify-flow-designer :is(.wf-top-btn, .wf-status-value, .wf-context-menu-item, .wf-selector-node-label, .wf-selector-preview-title, .preview-title, .wf-zoom-btn),
+.dark .dify-flow-designer :is(.wf-top-btn, .wf-status-value, .wf-context-menu-item, .wf-selector-node-label, .wf-selector-preview-title, .preview-title, .wf-zoom-btn),
 :global([data-theme='dark']) .dify-flow-designer :is(.wf-top-btn, .wf-status-value, .wf-context-menu-item, .wf-selector-node-label, .wf-selector-preview-title, .preview-title, .wf-zoom-btn) {
   color: var(--wf-designer-text);
 }
 
-:global(.dark) .dify-flow-designer :is(.wf-status-label, .wf-context-menu-shortcut, .wf-selector-category-title, .wf-selector-preview-desc, .preview-description),
+.dark .dify-flow-designer :is(.wf-status-label, .wf-context-menu-shortcut, .wf-selector-category-title, .wf-selector-preview-desc, .preview-description),
 :global([data-theme='dark']) .dify-flow-designer :is(.wf-status-label, .wf-context-menu-shortcut, .wf-selector-category-title, .wf-selector-preview-desc, .preview-description) {
   color: var(--wf-designer-muted);
 }
 
-:global(.dark) .dify-flow-designer :is(.wf-top-toolbar-divider, .wf-context-menu-divider),
+.dark .dify-flow-designer :is(.wf-top-toolbar-divider, .wf-context-menu-divider),
 :global([data-theme='dark']) .dify-flow-designer :is(.wf-top-toolbar-divider, .wf-context-menu-divider) {
   background: var(--wf-designer-border);
 }
 
-:global(.dark) .dify-flow-designer :deep(.vue-flow__handle),
+.dark .dify-flow-designer :deep(.vue-flow__handle),
 :global([data-theme='dark']) .dify-flow-designer :deep(.vue-flow__handle) {
   border-color: #081e36;
 }
 
-:global(.dark) .dify-flow-designer :deep(.vue-flow__minimap.wf-minimap),
+.dark .dify-flow-designer :deep(.vue-flow__minimap.wf-minimap),
 :global([data-theme='dark']) .dify-flow-designer :deep(.vue-flow__minimap.wf-minimap) {
   background: var(--wf-designer-surface) !important;
   border-color: var(--wf-designer-border);

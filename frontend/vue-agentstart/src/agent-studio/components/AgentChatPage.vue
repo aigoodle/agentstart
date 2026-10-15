@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Button as AsShadcnButton } from '../../ui/shadcn/button';
+
 /**
  * AgentChatPage — 独立会话页。
  *
@@ -434,7 +436,7 @@ const SAMPLE_VAR_TOKEN = '{' + '{#user.xxx#}' + '}';
             v-if="suggestedQuestions.length > 0"
             class="flex flex-wrap gap-2"
           >
-            <button
+            <AsShadcnButton variant="ghost"
               v-for="q in suggestedQuestions"
               :key="q"
               type="button"
@@ -442,7 +444,7 @@ const SAMPLE_VAR_TOKEN = '{' + '{#user.xxx#}' + '}';
               @click="input = q; send();"
             >
               💬 {{ q }}
-            </button>
+            </AsShadcnButton>
           </div>
         </div>
         <Empty
@@ -534,17 +536,17 @@ const SAMPLE_VAR_TOKEN = '{' + '{#user.xxx#}' + '}';
 .agent-start-chat-page__title {
   font-size: 18px;
   font-weight: 600;
-  color: #111827;
+  color: var(--foreground);
 }
 .agent-start-chat-page__desc {
   margin-top: 4px;
   font-size: 12px;
-  color: #6b7280;
+  color: var(--muted-foreground);
 }
-:global(.dark) .agent-start-chat-page__title {
+.dark .agent-start-chat-page__title {
   color: #f3f4f6;
 }
-:global(.dark) .agent-start-chat-page__desc {
-  color: #9ca3af;
+.dark .agent-start-chat-page__desc {
+  color: var(--muted-foreground);
 }
 </style>

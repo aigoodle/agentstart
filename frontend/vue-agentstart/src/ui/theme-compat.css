@@ -1,0 +1,42 @@
+/* Compatibility aliases only; shadcn tokens own the palette. */
+[data-agent-start-theme], html:root, html:root.dark, html:root[data-theme] {
+  --as-bg: var(--background);
+  --as-bg-layout: var(--muted);
+  --as-bg-elevated: var(--popover);
+  --as-card-bg: var(--card);
+  --as-text: var(--foreground);
+  --as-text-placeholder: var(--muted-foreground);
+  --as-danger: var(--destructive);
+  --as-text-secondary: var(--muted-foreground);
+  --as-border: var(--input);
+  --as-border-secondary: var(--border);
+  --color-as-primary: var(--primary);
+  --as-primary: var(--primary);
+  --as-theme-primary: var(--primary);
+  --as-primary-foreground: var(--primary-foreground);
+  --color-as-primary-hover: color-mix(in srgb, var(--primary) 85%, var(--foreground));
+  --color-as-primary-active: color-mix(in srgb, var(--primary) 75%, var(--foreground));
+  --hud-primary: var(--primary);
+  --hud-primary-bright: var(--primary);
+  --hud-primary-deep: var(--primary);
+  --kh-color-primary: var(--primary);
+  --kh-color-primary-strong: var(--primary);
+  --kh-color-primary-soft: color-mix(in srgb, var(--primary) 12%, transparent);
+  --kh-color-primary-outline: color-mix(in srgb, var(--primary) 35%, transparent);
+  --hud-surface: var(--background);
+  --hud-surface-raised: var(--card);
+  --kh-color-text-primary: var(--foreground);
+  --kh-color-text-tertiary: var(--muted-foreground);
+  --kh-color-text-muted: var(--muted-foreground);
+  --kh-color-primary-contrast: var(--primary-foreground);
+  --kh-color-surface: var(--background);
+  --kh-color-surface-raised: var(--card);
+  --kh-color-surface-sunken: var(--muted);
+  --kh-color-surface-hover: var(--accent);
+  --kh-color-border: var(--border);
+  --kh-color-border-hover: var(--input);
+  --kh-color-divider: var(--border);
+  --kh-color-danger: var(--destructive);
+  --kh-color-text: var(--foreground);
+  --kh-color-text-secondary: var(--muted-foreground);
+}

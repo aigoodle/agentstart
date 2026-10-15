@@ -1,4 +1,12 @@
 <script setup lang="ts">
+import { Card as AsShadcnCard } from '../../ui/shadcn/card';
+
+import { ShadcnBoolean as AsShadcnBoolean } from '../../ui/components/ShadcnBoolean';
+
+import { ShadcnSelect as AsShadcnSelect } from '../../ui/components/ShadcnSelect';
+import { Input as AsShadcnInput } from '../../ui/shadcn/input';
+import { Button as AsShadcnButton } from '../../ui/shadcn/button';
+
 /**
  * DocumentChunksView — chunks browser for a single document (screenshot 7).
  *
@@ -149,14 +157,14 @@ function changePageSize(s: number) {
             </span>
           </div>
           <div class="kh-chunks-toolbar-right">
-            <select v-model="filter" class="kh-doctab-select">
+            <AsShadcnSelect v-model="filter" class="kh-doctab-select">
               <option value="ALL">全部</option>
               <option value="ENABLED">已启用</option>
               <option value="DISABLED">已停用</option>
-            </select>
+            </AsShadcnSelect>
             <div class="kh-doctab-search">
               <span class="kh-doctab-search-icon">🔍</span>
-              <input
+              <AsShadcnInput
                 v-model="search"
                 class="kh-doctab-search-input"
                 placeholder="搜索"
@@ -164,26 +172,22 @@ function changePageSize(s: number) {
             </div>
             <!-- Text-style bulk actions — kept compact per user request so
                  they don't visually compete with the primary "+ 添加分段" CTA. -->
-            <button class="kh-chunks-link" @click="expandAll">全部展开</button>
+            <AsShadcnButton variant="ghost" class="kh-chunks-link" @click="expandAll">全部展开</AsShadcnButton>
             <span class="kh-chunks-link-sep">·</span>
-            <button class="kh-chunks-link" @click="collapseAll">全部收起</button>
-            <button
+            <AsShadcnButton variant="ghost" class="kh-chunks-link" @click="collapseAll">全部收起</AsShadcnButton>
+            <AsShadcnButton variant="ghost"
               v-if="canAppend"
               class="kh-btn kh-btn-primary"
               @click="emit('add-chunk')"
             >
               + 添加分段
-            </button>
-            <label
-              class="kh-switch"
-              :title="documentEnabled ? '已启用 · 点击停用' : '已停用 · 点击启用'"
-            >
-              <input
+            </AsShadcnButton>
+            <label class="inline-flex items-center">
+              <AsShadcnBoolean appearance="switch"
                 type="checkbox"
                 :checked="documentEnabled"
                 @change="(e) => docToggle((e.target as HTMLInputElement).checked)"
               />
-              <span class="kh-switch-slider" />
             </label>
             <span
               class="kh-chunks-status"
@@ -200,7 +204,7 @@ function changePageSize(s: number) {
         </div>
 
         <div class="kh-chunk-grid">
-          <div
+          <AsShadcnCard
             v-for="c in filtered"
             :key="c.id"
             class="kh-chunk-card"
@@ -220,14 +224,14 @@ function changePageSize(s: number) {
               <!-- Inline expand affordance — sits with the "已启用"/字符 metadata
                    so it doesn't eat a full row per card. Only shown when the
                    body would actually be clipped. -->
-              <button
+              <AsShadcnButton variant="ghost"
                 v-if="needsToggle(c)"
                 class="kh-chunk-expand-inline"
                 :title="isExpanded(c.id) ? '收起' : '展开'"
                 @click.stop="toggleExpand(c.id)"
               >
                 {{ isExpanded(c.id) ? '收起 ▲' : '展开 ▼' }}
-              </button>
+              </AsShadcnButton>
               <span
                 v-if="c.enabled"
                 class="kh-chunk-badge kh-chunk-badge-on"
@@ -256,32 +260,32 @@ function changePageSize(s: number) {
                 {{ k }}
               </span>
             </div>
-          </div>
+          </AsShadcnCard>
         </div>
 
         <!-- Pagination footer -->
         <div v-if="total > 0" class="kh-chunks-foot">
           <div class="kh-chunks-pager">
-            <button
+            <AsShadcnButton variant="ghost"
               class="kh-pager-btn"
               :disabled="page <= 1"
               @click="goPage(page - 1)"
             >
               ‹
-            </button>
+            </AsShadcnButton>
             <span class="kh-pager-page">{{ page }} / {{ totalPages }}</span>
-            <button
+            <AsShadcnButton variant="ghost"
               class="kh-pager-btn"
               :disabled="page >= totalPages"
               @click="goPage(page + 1)"
             >
               ›
-            </button>
+            </AsShadcnButton>
           </div>
           <div class="kh-pager-info">共 {{ total }} 条</div>
           <div class="kh-pager-sizes">
             <span class="kh-pager-sizes-label">每页</span>
-            <button
+            <AsShadcnButton variant="ghost"
               v-for="s in [10, 20, 50]"
               :key="s"
               class="kh-pager-size"
@@ -289,7 +293,7 @@ function changePageSize(s: number) {
               @click="changePageSize(s)"
             >
               {{ s }}
-            </button>
+            </AsShadcnButton>
           </div>
         </div>
       </div>
@@ -299,12 +303,12 @@ function changePageSize(s: number) {
         <div class="kh-meta-header">
           <div class="kh-meta-title-row">
             <span class="kh-meta-title">元数据</span>
-            <button class="kh-meta-collapse" @click="showMeta = false">›</button>
+            <AsShadcnButton variant="ghost" class="kh-meta-collapse" @click="showMeta = false">›</AsShadcnButton>
           </div>
           <div class="kh-meta-sub">
             元数据能对文档进行结构化描述、辅助过滤检索、支持精细化数据管理。
           </div>
-          <button class="kh-meta-btn">开放智能标签</button>
+          <AsShadcnButton variant="ghost" class="kh-meta-btn">开放智能标签</AsShadcnButton>
         </div>
 
         <div class="kh-meta-group">
@@ -359,13 +363,13 @@ function changePageSize(s: number) {
           </div>
         </div>
       </div>
-      <button
+      <AsShadcnButton variant="ghost"
         v-else
         class="kh-meta-toggle"
         @click="showMeta = true"
       >
         ‹ 元数据
-      </button>
+      </AsShadcnButton>
     </div>
   </div>
 </template>
@@ -413,30 +417,6 @@ function changePageSize(s: number) {
 }
 .kh-switch input {
   display: none;
-}
-.kh-switch-slider {
-  position: absolute;
-  inset: 0;
-  background: var(--kh-color-border);
-  border-radius: 9px;
-  transition: background 0.15s;
-}
-.kh-switch-slider::before {
-  content: '';
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 14px;
-  height: 14px;
-  background: var(--kh-color-surface);
-  border-radius: 50%;
-  transition: transform 0.15s;
-}
-.kh-switch input:checked + .kh-switch-slider {
-  background: var(--kh-color-primary-strong);
-}
-.kh-switch input:checked + .kh-switch-slider::before {
-  transform: translateX(14px);
 }
 /* Body — starts flush with the drawer topbar (no wasted whitespace on top). */
 .kh-chunks-body {

@@ -1,5 +1,8 @@
 <script setup lang="ts">
 // @ts-nocheck — legacy flow-designer code, pre-dates strict typing; cleanup tracked separately.
+
+import { Select as ASelect, InputNumber as AInputNumber } from '../../../ui';
+
 import VariableSelector from '@/components/VariableSelector.vue';
 import WfField from '@/workflow/WfField.vue';
 

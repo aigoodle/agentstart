@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Switch as ASwitch, Popconfirm as APopconfirm, Button as AButton, Select as ASelect, SelectOption as ASelectOption, Input as AInput } from '../../ui';
+
 import { h, ref } from 'vue';
 
 import {
@@ -207,7 +209,7 @@ function toRemoveMetadataCondition(index: number) {
   gap: 6px;
   margin-left: auto;
   font-size: 12px;
-  color: #4b5563;
+  color: var(--muted-foreground);
 }
 
 .wf-ds-dynamic-slot {
@@ -220,9 +222,9 @@ function toRemoveMetadataCondition(index: number) {
   padding: 20px 12px;
   text-align: center;
   font-size: 12px;
-  color: #9ca3af;
-  background: #f9fafb;
-  border: 1px dashed #e5e7eb;
+  color: var(--muted-foreground);
+  background: var(--muted);
+  border: 1px dashed var(--border);
   border-radius: 6px;
 }
 
@@ -237,8 +239,8 @@ function toRemoveMetadataCondition(index: number) {
   align-items: center;
   justify-content: space-between;
   padding: 8px 10px;
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
+  background: var(--background);
+  border: 1px solid var(--border);
   border-radius: 6px;
   transition: border-color 0.15s;
 }
@@ -268,7 +270,7 @@ function toRemoveMetadataCondition(index: number) {
 .wf-ds-item-name {
   font-size: 13px;
   font-weight: 500;
-  color: #1f2937;
+  color: var(--foreground);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -279,7 +281,7 @@ function toRemoveMetadataCondition(index: number) {
   flex-direction: column;
   gap: 6px;
   padding-top: 8px;
-  border-top: 1px solid #f0f0f0;
+  border-top: 1px solid var(--border);
 }
 
 .wf-ds-option-row {
@@ -287,13 +289,13 @@ function toRemoveMetadataCondition(index: number) {
   align-items: center;
   justify-content: space-between;
   padding: 6px 10px;
-  background: #f9fafb;
+  background: var(--muted);
   border-radius: 6px;
 }
 
 .wf-ds-option-label {
   font-size: 12px;
-  color: #4b5563;
+  color: var(--muted-foreground);
 }
 
 .wf-ds-cond-list {
@@ -301,7 +303,7 @@ function toRemoveMetadataCondition(index: number) {
   flex-direction: column;
   gap: 6px;
   padding: 6px;
-  background: #f9fafb;
+  background: var(--muted);
   border-radius: 6px;
 }
 

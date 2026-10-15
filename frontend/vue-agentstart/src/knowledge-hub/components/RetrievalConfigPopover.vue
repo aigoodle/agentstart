@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Button as AsShadcnButton } from '../../ui/shadcn/button';
+
 /**
  * RetrievalConfigPopover — floating card that wraps a
  * {@link RetrievalMethodPicker} for surfaces where a drawer would be too
@@ -13,11 +15,13 @@
  *
  * Behaviours:
  *   • Anchored beneath the {@code triggerEl} by a small `getBoundingClientRect()`
- *     calc — no floating-ui dep just for one popover.
+ *     calc — shadcn-vue / Reka UI collision handling.
  *   • Click-outside and Escape close.
  *   • Local draft state so 取消 restores the pre-open config.
  */
-import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
+
+import { Popover, PopoverContent, PopoverAnchor } from '../../ui/shadcn/popover';
 
 import type {
   IndexingTechnique,
@@ -60,82 +64,12 @@ const snapshot = ref<RetrievalConfig | null>(null);
  *  until 保存 is clicked. */
 const draft = ref<RetrievalConfig>({ ...props.modelValue });
 
-watch(
-  () => props.open,
-  (v) => {
-    if (v) {
-      snapshot.value = { ...props.modelValue };
-      draft.value = { ...props.modelValue };
-      nextTick(positionPopover);
-    }
-    // SSR guard: this watch is immediate, so it also fires during setup on
-    // the server — where `document` does not exist (even the closed branch).
-    if (typeof document === 'undefined') return;
-    if (v) {
-      document.addEventListener('mousedown', onDocMouseDown, true);
-      document.addEventListener('keydown', onKeydown);
-    } else {
-      document.removeEventListener('mousedown', onDocMouseDown, true);
-      document.removeEventListener('keydown', onKeydown);
-    }
-  },
-  { immediate: true },
-);
-
-onBeforeUnmount(() => {
-  document.removeEventListener('mousedown', onDocMouseDown, true);
-  document.removeEventListener('keydown', onKeydown);
-});
-
-// ---- positioning
-const popoverRef = ref<HTMLElement | null>(null);
-const themeStyle = ref<Record<string, string>>({});
-const pos = ref<{ top: number; left: number }>({ top: 0, left: 0 });
-
-function positionPopover() {
-  // SSR guard: positioned via a nextTick from an immediate watch.
-  if (typeof window === 'undefined' || !props.triggerEl) return;
-  // Teleport leaves the host theme subtree; carry its resolved tokens along.
-  const sourceStyle = window.getComputedStyle(props.triggerEl);
-  const tokens: Record<string, string> = {};
-  for (let i = 0; i < sourceStyle.length; i++) {
-    const name = sourceStyle.item(i);
-    if (name.startsWith('--kh-')) tokens[name] = sourceStyle.getPropertyValue(name);
+watch(() => props.open, open => {
+  if (open) {
+    snapshot.value = { ...props.modelValue };
+    draft.value = { ...props.modelValue };
   }
-  themeStyle.value = tokens;
-  const r = props.triggerEl.getBoundingClientRect();
-  const w = props.width;
-  const gap = 6;
-  const winW = window.innerWidth;
-  const winH = window.innerHeight;
-  let left =
-    props.placement === 'bottom-start' ? r.left : r.right - w;
-  // Clamp so it stays fully on-screen.
-  left = Math.max(8, Math.min(left, winW - w - 8));
-  let top = r.bottom + gap;
-  // If not enough room below, flip above.
-  if (top + 480 > winH && r.top > 480) {
-    top = r.top - gap - 480;
-  }
-  pos.value = { top, left };
-}
-
-// ---- outside close
-function onDocMouseDown(e: MouseEvent) {
-  if (!props.open) return;
-  const target = e.target as Node | null;
-  if (
-    popoverRef.value &&
-    !popoverRef.value.contains(target) &&
-    props.triggerEl &&
-    !props.triggerEl.contains(target)
-  ) {
-    emit('update:open', false);
-  }
-}
-function onKeydown(e: KeyboardEvent) {
-  if (e.key === 'Escape') emit('update:open', false);
-}
+}, { immediate: true });
 
 // ---- actions
 function cancel() {
@@ -148,28 +82,19 @@ function save() {
   emit('update:open', false);
 }
 
-const style = computed(() => ({
-  ...themeStyle.value,
-  top: `${pos.value.top}px`,
-  left: `${pos.value.left}px`,
-  width: `${props.width}px`,
-}));
 </script>
 
 <template>
-  <Teleport to="body" :disabled="!open">
-    <div
-      v-if="open"
-      ref="popoverRef"
-      class="rcp"
-      :style="style"
-    >
+  <Popover :open="open" @update:open="emit('update:open', $event)">
+    <PopoverAnchor :reference="triggerEl ?? undefined" style="display: none" />
+    <PopoverContent class="rcp" side="bottom" :align="placement === 'bottom-start' ? 'start' : 'end'"
+      :side-offset="6" :collision-padding="8" :style="{ width: width + 'px', padding: 0 }">
       <div class="rcp-head">
         <div>
           <div class="rcp-title">检索设置</div>
           <div class="rcp-sub">了解更多关于检索方法。</div>
         </div>
-        <button class="rcp-close" @click="cancel" aria-label="close">×</button>
+        <AsShadcnButton variant="ghost" class="rcp-close" @click="cancel" aria-label="close">×</AsShadcnButton>
       </div>
 
       <div class="rcp-body">
@@ -183,21 +108,21 @@ const style = computed(() => ({
       </div>
 
       <div class="rcp-actions">
-        <button class="rcp-btn rcp-btn-secondary" @click="cancel">
+        <AsShadcnButton variant="ghost" class="rcp-btn rcp-btn-secondary" @click="cancel">
           取消
-        </button>
-        <button class="rcp-btn rcp-btn-primary" @click="save">
+        </AsShadcnButton>
+        <AsShadcnButton variant="ghost" class="rcp-btn rcp-btn-primary" @click="save">
           保存
-        </button>
+        </AsShadcnButton>
       </div>
-    </div>
-  </Teleport>
+    </PopoverContent>
+  </Popover>
 </template>
 
-<style scoped>
+<style>
 .rcp {
-  position: fixed;
-  z-index: 1500;
+  position: relative;
+  z-index: 10000;
   max-height: 84vh;
   display: flex;
   flex-direction: column;

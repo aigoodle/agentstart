@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Button as AsShadcnButton } from '../../ui/shadcn/button';
+
 import { computed, reactive, ref } from 'vue';
 
 import Icon from '../workflow/Icon.vue';
@@ -114,14 +116,14 @@ defineExpose({ receive });
     <div class="cet-body">
       <div v-if="status === 'idle'" class="cet-empty">在右侧发送消息后，这里将实时展示工作流各节点的执行结果。</div>
       <article v-for="(step, index) in steps" :key="`${step.node_id || step.nodeId || index}-${index}`" class="cet-step">
-        <button class="cet-step-head" @click="expanded[index] = !expanded[index]">
+        <AsShadcnButton variant="ghost" class="cet-step-head" @click="expanded[index] = !expanded[index]">
           <span class="cet-node-icon" :style="{ color: nodeAccent(step), backgroundColor: `${nodeAccent(step)}18` }"><Icon :name="nodeMeta(step).icon" /></span>
           <span class="cet-name" :title="nodeTitle(step, index)">{{ nodeTitle(step, index) }}</span>
           <code class="cet-type">{{ nodeMeta(step).name }}</code>
           <span class="cet-result" :class="{ failed: step.status === 'failed' || step.failed }">{{ step.status === 'failed' || step.failed ? '!' : '✓' }}</span>
           <span class="cet-time">{{ step.elapsed_ms ?? step.elapsedMillis ?? step.duration ?? 0 }} ms</span>
           <span>{{ expanded[index] ? '⌃' : '⌄' }}</span>
-        </button>
+        </AsShadcnButton>
         <div v-if="step.__streamedAnswer && !expanded[index]" class="cet-stream-preview">{{ step.__streamedAnswer }}</div>
         <div v-if="expanded[index]" class="cet-detail">
           <b>输入</b><pre>{{ pretty(step.inputs ?? step.input) }}</pre>
@@ -139,14 +141,14 @@ defineExpose({ receive });
 </template>
 
 <style scoped>
-.cet-root{display:flex;flex-direction:column;width:100%;height:100%;min-width:0;background:var(--as-bg,#fff);border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;color:#1f2937}.cet-head{display:flex;align-items:center;justify-content:space-between;min-height:46px;padding:0 14px;border-bottom:1px solid #eef0f3}.cet-head strong{font-size:13px}.cet-status{font-size:11px}.cet-idle{color:#94a3b8}.cet-running{color:#6366f1}.cet-success{color:#16a34a}.cet-failed,.cet-error{color:#dc2626}.cet-body{display:grid;align-content:start;gap:8px;flex:1;min-height:0;padding:14px;overflow:auto}.cet-empty,.cet-running{padding:12px;border-radius:8px;background:#f8fafc;color:#64748b;font-size:12px;line-height:1.6}.cet-step{border:1px solid #e5e7eb;border-radius:9px;overflow:hidden}.cet-step-head{display:flex;align-items:center;gap:7px;width:100%;padding:9px;border:0;background:#fafafa;text-align:left;cursor:pointer}.cet-node-icon{display:grid;place-items:center;width:25px;height:25px;flex:none;border-radius:7px}.cet-node-icon :deep(svg){width:15px;height:15px}.cet-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;font-weight:600}.cet-type{max-width:72px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:2px 5px;border-radius:4px;background:#f1f5f9;color:#64748b;font-size:9px}.cet-result{display:grid;place-items:center;width:17px;height:17px;flex:none;border-radius:50%;background:#dcfce7;color:#15803d;font-size:10px}.cet-result.failed{background:#fee2e2;color:#dc2626}.cet-time{font-size:10px;color:#94a3b8}.cet-stream-preview{max-height:70px;padding:8px 10px;overflow:hidden;border-top:1px solid #eef0f3;background:var(--as-bg,#fff);color:#475569;font-size:11px;line-height:1.5;white-space:pre-wrap;word-break:break-word}.cet-detail{display:grid;gap:6px;padding:10px;border-top:1px solid #eef0f3}.cet-detail b{font-size:11px;color:#64748b}.cet-detail b em{margin-left:4px;padding:1px 5px;border-radius:999px;background:#eef2ff;color:#4f46e5;font-size:9px;font-style:normal}.cet-detail pre,.cet-final pre{max-height:220px;margin:0;overflow:auto;padding:9px;border-radius:7px;background:#0f172a;color:#e2e8f0;font:11px/1.55 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre-wrap;word-break:break-word}.cet-error{font-size:12px}.cet-running i{display:inline-block;width:8px;height:8px;margin-right:5px;border-radius:50%;background:#6366f1;animation:cet-pulse 1s ease-in-out infinite}.cet-final{display:grid;gap:8px;margin-top:6px}.cet-final strong{font-size:12px}@keyframes cet-pulse{50%{opacity:.25}}
-:global(.dark) .cet-root{background:var(--ant-color-bg-container,#18181b);border-color:var(--ant-color-border,#3f3f46);color:var(--ant-color-text,#f4f4f5)}
-:global(.dark) .cet-head,:global(.dark) .cet-detail{border-color:#3f3f46;background:#18181b}
-:global(.dark) .cet-body{background:#18181b}
-:global(.dark) .cet-empty,:global(.dark) .cet-running{background:#27272a;color:#a1a1aa}
-:global(.dark) .cet-step{border-color:#3f3f46;background:#202023}
-:global(.dark) .cet-step-head{background:#27272a;color:#f4f4f5}
-:global(.dark) .cet-type{background:#3f3f46;color:#d4d4d8}
-:global(.dark) .cet-stream-preview{border-color:#3f3f46;background:#202023;color:#d4d4d8}
-:global(.dark) .cet-detail b{color:#a1a1aa}
+.cet-root{display:flex;flex-direction:column;width:100%;height:100%;min-width:0;background:var(--as-bg,#fff);border: 1px solid var(--border);border-radius:12px;overflow:hidden;color: var(--foreground)}.cet-head{display:flex;align-items:center;justify-content:space-between;min-height:46px;padding:0 14px;border-bottom: 1px solid #eef0f3}.cet-head strong{font-size:13px}.cet-status{font-size:11px}.cet-idle{color: var(--muted-foreground)}.cet-running{color: #6366f1}.cet-success{color: #16a34a}.cet-failed,.cet-error{color: #dc2626}.cet-body{display:grid;align-content:start;gap:8px;flex:1;min-height:0;padding:14px;overflow:auto}.cet-empty,.cet-running{padding:12px;border-radius:8px;background: var(--muted);color: var(--muted-foreground);font-size:12px;line-height:1.6}.cet-step{border: 1px solid var(--border);border-radius:9px;overflow:hidden}.cet-step-head{display:flex;align-items:center;gap:7px;width:100%;padding:9px;border: 0;background: var(--muted);text-align:left;cursor:pointer}.cet-node-icon{display:grid;place-items:center;width:25px;height:25px;flex:none;border-radius:7px}.cet-node-icon :deep(svg){width:15px;height:15px}.cet-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;font-weight:600}.cet-type{max-width:72px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:2px 5px;border-radius:4px;background: var(--muted);color: var(--muted-foreground);font-size:9px}.cet-result{display:grid;place-items:center;width:17px;height:17px;flex:none;border-radius:50%;background: #dcfce7;color: #15803d;font-size:10px}.cet-result.failed{background: #fee2e2;color: #dc2626}.cet-time{font-size:10px;color: var(--muted-foreground)}.cet-stream-preview{max-height:70px;padding:8px 10px;overflow:hidden;border-top: 1px solid #eef0f3;background:var(--as-bg,#fff);color: var(--muted-foreground);font-size:11px;line-height:1.5;white-space:pre-wrap;word-break:break-word}.cet-detail{display:grid;gap:6px;padding:10px;border-top: 1px solid #eef0f3}.cet-detail b{font-size:11px;color: var(--muted-foreground)}.cet-detail b em{margin-left:4px;padding:1px 5px;border-radius:999px;background: #eef2ff;color: #4f46e5;font-size:9px;font-style:normal}.cet-detail pre,.cet-final pre{max-height:220px;margin:0;overflow:auto;padding:9px;border-radius:7px;background: #0f172a;color: var(--muted-foreground);font:11px/1.55 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre-wrap;word-break:break-word}.cet-error{font-size:12px}.cet-running i{display:inline-block;width:8px;height:8px;margin-right:5px;border-radius:50%;background: #6366f1;animation:cet-pulse 1s ease-in-out infinite}.cet-final{display:grid;gap:8px;margin-top:6px}.cet-final strong{font-size:12px}@keyframes cet-pulse{50%{opacity:.25}}
+.dark .cet-root{background:var(--ant-color-bg-container,#18181b);border-color:var(--ant-color-border,#3f3f46);color:var(--ant-color-text,#f4f4f5)}
+.dark .cet-head,.dark .cet-detail{border-color: #3f3f46;background: #18181b}
+.dark .cet-body{background: #18181b}
+.dark .cet-empty,.dark .cet-running{background: #27272a;color: #a1a1aa}
+.dark .cet-step{border-color: #3f3f46;background: #202023}
+.dark .cet-step-head{background: #27272a;color: #f4f4f5}
+.dark .cet-type{background: #3f3f46;color: var(--muted-foreground)}
+.dark .cet-stream-preview{border-color: #3f3f46;background: #202023;color: var(--muted-foreground)}
+.dark .cet-detail b{color: #a1a1aa}
 </style>

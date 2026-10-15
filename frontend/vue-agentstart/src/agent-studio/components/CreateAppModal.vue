@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { Button as AsShadcnButton } from '../../ui/shadcn/button';
+import { Input as AsShadcnInput } from '../../ui/shadcn/input';
+import { Textarea as AsShadcnTextarea } from '../../ui/shadcn/textarea';
+
 /**
  * CreateAppModal — Dify-parity two-pane "create application" dialog.
  *
@@ -166,7 +170,7 @@ function onKeydown(e: KeyboardEvent) {
 
             <!-- Application type tiles -->
             <div v-if="appCards.length > 0" class="as-tile-row">
-              <button
+              <AsShadcnButton variant="ghost"
                 v-for="a in appCards"
                 :key="a.id"
                 class="as-tile"
@@ -178,7 +182,7 @@ function onKeydown(e: KeyboardEvent) {
                 </div>
                 <div class="as-tile-title">{{ a.title }}</div>
                 <div class="as-tile-desc">{{ a.description }}</div>
-              </button>
+              </AsShadcnButton>
             </div>
 
             <div class="as-divider" />
@@ -189,13 +193,13 @@ function onKeydown(e: KeyboardEvent) {
                 应用名称 <span class="as-req">*</span>
               </label>
               <div class="as-name-row">
-                <input
+                <AsShadcnInput
                   v-model="name"
                   class="as-input"
                   placeholder="给你的应用起个名字"
                   maxlength="60"
                 />
-                <button
+                <AsShadcnButton variant="ghost"
                   type="button"
                   class="as-icon-btn"
                   :style="{ background: icon.background }"
@@ -203,12 +207,12 @@ function onKeydown(e: KeyboardEvent) {
                   @click="showIconPicker = !showIconPicker"
                 >
                   {{ icon.emoji }}
-                </button>
+                </AsShadcnButton>
               </div>
               <!-- Icon picker: emoji grid + swatch strip -->
               <div v-if="showIconPicker" class="as-icon-picker">
                 <div class="as-emoji-grid">
-                  <button
+                  <AsShadcnButton variant="ghost"
                     v-for="e in EMOJIS"
                     :key="e"
                     type="button"
@@ -217,10 +221,10 @@ function onKeydown(e: KeyboardEvent) {
                     @click="icon.emoji = e"
                   >
                     {{ e }}
-                  </button>
+                  </AsShadcnButton>
                 </div>
                 <div class="as-swatch-row">
-                  <button
+                  <AsShadcnButton variant="ghost"
                     v-for="s in SWATCHES"
                     :key="s"
                     type="button"
@@ -237,7 +241,7 @@ function onKeydown(e: KeyboardEvent) {
               <label class="as-label">
                 描述 <span class="as-optional">（可选）</span>
               </label>
-              <textarea
+              <AsShadcnTextarea
                 v-model="description"
                 class="as-textarea"
                 placeholder="用一两句话说清这个应用要做什么"
@@ -295,7 +299,7 @@ function onKeydown(e: KeyboardEvent) {
   align-items: flex-start;
   justify-content: space-between;
   padding: 20px 24px 12px;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--border);
 }
 .as-close {
   width: 32px;
@@ -304,15 +308,15 @@ function onKeydown(e: KeyboardEvent) {
   border: none;
   border-radius: 8px;
   background: transparent;
-  color: #94a3b8;
+  color: var(--muted-foreground);
   font-size: 20px;
   line-height: 1;
   cursor: pointer;
   transition: background 0.15s;
 }
 .as-close:hover {
-  background: #f1f5f9;
-  color: #475569;
+  background: var(--muted);
+  color: var(--muted-foreground);
 }
 
 /* Two-pane body */
@@ -327,7 +331,7 @@ function onKeydown(e: KeyboardEvent) {
   min-width: 460px;
   padding: 20px 24px 22px;
   overflow-y: auto;
-  border-right: 1px solid #f1f5f9;
+  border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -347,7 +351,7 @@ function onKeydown(e: KeyboardEvent) {
 .as-section-label {
   font-size: 13px;
   font-weight: 600;
-  color: #334155;
+  color: var(--foreground);
 }
 .as-tile-row {
   display: grid;
@@ -358,8 +362,8 @@ function onKeydown(e: KeyboardEvent) {
 .as-tile {
   position: relative;
   padding: 10px 12px 12px;
-  background: #fff;
-  border: 1px solid #e2e8f0;
+  background: var(--background);
+  border: 1px solid var(--border);
   border-radius: 12px;
   cursor: pointer;
   text-align: left;
@@ -391,12 +395,12 @@ function onKeydown(e: KeyboardEvent) {
   margin-top: 8px;
   font-size: 13px;
   font-weight: 600;
-  color: #0f172a;
+  color: var(--foreground);
 }
 .as-tile-desc {
   margin-top: 3px;
   font-size: 11px;
-  color: #64748b;
+  color: var(--muted-foreground);
   line-height: 1.45;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -408,7 +412,7 @@ function onKeydown(e: KeyboardEvent) {
 .as-divider {
   height: 1px;
   margin: 2px 0;
-  background: linear-gradient(90deg, transparent, #e2e8f0, transparent);
+  background: linear-gradient(90deg, transparent, var(--muted), transparent);
 }
 
 /* Form fields */
@@ -420,7 +424,7 @@ function onKeydown(e: KeyboardEvent) {
 .as-label {
   font-size: 13px;
   font-weight: 600;
-  color: #334155;
+  color: var(--foreground);
 }
 .as-req {
   color: #dc2626;
@@ -429,7 +433,7 @@ function onKeydown(e: KeyboardEvent) {
   margin-left: 4px;
   font-weight: 400;
   font-size: 11px;
-  color: #94a3b8;
+  color: var(--muted-foreground);
 }
 .as-name-row {
   display: flex;
@@ -440,10 +444,10 @@ function onKeydown(e: KeyboardEvent) {
   flex: 1;
   padding: 8px 12px;
   font-size: 13px;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--border);
   border-radius: 8px;
-  background: #fff;
-  color: #0f172a;
+  background: var(--background);
+  color: var(--foreground);
   transition: border-color 0.15s ease;
 }
 .as-input:focus {
@@ -454,10 +458,10 @@ function onKeydown(e: KeyboardEvent) {
 .as-textarea {
   padding: 8px 12px;
   font-size: 13px;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--border);
   border-radius: 8px;
-  background: #fff;
-  color: #0f172a;
+  background: var(--background);
+  color: var(--foreground);
   font-family: inherit;
   resize: vertical;
   min-height: 60px;
@@ -475,7 +479,7 @@ function onKeydown(e: KeyboardEvent) {
   align-items: center;
   justify-content: center;
   padding: 0;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
   border-radius: 10px;
   font-size: 22px;
   cursor: pointer;
@@ -489,9 +493,9 @@ function onKeydown(e: KeyboardEvent) {
 .as-icon-picker {
   margin-top: 8px;
   padding: 10px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
   border-radius: 10px;
-  background: #f8fafc;
+  background: var(--muted);
 }
 .as-emoji-grid {
   display: grid;
@@ -508,10 +512,10 @@ function onKeydown(e: KeyboardEvent) {
   transition: background 0.15s ease;
 }
 .as-emoji-btn:hover {
-  background: #fff;
+  background: var(--background);
 }
 .as-emoji-active {
-  background: #fff;
+  background: var(--background);
   border-color: #6366f1;
 }
 .as-swatch-row {
@@ -525,7 +529,7 @@ function onKeydown(e: KeyboardEvent) {
   padding: 0;
   border-radius: 50%;
   border: 1.5px solid #fff;
-  outline: 1px solid #e2e8f0;
+  outline: 1px solid var(--border);
   cursor: pointer;
   transition: transform 0.15s ease;
 }
@@ -553,7 +557,7 @@ function onKeydown(e: KeyboardEvent) {
 .as-preview-eyebrow {
   font-size: 10px;
   font-weight: 600;
-  color: #94a3b8;
+  color: var(--muted-foreground);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -561,27 +565,26 @@ function onKeydown(e: KeyboardEvent) {
   margin-top: 2px;
   font-size: 15px;
   font-weight: 600;
-  color: #0f172a;
+  color: var(--foreground);
 }
 .as-preview-desc {
   margin-top: 4px;
   font-size: 12px;
-  color: #64748b;
+  color: var(--muted-foreground);
   line-height: 1.5;
 }
 .as-preview-canvas {
   margin-top: 4px;
   padding: 8px;
-  background:
-    repeating-linear-gradient(
+  background: repeating-linear-gradient(
       135deg,
       transparent,
       transparent 4px,
       rgba(15, 23, 42, 0.04) 4px,
       rgba(15, 23, 42, 0.04) 5px
     ),
-    #fff;
-  border: 1px solid #e2e8f0;
+    var(--background);
+  border: 1px solid var(--border);
   border-radius: 12px;
   overflow: hidden;
   flex: 1;
@@ -601,9 +604,9 @@ function onKeydown(e: KeyboardEvent) {
 .as-preview-hint {
   padding: 8px 12px;
   font-size: 11px;
-  color: #64748b;
+  color: var(--muted-foreground);
   background: rgba(255, 255, 255, 0.6);
-  border: 1px dashed #e2e8f0;
+  border: 1px dashed var(--border);
   border-radius: 8px;
 }
 

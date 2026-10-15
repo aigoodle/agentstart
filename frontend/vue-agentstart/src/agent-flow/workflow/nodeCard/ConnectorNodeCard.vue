@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import { Select as ASelect } from '../../../ui';
+
+import { Button as AsShadcnButton } from '../../../ui/shadcn/button';
+import { ShadcnSelect as AsShadcnSelect } from '../../../ui/components/ShadcnSelect';
+import { Input as AsShadcnInput } from '../../../ui/shadcn/input';
+
 import { computed, onMounted, ref, watch } from 'vue';
 
 import { createAgentStartClient } from '../../../client';
@@ -123,43 +129,43 @@ onMounted(load);
     <section class="connector-kind-section">
       <h4>连接器类型</h4>
       <div class="connector-kind-grid">
-        <button type="button" class="connector-kind-card" :class="{ active: form.connectorMode === 'CHANNEL_MESSAGE' }" @click="form.connectorMode = 'CHANNEL_MESSAGE'">
+        <AsShadcnButton variant="ghost" type="button" class="connector-kind-card" :class="{ active: form.connectorMode === 'CHANNEL_MESSAGE' }" @click="form.connectorMode = 'CHANNEL_MESSAGE'">
           <strong>消息连接器</strong><span>向 QQ Bot、企业微信等渠道发送消息</span>
-        </button>
-        <button type="button" class="connector-kind-card" :class="{ active: form.connectorMode === 'CONNECTOR_ACTION' }" @click="form.connectorMode = 'CONNECTOR_ACTION'">
+        </AsShadcnButton>
+        <AsShadcnButton variant="ghost" type="button" class="connector-kind-card" :class="{ active: form.connectorMode === 'CONNECTOR_ACTION' }" @click="form.connectorMode = 'CONNECTOR_ACTION'">
           <strong>插件连接器</strong><span>调用邮件、日历或自定义插件 Action</span>
-        </button>
+        </AsShadcnButton>
       </div>
       <p>{{ form.connectorMode === 'CHANNEL_MESSAGE' ? '消息接收由开始节点触发器负责；当前节点只负责发送。' : '插件能力和消息账号相互独立，参数由插件 Action Schema 决定。' }}</p>
     </section>
     <template v-if="form.connectorMode !== 'CHANNEL_MESSAGE'">
     <label>连接器
-      <select v-model="form.connectorId" @change="form.provider = ($event.target as HTMLSelectElement).selectedOptions[0]?.dataset.provider || ''">
+      <AsShadcnSelect v-model="form.connectorId" @change="form.provider = ($event.target as HTMLSelectElement).selectedOptions[0]?.dataset.provider || ''">
         <option value="">请选择</option>
         <option v-for="item in actionConnectors" :key="`${item.key.provider}:${item.key.connectorId}`" :value="item.key.connectorId" :data-provider="item.key.provider">
           {{ item.name }}（{{ item.key.provider }}）
         </option>
-      </select>
+      </AsShadcnSelect>
       <small v-if="connector?.metadata?.kind === 'PLUGIN'">{{ connector.metadata.runtime === 'JAVA' ? 'Java 插件' : '独立服务插件' }} · {{ connector.version }}</small>
     </label>
     <label>Action
-      <select v-model="form.actionId" :disabled="!connector">
+      <AsShadcnSelect v-model="form.actionId" :disabled="!connector">
         <option value="">请选择</option>
         <option v-for="item in connector?.actions || []" :key="item.id" :value="item.id">{{ item.name }} · {{ item.riskLevel }}</option>
-      </select>
+      </AsShadcnSelect>
     </label>
     <label>连接配置来源
-      <select v-model="form.connectionSource">
+      <AsShadcnSelect v-model="form.connectionSource">
         <option value="DEFAULT">使用运行时默认配置</option>
         <option value="SELECTED">选择已配置连接</option>
         <option value="DYNAMIC">从上游参数动态确定</option>
-      </select>
+      </AsShadcnSelect>
     </label>
     <label v-if="form.connectionSource === 'SELECTED'">已配置连接
-      <select v-model="form.connectionId">
+      <AsShadcnSelect v-model="form.connectionId">
         <option value="">请选择</option>
         <option v-for="item in availableConnections" :key="item.id" :value="item.id">{{ item.name }} · {{ item.status }}</option>
-      </select>
+      </AsShadcnSelect>
       <small>节点只保存连接 ID；后台会携带当前租户和用户上下文，凭证保持加密存储且不会进入工作流参数。</small>
     </label>
     <label v-if="form.connectionSource === 'DYNAMIC'">连接 ID
@@ -183,7 +189,7 @@ onMounted(load);
           <small>适用于没有声明参数 Schema 的插件，使用方式与提示词一致。</small>
         </label>
         <label class="input-field-label">传递字段名
-          <input v-model="form.inputField" placeholder="input">
+          <AsShadcnInput v-model="form.inputField" placeholder="input"/>
           <small>默认传给插件的 <code>input</code> 字段；如果插件要求 query、content 或 message，请在这里填写。</small>
         </label>
         <small class="schema-diagnostic">Schema 来源：{{ connector?.key.provider }}/{{ connector?.key.connectorId }}/{{ action.id }}</small>
@@ -196,14 +202,14 @@ onMounted(load);
       <section class="message-route-section">
         <h4>发送方式</h4>
         <div class="message-route-list">
-          <button type="button" class="message-route-card" :class="{ active: form.channelSource === 'REPLY_TRIGGER' }" @click="form.channelSource = 'REPLY_TRIGGER'">
+          <AsShadcnButton variant="ghost" type="button" class="message-route-card" :class="{ active: form.channelSource === 'REPLY_TRIGGER' }" @click="form.channelSource = 'REPLY_TRIGGER'">
             <span class="message-route-check">{{ form.channelSource === 'REPLY_TRIGGER' ? '✓' : '' }}</span>
             <span><strong>回复当前触发消息</strong><small>哪里来、回哪里；使用本次收到消息的机器人账号、会话和回复目标。</small></span>
-          </button>
-          <button type="button" class="message-route-card" :class="{ active: form.channelSource === 'DYNAMIC' }" @click="form.channelSource = 'DYNAMIC'">
+          </AsShadcnButton>
+          <AsShadcnButton variant="ghost" type="button" class="message-route-card" :class="{ active: form.channelSource === 'DYNAMIC' }" @click="form.channelSource = 'DYNAMIC'">
             <span class="message-route-check">{{ form.channelSource === 'DYNAMIC' ? '✓' : '' }}</span>
             <span><strong>发送到其他消息渠道</strong><small>从上游参数取得连接器账号和接收目标，可发送到另一个机器人或渠道。</small></span>
-          </button>
+          </AsShadcnButton>
         </div>
         <p v-if="form.channelSource === 'REPLY_TRIGGER'">运行时读取 triggers.connectionId、message.replyTargetId 和 message.conversationId。</p>
         <p v-else>不绑定设计者的个人账号；后台会按本次运行用户和租户重新校验权限。</p>
@@ -239,39 +245,39 @@ onMounted(load);
 <style scoped>
 .cnc { display:grid; gap:15px; }
 .cnc label { display:grid; gap:6px; font-size:13px; }
-.cnc label small { color:#6b7280; font-size:11px; line-height:1.5; }
-.cnc select,.cnc input { border:1px solid #d1d5db; border-radius:6px; padding:8px; background: var(--wf-config-surface, #fff); }
+.cnc label small { color: var(--muted-foreground); font-size:11px; line-height:1.5; }
+.cnc select,.cnc input { border: 1px solid var(--border); border-radius:6px; padding:8px; background: var(--wf-config-surface, #fff); }
 .cnc section { display:grid; gap:8px; }
 .cnc h4,.cnc p { margin:0; }
-.cnc p { font-size:12px; color:#6b7280; line-height:1.5; }
-.schema-diagnostic { color:#9ca3af; font:11px ui-monospace,monospace; }
-.error { color:#dc2626; }
-.warning { padding:9px; background:#fff7ed; color:#c2410c; border-radius:6px; }
-.connector-kind-section { padding:12px; border:1px solid #e5e7eb; border-radius:10px; background: var(--wf-config-surface-hover, #f9fafb); }
+.cnc p { font-size:12px; color: var(--muted-foreground); line-height:1.5; }
+.schema-diagnostic { color: var(--muted-foreground); font:11px ui-monospace,monospace; }
+.error { color: #dc2626; }
+.warning { padding:9px; background: #fff7ed; color: #c2410c; border-radius:6px; }
+.connector-kind-section { padding:12px; border: 1px solid var(--border); border-radius:10px; background: var(--wf-config-surface-hover, #f9fafb); }
 .connector-kind-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
-.connector-kind-card { display:grid; gap:4px; min-height:76px; padding:11px; text-align:left; color:#475569; background: var(--wf-config-surface, #fff); border:1px solid #dbe2ea; border-radius:8px; cursor:pointer; }
-.connector-kind-card strong { color:#1f2937; font-size:13px; }
+.connector-kind-card { display:grid; gap:4px; min-height:76px; padding:11px; text-align:left; color: var(--muted-foreground); background: var(--wf-config-surface, #fff); border: 1px solid #dbe2ea; border-radius:8px; cursor:pointer; }
+.connector-kind-card strong { color: var(--foreground); font-size:13px; }
 .connector-kind-card span { font-size:11px; line-height:1.45; }
-.connector-kind-card:hover { border-color:#a5b4fc; }
-.connector-kind-card.active { border-color:#6366f1; background: color-mix(in srgb, var(--wf-accent, #6366f1) 14%, var(--wf-config-surface, #fff)); box-shadow:0 0 0 2px rgb(99 102 241 / 10%); }
-.connector-kind-card.active strong { color:#4338ca; }
+.connector-kind-card:hover { border-color: #a5b4fc; }
+.connector-kind-card.active { border-color: #6366f1; background: color-mix(in srgb, var(--wf-accent, #6366f1) 14%, var(--wf-config-surface, #fff)); box-shadow:0 0 0 2px rgb(99 102 241 / 10%); }
+.connector-kind-card.active strong { color: #4338ca; }
 .message-route-section { display:grid; gap:9px; }
 .message-route-list { display:grid; gap:8px; }
-.message-route-card { display:grid; grid-template-columns:22px minmax(0,1fr); gap:8px; width:100%; padding:10px; text-align:left; color:#64748b; background: var(--wf-config-surface, #fff); border:1px solid #dbe2ea; border-radius:8px; cursor:pointer; }
-.message-route-card:hover { border-color:#a5b4fc; }
-.message-route-card.active { border-color:#6366f1; background: color-mix(in srgb, var(--wf-accent, #6366f1) 14%, var(--wf-config-surface, #fff)); }
+.message-route-card { display:grid; grid-template-columns:22px minmax(0,1fr); gap:8px; width:100%; padding:10px; text-align:left; color: var(--muted-foreground); background: var(--wf-config-surface, #fff); border: 1px solid #dbe2ea; border-radius:8px; cursor:pointer; }
+.message-route-card:hover { border-color: #a5b4fc; }
+.message-route-card.active { border-color: #6366f1; background: color-mix(in srgb, var(--wf-accent, #6366f1) 14%, var(--wf-config-surface, #fff)); }
 .message-route-card strong,.message-route-card small { display:block; }
-.message-route-card strong { margin-bottom:3px; color:#1f2937; font-size:12px; }
-.message-route-card small { color:#64748b; font-size:11px; line-height:1.5; }
-.message-route-check { display:grid; place-items:center; width:18px; height:18px; margin-top:1px; color:#fff; background:#e2e8f0; border-radius:50%; font-size:11px; }
-.message-route-card.active .message-route-check { background:#6366f1; }
-.connector-tip { padding:9px 10px; color:#475569; background: var(--wf-config-surface-hover, #f9fafb); border-radius:7px; font-size:11px; line-height:1.55; }
+.message-route-card strong { margin-bottom:3px; color: var(--foreground); font-size:12px; }
+.message-route-card small { color: var(--muted-foreground); font-size:11px; line-height:1.5; }
+.message-route-check { display:grid; place-items:center; width:18px; height:18px; margin-top:1px; color: #fff; background: var(--muted); border-radius:50%; font-size:11px; }
+.message-route-card.active .message-route-check { background: #6366f1; }
+.connector-tip { padding:9px 10px; color: var(--muted-foreground); background: var(--wf-config-surface-hover, #f9fafb); border-radius:7px; font-size:11px; line-height:1.55; }
 .generic-input-label,.input-field-label { margin-top:4px; }
-.output-contract { padding:10px; border:1px solid #dbeafe; border-radius:8px; background:#eff6ff; }
-.output-contract code { color:#1d4ed8; }
+.output-contract { padding:10px; border: 1px solid #dbeafe; border-radius:8px; background: #eff6ff; }
+.output-contract code { color: #1d4ed8; }
 .fixed-output { margin-top:2px; }
 .output-title-row { display:flex; align-items:center; justify-content:space-between; gap:8px; }
-.output-title-row code { padding:2px 7px; background:#dbeafe; border-radius:5px; font-size:11px; }
-.send-content-section > small { color:#6b7280; font-size:11px; line-height:1.5; }
-:global(.dark) .cnc select,:global(.dark) .cnc input { background:#27272a; color:#eee; border-color:#52525b; }
+.output-title-row code { padding:2px 7px; background: #dbeafe; border-radius:5px; font-size:11px; }
+.send-content-section > small { color: var(--muted-foreground); font-size:11px; line-height:1.5; }
+.dark .cnc select,.dark .cnc input { background: #27272a; color: #eee; border-color: #52525b; }
 </style>

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Button as AsShadcnButton } from '../ui/shadcn/button';
+
 import {computed, onMounted, ref} from 'vue';
 import {DeleteOutlined, EyeOutlined, PlayCircleOutlined, PlusOutlined} from '@ant-design/icons-vue';
 import {Alert, Button, Empty, Form, FormItem, Input, Card, Modal, Select, Spin, Switch, Tag, Textarea, message} from '../ui';
@@ -214,10 +216,10 @@ onMounted(load);
     <Alert v-if="error" class="as-management-error" type="error" show-icon :message="error"/>
     <div class="tool-toolbar as-management-toolbar">
       <nav class="tool-tabs as-management-segments">
-        <button v-for="item in ([['all','全部'],['system','系统'],['custom','自定义']] as const)" :key="item[0]"
+        <AsShadcnButton variant="ghost" v-for="item in ([['all','全部'],['system','系统'],['custom','自定义']] as const)" :key="item[0]"
                 :class="{ active: tab === item[0] }" @click="tab = item[0]">{{ item[1] }} <span>{{
             counts[item[0]]
-          }}</span></button>
+          }}</span></AsShadcnButton>
       </nav>
     </div>
     <Spin :spinning="loading">
@@ -228,7 +230,7 @@ onMounted(load);
         <Card variant="management" v-for="tool in visibleTools" :key="tool.name" class="tool-card"
                  :title="tool.label || tool.name" :subtitle="tool.name"
                  :description="tool.description || '暂无说明'"
-                 @click="openDetail(tool)" @keydown.enter="openDetail(tool)">
+                 @click="openDetail(tool)">
           <template #icon>⌘</template>
           <template #badge>
             <Tag :color="tool.custom ? 'blue' : 'green'">{{ tool.custom ? '自定义' : '系统' }}</Tag>
@@ -239,7 +241,7 @@ onMounted(load);
             </div>
           </template>
           <template #actions>
-            <div class="tool-card-actions">
+
               <Button size="small" @click.stop="openDetail(tool)">
                 <EyeOutlined/>
                 详情
@@ -252,7 +254,7 @@ onMounted(load);
                 <DeleteOutlined/>
                 删除
               </Button>
-            </div>
+
           </template>
         </Card>
       </div>
@@ -396,13 +398,8 @@ onMounted(load);
   grid-template-columns:repeat(auto-fill, minmax(290px, 1fr));
 }
 
-.tool-card {
-  @apply min-h-[164px] cursor-pointer overflow-hidden p-3.5;
-}
 
-.tool-card:hover, .tool-card:focus-visible {
-  @apply outline-none;
-}
+
 
 .tool-card-title {
   @apply min-w-0 gap-[9px];
@@ -416,33 +413,17 @@ onMounted(load);
   @apply grid size-8 shrink-0 place-items-center rounded-lg bg-[#eef4ff] text-[17px] text-[#155eef];
 }
 
-.tool-card h3 {
-  @apply m-0 truncate text-sm leading-5;
-}
 
 .tool-card code {
   @apply block max-w-full truncate text-[10px] text-[var(--as-text-secondary)];
 }
 
-.tool-card > p {
-  display: -webkit-box;
-  min-height: 36px;
-  margin: 8px 0;
-  color: var(--as-text-secondary, #667085);
-  font-size: 12px;
-  line-height: 18px;
-  overflow: hidden;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2
-}
 
 .tool-meta, .tool-card-actions {
   @apply gap-1;
 }
 
-.tool-card :deep(.as-management-card__badge .as-tag) {
-  margin: 0;
-}
+
 
 .tool-meta .as-tag {
   margin: 0;

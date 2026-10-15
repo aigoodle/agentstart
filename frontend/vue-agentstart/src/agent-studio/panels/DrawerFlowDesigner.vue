@@ -206,8 +206,8 @@ function isLegacyBackendGraph(g: any): boolean {
 }
 .drawer-flow-panel {
   flex: none;
-  border-left: 1px solid #e5e7eb;
-  background: #fff;
+  border-left: 1px solid var(--border);
+  background: var(--background);
   min-height: 0;
 }
 </style>

@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { Input as AsShadcnInput } from '../../ui/shadcn/input';
+import { Button as AsShadcnButton } from '../../ui/shadcn/button';
+
 /**
  * DatasetPickerModal — Dify-style "选择引用知识库" modal.
  *
@@ -197,7 +200,7 @@ function onSubmit() {
   >
         <div class="kh-dpm-search">
           <span class="kh-dpm-search-icon" aria-hidden="true">🔍</span>
-          <input
+          <AsShadcnInput
             v-model="search"
             class="kh-dpm-search-input"
             placeholder="搜索知识库..."
@@ -212,7 +215,7 @@ function onSubmit() {
           <div v-else-if="filtered.length === 0" class="kh-dpm-state">
             {{ catalog.length === 0 ? '暂无可选知识库' : '未匹配到任何知识库' }}
           </div>
-          <button
+          <AsShadcnButton variant="ghost"
             v-for="d in filtered"
             v-else
             :key="d.id"
@@ -243,23 +246,23 @@ function onSubmit() {
             <span class="kh-dpm-check" aria-hidden="true">
               <span v-if="isSelected(d.id)">✓</span>
             </span>
-          </button>
+          </AsShadcnButton>
         </div>
 
         <template #footer>
           <span class="kh-dpm-count as-modal__footer-leading">
             {{ selected.size }} 个知识库被选中
           </span>
-            <button class="kh-dpm-btn kh-dpm-btn-ghost" @click="onCancel">
+            <AsShadcnButton variant="ghost" class="kh-dpm-btn kh-dpm-btn-ghost" @click="onCancel">
               取消
-            </button>
-            <button
+            </AsShadcnButton>
+            <AsShadcnButton variant="ghost"
               class="kh-dpm-btn kh-dpm-btn-primary"
               :disabled="selected.size === 0"
               @click="onSubmit"
             >
               添加
-            </button>
+            </AsShadcnButton>
         </template>
   </Modal>
 </template>

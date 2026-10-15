@@ -1,5 +1,6 @@
 <!--
 <script setup lang="ts">
+import { UiButton } from 'vue-agent-start'
 import { nextTick, onMounted, ref, shallowRef } from 'vue'
 import { FlowDesigner, NodeConfigCard } from 'vue-agent-start'
 
@@ -73,10 +74,10 @@ onMounted(async () => {
       <span class="wf-tag">FLOW</span>
       <span class="wf-mode hud-mono">mode = {{ mode }}</span>
       <div class="wf-actions">
-        <button type="button" class="wf-btn" @click="onReset">重置画布</button>
-        <button type="button" class="wf-btn" @click="toggleMode">切换模式</button>
-        <button type="button" class="wf-btn" @click="onDumpGraph">打印图数据</button>
-        <button type="button" class="wf-btn" @click="onValidate">运行校验</button>
+        <UiButton variant="ghost" type="button" class="wf-btn" @click="onReset">重置画布</UiButton>
+        <UiButton variant="ghost" type="button" class="wf-btn" @click="toggleMode">切换模式</UiButton>
+        <UiButton variant="ghost" type="button" class="wf-btn" @click="onDumpGraph">打印图数据</UiButton>
+        <UiButton variant="ghost" type="button" class="wf-btn" @click="onValidate">运行校验</UiButton>
       </div>
       <Transition name="hud-fade">
         <span v-if="toast" class="wf-toast" :class="`wf-toast&#45;&#45;${toast.type}`">{{ toast.text }}</span>

@@ -90,7 +90,7 @@ const getHandleClass = () => {
 .flow-node-handle.flow-node-handle-right.hovered {
   width: 30px;
   height: 30px;
-  background: #3b82f6;
+  background: var(--primary);
   box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
   cursor: pointer;
 }
@@ -102,7 +102,7 @@ const getHandleClass = () => {
   position: absolute;
   top: 50%;
   left: 50%;
-  background: #ffffff;
+  background: var(--background);
   border-radius: 1px;
   z-index: 11;
   pointer-events: none;

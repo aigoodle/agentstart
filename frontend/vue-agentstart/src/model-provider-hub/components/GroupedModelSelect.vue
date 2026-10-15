@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { Button as AsShadcnButton } from '../../ui/shadcn/button';
+import { Input as AsShadcnInput } from '../../ui/shadcn/input';
+
 /**
  * GroupedModelSelect — brand-icon dropdown that groups model options by
  * provider, with a search box and collapsible provider sections.
@@ -16,7 +19,9 @@
  * Options without a `providerName` land in a single "其他" bucket so legacy
  * lists (that never carried provider metadata) still render.
  */
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
+import { computed, ref } from 'vue';
+
+import { Popover, PopoverTrigger, PopoverContent } from '../../ui/shadcn/popover';
 
 import ProviderIcon from './ProviderIcon.vue';
 
@@ -132,29 +137,17 @@ function pick(m: GroupedModelSelectOption) {
   search.value = '';
 }
 
-function toggleOpen() {
-  if (props.disabled) return;
-  open.value = !open.value;
-}
-
-function onDocMousedown(e: MouseEvent) {
-  if (!open.value) return;
-  const el = rootRef.value;
-  if (el && !el.contains(e.target as Node)) open.value = false;
-}
-
-onMounted(() => window.addEventListener('mousedown', onDocMousedown));
-onBeforeUnmount(() => window.removeEventListener('mousedown', onDocMousedown));
 </script>
 
 <template>
   <div ref="rootRef" class="gms" :class="{ 'is-disabled': disabled }">
-    <button
+    <Popover v-model:open="open">
+    <PopoverTrigger as-child>
+    <AsShadcnButton variant="outline"
       type="button"
       class="gms-trigger"
       :class="{ 'is-active': open, 'has-value': !!current }"
       :disabled="disabled"
-      @click="toggleOpen"
     >
       <span class="gms-trigger-icon">
         <ProviderIcon
@@ -171,17 +164,12 @@ onBeforeUnmount(() => window.removeEventListener('mousedown', onDocMousedown));
         {{ placeholder }}
       </span>
       <span class="gms-trigger-caret">▾</span>
-    </button>
+    </AsShadcnButton>
+    </PopoverTrigger>
 
-    <div v-if="open" class="gms-panel" @click.stop>
+    <PopoverContent align="start" class="gms-panel" @open-auto-focus.prevent>
       <div class="gms-search">
-        <span class="gms-search-icon">🔍</span>
-        <input
-          v-model="search"
-          class="gms-search-input"
-          :placeholder="searchPlaceholder"
-          @click.stop
-        />
+        <AsShadcnInput v-model="search" class="h-8 text-xs" :placeholder="searchPlaceholder" @click.stop />
       </div>
       <div class="gms-body">
         <div v-if="filteredGroups.length === 0" class="gms-empty">
@@ -235,7 +223,8 @@ onBeforeUnmount(() => window.removeEventListener('mousedown', onDocMousedown));
           </div>
         </div>
       </div>
-    </div>
+    </PopoverContent>
+    </Popover>
   </div>
 </template>
 
@@ -254,23 +243,23 @@ onBeforeUnmount(() => window.removeEventListener('mousedown', onDocMousedown));
   display: flex;
   align-items: center;
   gap: 10px;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--border);
   border-radius: 8px;
-  background: #fff;
+  background: var(--background);
   cursor: pointer;
   transition:
     border-color 0.15s,
     box-shadow 0.15s;
 }
 .gms-trigger:hover:not(:disabled) {
-  border-color: #a5b4fc;
+  border-color: var(--ring);
 }
 .gms-trigger.is-active {
-  border-color: #6366f1;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+  border-color: var(--ring);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring) 18%, transparent);
 }
 .gms-trigger.has-value {
-  background: #fafbff;
+  background: var(--background);
 }
 .gms-trigger-icon {
   width: 22px;
@@ -278,19 +267,19 @@ onBeforeUnmount(() => window.removeEventListener('mousedown', onDocMousedown));
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #6366f1;
+  color: var(--primary);
   flex-shrink: 0;
 }
 .gms-trigger-icon-fallback {
   font-size: 16px;
-  color: #94a3b8;
+  color: var(--muted-foreground);
 }
 .gms-trigger-name {
   flex: 1;
   min-width: 0;
   font-size: 13px;
   font-weight: 500;
-  color: #0f172a;
+  color: var(--foreground);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -300,7 +289,7 @@ onBeforeUnmount(() => window.removeEventListener('mousedown', onDocMousedown));
   flex: 1;
   min-width: 0;
   font-size: 13px;
-  color: #94a3b8;
+  color: var(--muted-foreground);
   text-align: left;
   /* Long copy (e.g. "暂无可用模型…") must never wrap the trigger to two
    * lines — truncate and expose the full text via the title attribute. */
@@ -310,47 +299,25 @@ onBeforeUnmount(() => window.removeEventListener('mousedown', onDocMousedown));
 }
 .gms-trigger-caret {
   font-size: 10px;
-  color: #94a3b8;
+  color: var(--muted-foreground);
 }
 .gms-panel {
-  position: absolute;
-  top: calc(100% + 6px);
-  left: 0;
-  right: 0;
+  width: var(--reka-popover-trigger-width);
   /* Narrow trigger cards (系统默认模型 grid) would squeeze the grouped
    * list / empty-state text into wraps — keep the panel readable instead. */
   min-width: min(260px, calc(100vw - 64px));
-  z-index: 40;
+  z-index: 10000;
   padding: 6px;
-  background: #fff;
-  border: 1px solid #e5e7eb;
+  background: var(--popover);
+  color: var(--popover-foreground);
+  border: 1px solid var(--border);
   border-radius: 10px;
   box-shadow: 0 12px 32px rgba(15, 23, 42, 0.12);
   max-height: 360px;
   display: flex;
   flex-direction: column;
 }
-.gms-search {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 8px;
-  border-bottom: 1px solid #f1f5f9;
-  background: #f9fafb;
-  border-radius: 6px 6px 0 0;
-}
-.gms-search-icon {
-  font-size: 12px;
-  color: #94a3b8;
-}
-.gms-search-input {
-  flex: 1;
-  border: 0;
-  outline: 0;
-  background: transparent;
-  font-size: 12px;
-  color: #0f172a;
-}
+.gms-search { padding: 4px 4px 8px; border-bottom: 1px solid var(--border); }
 .gms-body {
   overflow-y: auto;
   padding: 4px 0;
@@ -359,7 +326,7 @@ onBeforeUnmount(() => window.removeEventListener('mousedown', onDocMousedown));
 .gms-empty {
   padding: 24px 12px;
   text-align: center;
-  color: #94a3b8;
+  color: var(--muted-foreground);
   font-size: 12px;
 }
 .gms-empty-icon {
@@ -374,7 +341,7 @@ onBeforeUnmount(() => window.removeEventListener('mousedown', onDocMousedown));
 .gms-group + .gms-group {
   margin-top: 2px;
   padding-top: 2px;
-  border-top: 1px solid #f3f4f6;
+  border-top: 1px solid var(--border);
 }
 .gms-group-head {
   display: flex;
@@ -386,29 +353,29 @@ onBeforeUnmount(() => window.removeEventListener('mousedown', onDocMousedown));
   user-select: none;
 }
 .gms-group-head:hover {
-  background: #f9fafb;
+  background: var(--muted);
 }
 .gms-fold {
   font-size: 10px;
-  color: #94a3b8;
+  color: var(--muted-foreground);
   width: 12px;
   text-align: center;
 }
 .gms-group-icon {
   font-size: 14px;
-  color: #94a3b8;
+  color: var(--muted-foreground);
 }
 .gms-group-name {
   flex: 1;
   font-size: 12px;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--foreground);
 }
 .gms-group-count {
   padding: 1px 6px;
   border-radius: 4px;
-  background: #f1f5f9;
-  color: #64748b;
+  background: var(--muted);
+  color: var(--muted-foreground);
   font-size: 10px;
 }
 .gms-group-body {
@@ -424,21 +391,21 @@ onBeforeUnmount(() => window.removeEventListener('mousedown', onDocMousedown));
   transition: background 0.12s;
 }
 .gms-item:hover {
-  background: #f3f4f6;
+  background: var(--muted);
 }
 .gms-item.is-active {
-  background: #eef2ff;
+  background: color-mix(in srgb, var(--primary) 12%, var(--popover));
 }
 .gms-item-name {
   flex: 1;
   font-size: 12px;
-  color: #1f2937;
+  color: var(--foreground);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 .gms-item.is-active .gms-item-name {
-  color: #4338ca;
+  color: var(--primary);
   font-weight: 500;
 }
 .gms-item-default {
@@ -450,7 +417,7 @@ onBeforeUnmount(() => window.removeEventListener('mousedown', onDocMousedown));
   font-weight: 500;
 }
 .gms-item-check {
-  color: #4338ca;
+  color: var(--primary);
   font-size: 12px;
 }
 </style>

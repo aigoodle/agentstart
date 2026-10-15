@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Button as AsShadcnButton } from '../../ui/shadcn/button';
+
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 
 import {
@@ -241,12 +243,10 @@ onUnmounted(() => {
           <Card variant="management"
             v-for="group in section.groups"
             :key="group.id"
-            :class="['cc-card', { 'is-compact': section.compact }]"
-            :compact="section.compact"
+            class="cc-card"
             :title="group.name"
             :description="group.description || '暂无描述'"
             @click="openAccount(primaryOf(group))"
-            @keydown.enter="openAccount(primaryOf(group))"
           >
             <template #icon>
               <ChannelIcon
@@ -254,8 +254,8 @@ onUnmounted(() => {
                 :channel-id="primaryOf(group).channelId"
                 :metadata="primaryOf(group).metadata"
                 :name="group.name"
-                :size="section.compact ? 36 : 44"
-                :radius="section.compact ? 9 : 12"
+                :size="40"
+                :radius="8"
               />
             </template>
             <template #subtitle>
@@ -265,8 +265,8 @@ onUnmounted(() => {
               <template v-else>{{ group.adapters.length }} 个适配器</template>
             </template>
             <template #badge>
-              <Tag v-if="groupInstalled(group)" class="cc-pill" color="success">已接入</Tag>
-              <Tag v-else class="cc-pill">未接入</Tag>
+              <Tag v-if="groupInstalled(group)" color="success">已接入</Tag>
+              <Tag v-else>未接入</Tag>
             </template>
 
             <div v-if="!section.compact" class="cc-stats">
@@ -312,15 +312,15 @@ onUnmounted(() => {
                 <b>{{ channel.provider }}</b>
                 <small>{{ channel.runtimeStatus }}</small>
                 <span class="cc-adapter-ops">
-                  <button class="cc-mini" @click.stop="openMonitor(channel)">消息</button>
-                  <button
+                  <AsShadcnButton variant="ghost" class="cc-mini" @click.stop="openMonitor(channel)">消息</AsShadcnButton>
+                  <AsShadcnButton variant="ghost"
                     v-if="!channel.installed"
                     class="cc-mini is-primary"
                     :disabled="!!installing"
                     @click.stop="installChannel(channel)"
                   >
                     {{ installing === keyOf(channel) ? '安装中…' : '安装' }}
-                  </button>
+                  </AsShadcnButton>
                 </span>
               </div>
             </div>
@@ -355,40 +355,34 @@ onUnmounted(() => {
               >
                 <MessageOutlined />消息
               </Button>
-              <a
-                v-else-if="detailUrlOf(primaryOf(group))"
-                class="as-btn as-btn--default as-btn--small cc-act-link"
+              <Button v-else-if="detailUrlOf(primaryOf(group))" as-child size="small"><a
                 :href="detailUrlOf(primaryOf(group))"
                 target="_blank"
                 rel="noopener"
                 @click.stop
               >
                 <EyeOutlined />查看详情
-              </a>
+              </a></Button>
               <Button v-else size="small" @click.stop="openAccount(primaryOf(group))">
                 <EyeOutlined />查看详情
               </Button>
 
-              <a
-                v-if="homepageLinkOf(primaryOf(group))"
-                class="as-btn as-btn--default as-btn--small cc-act-link"
+              <Button v-if="homepageLinkOf(primaryOf(group))" as-child size="small"><a
                 :href="homepageLinkOf(primaryOf(group))"
                 target="_blank"
                 rel="noopener"
                 @click.stop
               >
                 <GlobalOutlined />官网
-              </a>
-              <a
-                v-if="linkOf(primaryOf(group), 'sourceUrl')"
-                class="as-btn as-btn--default as-btn--small cc-act-link"
+              </a></Button>
+              <Button v-if="linkOf(primaryOf(group), 'sourceUrl')" as-child size="small"><a
                 :href="linkOf(primaryOf(group), 'sourceUrl')"
                 target="_blank"
                 rel="noopener"
                 @click.stop
               >
                 <CodeOutlined />源码
-              </a>
+              </a></Button>
             </template>
           </Card>
         </div>
@@ -435,31 +429,31 @@ onUnmounted(() => {
   gap: 12px;
   flex-wrap: wrap;
   padding: 20px;
-  background: #fff;
-  border: 1px solid #e5e7eb;
+  background: var(--background);
+  border: 1px solid var(--border);
   border-radius: 12px;
   box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
 }
 .cc-intro h3 {
   margin: 0 0 6px;
   font-size: 16px;
-  color: #111827;
+  color: var(--foreground);
 }
 .cc-intro p {
   margin: 0;
   font-size: 13px;
-  color: #6b7280;
+  color: var(--muted-foreground);
   line-height: 1.5;
 }
-:global(.dark) .cc-intro {
+.dark .cc-intro {
   background: #1f1f1f;
   border-color: #2d2d2d;
 }
-:global(.dark) .cc-intro h3 {
+.dark .cc-intro h3 {
   color: #f3f4f6;
 }
-:global(.dark) .cc-intro p {
-  color: #9ca3af;
+.dark .cc-intro p {
+  color: var(--muted-foreground);
 }
 
 /* -------- 错误提示 -------- */
@@ -471,7 +465,7 @@ onUnmounted(() => {
   border: 1px solid #fecaca;
   border-radius: 8px;
 }
-:global(.dark) .cc-alert {
+.dark .cc-alert {
   color: #fca5a5;
   background: rgba(220, 38, 38, 0.15);
   border-color: rgba(220, 38, 38, 0.35);
@@ -482,7 +476,7 @@ onUnmounted(() => {
   padding: 48px 0;
   text-align: center;
   font-size: 13px;
-  color: #9ca3af;
+  color: var(--muted-foreground);
 }
 
 /* -------- 通道卡片网格 -------- */
@@ -499,61 +493,24 @@ onUnmounted(() => {
   gap: 12px;
   padding: 0 2px;
 }
-.cc-group-head h3 { margin: 0 0 4px; font-size: 15px; color: #111827; }
-.cc-group-head p { margin: 0; font-size: 12px; color: #9ca3af; }
+.cc-group-head h3 { margin: 0 0 4px; font-size: 15px; color: var(--foreground); }
+.cc-group-head p { margin: 0; font-size: 12px; color: var(--muted-foreground); }
 .cc-group-head > span {
   min-width: 24px;
   padding: 2px 8px;
   text-align: center;
   font-size: 11px;
-  color: #6b7280;
-  background: #f3f4f6;
+  color: var(--muted-foreground);
+  background: var(--muted);
   border-radius: 999px;
 }
-:global(.dark) .cc-group-head h3 { color: #f3f4f6; }
-:global(.dark) .cc-group-head > span { color: #9ca3af; background: #2d2d2d; }
+.dark .cc-group-head h3 { color: #f3f4f6; }
+.dark .cc-group-head > span { color: var(--muted-foreground); background: #2d2d2d; }
 .cc-cards {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 14px;
 }
-/* 可接入渠道一行 6 张，窄屏逐级递减 */
-.cc-cards.is-compact {
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 10px;
-}
-@media (max-width: 1520px) {
-  .cc-cards.is-compact {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-}
-@media (max-width: 1100px) {
-  .cc-cards.is-compact {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-@media (max-width: 780px) {
-  .cc-cards.is-compact {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-@media (max-width: 560px) {
-  .cc-cards.is-compact {
-    grid-template-columns: 1fr;
-  }
-}
-/* 卡片骨架、标题、描述、悬浮和焦点态由共享 Card 提供。 */
-.cc-card { gap: 10px; }
-.cc-card :deep(.as-management-card__icon) {
-  width: auto;
-  height: auto;
-  background: transparent;
-}
-.cc-card :deep(.as-management-card__actions) {
-  width: 100%;
-  justify-content: space-between;
-}
-
 /* 统计行：更紧凑的数字胶囊 */
 .cc-stats {
   display: flex;
@@ -566,8 +523,8 @@ onUnmounted(() => {
   gap: 3px;
   padding: 2px 8px;
   font-size: 11px;
-  color: #6b7280;
-  background: #f8fafc;
+  color: var(--muted-foreground);
+  background: var(--muted);
   border: 1px solid #eef2f6;
   border-radius: 999px;
   white-space: nowrap;
@@ -575,7 +532,7 @@ onUnmounted(() => {
 .cc-stat b {
   font-size: 12px;
   font-weight: 600;
-  color: #111827;
+  color: var(--foreground);
 }
 .cc-stat.is-link {
   cursor: pointer;
@@ -598,23 +555,23 @@ onUnmounted(() => {
   align-items: center;
   gap: 5px;
   font-size: 11px;
-  color: #9ca3af;
+  color: var(--muted-foreground);
   white-space: nowrap;
 }
-:global(.dark) .cc-stat {
-  color: #9ca3af;
+.dark .cc-stat {
+  color: var(--muted-foreground);
   background: #232323;
   border-color: #2d2d2d;
 }
-:global(.dark) .cc-stat b {
+.dark .cc-stat b {
   color: #f3f4f6;
 }
-:global(.dark) .cc-stat.is-link:hover {
+.dark .cc-stat.is-link:hover {
   color: #818cf8;
   border-color: #6366f1;
   background: rgba(99, 102, 241, 0.12);
 }
-:global(.dark) .cc-stat.is-link:hover b {
+.dark .cc-stat.is-link:hover b {
   color: #818cf8;
 }
 
@@ -631,9 +588,9 @@ onUnmounted(() => {
   box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.15);
 }
 .cc-dot.is-off {
-  background: #d1d5db;
+  background: var(--muted);
 }
-:global(.dark) .cc-dot.is-off {
+.dark .cc-dot.is-off {
   background: #4b5563;
 }
 
@@ -655,8 +612,8 @@ onUnmounted(() => {
   gap: 8px;
   padding: 7px 10px;
   font-size: 12px;
-  background: #fafafa;
-  border: 1px solid #e5e7eb;
+  background: var(--muted);
+  border: 1px solid var(--border);
   border-radius: 8px;
   transition:
     border-color 0.15s ease,
@@ -668,25 +625,25 @@ onUnmounted(() => {
 }
 .cc-adapter b {
   font-size: 12px;
-  color: #111827;
+  color: var(--foreground);
 }
 .cc-adapter small {
-  color: #9ca3af;
+  color: var(--muted-foreground);
 }
 .cc-adapter-ops {
   margin-left: auto;
   display: flex;
   gap: 8px;
 }
-:global(.dark) .cc-adapter {
+.dark .cc-adapter {
   background: #191919;
   border-color: #2d2d2d;
 }
-:global(.dark) .cc-adapter:hover {
+.dark .cc-adapter:hover {
   border-color: #6366f1;
   background: rgba(99, 102, 241, 0.12);
 }
-:global(.dark) .cc-adapter b {
+.dark .cc-adapter b {
   color: #f3f4f6;
 }
 
@@ -699,7 +656,7 @@ onUnmounted(() => {
   gap: 4px;
   font-size: 12px;
   white-space: nowrap;
-  color: #6b7280;
+  color: var(--muted-foreground);
   cursor: pointer;
   transition:
     color 0.15s ease,
@@ -712,7 +669,7 @@ onUnmounted(() => {
 }
 a.cc-act,
 a.cc-act-link {
-  color: #6b7280;
+  color: var(--muted-foreground);
   text-decoration: none;
 }
 .cc-act:hover,
@@ -730,21 +687,21 @@ a.cc-act-link {
 .cc-act.is-disabled:hover {
   transform: none;
 }
-:global(.dark) .cc-act,
-:global(.dark) .cc-act-link,
-:global(.dark) a.cc-act,
-:global(.dark) a.cc-act-link {
-  color: #9ca3af;
+.dark .cc-act,
+.dark .cc-act-link,
+.dark a.cc-act,
+.dark a.cc-act-link {
+  color: var(--muted-foreground);
 }
-:global(.dark) .cc-act:hover,
-:global(.dark) .cc-act-link:hover {
+.dark .cc-act:hover,
+.dark .cc-act-link:hover {
   color: #818cf8;
 }
-:global(.dark) .cc-act.is-primary {
+.dark .cc-act.is-primary {
   color: #818cf8;
 }
-:global(.dark) .cc-act.is-disabled {
-  color: #4b5563;
+.dark .cc-act.is-disabled {
+  color: var(--muted-foreground);
 }
 
 /* -------- 按钮 -------- */
@@ -752,9 +709,9 @@ a.cc-act-link {
   padding: 7px 14px;
   font-size: 13px;
   font-weight: 500;
-  color: #374151;
-  background: #fff;
-  border: 1px solid #d1d5db;
+  color: var(--foreground);
+  background: var(--background);
+  border: 1px solid var(--border);
   border-radius: 7px;
   cursor: pointer;
   transition:
@@ -762,7 +719,7 @@ a.cc-act-link {
     border-color 0.15s ease;
 }
 .cc-btn:hover {
-  background: #f3f4f6;
+  background: var(--muted);
 }
 .cc-btn:disabled {
   opacity: 0.5;
@@ -783,26 +740,26 @@ a.cc-act-link {
 .cc-btn.is-danger:hover {
   background: #fef2f2;
 }
-:global(.dark) .cc-btn {
+.dark .cc-btn {
   background: #2d2d2d;
   border-color: #3d3d3d;
   color: #f3f4f6;
 }
-:global(.dark) .cc-btn:hover {
+.dark .cc-btn:hover {
   background: #3d3d3d;
 }
-:global(.dark) .cc-btn-primary {
+.dark .cc-btn-primary {
   background: #6366f1;
   border-color: #6366f1;
 }
-:global(.dark) .cc-btn-primary:hover {
+.dark .cc-btn-primary:hover {
   background: #818cf8;
 }
-:global(.dark) .cc-btn.is-danger {
+.dark .cc-btn.is-danger {
   color: #f87171;
   border-color: rgba(220, 38, 38, 0.4);
 }
-:global(.dark) .cc-btn.is-danger:hover {
+.dark .cc-btn.is-danger:hover {
   background: rgba(220, 38, 38, 0.15);
 }
 
@@ -812,7 +769,7 @@ a.cc-act-link {
   font-size: 11px;
   font-weight: 500;
   color: #4f46e5;
-  background: #fff;
+  background: var(--background);
   border: 1px solid #e0e7ff;
   border-radius: 6px;
   cursor: pointer;
@@ -836,15 +793,15 @@ a.cc-act-link {
   opacity: 0.5;
   cursor: not-allowed;
 }
-:global(.dark) .cc-mini {
+.dark .cc-mini {
   background: #2d2d2d;
   border-color: #3d3d3d;
   color: #a5b4fc;
 }
-:global(.dark) .cc-mini:hover {
+.dark .cc-mini:hover {
   background: #3d3d3d;
 }
-:global(.dark) .cc-mini.is-primary {
+.dark .cc-mini.is-primary {
   background: #6366f1;
   border-color: #6366f1;
   color: #fff;

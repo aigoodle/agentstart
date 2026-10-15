@@ -1,5 +1,8 @@
 <script setup lang="ts">
 // @ts-nocheck — legacy flow-designer code, pre-dates strict typing; cleanup tracked separately.
+
+import { Button as AButton, Input as AInput } from '../../../ui';
+
 import { h } from 'vue';
 
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons-vue';
@@ -98,9 +101,9 @@ const onNameChange = (it: any) => {
   padding: 12px;
   text-align: center;
   font-size: 12px;
-  color: #9ca3af;
+  color: var(--muted-foreground);
   background: var(--wf-config-surface-hover, #f9fafb);
-  border: 1px dashed #e5e7eb;
+  border: 1px dashed var(--border);
   border-radius: 6px;
 }
 
@@ -116,7 +119,7 @@ const onNameChange = (it: any) => {
   gap: 6px;
   padding: 6px 8px;
   background: var(--wf-config-surface-hover, #f9fafb);
-  border: 1px solid #f0f0f0;
+  border: 1px solid var(--border);
   border-radius: 6px;
 }
 </style>

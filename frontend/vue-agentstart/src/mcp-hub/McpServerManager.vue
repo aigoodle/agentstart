@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Button as AsShadcnButton } from '../ui/shadcn/button';
+
 import {computed, onMounted, ref} from 'vue';
 import {BugOutlined, DeleteOutlined, EditOutlined, PlusOutlined} from '@ant-design/icons-vue';
 import {Alert, Button, Drawer, Empty, Form, FormItem, Input, Card, Modal, Select, Spin, Switch, Tag, Textarea, message} from '../ui';
@@ -289,6 +291,7 @@ onMounted(load);
         <Card variant="management"
           v-for="server in servers"
           :key="server.id"
+          :interactive="false"
           :title="server.name"
           :subtitle="server.transport"
         >
@@ -296,21 +299,16 @@ onMounted(load);
             <span class="mcp-server-icon">M</span>
           </template>
           <template #description>
-            <code class="mcp-address"
-                  :title="server.transport !== 'STDIO' ? server.url : [server.command, ...(server.args || [])].join(' ')">{{
-                server.transport !== 'STDIO' ? server.url : [server.command, ...(server.args || [])].join(' ')
-              }}</code>
-            <div class="mcp-status">
-              <b :class="`status-${(server.status || 'unknown').toLowerCase()}`">{{ server.status || 'UNKNOWN' }}</b>
-              <small>{{ server.toolCount ?? '待发现' }}{{ server.toolCount == null ? '' : ' 个工具' }}</small>
-            </div>
-            <div class="mcp-card-message">
-              <p v-if="server.lastError" class="mcp-bad">{{ server.lastError }}</p>
-              <p v-else>{{ server.enabled ? '服务已启用，可查看并调用其工具。' : '服务当前已停用。' }}</p>
-            </div>
+            <span :title="server.lastError || server.url || server.command" :class="{ 'mcp-bad': !!server.lastError }">
+              {{ server.lastError || server.url || [server.command, ...(server.args || [])].filter(Boolean).join(' ') || (server.enabled ? '服务已启用，可查看并调用其工具。' : '服务当前已停用。') }}
+            </span>
+          </template>
+          <template #meta>
+            <Tag :color="server.status === 'CONNECTED' || server.status === 'CONFIGURED' ? 'green' : 'orange'">{{ server.status || 'UNKNOWN' }}</Tag>
+            <span>{{ server.toolCount ?? '待发现' }}{{ server.toolCount == null ? '' : ' 个工具' }}</span>
           </template>
           <template #actions>
-            <div class="mcp-actions">
+
               <Button type="primary" size="small" @click="openDetail(server)">
                 <BugOutlined/>
                 查看与调试
@@ -323,7 +321,7 @@ onMounted(load);
                 <DeleteOutlined/>
                 删除
               </Button>
-            </div>
+
           </template>
         </Card>
       </div>
@@ -391,13 +389,13 @@ onMounted(load);
           <div v-if="!toolsLoading && serverTools.length" class="mcp-tool-browser">
           <aside class="mcp-tool-list">
             <div class="mcp-tool-list-head"><strong>可用工具</strong><span>{{ serverTools.length }}</span></div>
-            <button v-for="tool in serverTools" :key="tool.name" type="button"
+            <AsShadcnButton variant="ghost" v-for="tool in serverTools" :key="tool.name" type="button"
                     :class="{ active: selectedTool?.name === tool.name }" @click="selectTool(tool)">
               <span class="mcp-tool-glyph">⌘</span><span class="mcp-tool-copy"><b>{{ tool.label || tool.name }}</b>
                 <small>{{ tool.name }}</small>
                 <p :title="tool.description || '暂无工具说明'">{{ tool.description || '暂无工具说明' }}</p>
               </span>
-            </button>
+            </AsShadcnButton>
           </aside>
           <section v-if="selectedTool" class="mcp-tool-detail">
             <div class="mcp-tool-heading">
@@ -545,7 +543,7 @@ h2, h3, p {
 }
 
 .mcp-status small {
-  color: #6b7280;
+  color: var(--muted-foreground);
 }
 
 .mcp-card-message {
@@ -558,7 +556,7 @@ h2, h3, p {
 
 .mcp-bad {
   margin-top: 5px;
-  color: #b91c1c;
+  color: var(--destructive);
 }
 
 .mcp-actions {
@@ -569,9 +567,6 @@ h2, h3, p {
   gap: 8px;
 }
 
-.mcp-list :deep(.as-management-card__actions) {
-  width: 100%;
-}
 
 .mcp-actions .as-btn {
   min-width: 0;
@@ -820,24 +815,14 @@ h2, h3, p {
 }
 
 @media (max-width: 1280px) {
-  .mcp-list {
-    grid-template-columns:repeat(4, minmax(0, 1fr));
-  }
 }
 
 @media (max-width: 1024px) {
-  .mcp-list {
-    grid-template-columns:repeat(3, minmax(0, 1fr));
-  }
 }
 
 @media (max-width: 760px) {
   .mcp-page-header, .mcp-test-bar {
     @apply flex-col items-start;
-  }
-
-  .mcp-list {
-    grid-template-columns:repeat(2, minmax(0, 1fr));
   }
 
   .mcp-tool-browser {
@@ -855,8 +840,5 @@ h2, h3, p {
 }
 
 @media (max-width: 520px) {
-  .mcp-list {
-    grid-template-columns:1fr;
-  }
 }
 </style>

@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import { ShadcnBoolean as AsShadcnBoolean } from '../../ui/components/ShadcnBoolean';
+
+import { ShadcnSelect as AsShadcnSelect } from '../../ui/components/ShadcnSelect';
+import { Input as AsShadcnInput } from '../../ui/shadcn/input';
+
 /**
  * 「定义我的机器人」表单弹窗。
  *
@@ -151,7 +156,7 @@ async function save() {
         <main class="rfm-main">
           <label class="rfm-field">
             <span>消息渠道 *</span>
-            <select
+            <AsShadcnSelect
               v-model="channelKey"
               class="rfm-input"
               :disabled="!!robot"
@@ -164,7 +169,7 @@ async function save() {
               >
                 {{ c.name }}({{ c.provider }})
               </option>
-            </select>
+            </AsShadcnSelect>
             <span v-if="robot" class="rfm-hint">
               机器人所属渠道创建后不可变更
             </span>
@@ -172,7 +177,7 @@ async function save() {
 
           <label class="rfm-field">
             <span>机器人名称 *</span>
-            <input
+            <AsShadcnInput
               v-model.trim="form.name"
               class="rfm-input"
               :placeholder="`例如 ${selectedChannel?.name ?? '渠道'} 工作账号`"
@@ -204,7 +209,7 @@ async function save() {
 
         <template #footer>
           <label class="rfm-enable as-modal__footer-leading">
-            <input v-model="form.enabled" type="checkbox" />启用消息接收
+            <AsShadcnBoolean v-model="form.enabled" type="checkbox" />启用消息接收
           </label>
           <Button @click="emit('update:open', false)">
             取消
@@ -233,7 +238,7 @@ async function save() {
   z-index: 1200;
 }
 .rfm-modal { max-height: 88vh; }
-:global(.dark) .rfm-modal {
+.dark .rfm-modal {
   background: #1f1f1f;
 }
 
@@ -260,12 +265,12 @@ async function save() {
   justify-content: space-between;
   gap: 12px;
   padding: 14px 20px;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
 }
 .rfm-title {
   font-size: 15px;
   font-weight: 600;
-  color: #111827;
+  color: var(--foreground);
 }
 .rfm-close {
   flex-shrink: 0;
@@ -277,7 +282,7 @@ async function save() {
   border: 0;
   background: none;
   font-size: 14px;
-  color: #9ca3af;
+  color: var(--muted-foreground);
   border-radius: 6px;
   cursor: pointer;
   transition:
@@ -285,27 +290,27 @@ async function save() {
     color 0.15s ease;
 }
 .rfm-close:hover {
-  background: #f3f4f6;
-  color: #111827;
+  background: var(--muted);
+  color: var(--foreground);
 }
 .rfm-enable {
   display: flex;
   align-items: center;
   gap: 6px;
   font-size: 13px;
-  color: #374151;
+  color: var(--foreground);
   cursor: pointer;
 }
-:global(.dark) .rfm-header,
-:global(.dark) .rfm-title {
+.dark .rfm-header,
+.dark .rfm-title {
   color: #f3f4f6;
 }
-:global(.dark) .rfm-close:hover {
+.dark .rfm-close:hover {
   background: #2d2d2d;
   color: #f3f4f6;
 }
-:global(.dark) .rfm-enable {
-  color: #d1d5db;
+.dark .rfm-enable {
+  color: var(--muted-foreground);
 }
 
 .rfm-main {
@@ -324,7 +329,7 @@ async function save() {
   gap: 7px;
   font-size: 13px;
   font-weight: 500;
-  color: #374151;
+  color: var(--foreground);
 }
 .rfm-field-grow {
   flex: 1;
@@ -332,10 +337,10 @@ async function save() {
 .rfm-input {
   padding: 8px 10px;
   font-size: 13px;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--border);
   border-radius: 6px;
-  background: #fff;
-  color: #111827;
+  background: var(--background);
+  color: var(--foreground);
   transition:
     border-color 0.15s ease,
     box-shadow 0.15s ease;
@@ -346,29 +351,29 @@ async function save() {
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
 }
 .rfm-input:disabled {
-  background: #f3f4f6;
-  color: #6b7280;
+  background: var(--muted);
+  color: var(--muted-foreground);
   cursor: not-allowed;
 }
 .rfm-hint {
   font-size: 12px;
-  color: #6b7280;
+  color: var(--muted-foreground);
   margin: 0;
 }
-:global(.dark) .rfm-field {
-  color: #d1d5db;
+.dark .rfm-field {
+  color: var(--muted-foreground);
 }
-:global(.dark) .rfm-input {
+.dark .rfm-input {
   background: #2a2a2a;
   border-color: #3f3f3f;
   color: #f3f4f6;
 }
-:global(.dark) .rfm-input:disabled {
+.dark .rfm-input:disabled {
   background: #2d2d2d;
-  color: #9ca3af;
+  color: var(--muted-foreground);
 }
-:global(.dark) .rfm-hint {
-  color: #9ca3af;
+.dark .rfm-hint {
+  color: var(--muted-foreground);
 }
 
 .rfm-group {
@@ -376,28 +381,28 @@ async function save() {
   gap: 8px;
   margin: 0;
   padding: 12px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border);
   border-radius: 8px;
 }
 .rfm-group legend {
   font-size: 13px;
   font-weight: 600;
-  color: #374151;
+  color: var(--foreground);
   padding: 0 4px;
 }
 .rfm-group p {
   margin: 0;
   font-size: 12px;
-  color: #6b7280;
+  color: var(--muted-foreground);
 }
-:global(.dark) .rfm-group {
+.dark .rfm-group {
   border-color: #2d2d2d;
 }
-:global(.dark) .rfm-group legend {
-  color: #e5e7eb;
+.dark .rfm-group legend {
+  color: var(--muted-foreground);
 }
-:global(.dark) .rfm-group p {
-  color: #9ca3af;
+.dark .rfm-group p {
+  color: var(--muted-foreground);
 }
 
 .rfm-note {
@@ -411,17 +416,17 @@ async function save() {
 .rfm-btn {
   padding: 7px 14px;
   font-size: 13px;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--border);
   border-radius: 6px;
-  background: #fff;
-  color: #374151;
+  background: var(--background);
+  color: var(--foreground);
   cursor: pointer;
   transition:
     background 0.15s ease,
     border-color 0.15s ease;
 }
 .rfm-btn:hover {
-  background: #f9fafb;
+  background: var(--muted);
 }
 .rfm-btn:disabled {
   opacity: 0.55;
@@ -435,15 +440,15 @@ async function save() {
 .rfm-btn-primary:hover {
   background: #4f52e8;
 }
-:global(.dark) .rfm-btn {
+.dark .rfm-btn {
   background: #2a2a2a;
   border-color: #3f3f3f;
-  color: #e5e7eb;
+  color: var(--muted-foreground);
 }
-:global(.dark) .rfm-btn:hover {
+.dark .rfm-btn:hover {
   background: #333;
 }
-:global(.dark) .rfm-btn-primary {
+.dark .rfm-btn-primary {
   background: #6366f1;
   border-color: #6366f1;
   color: #fff;

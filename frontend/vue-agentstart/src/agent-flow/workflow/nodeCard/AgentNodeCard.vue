@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Select as ASelect, Input as AInput, Button as AButton, Slider as ASlider, InputNumber as AInputNumber } from '../../../ui';
+
 import { h, onMounted, ref } from 'vue';
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons-vue';
 import { createAgentStartClient } from '../../../client';
@@ -172,6 +174,6 @@ const agentOutputState = { output: OUTPUT_DEFAULTS };
   align-items: center;
   gap: 12px;
 }
-.agent-mcp-header{display:flex;align-items:center;justify-content:space-between;font-size:11px;color:#9ca3af}.agent-mcp-empty{margin-top:8px;padding:14px;border:1px dashed #e5e7eb;border-radius:6px;text-align:center;font-size:12px;color:#9ca3af}.agent-mcp-list{display:flex;flex-direction:column;gap:6px;margin-top:8px}.agent-mcp-list>div{display:flex;align-items:center;justify-content:space-between;padding:7px 9px;border:1px solid #e5e7eb;border-radius:6px}.agent-mcp-list span{display:flex;flex-direction:column}.agent-mcp-list small{font-size:10px;color:#9ca3af}
+.agent-mcp-header{display:flex;align-items:center;justify-content:space-between;font-size:11px;color: var(--muted-foreground)}.agent-mcp-empty{margin-top:8px;padding:14px;border: 1px dashed var(--border);border-radius:6px;text-align:center;font-size:12px;color: var(--muted-foreground)}.agent-mcp-list{display:flex;flex-direction:column;gap:6px;margin-top:8px}.agent-mcp-list>div{display:flex;align-items:center;justify-content:space-between;padding:7px 9px;border: 1px solid var(--border);border-radius:6px}.agent-mcp-list span{display:flex;flex-direction:column}.agent-mcp-list small{font-size:10px;color: var(--muted-foreground)}
 
 </style>

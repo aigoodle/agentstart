@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Tag as ATag } from '../../../ui';
+
 import PromptEditor from '@/components/PromptEditor.vue';
 import WfField from '@/workflow/WfField.vue';
 
@@ -46,20 +48,20 @@ const formState: any = defineModel();
   gap: 8px;
   padding: 6px 10px;
   background: var(--wf-config-surface-hover, #f9fafb);
-  border: 1px solid #f0f0f0;
+  border: 1px solid var(--border);
   border-radius: 6px;
 }
 
 .answer-output-name {
   font-size: 12px;
   font-weight: 500;
-  color: #1f2937;
+  color: var(--foreground);
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
 }
 
 .answer-output-desc {
   margin-left: auto;
   font-size: 11px;
-  color: #6b7280;
+  color: var(--muted-foreground);
 }
 </style>

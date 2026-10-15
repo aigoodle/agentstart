@@ -1,4 +1,12 @@
 <script setup lang="ts">
+import { Drawer as ShadcnDrawer } from '../../ui/components/Drawer';
+import { ShadcnBoolean as AsShadcnBoolean } from '../../ui/components/ShadcnBoolean';
+
+import { ShadcnSelect as AsShadcnSelect } from '../../ui/components/ShadcnSelect';
+import { Button as AsShadcnButton } from '../../ui/shadcn/button';
+import { Textarea as AsShadcnTextarea } from '../../ui/shadcn/textarea';
+import { Input as AsShadcnInput } from '../../ui/shadcn/input';
+
 import { computed, ref, watch } from 'vue';
 
 import type { AgentStartClient } from '../../client';
@@ -402,9 +410,9 @@ const formatTime = (value?: string) => (value ? new Date(value).toLocaleString()
 </script>
 
 <template>
-  <Transition name="cmd">
-    <div v-if="open" class="cmd-mask" @click.self="emit('update:open', false)">
-      <aside class="cmd-drawer" @click.stop>
+  <ShadcnDrawer :open="open" class="cmd-drawer" width="min(760px, 96vw)" :closable="false"
+    :body-style="{ padding: 0, display: 'flex', flexDirection: 'column', minHeight: 0 }"
+    @update:open="emit('update:open', $event)">
         <header class="cmd-header">
           <div class="cmd-header-info">
             <ChannelIcon
@@ -422,14 +430,14 @@ const formatTime = (value?: string) => (value ? new Date(value).toLocaleString()
             </div>
           </div>
           <div class="cmd-tools">
-            <select v-model="connectionFilter" class="cmd-select">
+            <AsShadcnSelect v-model="connectionFilter" class="cmd-select">
               <option value="">全部账号</option>
               <option v-for="row in connections" :key="row.id" :value="row.id">
                 {{ row.name }}
               </option>
-            </select>
+            </AsShadcnSelect>
             <label class="cmd-auto">
-              <input
+              <AsShadcnBoolean
                 :checked="autoRefresh"
                 type="checkbox"
                 @change="
@@ -440,12 +448,12 @@ const formatTime = (value?: string) => (value ? new Date(value).toLocaleString()
             </label>
             <Button @click="refreshAll">刷新</Button>
           </div>
-          <button class="cmd-close" @click="emit('update:open', false)">✕</button>
+          <AsShadcnButton variant="ghost" class="cmd-close" @click="emit('update:open', false)">✕</AsShadcnButton>
         </header>
 
         <nav class="cmd-view-tabs">
-          <button :class="{ active: activeView === 'conversations' }" @click="activeView = 'conversations'">会话队列</button>
-          <button :class="{ active: activeView === 'messages' }" @click="activeView = 'messages'">消息时间线</button>
+          <AsShadcnButton variant="ghost" :class="{ active: activeView === 'conversations' }" @click="activeView = 'conversations'">会话队列</AsShadcnButton>
+          <AsShadcnButton variant="ghost" :class="{ active: activeView === 'messages' }" @click="activeView = 'messages'">消息时间线</AsShadcnButton>
           <span v-if="conversationSummary">
             待人工 {{ conversationSummary.waitingHuman }} · 处理中 {{ conversationSummary.humanActive }} ·
             未读 {{ conversationSummary.unread }}<template v-if="conversationSummary.slaBreached"> · 超时 {{ conversationSummary.slaBreached }}</template>
@@ -473,25 +481,25 @@ const formatTime = (value?: string) => (value ? new Date(value).toLocaleString()
               <span v-if="row.slaBreached" class="is-breached">SLA 已超时</span>
             </div>
             <footer>
-              <button class="cmd-op" @click="selectConversation(row)">查看消息</button>
-              <button v-if="row.status === 'WAITING_HUMAN'" class="cmd-op is-reply" @click="claimConversation(row)">接管</button>
-              <button v-if="row.agentPaused && row.status !== 'CLOSED'" class="cmd-op" @click="resumeBot(row)">恢复机器人</button>
-              <button v-if="row.status !== 'CLOSED'" class="cmd-op" @click="openNote(row)">内部备注</button>
-              <button v-if="row.status !== 'CLOSED'" class="cmd-op" @click="closeConversation(row)">关闭</button>
+              <AsShadcnButton variant="ghost" class="cmd-op" @click="selectConversation(row)">查看消息</AsShadcnButton>
+              <AsShadcnButton variant="ghost" v-if="row.status === 'WAITING_HUMAN'" class="cmd-op is-reply" @click="claimConversation(row)">接管</AsShadcnButton>
+              <AsShadcnButton variant="ghost" v-if="row.agentPaused && row.status !== 'CLOSED'" class="cmd-op" @click="resumeBot(row)">恢复机器人</AsShadcnButton>
+              <AsShadcnButton variant="ghost" v-if="row.status !== 'CLOSED'" class="cmd-op" @click="openNote(row)">内部备注</AsShadcnButton>
+              <AsShadcnButton variant="ghost" v-if="row.status !== 'CLOSED'" class="cmd-op" @click="closeConversation(row)">关闭</AsShadcnButton>
             </footer>
           </article>
-          <button
+          <AsShadcnButton variant="ghost"
             v-if="conversationHasMore"
             class="cmd-btn cmd-load-more"
             :disabled="conversationsLoadingMore"
             @click="loadMoreConversations"
           >
             {{ conversationsLoadingMore ? '正在加载…' : '加载更多会话' }}
-          </button>
+          </AsShadcnButton>
         </main>
 
         <main v-else class="cmd-main">
-          <button v-if="selectedConversationId" class="cmd-clear-filter" @click="clearConversationFilter">清除会话筛选</button>
+          <AsShadcnButton variant="ghost" v-if="selectedConversationId" class="cmd-clear-filter" @click="clearConversationFilter">清除会话筛选</AsShadcnButton>
           <div v-if="timelineError" class="cmd-error">{{ timelineError }}</div>
           <div v-if="selectedConversationId && timelineLoading" class="cmd-empty">正在加载完整消息时间线…</div>
           <div v-else-if="!filtered.length" class="cmd-empty">该通道暂无消息</div>
@@ -499,15 +507,15 @@ const formatTime = (value?: string) => (value ? new Date(value).toLocaleString()
             <header>
               <b>{{ event.ownerId || event.accountId }}</b>
               <span>{{ formatTime(event.eventTime || event.createdAt) }}</span>
-              <button v-if="event.direction === 'INBOUND' && event.status === 'ERROR'" class="cmd-op" @click="retryEvent(event)">
+              <AsShadcnButton variant="ghost" v-if="event.direction === 'INBOUND' && event.status === 'ERROR'" class="cmd-op" @click="retryEvent(event)">
                 重试并回送
-              </button>
-              <button v-if="event.direction === 'INBOUND' && event.senderId" class="cmd-op is-reply" @click="openReply(event)">
+              </AsShadcnButton>
+              <AsShadcnButton variant="ghost" v-if="event.direction === 'INBOUND' && event.senderId" class="cmd-op is-reply" @click="openReply(event)">
                 回复消息
-              </button>
-              <button v-if="event.direction === 'INBOUND' && event.status !== 'HANDOFF'" class="cmd-op" @click="openHandoff(event)">
+              </AsShadcnButton>
+              <AsShadcnButton variant="ghost" v-if="event.direction === 'INBOUND' && event.status !== 'HANDOFF'" class="cmd-op" @click="openHandoff(event)">
                 转人工处理
-              </button>
+              </AsShadcnButton>
               <em :class="event.handled ? 'is-handled' : ''">
                 {{ event.direction === 'INTERNAL' ? '内部备注' : event.direction === 'OUTBOUND' ? outboundStatus(event) : event.status === 'HANDOFF' ? '待人工处理' : event.handled ? 'Agent 已处理' : '仅接收' }}
               </em>
@@ -551,16 +559,16 @@ const formatTime = (value?: string) => (value ? new Date(value).toLocaleString()
             </div>
             <div v-if="event.errorMessage" class="cmd-error">{{ event.errorMessage }}</div>
           </article>
-          <button
+          <AsShadcnButton variant="ghost"
             v-if="selectedConversationId && timelineHasMore"
             class="cmd-btn cmd-load-more cmd-load-more-messages"
             :disabled="timelineLoadingMore"
             @click="loadMoreTimeline"
           >
             {{ timelineLoadingMore ? '正在加载…' : '加载更早消息' }}
-          </button>
+          </AsShadcnButton>
         </main>
-      </aside>
+
 
       <Modal :open="replyOpen" class="cmd-dialog" centered :width="560" :mask-closable="!replySaving" :keyboard="!replySaving" :closable="!replySaving" @cancel="closeReply">
             <template #title>
@@ -575,20 +583,20 @@ const formatTime = (value?: string) => (value ? new Date(value).toLocaleString()
               </div>
               <label class="cmd-form-field">
                 回复内容
-                <textarea v-model="replyContent" rows="5" maxlength="2000" autofocus placeholder="请输入要发送给用户的消息"></textarea>
+                <AsShadcnTextarea v-model="replyContent" rows="5" maxlength="2000" autofocus placeholder="请输入要发送给用户的消息"></AsShadcnTextarea>
                 <small>{{ replyContent.length }}/2000 · 提交后先进入可靠发送队列，可查看发送与重试状态。</small>
               </label>
               <div class="cmd-rich-row">
                 <label class="cmd-form-field">
                   附件类型
-                  <select v-model="replyAttachmentType">
+                  <AsShadcnSelect v-model="replyAttachmentType">
                     <option value="IMAGE">图片</option><option value="AUDIO">语音</option>
                     <option value="VIDEO">视频</option><option value="FILE">文件</option>
-                  </select>
+                  </AsShadcnSelect>
                 </label>
                 <label class="cmd-form-field is-grow">
                   附件 URL（可选）
-                  <input v-model="replyAttachmentUrl" type="url" maxlength="2048" placeholder="https://…" />
+                  <AsShadcnInput v-model="replyAttachmentUrl" type="url" maxlength="2048" placeholder="https://…" />
                   <small>由宿主对象存储提供可访问 URL；附件和文字会进入同一可靠发送队列。</small>
                 </label>
               </div>
@@ -620,12 +628,12 @@ const formatTime = (value?: string) => (value ? new Date(value).toLocaleString()
               </div>
               <label class="cmd-form-field">
                 接管备注
-                <textarea v-model="handoffNote" rows="4" placeholder="例如：已转交客服组，预计 10 分钟内处理"></textarea>
+                <AsShadcnTextarea v-model="handoffNote" rows="4" placeholder="例如：已转交客服组，预计 10 分钟内处理"></AsShadcnTextarea>
                 <small>可填写处理人、处理原因或后续安排。</small>
               </label>
               <label class="cmd-form-field">
                 处理组（可选）
-                <input v-model="assignmentGroup" maxlength="128" placeholder="例如：售后支持组" />
+                <AsShadcnInput v-model="assignmentGroup" maxlength="128" placeholder="例如：售后支持组" />
               </label>
               <div v-if="handoffError" class="cmd-form-error">{{ handoffError }}</div>
             </main>
@@ -648,11 +656,10 @@ const formatTime = (value?: string) => (value ? new Date(value).toLocaleString()
                 <div class="as-modal-subtitle">仅企业内部可见，不会发送给外部用户</div>
               </div>
             </template>
-            <main><label class="cmd-form-field">备注内容<textarea v-model="noteContent" rows="5" maxlength="2000" placeholder="记录处理过程、判断或交接信息"></textarea></label></main>
+            <main><label class="cmd-form-field">备注内容<AsShadcnTextarea v-model="noteContent" rows="5" maxlength="2000" placeholder="记录处理过程、判断或交接信息"></AsShadcnTextarea></label></main>
             <template #footer><Button :disabled="noteSaving" @click="noteOpen = false">取消</Button><Button type="primary" :loading="noteSaving" :disabled="!noteContent.trim()" @click="submitNote">保存内部备注</Button></template>
       </Modal>
-    </div>
-  </Transition>
+  </ShadcnDrawer>
 </template>
 
 <style scoped>

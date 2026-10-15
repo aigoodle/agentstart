@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import { Form as AForm, FormItem as AFormItem, Input as AInput, Select as ASelect, SelectOption as ASelectOption } from '../../ui';
+
+import { Card as AsShadcnCard } from '../../ui/shadcn/card';
+
+import { Button as AsShadcnButton } from '../../ui/shadcn/button';
+
 import { computed, defineComponent, h, ref } from 'vue';
 
 import {
@@ -218,7 +224,7 @@ const TreeNode: any = defineComponent({
 </script>
 
 <template>
-  <div class="output-card">
+  <AsShadcnCard class="output-card">
     <div class="output-card-head" v-if="showTitle">
       <div class="output-card-head-left">
         <span class="output-card-title">输出变量</span>
@@ -245,7 +251,7 @@ const TreeNode: any = defineComponent({
                 <span v-if="root.description" class="output-tree-root-desc">
                   {{ root.description }}
                 </span>
-                <button
+                <AsShadcnButton variant="ghost"
                   v-if="!readonly"
                   type="button"
                   class="output-tree-root-add"
@@ -253,7 +259,7 @@ const TreeNode: any = defineComponent({
                 >
                   <PlusOutlined />
                   <span>添加字段</span>
-                </button>
+                </AsShadcnButton>
               </div>
 
               <div
@@ -349,7 +355,7 @@ const TreeNode: any = defineComponent({
         </div>
       </div>
     </div>
-  </div>
+  </AsShadcnCard>
 </template>
 
 <style scoped>

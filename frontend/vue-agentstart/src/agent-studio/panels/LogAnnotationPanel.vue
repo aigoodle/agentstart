@@ -411,14 +411,14 @@ const disabled = computed(() => !props.app?.id);
 <style scoped>
 .log-annot {
   padding: 12px 20px 20px;
-  background: #fff;
+  background: var(--background);
 }
 .log-annot-hint {
   padding: 8px 12px;
   margin-bottom: 12px;
   font-size: 12px;
-  color: #64748b;
-  background: #f8fafc;
+  color: var(--muted-foreground);
+  background: var(--muted);
   border-left: 3px solid #6366f1;
   border-radius: 4px;
 }
@@ -430,7 +430,7 @@ const disabled = computed(() => !props.app?.id);
 }
 .log-annot-count {
   font-size: 12px;
-  color: #94a3b8;
+  color: var(--muted-foreground);
 }
 .log-annot-link {
   color: #4338ca;
@@ -445,13 +445,13 @@ const disabled = computed(() => !props.app?.id);
 .log-annot-nowrap {
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
-  color: #475569;
+  color: var(--muted-foreground);
   font-size: 12px;
 }
 .log-annot-userid {
   font-family: 'JetBrains Mono', 'SFMono-Regular', ui-monospace, Menlo, Consolas, monospace;
   font-size: 12px;
-  color: #334155;
+  color: var(--foreground);
 }
 .log-annot-muted {
   color: #cbd5e1;
@@ -463,7 +463,7 @@ const disabled = computed(() => !props.app?.id);
 }
 .log-annot-msg {
   padding: 8px 12px;
-  background: #f8fafc;
+  background: var(--muted);
   border-radius: 8px;
   display: flex;
   gap: 8px;
@@ -480,12 +480,12 @@ const disabled = computed(() => !props.app?.id);
   white-space: pre-wrap;
   word-break: break-word;
   line-height: 1.6;
-  color: #0f172a;
+  color: var(--foreground);
   flex: 1;
 }
 .log-annot-inline-hint {
   margin-left: 10px;
   font-size: 12px;
-  color: #64748b;
+  color: var(--muted-foreground);
 }
 </style>

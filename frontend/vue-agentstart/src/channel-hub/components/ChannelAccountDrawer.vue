@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import { ShadcnBoolean as AsShadcnBoolean } from '../../ui/components/ShadcnBoolean';
+
+import { Button as AsShadcnButton } from '../../ui/shadcn/button';
+import { Input as AsShadcnInput } from '../../ui/shadcn/input';
+
 import { computed, ref, watch } from 'vue';
 
 import type { AgentStartClient } from '../../client';
@@ -233,13 +238,13 @@ async function copyCallbackPath(row: ChannelConnection) {
             <p class="cad-desc">{{ channel?.description }}</p>
             <div class="cad-install">
               <p>该原生通道 Starter 尚未启用，引入后即可在此配置账号并接收消息。</p>
-              <button
+              <AsShadcnButton variant="ghost"
                 class="cad-btn cad-btn-primary"
                 :disabled="installing"
                 @click="install"
               >
                 {{ installing ? '检查中…' : '查看启用方式' }}
-              </button>
+              </AsShadcnButton>
               <div class="cad-links">
                 <a
                   v-if="linkOf('homepageUrl')"
@@ -295,10 +300,10 @@ async function copyCallbackPath(row: ChannelConnection) {
                   {{ callbackPathOf(row) }}
                 </code>
                 <div class="cad-row-actions">
-                  <button v-if="rowNeedsCallback(row)" class="cad-link" @click="copyCallbackPath(row)">复制回调地址</button>
-                  <button class="cad-link" @click="fillFrom(row)">编辑</button>
-                  <button class="cad-link" @click="test(row)">测试</button>
-                  <button class="cad-link is-danger" @click="remove(row)">删除</button>
+                  <AsShadcnButton variant="ghost" v-if="rowNeedsCallback(row)" class="cad-link" @click="copyCallbackPath(row)">复制回调地址</AsShadcnButton>
+                  <AsShadcnButton variant="ghost" class="cad-link" @click="fillFrom(row)">编辑</AsShadcnButton>
+                  <AsShadcnButton variant="ghost" class="cad-link" @click="test(row)">测试</AsShadcnButton>
+                  <AsShadcnButton variant="ghost" class="cad-link is-danger" @click="remove(row)">删除</AsShadcnButton>
                 </div>
               </div>
             </section>
@@ -328,11 +333,11 @@ async function copyCallbackPath(row: ChannelConnection) {
                     <div class="cad-fields">
                 <label v-if="accountModel.ownerRequired">
                   {{ accountModel.ownerLabel }}
-                  <input v-model.trim="form.ownerId" required :placeholder="accountModel.ownerPlaceholder" />
+                  <AsShadcnInput v-model.trim="form.ownerId" required :placeholder="accountModel.ownerPlaceholder" />
                 </label>
                 <label>
                   连接名称
-                  <input
+                  <AsShadcnInput
                     v-model.trim="form.name"
                     required
                     :placeholder="`例如 ${channel?.name} 工作账号`"
@@ -366,7 +371,7 @@ async function copyCallbackPath(row: ChannelConnection) {
                     </fieldset>
                   </div>
                   <template #footer>
-                    <label class="cad-enable as-modal__footer-leading"><input v-model="form.enabled" type="checkbox" />启用消息接收</label>
+                    <label class="cad-enable as-modal__footer-leading"><AsShadcnBoolean v-model="form.enabled" type="checkbox" />启用消息接收</label>
                       <Button @click="closeForm">取消</Button>
                       <Button
                         type="primary"

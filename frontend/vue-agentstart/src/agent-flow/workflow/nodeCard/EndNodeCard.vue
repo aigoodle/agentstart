@@ -1,5 +1,8 @@
 <script setup lang="ts">
 // @ts-nocheck — legacy flow-designer code, pre-dates strict typing; cleanup tracked separately.
+
+import { Button as AButton, Input as AInput, Select as ASelect } from '../../../ui';
+
 import { h } from 'vue';
 
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons-vue';
@@ -94,9 +97,9 @@ const TYPES = ['string', 'number', 'boolean', 'array', 'object'];
   padding: 12px;
   text-align: center;
   font-size: 12px;
-  color: #9ca3af;
+  color: var(--muted-foreground);
   background: var(--wf-config-surface-hover, #f9fafb);
-  border: 1px dashed #e5e7eb;
+  border: 1px dashed var(--border);
   border-radius: 6px;
 }
 
@@ -112,7 +115,7 @@ const TYPES = ['string', 'number', 'boolean', 'array', 'object'];
   gap: 6px;
   padding: 8px;
   background: var(--wf-config-surface-hover, #f9fafb);
-  border: 1px solid #f0f0f0;
+  border: 1px solid var(--border);
   border-radius: 6px;
 }
 

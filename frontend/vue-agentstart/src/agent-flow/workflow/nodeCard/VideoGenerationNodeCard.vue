@@ -67,5 +67,5 @@ onMounted(async () => {
 .video-config { display: grid; gap: 12px; }
 h4, p { margin: 0; }
 [role='alert'] { color: #b42318; }
-.hint { color: #667085; font-size: 12px; }
+.hint { color: var(--muted-foreground); font-size: 12px; }
 </style>

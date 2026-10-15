@@ -1,5 +1,8 @@
 <script setup lang="ts">
 // @ts-nocheck — legacy flow-designer code, pre-dates strict typing; cleanup tracked separately.
+
+import { Tag as ATag, Input as AInput } from '../../ui';
+
 import { ref } from 'vue';
 
 const props = defineProps({

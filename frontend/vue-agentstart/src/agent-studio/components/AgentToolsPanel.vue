@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import { Card as AsShadcnCard } from '../../ui/shadcn/card';
+
+import { Button as AsShadcnButton } from '../../ui/shadcn/button';
+import { Input as AsShadcnInput } from '../../ui/shadcn/input';
+
 /**
  * 工具 block. Shows a summary row (count + attached chips) and a `+ 添加` action.
  * When adding, opens a Dify-style popover with a search input, category tabs,
@@ -76,7 +81,7 @@ function remove(name: string) {
 </script>
 
 <template>
-  <div class="agent-tool-card">
+  <AsShadcnCard class="agent-tool-card">
     <div class="tool-head">
       <div class="tool-title">
         工具
@@ -86,9 +91,9 @@ function remove(name: string) {
       </div>
       <div class="tool-head-right">
         <span class="tool-count">{{ attached.length }}/{{ maxAttached }} 已挂载</span>
-        <button type="button" class="tool-add" @click="showPicker = !showPicker">
+        <AsShadcnButton variant="ghost" type="button" class="tool-add" @click="showPicker = !showPicker">
           + 添加
-        </button>
+        </AsShadcnButton>
       </div>
     </div>
 
@@ -102,35 +107,35 @@ function remove(name: string) {
         class="tool-chip"
       >
         <span>🔧 {{ name }}</span>
-        <button
+        <AsShadcnButton variant="ghost"
           type="button"
           class="tool-chip-x"
           @click="remove(name)"
           title="移除"
         >
           ×
-        </button>
+        </AsShadcnButton>
       </span>
     </div>
 
     <!-- Popover picker -->
     <div v-if="showPicker" class="tool-pop">
       <div class="tool-pop-head">
-        <input
+        <AsShadcnInput
           v-model="search"
           class="tool-search"
           placeholder="搜索工具..."
         />
-        <button
+        <AsShadcnButton variant="ghost"
           type="button"
           class="tool-pop-close"
           @click="showPicker = false"
         >
           ×
-        </button>
+        </AsShadcnButton>
       </div>
       <div class="tool-pop-tabs">
-        <button
+        <AsShadcnButton variant="ghost"
           v-for="c in CATEGORY_TABS"
           :key="c"
           type="button"
@@ -139,12 +144,12 @@ function remove(name: string) {
           @click="activeCategory = c"
         >
           {{ c }}
-        </button>
+        </AsShadcnButton>
       </div>
       <div v-if="featured.length > 0 && !search" class="tool-pop-section">
         <div class="tool-pop-section-title">精选推荐</div>
         <div class="tool-pop-list">
-          <button
+          <AsShadcnButton variant="ghost"
             v-for="t in featured"
             :key="`f-${t.name}`"
             type="button"
@@ -157,13 +162,13 @@ function remove(name: string) {
             <span v-if="t.installs" class="tool-pop-item-installs">
               {{ (t.installs / 1000).toFixed(0) }}k 次安装
             </span>
-          </button>
+          </AsShadcnButton>
         </div>
       </div>
       <div class="tool-pop-section">
         <div class="tool-pop-section-title">全部工具</div>
         <div class="tool-pop-list">
-          <button
+          <AsShadcnButton variant="ghost"
             v-for="t in filtered"
             :key="t.name"
             type="button"
@@ -176,22 +181,22 @@ function remove(name: string) {
             <span class="tool-pop-item-desc">{{ t.description }}</span>
             <span v-if="t.riskLevel" class="tool-risk">{{ t.riskLevel }}</span>
             <span v-if="t.configured === false" class="tool-unconfigured">未配置</span>
-          </button>
+          </AsShadcnButton>
           <div v-if="filtered.length === 0" class="tool-pop-empty">
             没有匹配的工具
           </div>
         </div>
       </div>
     </div>
-  </div>
+  </AsShadcnCard>
 </template>
 
 <style scoped>
 .agent-tool-card {
   position: relative;
   padding: 12px 14px;
-  background: #fff;
-  border: 1px solid #e5e7eb;
+  background: var(--background);
+  border: 1px solid var(--border);
   border-radius: 12px;
 }
 .tool-head {
@@ -202,11 +207,11 @@ function remove(name: string) {
 .tool-title {
   font-size: 13px;
   font-weight: 600;
-  color: #334155;
+  color: var(--foreground);
 }
 .tool-help {
   margin-left: 4px;
-  color: #94a3b8;
+  color: var(--muted-foreground);
   font-size: 11px;
   cursor: help;
 }
@@ -217,7 +222,7 @@ function remove(name: string) {
 }
 .tool-count {
   font-size: 11px;
-  color: #94a3b8;
+  color: var(--muted-foreground);
 }
 .tool-add {
   padding: 2px 8px;
@@ -234,7 +239,7 @@ function remove(name: string) {
 .tool-empty {
   margin-top: 8px;
   font-size: 12px;
-  color: #94a3b8;
+  color: var(--muted-foreground);
 }
 .tool-chip-row {
   margin-top: 8px;
@@ -274,8 +279,8 @@ function remove(name: string) {
   max-height: 440px;
   overflow: hidden;
   padding: 10px;
-  background: #fff;
-  border: 1px solid #e2e8f0;
+  background: var(--background);
+  border: 1px solid var(--border);
   border-radius: 12px;
   box-shadow: 0 20px 40px rgba(15, 23, 42, 0.15);
   z-index: 10;
@@ -291,7 +296,7 @@ function remove(name: string) {
 .tool-search {
   flex: 1;
   padding: 6px 10px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
   border-radius: 8px;
   font-size: 12px;
   outline: none;
@@ -305,17 +310,17 @@ function remove(name: string) {
   border: none;
   background: transparent;
   border-radius: 6px;
-  color: #94a3b8;
+  color: var(--muted-foreground);
   font-size: 16px;
   cursor: pointer;
 }
 .tool-pop-close:hover {
-  background: #f1f5f9;
+  background: var(--muted);
 }
 .tool-pop-tabs {
   display: flex;
   gap: 2px;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--border);
 }
 .tool-pop-tab {
   padding: 4px 8px;
@@ -323,7 +328,7 @@ function remove(name: string) {
   background: transparent;
   border-bottom: 2px solid transparent;
   font-size: 12px;
-  color: #64748b;
+  color: var(--muted-foreground);
   cursor: pointer;
 }
 .tool-pop-tab-active {
@@ -334,7 +339,7 @@ function remove(name: string) {
   padding: 6px 4px;
   font-size: 11px;
   font-weight: 600;
-  color: #94a3b8;
+  color: var(--muted-foreground);
 }
 .tool-pop-list {
   display: flex;
@@ -356,7 +361,7 @@ function remove(name: string) {
   cursor: pointer;
 }
 .tool-pop-item:hover {
-  background: #f1f5f9;
+  background: var(--muted);
 }
 .tool-pop-item-active {
   background: #eef2ff;
@@ -372,13 +377,13 @@ function remove(name: string) {
   text-align: center;
 }
 .tool-pop-item-name {
-  color: #0f172a;
+  color: var(--foreground);
   font-weight: 500;
 }
 .tool-pop-item-desc {
   margin-left: auto;
   flex: 1;
-  color: #94a3b8;
+  color: var(--muted-foreground);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -386,13 +391,13 @@ function remove(name: string) {
 }
 .tool-pop-item-installs {
   margin-left: auto;
-  color: #94a3b8;
+  color: var(--muted-foreground);
   font-size: 11px;
 }
 .tool-pop-empty {
   padding: 12px;
   text-align: center;
-  color: #94a3b8;
+  color: var(--muted-foreground);
   font-size: 12px;
 }
 </style>

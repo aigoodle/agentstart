@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { Input as AInput, Spin as ASpin, Alert as AAlert, Checkbox as ACheckbox, Tag as ATag } from '../../../ui';
+
+import { Button as AsShadcnButton } from '../../../ui/shadcn/button';
+
 import { computed, onMounted, ref } from 'vue';
 import { SearchOutlined, ToolOutlined } from '@ant-design/icons-vue';
 import { createAgentStartClient, type ToolCatalogItem } from '../../../client';
@@ -68,18 +72,18 @@ defineExpose({ showModal, hideModal });
         <template #prefix><SearchOutlined /></template>
       </a-input>
       <div class="wf-tool-tabs">
-        <button v-for="item in categories" :key="item" type="button" :class="{ active: category === item }" @click="category = item">{{ item }}</button>
+        <AsShadcnButton variant="ghost" v-for="item in categories" :key="item" type="button" :class="{ active: category === item }" @click="category = item">{{ item }}</AsShadcnButton>
       </div>
       <div v-if="loading" class="wf-tool-state"><a-spin /> 正在加载工具目录…</div>
       <a-alert v-else-if="error" type="error" :message="error" show-icon />
       <div v-else-if="!filteredTools.length" class="wf-tool-state">没有匹配的工具</div>
       <div v-else class="wf-tool-list">
-        <button v-for="tool in filteredTools" :key="tool.name" type="button" class="wf-tool-row" :class="{ selected: selectedNames.includes(tool.name) }" @click="toggle(tool.name)">
+        <AsShadcnButton variant="ghost" v-for="tool in filteredTools" :key="tool.name" type="button" class="wf-tool-row" :class="{ selected: selectedNames.includes(tool.name) }" @click="toggle(tool.name)">
           <a-checkbox :checked="selectedNames.includes(tool.name)" @click.stop="toggle(tool.name)" />
           <span class="wf-tool-icon"><ToolOutlined /></span>
           <span class="wf-tool-copy"><b>{{ tool.label || tool.name }}</b><small>{{ tool.description || '暂无描述' }}</small></span>
           <span class="wf-tool-meta"><a-tag>{{ tool.category || tool.source || '内置' }}</a-tag><small v-if="tool.provider">{{ tool.provider }}</small></span>
-        </button>
+        </AsShadcnButton>
       </div>
       <div class="wf-tool-summary">已选择 {{ selectedNames.length }} 个工具</div>
     </div>
@@ -87,5 +91,5 @@ defineExpose({ showModal, hideModal });
 </template>
 
 <style scoped>
-.wf-tool-chooser{display:flex;flex-direction:column;gap:12px;padding-top:6px}.wf-tool-tabs{display:flex;gap:6px;overflow:auto}.wf-tool-tabs button{padding:5px 10px;border:1px solid #e5e7eb;border-radius:16px;background:#fff;color:#6b7280;cursor:pointer;white-space:nowrap}.wf-tool-tabs button.active{border-color:#6366f1;background:#eef2ff;color:#4338ca}.wf-tool-list{max-height:420px;overflow:auto;border:1px solid #e5e7eb;border-radius:8px}.wf-tool-row{display:flex;width:100%;align-items:center;gap:10px;padding:11px 12px;border:0;border-bottom:1px solid #f3f4f6;background:#fff;text-align:left;cursor:pointer}.wf-tool-row:last-child{border-bottom:0}.wf-tool-row:hover,.wf-tool-row.selected{background:#f5f3ff}.wf-tool-icon{display:grid;place-items:center;width:32px;height:32px;border-radius:8px;background:#ede9fe;color:#6d28d9}.wf-tool-copy{display:flex;min-width:0;flex:1;flex-direction:column}.wf-tool-copy small{overflow:hidden;color:#6b7280;text-overflow:ellipsis;white-space:nowrap}.wf-tool-meta{display:flex;align-items:flex-end;flex-direction:column}.wf-tool-meta small{color:#9ca3af}.wf-tool-state{display:flex;min-height:180px;align-items:center;justify-content:center;gap:8px;color:#9ca3af}.wf-tool-summary{text-align:right;font-size:12px;color:#6b7280}
+.wf-tool-chooser{display:flex;flex-direction:column;gap:12px;padding-top:6px}.wf-tool-tabs{display:flex;gap:6px;overflow:auto}.wf-tool-tabs button{padding:5px 10px;border: 1px solid var(--border);border-radius:16px;background: var(--background);color: var(--muted-foreground);cursor:pointer;white-space:nowrap}.wf-tool-tabs button.active{border-color: #6366f1;background: #eef2ff;color: #4338ca}.wf-tool-list{max-height:420px;overflow:auto;border: 1px solid var(--border);border-radius:8px}.wf-tool-row{display:flex;width:100%;align-items:center;gap:10px;padding:11px 12px;border: 0;border-bottom: 1px solid var(--border);background: var(--background);text-align:left;cursor:pointer}.wf-tool-row:last-child{border-bottom: 0}.wf-tool-row:hover,.wf-tool-row.selected{background: #f5f3ff}.wf-tool-icon{display:grid;place-items:center;width:32px;height:32px;border-radius:8px;background: #ede9fe;color: #6d28d9}.wf-tool-copy{display:flex;min-width:0;flex:1;flex-direction:column}.wf-tool-copy small{overflow:hidden;color: var(--muted-foreground);text-overflow:ellipsis;white-space:nowrap}.wf-tool-meta{display:flex;align-items:flex-end;flex-direction:column}.wf-tool-meta small{color: var(--muted-foreground)}.wf-tool-state{display:flex;min-height:180px;align-items:center;justify-content:center;gap:8px;color: var(--muted-foreground)}.wf-tool-summary{text-align:right;font-size:12px;color: var(--muted-foreground)}
 </style>

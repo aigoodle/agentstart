@@ -64,7 +64,7 @@ describe('AgentRunTimeline', () => {
     expect(wrapper.text()).toContain('create_order');
     expect(wrapper.text()).toContain('send_payment');
     await wrapper.findAll('.approval select')[1].setValue('DENY');
-    await wrapper.find('.approval button').trigger('click');
+    await wrapper.findAll('.approval button').find(button => button.text().includes('提交'))!.trigger('click');
     await flushPromises();
     expect(api.resumeMany).toHaveBeenCalledWith('run-batch', {
       'call-1': 'APPROVE', 'call-2': 'DENY',
@@ -121,7 +121,7 @@ describe('AgentRunTimeline', () => {
     const wrapper = mount(AgentRunTimeline, { props: { client: api, runId: 'run-1' } });
     await flushPromises();
 
-    await wrapper.find('.approval button').trigger('click');
+    await wrapper.findAll('.approval button').find(button => button.text() === '通过')!.trigger('click');
     await flushPromises();
 
     expect(api.get).toHaveBeenCalledTimes(2);

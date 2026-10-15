@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Button as AsShadcnButton } from '../../ui/shadcn/button';
+
 /**
  * AgentStudioShell — Dify-style editor-page frame.
  *
@@ -121,7 +123,7 @@ const items = computed<StudioNavItem[]>(() => props.nav ?? DEFAULT_NAV);
         </div>
       </div>
       <nav class="studio-nav">
-        <button
+        <AsShadcnButton variant="ghost"
           v-for="it in items"
           :key="it.id"
           type="button"
@@ -136,13 +138,13 @@ const items = computed<StudioNavItem[]>(() => props.nav ?? DEFAULT_NAV);
           />
           <span v-else class="studio-nav-icon">{{ it.icon }}</span>
           <span>{{ it.title }}</span>
-        </button>
-        <button type="button" class="studio-nav-item" :class="{ 'studio-nav-item-active': permissionsOpen }" :disabled="!appId"
+        </AsShadcnButton>
+        <AsShadcnButton variant="ghost" type="button" class="studio-nav-item" :class="{ 'studio-nav-item-active': permissionsOpen }" :disabled="!appId"
           :title="appId ? '设置应用数据访问范围' : '请先保存应用后设置数据权限'"
  @click="permissionsOpen = true">
           <SafetyCertificateOutlined class="studio-nav-icon" />
           <span>数据权限设置</span>
-        </button>
+        </AsShadcnButton>
       </nav>
     </aside>
 
@@ -160,13 +162,13 @@ const items = computed<StudioNavItem[]>(() => props.nav ?? DEFAULT_NAV);
 .studio-shell {
   display: flex;
   min-height: 100%;
-  background: #f8fafc;
+  background: var(--muted);
 }
 .studio-rail {
   width: 208px;
   flex-shrink: 0;
-  background: #fff;
-  border-right: 1px solid #e5e7eb;
+  background: var(--background);
+  border-right: 1px solid var(--border);
   padding: 14px 12px 20px;
   display: flex;
   flex-direction: column;
@@ -177,7 +179,7 @@ const items = computed<StudioNavItem[]>(() => props.nav ?? DEFAULT_NAV);
   align-items: center;
   gap: 10px;
   padding: 6px 4px 12px;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--border);
   cursor: pointer;
 }
 .studio-brand-icon {
@@ -197,7 +199,7 @@ const items = computed<StudioNavItem[]>(() => props.nav ?? DEFAULT_NAV);
 .studio-brand-name {
   font-size: 13px;
   font-weight: 600;
-  color: #0f172a;
+  color: var(--foreground);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -206,7 +208,7 @@ const items = computed<StudioNavItem[]>(() => props.nav ?? DEFAULT_NAV);
   margin-top: 2px;
   font-size: 10px;
   font-weight: 600;
-  color: #94a3b8;
+  color: var(--muted-foreground);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -225,7 +227,7 @@ const items = computed<StudioNavItem[]>(() => props.nav ?? DEFAULT_NAV);
   background: transparent;
   border-radius: 8px;
   font-size: 13px;
-  color: #475569;
+  color: var(--muted-foreground);
   cursor: pointer;
   text-align: left;
   transition:
@@ -234,8 +236,8 @@ const items = computed<StudioNavItem[]>(() => props.nav ?? DEFAULT_NAV);
 }
 .studio-nav-item:disabled { opacity: 0.5; cursor: not-allowed; }
 .studio-nav-item:hover:not(:disabled) {
-  background: #f1f5f9;
-  color: #0f172a;
+  background: var(--muted);
+  color: var(--foreground);
 }
 .studio-nav-item-active {
   background: #eef2ff;

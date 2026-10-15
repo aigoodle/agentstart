@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Tooltip as ATooltip } from '../../ui';
+
 import { computed, ref } from 'vue';
 
 import {

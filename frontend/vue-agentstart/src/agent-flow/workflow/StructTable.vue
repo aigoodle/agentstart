@@ -1,5 +1,8 @@
 <script setup lang="ts">
 // @ts-nocheck — legacy flow-designer code, pre-dates strict typing; cleanup tracked separately.
+
+import { Table as ATable, TableColumn as ATableColumn, Popconfirm as APopconfirm, Popover as APopover, Form as AForm, FormItem as AFormItem, Input as AInput, Button as AButton } from '../../ui';
+
 import { onMounted, ref, watch } from 'vue';
 
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons-vue';

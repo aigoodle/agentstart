@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import { ShadcnBoolean as AsShadcnBoolean } from '../../ui/components/ShadcnBoolean';
+
+import { Button as AsShadcnButton } from '../../ui/shadcn/button';
+import { Input as AsShadcnInput } from '../../ui/shadcn/input';
+import { Textarea as AsShadcnTextarea } from '../../ui/shadcn/textarea';
+
 /**
  * ChatIframePanel — 通用聊天调试壳
  * --------------------------------------------------
@@ -339,7 +345,7 @@ defineExpose({
         {{ title }}
       </div>
       <div class="cip-head-actions">
-        <button
+        <AsShadcnButton variant="ghost"
           v-if="(variables?.length ?? 0) > 0"
           type="button"
           class="cip-var-btn"
@@ -356,16 +362,16 @@ defineExpose({
           >
             {{ requiredMissingCount > 0 ? requiredMissingCount : variables.length }}
           </span>
-        </button>
-        <button
+        </AsShadcnButton>
+        <AsShadcnButton variant="ghost"
           type="button"
           class="cip-icon-btn"
           title="刷新会话"
           @click="reload"
         >
           ↻
-        </button>
-        <button
+        </AsShadcnButton>
+        <AsShadcnButton variant="ghost"
           v-if="closable"
           type="button"
           class="cip-icon-btn"
@@ -373,7 +379,7 @@ defineExpose({
           @click="emit('close')"
         >
           ✕
-        </button>
+        </AsShadcnButton>
       </div>
     </div>
 
@@ -385,22 +391,22 @@ defineExpose({
       <div class="cip-var-panel-head">
         <span class="cip-var-panel-title">调试参数</span>
         <div class="cip-var-panel-actions">
-          <button
+          <AsShadcnButton variant="ghost"
             type="button"
             class="cip-link-btn"
             title="重置为默认值"
             @click="resetAll"
           >
             重置
-          </button>
-          <button
+          </AsShadcnButton>
+          <AsShadcnButton variant="ghost"
             type="button"
             class="cip-icon-btn cip-icon-btn-sm"
             title="收起"
             @click="showVarPanel = false"
           >
             ✕
-          </button>
+          </AsShadcnButton>
         </div>
       </div>
       <div v-if="missingRequired.length > 0" class="cip-var-warn">
@@ -415,7 +421,7 @@ defineExpose({
           </label>
           <!-- string / 未识别类型 → 单行输入 -->
           <template v-if="!v.type || ['string', 'file'].includes(v.type.toLowerCase())">
-            <input
+            <AsShadcnInput
               class="cip-input"
               :value="(inputValues[v.name] as string) ?? ''"
               :placeholder="v.description || v.name"
@@ -424,7 +430,7 @@ defineExpose({
           </template>
           <!-- number -->
           <template v-else-if="v.type.toLowerCase() === 'number'">
-            <input
+            <AsShadcnInput
               type="number"
               class="cip-input"
               :value="(inputValues[v.name] as number) ?? ''"
@@ -434,8 +440,8 @@ defineExpose({
           </template>
           <!-- boolean -->
           <template v-else-if="v.type.toLowerCase() === 'boolean'">
-            <label class="cip-switch">
-              <input
+            <label class="inline-flex items-center">
+              <AsShadcnBoolean
                 type="checkbox"
                 :checked="!!inputValues[v.name]"
                 @change="(e) => onValueChange(v.name, (e.target as HTMLInputElement).checked)"
@@ -445,7 +451,7 @@ defineExpose({
           </template>
           <!-- object / array → JSON textarea -->
           <template v-else>
-            <textarea
+            <AsShadcnTextarea
               class="cip-textarea"
               rows="3"
               :value="
@@ -454,7 +460,7 @@ defineExpose({
                   : JSON.stringify(inputValues[v.name] ?? (v.type.toLowerCase() === 'array' ? [] : {}), null, 2)
               "
               :placeholder="`JSON ${v.type}`"
-              @blur="(e) => onJsonBlur(v.name, (e.target as HTMLTextAreaElement).value)"
+              @blur="(e: FocusEvent) => onJsonBlur(v.name, (e.target as HTMLTextAreaElement).value)"
             />
           </template>
         </div>
@@ -490,8 +496,8 @@ defineExpose({
   width: 100%;
   height: 100%;
   min-height: 0;
-  background: #fff;
-  border: 1px solid #e5e7eb;
+  background: var(--background);
+  border: 1px solid var(--border);
   border-radius: 12px;
   overflow: hidden;
 }
@@ -501,8 +507,8 @@ defineExpose({
   justify-content: space-between;
   gap: 8px;
   padding: 10px 14px;
-  border-bottom: 1px solid #f1f5f9;
-  background: #fff;
+  border-bottom: 1px solid var(--border);
+  background: var(--background);
   flex-shrink: 0;
 }
 .cip-head-title {
@@ -512,7 +518,7 @@ defineExpose({
   min-width: 0;
   font-size: 13px;
   font-weight: 600;
-  color: #334155;
+  color: var(--foreground);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -536,10 +542,10 @@ defineExpose({
   gap: 4px;
   height: 26px;
   padding: 0 8px 0 6px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
   border-radius: 999px;
-  background: #f8fafc;
-  color: #475569;
+  background: var(--muted);
+  color: var(--muted-foreground);
   font-size: 12px;
   cursor: pointer;
   transition: background 0.15s, border-color 0.15s;
@@ -587,13 +593,13 @@ defineExpose({
   border: none;
   background: transparent;
   border-radius: 6px;
-  color: #94a3b8;
+  color: var(--muted-foreground);
   font-size: 14px;
   cursor: pointer;
 }
 .cip-icon-btn:hover {
-  background: #f1f5f9;
-  color: #475569;
+  background: var(--muted);
+  color: var(--muted-foreground);
 }
 .cip-icon-btn-sm {
   width: 22px;
@@ -611,8 +617,8 @@ defineExpose({
   max-height: min(60vh, 480px);
   display: flex;
   flex-direction: column;
-  background: #fff;
-  border: 1px solid #e2e8f0;
+  background: var(--background);
+  border: 1px solid var(--border);
   border-radius: 12px;
   box-shadow: 0 10px 32px rgba(15, 23, 42, 0.14),
     0 2px 6px rgba(15, 23, 42, 0.06);
@@ -634,12 +640,12 @@ defineExpose({
   align-items: center;
   justify-content: space-between;
   padding: 10px 12px;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--border);
 }
 .cip-var-panel-title {
   font-size: 12px;
   font-weight: 600;
-  color: #334155;
+  color: var(--foreground);
 }
 .cip-var-panel-actions {
   display: flex;
@@ -672,7 +678,7 @@ defineExpose({
 }
 .cip-var-row {
   padding: 8px 0;
-  border-bottom: 1px dashed #f1f5f9;
+  border-bottom: 1px dashed var(--border);
 }
 .cip-var-row:last-child {
   border-bottom: none;
@@ -683,7 +689,7 @@ defineExpose({
   gap: 4px;
   margin-bottom: 4px;
   font-size: 12px;
-  color: #475569;
+  color: var(--muted-foreground);
 }
 .cip-var-required {
   color: #ef4444;
@@ -691,8 +697,8 @@ defineExpose({
 .cip-var-type {
   margin-left: auto;
   padding: 0 6px;
-  background: #f1f5f9;
-  color: #94a3b8;
+  background: var(--muted);
+  color: var(--muted-foreground);
   border-radius: 999px;
   font-size: 10px;
   line-height: 16px;
@@ -701,10 +707,10 @@ defineExpose({
 .cip-textarea {
   width: 100%;
   padding: 6px 8px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
   border-radius: 6px;
-  background: #f8fafc;
-  color: #0f172a;
+  background: var(--muted);
+  color: var(--foreground);
   font-family: inherit;
   font-size: 12px;
   line-height: 1.5;
@@ -714,7 +720,7 @@ defineExpose({
 .cip-input:focus,
 .cip-textarea:focus {
   border-color: #6366f1;
-  background: #fff;
+  background: var(--background);
 }
 .cip-textarea {
   resize: vertical;
@@ -726,14 +732,14 @@ defineExpose({
   align-items: center;
   gap: 6px;
   font-size: 12px;
-  color: #475569;
+  color: var(--muted-foreground);
   cursor: pointer;
 }
 .cip-var-panel-foot {
   padding: 8px 12px;
-  border-top: 1px solid #f1f5f9;
-  background: #f8fafc;
-  color: #94a3b8;
+  border-top: 1px solid var(--border);
+  background: var(--muted);
+  color: var(--muted-foreground);
   font-size: 11px;
 }
 
@@ -742,14 +748,14 @@ defineExpose({
   flex: 1;
   min-height: 0;
   position: relative;
-  background: #f8fafc;
+  background: var(--muted);
 }
 .cip-iframe {
   display: block;
   width: 100%;
   height: 100%;
   border: none;
-  background: #fff;
+  background: var(--background);
 }
 .cip-loading {
   position: absolute;
@@ -760,7 +766,7 @@ defineExpose({
   align-items: center;
   justify-content: center;
   gap: 12px;
-  background: #f8fafc;
+  background: var(--muted);
 }
 .cip-spinner {
   position: relative;
@@ -782,7 +788,7 @@ defineExpose({
   animation-direction: reverse;
 }
 .cip-loading-text {
-  color: #94a3b8;
+  color: var(--muted-foreground);
   font-size: 12px;
 }
 @keyframes cip-spin {

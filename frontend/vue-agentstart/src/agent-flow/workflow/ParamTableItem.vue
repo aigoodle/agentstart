@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { Input as AInput, Select as ASelect, SelectOption as ASelectOption } from '../../ui';
+
+import { Button as AsShadcnButton } from '../../ui/shadcn/button';
+
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons-vue';
 
 import VarSelectField from './VarSelectField.vue';
@@ -36,9 +40,9 @@ function removeItem(index: number) {
       </div>
       <div class="wf-param-cell wf-param-cell-value">值</div>
       <div class="wf-param-cell wf-param-cell-action">
-        <button class="wf-param-add" title="添加" @click="addItem">
+        <AsShadcnButton variant="ghost" class="wf-param-add" title="添加" @click="addItem">
           <PlusOutlined />
-        </button>
+        </AsShadcnButton>
       </div>
     </div>
 
@@ -80,9 +84,9 @@ function removeItem(index: number) {
         />
       </div>
       <div class="wf-param-cell wf-param-cell-action">
-        <button class="wf-param-del" title="删除" @click="removeItem(index)">
+        <AsShadcnButton variant="ghost" class="wf-param-del" title="删除" @click="removeItem(index)">
           <DeleteOutlined />
-        </button>
+        </AsShadcnButton>
       </div>
     </div>
   </div>
@@ -90,21 +94,21 @@ function removeItem(index: number) {
 
 <style scoped>
 .wf-param-table {
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border);
   border-radius: 6px;
   overflow: hidden;
-  background: #ffffff;
+  background: var(--background);
 }
 
 .wf-param-table-header {
   display: flex;
   align-items: center;
   padding: 4px 0;
-  background: #f9fafb;
-  border-bottom: 1px solid #f0f0f0;
+  background: var(--muted);
+  border-bottom: 1px solid var(--border);
   font-size: 11px;
   font-weight: 600;
-  color: #6b7280;
+  color: var(--muted-foreground);
   text-transform: uppercase;
   letter-spacing: 0.3px;
 }
@@ -112,7 +116,7 @@ function removeItem(index: number) {
 .wf-param-table-row {
   display: flex;
   align-items: center;
-  border-bottom: 1px solid #f3f4f6;
+  border-bottom: 1px solid var(--border);
   transition: background 0.12s;
 }
 
@@ -121,7 +125,7 @@ function removeItem(index: number) {
 }
 
 .wf-param-table-row:hover {
-  background: #f9fafb;
+  background: var(--muted);
 }
 
 .wf-param-cell {
@@ -136,14 +140,14 @@ function removeItem(index: number) {
 
 .wf-param-cell-type {
   width: 88px;
-  border-left: 1px solid #f0f0f0;
-  border-right: 1px solid #f0f0f0;
+  border-left: 1px solid var(--border);
+  border-right: 1px solid var(--border);
 }
 
 .wf-param-cell-value {
   flex: 2;
   min-width: 80px;
-  border-left: 1px solid #f0f0f0;
+  border-left: 1px solid var(--border);
 }
 
 .wf-param-cell-action {
@@ -151,7 +155,7 @@ function removeItem(index: number) {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-left: 1px solid #f0f0f0;
+  border-left: 1px solid var(--border);
 }
 
 .wf-param-cell :deep(.ant-input),
@@ -172,7 +176,7 @@ function removeItem(index: number) {
   justify-content: center;
   width: 20px;
   height: 20px;
-  color: #6b7280;
+  color: var(--muted-foreground);
   background: transparent;
   border: none;
   border-radius: 4px;
@@ -195,6 +199,6 @@ function removeItem(index: number) {
   padding: 12px;
   text-align: center;
   font-size: 12px;
-  color: #9ca3af;
+  color: var(--muted-foreground);
 }
 </style>

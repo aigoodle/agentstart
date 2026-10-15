@@ -31,7 +31,7 @@ const client = props.client ?? injected ?? createAgentStartClient({
 </template>
 
 <style scoped>
-.channel-hub-app { display: flex; flex-direction: column; gap: 20px; box-sizing: border-box; padding: 20px 24px; color: #111827; }
-:global(.dark) .channel-hub-app { color: #f3f4f6; }
+.channel-hub-app { display: flex; flex-direction: column; gap: 20px; box-sizing: border-box; padding: 20px 24px; color: var(--foreground); }
+.dark .channel-hub-app { color: #f3f4f6; }
 @media (max-width: 640px) { .channel-hub-app { padding: 12px 16px; } }
 </style>

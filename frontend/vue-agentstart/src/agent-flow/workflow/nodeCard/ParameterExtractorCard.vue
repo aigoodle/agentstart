@@ -1,5 +1,8 @@
 <script setup lang="ts">
 // @ts-nocheck — legacy flow-designer code, pre-dates strict typing; cleanup tracked separately.
+
+import { Form as AForm, FormItem as AFormItem, Input as AInput, Select as ASelect, Textarea as ATextarea, Checkbox as ACheckbox, Button as AButton } from '../../../ui';
+
 import { h, reactive, ref, watchEffect } from 'vue';
 
 import {
@@ -248,9 +251,9 @@ function removeParam(index: number) {
   gap: 6px;
   padding: 16px;
   font-size: 12px;
-  color: #9ca3af;
+  color: var(--muted-foreground);
   background: var(--wf-config-surface-hover, #f9fafb);
-  border: 1px dashed #e5e7eb;
+  border: 1px dashed var(--border);
   border-radius: 8px;
   cursor: pointer;
   transition:
@@ -282,7 +285,7 @@ function removeParam(index: number) {
   gap: 8px;
   padding: 6px 10px;
   background: var(--wf-config-surface-hover, #f9fafb);
-  border: 1px solid #f0f0f0;
+  border: 1px solid var(--border);
   border-radius: 6px;
   cursor: pointer;
   transition:
@@ -292,7 +295,7 @@ function removeParam(index: number) {
 
 .param-item:hover {
   background: var(--wf-config-surface-hover, #f9fafb);
-  border-color: #e5e7eb;
+  border-color: var(--border);
 }
 
 .param-left {
@@ -311,7 +314,7 @@ function removeParam(index: number) {
 .param-name {
   font-size: 12px;
   font-weight: 500;
-  color: #1f2937;
+  color: var(--foreground);
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
   white-space: nowrap;
   overflow: hidden;
@@ -326,7 +329,7 @@ function removeParam(index: number) {
 
 .param-desc {
   font-size: 11px;
-  color: #9ca3af;
+  color: var(--muted-foreground);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

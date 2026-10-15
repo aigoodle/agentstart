@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { Button as AsShadcnButton } from '../../ui/shadcn/button';
+import { Textarea as AsShadcnTextarea } from '../../ui/shadcn/textarea';
+
 /**
  * DatasetDetailDrawer — self-contained full-screen drawer that hosts the whole
  * dataset-detail experience without navigating away.
@@ -529,7 +532,7 @@ const sidebarData = computed(() => ({
       <template #title>
         <div class="kh-drawer-topbar-title">
           <template v-if="openDocId && currentDoc">
-            <button
+            <AsShadcnButton variant="ghost"
               type="button"
               class="kh-drawer-back"
               aria-label="返回文档列表"
@@ -537,7 +540,7 @@ const sidebarData = computed(() => ({
             >
               <span class="kh-drawer-back-icon" aria-hidden="true">←</span>
               <span>返回文档列表</span>
-            </button>
+            </AsShadcnButton>
             <span class="kh-drawer-title-divider" aria-hidden="true" />
             <span class="kh-drawer-doc-name">📄 {{ currentDoc.name }}</span>
           </template>
@@ -553,7 +556,7 @@ const sidebarData = computed(() => ({
         </div>
       </template>
       <template #extra>
-        <button class="kh-drawer-close" aria-label="关闭" @click="close">×</button>
+        <AsShadcnButton variant="ghost" class="kh-drawer-close" aria-label="关闭" @click="close">×</AsShadcnButton>
       </template>
       <div class="kh-drawer-shell">
         <DatasetSidebar
@@ -652,7 +655,7 @@ const sidebarData = computed(() => ({
           @update:open="(open: boolean) => { if (!open && !editorSaving) cancelChunkEdit(); }"
         >
           <div class="kh-drawer-editor-content">
-            <textarea
+            <AsShadcnTextarea
               v-model="editContent"
               class="kh-drawer-editor-textarea"
               placeholder="分段内容..."
@@ -674,7 +677,7 @@ const sidebarData = computed(() => ({
               <strong>{{ parsedDocument?.filename ?? '解析结构' }}</strong>
               <small v-if="parsedDocument">{{ parsedDocument.parser }} · {{ parsedDocument.pageCount }} 页 · {{ parsedDocument.blocks.length }} 块</small>
             </div>
-            <button class="kh-drawer-close" @click="parsedDocument = null">×</button>
+            <AsShadcnButton variant="ghost" class="kh-drawer-close" @click="parsedDocument = null">×</AsShadcnButton>
           </header>
           <p v-if="parsedDocumentLoading">正在加载解析结果…</p>
           <div v-else class="kh-parsed-blocks">

@@ -3,6 +3,7 @@
  * Kept minimal so consumers don't have to re-declare shapes.
  */
 
+/** Generation/task types. Visual understanding is an LLM with features: ['VISION']. */
 export type ModelType =
   | 'VIDEO'
   | 'IMAGE'

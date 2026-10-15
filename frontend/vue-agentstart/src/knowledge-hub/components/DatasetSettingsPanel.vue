@@ -1,4 +1,14 @@
 <script setup lang="ts">
+import { Card as AsShadcnCard } from '../../ui/shadcn/card';
+
+import { ShadcnBoolean as AsShadcnBoolean } from '../../ui/components/ShadcnBoolean';
+import { ShadcnRange as AsShadcnRange } from '../../ui/components/ShadcnRange';
+
+import { Button as AsShadcnButton } from '../../ui/shadcn/button';
+import { Input as AsShadcnInput } from '../../ui/shadcn/input';
+import { Textarea as AsShadcnTextarea } from '../../ui/shadcn/textarea';
+import { ShadcnSelect as AsShadcnSelect } from '../../ui/components/ShadcnSelect';
+
 /**
  * DatasetSettingsPanel — 设置 tab (screenshot 6).
  *
@@ -261,17 +271,17 @@ function save() {
       <div class="kh-settings-row">
         <label class="kh-settings-label">名称和图标</label>
         <div class="kh-settings-name-row">
-          <button class="kh-settings-icon-btn" :style="{ background: form.iconBg ?? '#FFEAD5' }">
+          <AsShadcnButton variant="ghost" class="kh-settings-icon-btn" :style="{ background: form.iconBg ?? '#FFEAD5' }">
             {{ form.icon ?? '📙' }}
-          </button>
-          <input v-model="form.name" class="kh-input" />
+          </AsShadcnButton>
+          <AsShadcnInput v-model="form.name" class="kh-input" />
         </div>
       </div>
 
       <!-- 描述 -->
       <div class="kh-settings-row">
         <label class="kh-settings-label">描述</label>
-        <textarea
+        <AsShadcnTextarea
           v-model="form.description"
           class="kh-input kh-textarea"
           rows="3"
@@ -282,10 +292,10 @@ function save() {
       <!-- 可见权限 -->
       <div class="kh-settings-row">
         <label class="kh-settings-label">可见权限</label>
-        <select v-model="form.permission" class="kh-input">
+        <AsShadcnSelect v-model="form.permission" class="kh-input">
           <option value="ONLY_ME">🔒 只有我</option>
           <option value="ORG_MEMBERS">👥 团队成员</option>
-        </select>
+        </AsShadcnSelect>
       </div>
 
       <!-- 分段模式 —— includes per-mode parameter inputs so the panel is the
@@ -304,7 +314,7 @@ function save() {
           class="kh-settings-cards"
           :class="{ 'kh-settings-cards-locked': chunkModeLocked }"
         >
-          <div
+          <AsShadcnCard
             v-for="m in CHUNK_MODES"
             :key="m.id"
             class="kh-mode-card"
@@ -325,7 +335,7 @@ function save() {
               </span>
             </div>
             <div class="kh-mode-card-desc">{{ m.desc }}</div>
-          </div>
+          </AsShadcnCard>
         </div>
         <!-- General / QA modes share the same chunk-size + overlap fields.
              Parent-child adds a parent-chunk-size + parent-mode picker. All of
@@ -340,7 +350,7 @@ function save() {
             <div class="kh-field">
               <label>分段最大长度</label>
               <div class="kh-input-suffix">
-                <input
+                <AsShadcnInput
                   v-model.number="form.chunkTokens"
                   type="number"
                   class="kh-input"
@@ -352,7 +362,7 @@ function save() {
             <div class="kh-field">
               <label>分段重叠长度</label>
               <div class="kh-input-suffix">
-                <input
+                <AsShadcnInput
                   v-model.number="form.overlapTokens"
                   type="number"
                   class="kh-input"
@@ -366,7 +376,7 @@ function save() {
             <div class="kh-field">
               <label>父块最大长度</label>
               <div class="kh-input-suffix">
-                <input
+                <AsShadcnInput
                   v-model.number="form.parentChunkTokens"
                   type="number"
                   class="kh-input"
@@ -378,7 +388,7 @@ function save() {
             <div class="kh-field">
               <label>子块最大长度</label>
               <div class="kh-input-suffix">
-                <input
+                <AsShadcnInput
                   v-model.number="form.chunkTokens"
                   type="number"
                   class="kh-input"
@@ -389,15 +399,15 @@ function save() {
             </div>
             <div class="kh-field">
               <label>父块模式</label>
-              <select v-model="form.parentMode" class="kh-input">
+              <AsShadcnSelect v-model="form.parentMode" class="kh-input">
                 <option value="PARAGRAPH">段落</option>
                 <option value="FULL_DOC">全文</option>
-              </select>
+              </AsShadcnSelect>
             </div>
           </div>
           <div class="kh-settings-inline-checks">
             <label class="kh-check">
-              <input type="checkbox" v-model="form.removeExtraWhitespace" />
+              <AsShadcnBoolean type="checkbox" v-model="form.removeExtraWhitespace" />
               <span>替换掉连续的空格、换行符和制表符</span>
             </label>
           </div>
@@ -420,7 +430,7 @@ function save() {
           class="kh-settings-cards"
           :class="{ 'kh-settings-cards-locked': chunkModeLocked }"
         >
-          <div
+          <AsShadcnCard
             class="kh-mode-card"
             :class="{
               'kh-mode-card-active': form.indexingTechnique === 'HIGH_QUALITY',
@@ -443,8 +453,8 @@ function save() {
             <div class="kh-mode-card-desc">
               调用嵌入模型处理文档以实现更精确的检索，可以帮助 LLM 生成高质量的答案。
             </div>
-          </div>
-          <div
+          </AsShadcnCard>
+          <AsShadcnCard
             class="kh-mode-card"
             :class="{
               'kh-mode-card-active': form.indexingTechnique === 'ECONOMY',
@@ -471,7 +481,7 @@ function save() {
               class="kh-keyword-row"
             >
               <label class="kh-keyword-lbl">关键词数量</label>
-              <input
+              <AsShadcnRange
                 v-model.number="form.keywordCount"
                 type="range"
                 min="1"
@@ -480,7 +490,7 @@ function save() {
               />
               <span class="kh-keyword-val">{{ form.keywordCount ?? 10 }}</span>
             </div>
-          </div>
+          </AsShadcnCard>
         </div>
       </div>
 
@@ -507,9 +517,8 @@ function save() {
             启用后，将会自动为新添加的文档生成摘要。已有的文档也可以手动使用。
           </div>
         </label>
-        <label class="kh-switch">
-          <input type="checkbox" v-model="form.autoSummary" />
-          <span class="kh-switch-slider" />
+        <label class="inline-flex items-center">
+          <AsShadcnBoolean appearance="switch" type="checkbox" v-model="form.autoSummary" />
         </label>
         <span class="kh-switch-lbl">
           {{ form.autoSummary ? '已启用' : '已禁用' }}
@@ -531,21 +540,21 @@ function save() {
       </div>
       <div v-else class="kh-settings-row">
         <label class="kh-settings-label">检索策略<div class="kh-settings-sub-label">策略设置、检索测试与结果查看已统一到 RAG 运行。</div></label>
-        <button class="kh-btn kh-btn-secondary" @click="emit('open-rag')">打开 RAG 运行</button>
+        <AsShadcnButton variant="ghost" class="kh-btn kh-btn-secondary" @click="emit('open-rag')">打开 RAG 运行</AsShadcnButton>
       </div>
     </div>
 
     <div v-if="dirty" class="kh-settings-sticky">
-      <button class="kh-btn kh-btn-secondary" @click="form = { ...dataset }; dirty = false">
+      <AsShadcnButton variant="ghost" class="kh-btn kh-btn-secondary" @click="form = { ...dataset }; dirty = false">
         取消
-      </button>
-      <button
+      </AsShadcnButton>
+      <AsShadcnButton variant="ghost"
         class="kh-btn kh-btn-primary"
         :disabled="!canSave"
         @click="save"
       >
         保存
-      </button>
+      </AsShadcnButton>
     </div>
   </div>
 </template>
@@ -797,30 +806,6 @@ function save() {
 }
 .kh-switch input {
   display: none;
-}
-.kh-switch-slider {
-  position: absolute;
-  inset: 0;
-  background: var(--kh-color-border);
-  border-radius: 9px;
-  transition: background 0.15s;
-}
-.kh-switch-slider::before {
-  content: '';
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 14px;
-  height: 14px;
-  background: var(--kh-color-surface);
-  border-radius: 50%;
-  transition: transform 0.15s;
-}
-.kh-switch input:checked + .kh-switch-slider {
-  background: var(--kh-color-primary-strong);
-}
-.kh-switch input:checked + .kh-switch-slider::before {
-  transform: translateX(14px);
 }
 .kh-switch-lbl {
   margin-left: 8px;

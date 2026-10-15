@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Button as AsShadcnButton } from '../../ui/shadcn/button';
+
 /**
  * DatasetSidebar — left rail shared across the four dataset-detail screens
  * (screenshots 4-7). Dataset icon + name + description at the top, 4 nav
@@ -134,7 +136,7 @@ onBeforeUnmount(() => {
       class="kh-side-head"
       :class="{ 'kh-side-head-active': infoOpen }"
     >
-      <button
+      <AsShadcnButton variant="ghost"
         type="button"
         class="kh-side-trigger"
         :class="{ 'kh-side-trigger-open': infoOpen }"
@@ -142,7 +144,7 @@ onBeforeUnmount(() => {
         @click.stop="toggleInfo"
       >
         ⋯
-      </button>
+      </AsShadcnButton>
 
       <div class="kh-side-icon" :style="{ background: iconBg }">
         {{ icon }}
@@ -172,22 +174,22 @@ onBeforeUnmount(() => {
 
         <!-- Quick action tiles -->
         <div class="kh-ip-actions">
-          <button class="kh-ip-action" @click="onEdit">
+          <AsShadcnButton variant="ghost" class="kh-ip-action" @click="onEdit">
             <span class="kh-ip-action-icon">✎</span>
             <span>编辑信息</span>
-          </button>
-          <button class="kh-ip-action" @click="onDuplicate">
+          </AsShadcnButton>
+          <AsShadcnButton variant="ghost" class="kh-ip-action" @click="onDuplicate">
             <span class="kh-ip-action-icon">⧉</span>
             <span>复制</span>
-          </button>
-          <button class="kh-ip-action" @click="onExport">
+          </AsShadcnButton>
+          <AsShadcnButton variant="ghost" class="kh-ip-action" @click="onExport">
             <span class="kh-ip-action-icon">⇩</span>
             <span>导出</span>
-          </button>
-          <button class="kh-ip-action kh-ip-action-danger" @click="onDelete">
+          </AsShadcnButton>
+          <AsShadcnButton variant="ghost" class="kh-ip-action kh-ip-action-danger" @click="onDelete">
             <span class="kh-ip-action-icon">🗑</span>
             <span>删除</span>
-          </button>
+          </AsShadcnButton>
         </div>
 
         <!-- Description section -->
@@ -230,19 +232,19 @@ onBeforeUnmount(() => {
           <div class="kh-ip-section-label">数据集 ID</div>
           <div class="kh-ip-url-row">
             <span class="kh-ip-url" :title="dataset.id">{{ dataset.id }}</span>
-            <button
+            <AsShadcnButton variant="ghost"
               class="kh-ip-icon-btn"
               title="复制 API 基址"
               @click="emit('copy-api')"
             >
               ⎘
-            </button>
+            </AsShadcnButton>
           </div>
           <div class="kh-ip-links">
-            <button class="kh-ip-link" @click="emit('copy-api')">
+            <AsShadcnButton variant="ghost" class="kh-ip-link" @click="emit('copy-api')">
               🔑 API 密钥
-            </button>
-            <button class="kh-ip-link">📄 查看 API 文档</button>
+            </AsShadcnButton>
+            <AsShadcnButton variant="ghost" class="kh-ip-link">📄 查看 API 文档</AsShadcnButton>
           </div>
         </section>
       </div>
@@ -250,16 +252,16 @@ onBeforeUnmount(() => {
 
     <!-- nav items -->
     <div class="kh-side-nav">
-      <button
+      <AsShadcnButton variant="ghost"
         v-for="n in NAV"
         :key="n.id"
-        class="kh-side-nav-item"
+        class="kh-side-nav-item justify-start text-left"
         :class="{ 'kh-side-nav-active': (active === 'recall' ? 'operations' : active) === n.id }"
         @click="emit('nav', n.id)"
       >
         <span class="kh-side-nav-icon">{{ n.icon }}</span>
         <span>{{ n.label }}</span>
-      </button>
+      </AsShadcnButton>
     </div>
 
     <!-- footer: counts + api -->
@@ -274,9 +276,9 @@ onBeforeUnmount(() => {
           <div class="kh-side-count-lbl">片段</div>
         </div>
       </div>
-      <button class="kh-side-api" @click="emit('copy-api')">
+      <AsShadcnButton variant="ghost" class="kh-side-api" @click="emit('copy-api')">
         ⌘ 访问 API
-      </button>
+      </AsShadcnButton>
     </div>
   </div>
 </template>
@@ -778,4 +780,8 @@ onBeforeUnmount(() => {
 .kh-side-api:hover {
   background: var(--kh-color-surface-sunken);
 }
+</style>
+
+<style scoped>
+.kh-side-nav-item { justify-content: flex-start; text-align: left; }
 </style>

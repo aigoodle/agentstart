@@ -1,4 +1,11 @@
 <script setup lang="ts">
+import { ShadcnBoolean as AsShadcnBoolean } from '../ui/components/ShadcnBoolean';
+
+import { Input as AsShadcnInput } from '../ui/shadcn/input';
+import { Button as AsShadcnButton } from '../ui/shadcn/button';
+import { ShadcnSelect as AsShadcnSelect } from '../ui/components/ShadcnSelect';
+import { Textarea as AsShadcnTextarea } from '../ui/shadcn/textarea';
+
 import {onMounted, reactive, ref} from 'vue';
 import {
   createAgentStartClient,
@@ -8,7 +15,7 @@ import {
 } from '../client';
 import {useAgentStartClient} from '../client/vue';
 import {mergeAgentStartHeaders, useAgentStartConfig} from '../config';
-import {Button, Drawer, Modal, Table, message, type TableColumnType} from '../ui';
+import {Button, Drawer, Modal, Switch, Table, message, type TableColumnType} from '../ui';
 
 const global = useAgentStartConfig();
 const client = useAgentStartClient() ?? createAgentStartClient({
@@ -237,8 +244,8 @@ onMounted(load);
       </div>
 
       <div class="as-page-header-controls">
-        <div class="th-search"><span>⌕</span><input v-model="query" placeholder="搜索名称、类型或目标"
-                                                    @keyup.enter="search">
+        <div class="th-search"><span>⌕</span><AsShadcnInput v-model="query" placeholder="搜索名称、类型或目标"
+                                                    @keyup.enter="search"/>
           <Button size="small" @click="search">查询</Button>
         </div>
         <Button :loading="loading" @click="load">↻ 刷新</Button>
@@ -246,7 +253,7 @@ onMounted(load);
       </div>
     </div>
     <div v-if="error" class="th-alert"><b>操作失败</b><span>{{ error }}</span>
-      <button @click="error=''">×</button>
+      <AsShadcnButton variant="ghost" @click="error=''">×</AsShadcnButton>
     </div>
     <nav class="th-categories" aria-label="触发器分类">
       <Button size="small" :type="category === 'ALL' ? 'primary' : 'text'" @click="changeCategory('ALL')">全部触发器</Button>
@@ -259,25 +266,25 @@ onMounted(load);
         <div v-if="column.key === 'name'" class="th-cell-stack"><b>{{ displayName(record) }}</b><small>{{ sourceText(record) }} · {{ record.id }}</small></div>
         <span v-else-if="column.key === 'type'" class="th-tag">{{ triggerTypeLabels[record.type] || record.type }}</span>
         <div v-else-if="column.key === 'target'" class="th-cell-stack"><small>{{ record.targetType || 'WORKFLOW' }}</small><span>{{ record.targetId }}</span></div>
-        <button v-else-if="column.key === 'enabled'" class="th-switch" :class="{on: record.enabled}" :aria-label="record.enabled ? '停用' : '启用'" @click="toggle(record)"><i></i></button>
+        <Switch v-else-if="column.key === 'enabled'" :checked="record.enabled" :aria-label="record.enabled ? '停用' : '启用'" @change="toggle(record)" />
         <template v-else-if="column.key === 'fireCount'">{{ record.fireCount ?? 0 }}</template>
         <template v-else-if="column.key === 'lastFireAt'">{{ time(record.lastFireAt) }}</template>
         <template v-else-if="column.key === 'createdAt'">{{ time(record.createdAt) }}</template>
         <div v-else-if="column.key === 'actions'" class="th-actions">
-          <button @click="openHistory(record)">历史</button><button @click="fire(record)">触发</button><button class="danger" @click="remove(record)">删除</button>
+          <AsShadcnButton variant="ghost" @click="openHistory(record)">历史</AsShadcnButton><AsShadcnButton variant="ghost" @click="fire(record)">触发</AsShadcnButton><AsShadcnButton variant="ghost" class="danger" @click="remove(record)">删除</AsShadcnButton>
         </div>
       </template>
     </Table>
     <template v-if="total">
-      <div class="th-pagination"><span>共 {{ total }} 条</span><select v-model.number="pageSize"
+      <div class="th-pagination"><span>共 {{ total }} 条</span><AsShadcnSelect v-model.number="pageSize"
                                                                        @change="changePageSize">
         <option :value="10">10 条/页</option>
         <option :value="20">20 条/页</option>
         <option :value="50">50 条/页</option>
-      </select>
-        <button :disabled="page===1" @click="changePage(page-1)">上一页</button>
+      </AsShadcnSelect>
+        <AsShadcnButton variant="ghost" :disabled="page===1" @click="changePage(page-1)">上一页</AsShadcnButton>
         <b>{{ page }} / {{ pageCount() }}</b>
-        <button :disabled="page===pageCount()" @click="changePage(page+1)">下一页</button>
+        <AsShadcnButton variant="ghost" :disabled="page===pageCount()" @click="changePage(page+1)">下一页</AsShadcnButton>
       </div>
     </template>
 
@@ -290,17 +297,17 @@ onMounted(load);
         </div>
       </template>
       <form id="trigger-editor-form" @submit.prevent="save">
-        <label>名称<input v-model="form.name" required placeholder="订单创建后处理"/></label>
-        <div class="th-form-row"><label>触发类型<select v-model="form.type">
+        <label>名称<AsShadcnInput v-model="form.name" required placeholder="订单创建后处理"/></label>
+        <div class="th-form-row"><label>触发类型<AsShadcnSelect v-model="form.type">
           <option>WEBHOOK</option>
           <option>CRON</option>
           <option>EVENT</option>
           <option>CHANNEL_MESSAGE</option>
           <option>MANUAL</option>
-        </select></label><label>目标类型<input v-model="form.targetType" placeholder="WORKFLOW"/></label></div>
-        <label>目标 ID<input v-model="form.targetId" required placeholder="工作流或 Agent ID"/></label><label>配置
-        JSON<textarea v-model="configText" rows="8" placeholder='{"path":"order-created"}'></textarea></label><label
-          class="th-check"><input v-model="form.enabled" type="checkbox"> 创建后立即启用</label>
+        </AsShadcnSelect></label><label>目标类型<AsShadcnInput v-model="form.targetType" placeholder="WORKFLOW"/></label></div>
+        <label>目标 ID<AsShadcnInput v-model="form.targetId" required placeholder="工作流或 Agent ID"/></label><label>配置
+        JSON<AsShadcnTextarea v-model="configText" rows="8" placeholder='{"path":"order-created"}'></AsShadcnTextarea></label><label
+          class="th-check"><AsShadcnBoolean v-model="form.enabled" type="checkbox"/> 创建后立即启用</label>
       </form>
       <template #footer>
           <Button @click="editorOpen=false">取消</Button>
@@ -322,7 +329,7 @@ onMounted(load);
             <div><b>{{ item.source || 'manual' }}</b><small>{{ time(item.createdAt) }} · {{ item.id }}</small>
               <p v-if="item.error">{{ item.error }}</p></div>
             <span :class="item.status.toLowerCase()">{{ item.status }}</span>
-            <button @click="replay(item)">重放</button>
+            <AsShadcnButton variant="ghost" @click="replay(item)">重放</AsShadcnButton>
           </article>
         </div>
     </Drawer>
@@ -335,8 +342,8 @@ onMounted(load);
   --soft: var(--as-bg-layout, #f8fafc);
   --line: var(--as-border-secondary, #e5e7eb);
   --text: var(--as-text, #172033);
-  --muted: var(--as-text-secondary, #667085);
-  --primary: var(--as-primary, #7c3aed);
+  --trigger-muted: var(--as-text-secondary, #667085);
+  --trigger-primary: var(--as-primary, #7c3aed);
   padding: 24px;
   color: var(--text)
 }
@@ -357,16 +364,16 @@ onMounted(load);
   padding: 26px 28px;
   border: 1px solid #e9d5ff;
   border-radius: 16px;
-  background: linear-gradient(120deg, #faf5ff, #fff 58%, #eff6ff)
+  background: linear-gradient(120deg, #faf5ff, var(--background) 58%, #eff6ff)
 }
 
-:global(.dark) .th-hero {
+.dark .th-hero {
   border-color: #4c3566;
   background: linear-gradient(120deg, #2d203b, #1f1f1f 58%, #172b36)
 }
 
 .th-kicker {
-  color: var(--primary);
+  color: var(--trigger-primary);
   font-size: 11px;
   font-weight: 750;
   letter-spacing: .14em
@@ -382,7 +389,7 @@ onMounted(load);
 }
 
 .th-hero p {
-  color: var(--muted)
+  color: var(--trigger-muted)
 }
 
 .th-primary {
@@ -390,7 +397,7 @@ onMounted(load);
   border: 0;
   border-radius: 9px;
   color: #fff;
-  background: var(--primary);
+  background: var(--trigger-primary);
   font-weight: 650
 }
 
@@ -431,7 +438,7 @@ onMounted(load);
 }
 
 .th-stats span {
-  color: var(--muted);
+  color: var(--trigger-muted);
   font-size: 12px
 }
 
@@ -521,7 +528,7 @@ onMounted(load);
 }
 
 .th-card code {
-  color: var(--muted);
+  color: var(--trigger-muted);
   font-size: 10px
 }
 
@@ -531,8 +538,8 @@ onMounted(load);
   height: 40px;
   place-items: center;
   border-radius: 10px;
-  color: var(--primary);
-  background: color-mix(in srgb, var(--primary) 10%, var(--panel));
+  color: var(--trigger-primary);
+  background: color-mix(in srgb, var(--trigger-primary) 10%, var(--panel));
   font-size: 20px
 }
 
@@ -550,7 +557,7 @@ onMounted(load);
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: #fff;
+  background: var(--background);
   transition: .2s
 }
 
@@ -572,7 +579,7 @@ onMounted(load);
 }
 
 .th-target span {
-  color: var(--muted);
+  color: var(--trigger-muted);
   font-size: 10px
 }
 
@@ -591,7 +598,7 @@ onMounted(load);
   padding: 3px 7px;
   border: 1px solid var(--line);
   border-radius: 5px;
-  color: var(--muted);
+  color: var(--trigger-muted);
   font-size: 10px
 }
 
@@ -612,7 +619,7 @@ onMounted(load);
   padding: 42px;
   border: 1px dashed var(--line);
   border-radius: 12px;
-  color: var(--muted);
+  color: var(--trigger-muted);
   text-align: center;
   background: var(--soft)
 }
@@ -649,11 +656,11 @@ onMounted(load);
   border-bottom: 1px solid var(--line)
 }
 
-.th-drawer header p { margin-top: 4px; color: var(--muted); font-size: 12px }
+.th-drawer header p { margin-top: 4px; color: var(--trigger-muted); font-size: 12px }
 
 .th-modal header button, .th-drawer header button {
   border: 0;
-  color: var(--muted);
+  color: var(--trigger-muted);
   background: transparent;
   font-size: 22px
 }
@@ -749,7 +756,7 @@ onMounted(load);
 }
 
 .th-history small {
-  color: var(--muted)
+  color: var(--trigger-muted)
 }
 
 .th-history p {
@@ -815,7 +822,7 @@ onMounted(load);
   padding: 0 14px;
   border: 0;
   border-left: 1px solid var(--line);
-  color: var(--primary);
+  color: var(--trigger-primary);
   background: var(--soft)
 }
 
@@ -835,7 +842,7 @@ onMounted(load);
 
 .th-table th {
   padding: 11px 14px;
-  color: var(--muted);
+  color: var(--trigger-muted);
   background: var(--soft);
   font-size: 12px;
   font-weight: 600;
@@ -856,7 +863,7 @@ onMounted(load);
 }
 
 .th-table td small {
-  color: var(--muted);
+  color: var(--trigger-muted);
   font-size: 10px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -873,8 +880,8 @@ onMounted(load);
   display: inline-block;
   padding: 3px 7px;
   border-radius: 5px;
-  color: var(--primary);
-  background: color-mix(in srgb, var(--primary) 10%, var(--panel));
+  color: var(--trigger-primary);
+  background: color-mix(in srgb, var(--trigger-primary) 10%, var(--panel));
   font-size: 10px;
   font-weight: 650
 }
@@ -904,7 +911,7 @@ onMounted(load);
   justify-content: flex-end;
   gap: 10px;
   padding: 14px 2px;
-  color: var(--muted);
+  color: var(--trigger-muted);
   font-size: 12px
 }
 
@@ -977,7 +984,7 @@ onMounted(load);
 .th-cell-stack small,
 .th-cell-stack span {
   overflow: hidden;
-  color: var(--muted);
+  color: var(--trigger-muted);
   font-size: 10px;
   text-overflow: ellipsis;
   white-space: nowrap;

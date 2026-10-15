@@ -1,5 +1,10 @@
 <script setup lang="ts">
 // @ts-nocheck — legacy flow-designer code, pre-dates strict typing; cleanup tracked separately.
+
+import { Button as AButton, Select as ASelect, Input as AInput } from '../../../ui';
+
+import { Button as AsShadcnButton } from '../../../ui/shadcn/button';
+
 import { h } from 'vue';
 
 import {
@@ -139,7 +144,7 @@ const toggleLogicalOperator = (caseItem: any) => {
             <!-- 相邻条件之间的 AND / OR 连接词：点击可整案切换 —— Dify parity
                  这里的逻辑操作符是 case 级别（所有条件共享一个），而不是每对
                  相邻条件独立设置。 -->
-            <button
+            <AsShadcnButton variant="ghost"
               v-if="condIndex > 0"
               type="button"
               class="cond-logical-op"
@@ -150,7 +155,7 @@ const toggleLogicalOperator = (caseItem: any) => {
               :title="'点击切换 AND / OR'"
             >
               {{ (item.logicalOperator || 'and').toUpperCase() }}
-            </button>
+            </AsShadcnButton>
 
             <div class="cond-condition">
               <div class="cond-condition-row">
@@ -201,9 +206,9 @@ const toggleLogicalOperator = (caseItem: any) => {
   padding: 12px;
   text-align: center;
   font-size: 12px;
-  color: #9ca3af;
+  color: var(--muted-foreground);
   background: var(--wf-config-surface-hover, #f9fafb);
-  border: 1px dashed #e5e7eb;
+  border: 1px dashed var(--border);
   border-radius: 6px;
 }
 
@@ -219,8 +224,8 @@ const toggleLogicalOperator = (caseItem: any) => {
   gap: 6px;
   padding: 8px 10px;
   background: var(--wf-config-surface, #ffffff);
-  border: 1px solid #f0f0f0;
-  border-left: 3px solid #d1d5db;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--border);
   border-radius: 6px;
   cursor: move;
   transition: box-shadow 0.15s;
@@ -253,7 +258,7 @@ const toggleLogicalOperator = (caseItem: any) => {
 
 .cond-case-tag {
   font-size: 11px;
-  color: #9ca3af;
+  color: var(--muted-foreground);
 }
 
 .cond-condition-list {

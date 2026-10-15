@@ -39,6 +39,11 @@ const EXTERNALS = [
   'pinia',
   '@ant-design/icons-vue',
   'vue-draggable-next',
+  'reka-ui',
+  '@lucide/vue',
+  'class-variance-authority',
+  'clsx',
+  'tailwind-merge',
   '@vue-flow/core',
   '@vue-flow/background',
   '@vue-flow/controls',
@@ -64,6 +69,7 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
+      '@ui': fileURLToPath(new URL('./src/ui', import.meta.url)),
       // Legacy agent-flow internal alias (predates the monorepo merge).
       '@': fileURLToPath(new URL('./src/agent-flow', import.meta.url)),
     },

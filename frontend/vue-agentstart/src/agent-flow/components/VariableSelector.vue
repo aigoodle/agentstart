@@ -95,8 +95,8 @@ const clear = (e: MouseEvent) => {
   gap: 6px;
   padding: 4px 8px;
   min-height: 28px;
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
+  background: var(--background);
+  border: 1px solid var(--border);
   border-radius: 6px;
   cursor: pointer;
   transition: border-color 0.15s, background 0.15s;
@@ -114,8 +114,8 @@ const clear = (e: MouseEvent) => {
 
 .wf-var-selector-trigger.is-disabled {
   cursor: not-allowed;
-  background: #f9fafb;
-  color: #9ca3af;
+  background: var(--muted);
+  color: var(--muted-foreground);
 }
 
 .wf-var-selector-icon {
@@ -138,7 +138,7 @@ const clear = (e: MouseEvent) => {
 .wf-var-selector-placeholder {
   flex: 1;
   font-size: 12px;
-  color: #9ca3af;
+  color: var(--muted-foreground);
 }
 
 .wf-var-selector-clear {
