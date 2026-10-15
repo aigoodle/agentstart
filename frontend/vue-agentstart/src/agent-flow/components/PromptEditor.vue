@@ -848,14 +848,35 @@ onUnmounted(() => {
   height: 14px;
   font-size: 12px;
   line-height: 1;
-  color: #6366f1;
+  color: #b91c1c;
   border-radius: 50%;
   cursor: pointer;
-  transition: background 0.15s;
+  transition: background 0.15s, color 0.15s;
 }
 
 .wf-pe-pill-close:hover {
-  background: #c7d2fe;
-  color: #1e1b4b;
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* 用主题色的浅色标签衬托暗色编辑区域，深色文字保持清晰。 */
+.dark .wf-pe-pill {
+  color: #1f2937;
+  background: color-mix(in srgb, var(--primary) 18%, #ffffff);
+  border-color: color-mix(in srgb, var(--primary) 35%, #ffffff);
+}
+
+.dark .wf-pe-pill:hover {
+  background: color-mix(in srgb, var(--primary) 10%, #ffffff);
+  border-color: color-mix(in srgb, var(--primary) 50%, #ffffff);
+}
+
+.dark .wf-pe-pill-label {
+  color: #1f2937;
+}
+
+.dark .wf-pe-pill-close:hover {
+  background: #fee2e2;
+  color: #991b1b;
 }
 </style>
